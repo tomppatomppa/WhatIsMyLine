@@ -13,8 +13,8 @@ def read_testfile():
     try:
         reader = Reader()
         reader.read_file("./testfiles/default.pdf")
-        result = json.loads(reader.to_json())
-        return  [result]
+        result = reader.to_json()
+        return json.loads(result)
     except FileNotFoundError as e:
         return json.dumps(e)
     
