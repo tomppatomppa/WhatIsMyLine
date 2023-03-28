@@ -21,3 +21,8 @@ jobs:
       run: |
         mkdir server/static
         cp -r client/build/* server/
+        
+    - name: Install Python dependencies
+      run: |
+        cd server
+        pip install -r requirements.txt
