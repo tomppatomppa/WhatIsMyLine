@@ -10,7 +10,7 @@ CORS(app)
 def index():
     return render_template('index.html')
 
-@app.route("/testfile")
+@app.route("/api/testfile")
 def read_testfile():
     reader = Reader()
     result = []
