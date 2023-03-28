@@ -26,24 +26,7 @@ jobs:
       run: |
         cd server
         pip install -r requirements.txt
-    - name: Heroku login credentials
-      run: |
-        cat > ~/.netrc <<EOF
-          machine api.heroku.com
-            login $HEROKU_EMAIL
-            password $HEROKU_API_KEY
-          machine git.heroku.com
-            login $HEROKU_EMAIL
-            password $HEROKU_API_KEY
-        EOF
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-    - name: Set Heroku config variables
-      env:
-        HEROKU_APP_NAME: dramatify
-      run: |
-        heroku config:set PROJECT_PATH=server -a $HEROKU_APP_NAME
+    
     - name: Configure Git
       run: |
         git config --global user.email ${{secrets.HEROKU_EMAIL}}
