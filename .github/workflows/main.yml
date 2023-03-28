@@ -33,3 +33,14 @@ jobs:
       run: |
         heroku config:set PROJECT_PATH=server -a $HEROKU_APP_NAME
 
+    - name: Deploy to Heroku
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_APP_NAME: dramatify
+      run: |
+        cd server
+        git init
+        git add .
+        git commit -m "Deploy to Heroku"
+        heroku git:remote -a $HEROKU_APP_NAME
+        git push heroku master --force
