@@ -59,4 +59,4 @@ jobs:
         git add .
         git commit -m "Deploy to Heroku"
         heroku git:remote -a dramatify
-        git push heroku main --force
+        git push heroku master --force
