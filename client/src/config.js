@@ -1,3 +1,3 @@
-const baseURI = 'http://localhost:5000/'
+const baseURI = 'https://dramatify.herokuapp.com/'
 
 export { baseURI }
