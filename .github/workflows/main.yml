@@ -58,5 +58,5 @@ jobs:
         git init
         git add .
         git commit -m "Deploy to Heroku"
-        heroku git:remote -a $HEROKU_APP_NAME
+        heroku git:remote -a dramatify
         git push heroku main --force
