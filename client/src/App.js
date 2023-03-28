@@ -8,7 +8,6 @@ function App() {
   const navigate = useNavigate()
   const { currentScripts, setCurrentScripts } = useCurrentScripts()
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const loadScripts = () => {
     const scripts = localStorage.getItem('scripts')
     if (scripts) {
@@ -19,7 +18,8 @@ function App() {
 
   useEffect(() => {
     loadScripts()
-  }, [loadScripts])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="App ">

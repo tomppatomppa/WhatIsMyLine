@@ -5,7 +5,7 @@ function getPromises(files) {
   return files.map((file) => {
     const formData = new FormData()
     formData.append('file', file)
-    return axios.post(`${baseURI}pass`, formData)
+    return axios.post(`${baseURI}/api/convert`, formData)
   })
 }
 function getFulfilled(response) {
