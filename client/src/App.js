@@ -2,12 +2,13 @@ import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import Home from './pages/Home'
 import useCurrentScripts from './hooks/useCurrentScripts'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 function App() {
   const navigate = useNavigate()
   const { currentScripts, setCurrentScripts } = useCurrentScripts()
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const loadScripts = () => {
     const scripts = localStorage.getItem('scripts')
     if (scripts) {
@@ -18,7 +19,7 @@ function App() {
 
   useEffect(() => {
     loadScripts()
-  }, [])
+  }, [loadScripts])
 
   return (
     <div className="App ">
