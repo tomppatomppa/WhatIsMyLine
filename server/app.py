@@ -10,11 +10,13 @@ def index():
 
 @app.route("/testfile")
 def read_testfile():
+    reader = Reader()
+    result = []
     try:
-        reader = Reader()
         reader.read_file("./testfiles/default.pdf")
-        result = reader.to_json()
-        return json.loads(result)
+        json_object = reader.to_json()
+        result.append(json.loads(json_object))
+        return result
     except FileNotFoundError as e:
         return json.dumps(e)
     
