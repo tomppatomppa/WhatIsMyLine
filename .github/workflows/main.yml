@@ -32,12 +32,16 @@ jobs:
         HEROKU_APP_NAME: dramatify
       run: |
         heroku config:set PROJECT_PATH=server -a $HEROKU_APP_NAME
-
+    - name: Set up Git
+      uses: actions/setup-git@v1
+      with:
+        user.email: ${{secrets.HEROKU_EMAIL}}
+        user.name: "tomi"
     - name: Deploy to Heroku
       env:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
         heroku_app_name: dramatify
-        heroku_email: ${{secrets.HEROKU_email}}
+        heroku_email: ${{secrets.HEROKU_EMAIL}}
       run: |
         cd server
         git init
