@@ -11,7 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-<<<<<<< HEAD
       - name: Build React client
         run: |
           cd client
@@ -40,15 +39,18 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+
       - name: Set Heroku config variables
         env:
           HEROKU_APP_NAME: dramatify
         run: |
           heroku config:set PROJECT_PATH=server -a $HEROKU_APP_NAME
+
       - name: Configure Git
         run: |
           git config --global user.email ${{secrets.HEROKU_EMAIL}}
           git config --global user.name tomi
+
       - name: Deploy to Heroku
         env:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
@@ -61,43 +63,3 @@ jobs:
           git commit -m "Deploy to Heroku"
           heroku git:remote -a dramatify
           git push heroku master --force
-=======
-    - name: Copy React build to Flask server folder
-      run: |
-        mkdir server/build
-        cp -r client/build/* server/build/
-        
-    - name: Install Python dependencies
-      run: |
-        cd server
-        pip install -r requirements.txt
-    - name: Heroku login credentials
-      run: |
-        cat > ~/.netrc <<EOF
-          machine api.heroku.com
-            login $HEROKU_EMAIL
-            password $HEROKU_API_KEY
-          machine git.heroku.com
-            login $HEROKU_EMAIL
-            password $HEROKU_API_KEY
-        EOF
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-    - name: Configure Git
-      run: |
-        git config --global user.email ${{secrets.HEROKU_EMAIL}}
-        git config --global user.name tomi
-    - name: Deploy to Heroku
-      env:
-        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_app_name: dramatify
-        heroku_email: ${{secrets.HEROKU_EMAIL}}
-      run: |
-        cd server
-        git init
-        git add .
-        git commit -m "Deploy to Heroku"
-        heroku git:remote -a dramatify
-        git push heroku master --force
->>>>>>> 1a33f6f865f6d491f0994fadaf740465ee1d8ac9
