@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from pyMuReader import Reader
 import json
 
@@ -16,7 +16,7 @@ def read_testfile():
         reader.read_file("./testfiles/default.pdf")
         json_object = reader.to_json()
         result.append(json.loads(json_object))
-        return result
+        return jsonify(result)
     except FileNotFoundError as e:
         return json.dumps(e)
     
