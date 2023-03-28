@@ -1,0 +1,23 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build React client
+      run: |
+        cd client
+        npm install
+        npm run build
+
+    - name: Copy React build to Flask server folder
+      run: |
+        mkdir server/static
+        cp -r client/build/* server/
