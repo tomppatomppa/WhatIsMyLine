@@ -3,7 +3,6 @@ import LandingPage from './pages/LandingPage'
 import Home from './pages/Home'
 import useCurrentScripts from './hooks/useCurrentScripts'
 import { useEffect } from 'react'
-import { BASE_URI } from './config'
 
 function App() {
   const navigate = useNavigate()
