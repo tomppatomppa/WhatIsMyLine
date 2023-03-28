@@ -1,8 +1,10 @@
 from flask import Flask, render_template, jsonify
 from pyMuReader import Reader
+from flask_cors import CORS
 import json
 
 app = Flask(__name__, static_folder="build/static", template_folder="build")
+CORS(app)
 
 @app.route("/")
 def index():
