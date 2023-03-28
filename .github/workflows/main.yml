@@ -52,8 +52,5 @@ jobs:
         heroku_email: ${{secrets.HEROKU_EMAIL}}
       run: |
         cd server
-        git init
-        git add .
-        git commit -m "Deploy to Heroku"
         heroku git:remote -a $HEROKU_APP_NAME
         git push heroku main --force
