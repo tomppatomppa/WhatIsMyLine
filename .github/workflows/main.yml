@@ -20,7 +20,7 @@ jobs:
     - name: Copy React build to Flask server folder
       run: |
         mkdir server/static
-        cp -r client/build/* server/static/
+        cp -r client/build/* server/build/
         
     - name: Install Python dependencies
       run: |
