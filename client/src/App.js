@@ -3,6 +3,7 @@ import LandingPage from './pages/LandingPage'
 import Home from './pages/Home'
 import useCurrentScripts from './hooks/useCurrentScripts'
 import { useEffect } from 'react'
+import ReaderV2 from './components/ReaderV2/ReaderV2'
 
 function App() {
   const navigate = useNavigate()
@@ -25,6 +26,7 @@ function App() {
     <div className="App ">
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/v2" element={<ReaderV2 />} />
         <Route
           element={
             <ProtectedRoute

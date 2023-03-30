@@ -20,7 +20,7 @@ const Home = () => {
               <ScriptReaderController />
             </ScriptReaderItem>
           }
-        ></ScriptReader>
+        />
       ) : (
         <h1 className="text-4xl">No file selected</h1>
       )}

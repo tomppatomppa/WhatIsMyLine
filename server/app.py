@@ -2,6 +2,7 @@ from flask import Flask,request, render_template, jsonify
 from werkzeug.utils import secure_filename
 from pathlib import Path
 from pyMuReader import Reader
+from PyMuReaderV2 import ReaderV2
 from flask_cors import CORS
 import shutil
 import os
@@ -11,13 +12,13 @@ from config import allowed_file
 app = Flask(__name__, static_folder="build/static", template_folder="build")
 CORS(app)
 
-@app.route("/")
-def index():
-    return render_template('index.html')
+# @app.route("/")
+# def index():
+#     return render_template('index.html')
 
-@app.route('/<path:path>')
-def catch_all(path):
-    return render_template('index.html')
+# @app.route('/<path:path>')
+# def catch_all(path):
+#     return render_template('index.html')
 
 @app.route("/api/testfile")
 def read_testfile():
@@ -42,23 +43,33 @@ def post():
     except Exception as e:
         app.logger.info('An error occurred while creating temp folder')
         app.logger.error('Exception occurred : {}'.format(e))
-    
+
     if "file" not in request.files:
        return jsonify({"error": "No file"})
-    
+
     file = request.files['file']
-    if file.filename == '': 
+    if file.filename == '':
         return jsonify({"error": "Invalid filename"})
-    
+
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         save_path = os.path.join(app.config.get('upload_folder'), filename)
         file.save(save_path)
-        
+
         file = Path(save_path).stat().st_size
         reader = Reader()
         reader.read_file(f'./tmp/{filename}')
         shutil.rmtree(upload_folder) #remove tmp folder
         return json.loads(reader.to_json())
-    
+
     return jsonify({"error": "Invalid file type"})
+
+
+@app.route("/api/v2/")
+def read_v2():
+    reader = ReaderV2()
+    reader.read_file("2023.pdf")
+
+    return reader.to_html()   
+  
+
