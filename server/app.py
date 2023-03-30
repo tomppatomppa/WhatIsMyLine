@@ -67,9 +67,11 @@ def post():
 
 @app.route("/api/v2/")
 def read_v2():
-    reader = ReaderV2()
-    reader.read_file("2023.pdf")
+    try:
+        reader = ReaderV2()
+        reader.read_file("2023.pdf")
+        return reader.to_html()   
+    except FileNotFoundError as e:
+        return json.dumps(e)
 
-    return reader.to_html()   
-  
 

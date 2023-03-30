@@ -6,18 +6,22 @@ class ReaderV2():
     def __init__(self):   
        self.pages = []     
        self.html = []
+       self.page_width = None
 
     def read_file(self, filename): 
         try:
             pdf_doc = fitz.open(f'./testfiles/{filename}')         
-            for page in pdf_doc:  
-                self.pages.append(page.get_text("dict", sort=False))
+            for page in pdf_doc:
+                page_content = page.get_text("dict", sort=False)
+                self.page_width = page_content["width"]
+                self.pages.append(page_content)
+                #TODO: fix validation
                 for line in page.get_text("html").splitlines():    
                     if not "font-size:8.0pt" in line and not "left:512.4pt" in line:
-                        self.html.append(line)
-                
+                        self.html.append(line)         
         except FileNotFoundError:
             print("File not found")
+           
 
     def get_html(self):
         return self.html
@@ -26,8 +30,7 @@ class ReaderV2():
         
         combined_soup = self.make_soup()
         combined_soup = self.into_sections(combined_soup)
-        combined_soup = self.remove_tags(combined_soup, "tt")
-        
+        combined_soup = self.remove_tags(combined_soup, "tt")  
         combined_soup = self.into_lines(combined_soup)
        
         return combined_soup
@@ -45,14 +48,23 @@ class ReaderV2():
         return soup.prettify()
        
     def into_lines(self, soup):
-        actor_id = 'left:252.0pt'
-        lines_id = 'left:202.4pt;'
-        soup = BeautifulSoup(soup, 'html.parser')
-        actor_tags = soup.find_all('p', style=lambda value: value and actor_id in value)
-    
+        """
+        Identifies what tags belong to an actor and concats them under a single </ul> element
+        
+        This assumes the original pdf document has this pattern
+
+        """
+        #TODO proper lines identification
+        lines_id = 'left:202.4pt;' 
+       
+        soup = BeautifulSoup(soup, 'html.parser')   
+        actor_tags = self.get_actor_tags(soup)
+     
         for actor_tag in actor_tags:
             ul_tag = soup.new_tag('ul')
             ul_tag["style"] = actor_tag["style"]
+            # sets actor name as id for ul_tag
+            # used on client side to identify actor
             ul_tag["id"] = actor_tag.get_text().strip()
             sibling_tag = actor_tag.find_next_sibling()
 
@@ -67,40 +79,92 @@ class ReaderV2():
                 decompose_this.decompose()        
 
             actor_tag.insert_after(ul_tag)
-            actor_tag.decompose() ## Actor id is <ul id="NAME" />
+            #remove tag containing actor name, it was already added to </ul id="NAME">
+            actor_tag.decompose()
     
         return soup.prettify()
     
+   
     def into_sections(self, soup):
-        #soup = BeautifulSoup(html, features="lxml")
-        new_soup = BeautifulSoup("<div></div>", "html.parser")
-        # Keep track of the current section
-        current_section = new_soup.new_tag("section")
-    
-        previous = "" 
-        # Loop through all paragraphs in the original HTML
-        for p in soup.find_all("p"):
+        """
+        Parses given html to section elements.
+
+        Sections are identified by an r"^\d+$", and r"[A-Z\dÄÅÖ.]+ [A-Z\dÄÅÖ]+" pattern
         
-            # Get the text of the current paragraph
-            text = p.get_text().strip()
-            
-            # Check if the current paragraph matches the start of a new section
-            if re.match(r"^\d+$", previous ) and re.match(r"[A-Z\dÄÅÖ.]+ [A-Z\dÄÅÖ]+", text):
-                section_title = previous+" " +text
+        This assumes the original pdf document has this pattern
+
+        TODO: detect scene start if INT and PATTERN on the same line
+
+        examples: text <13804> followed by text <EXT. KLÖSUS KONTOR> gets flagged as a scene start
+        """
+        new_soup = BeautifulSoup("<div></div>", "html.parser")
+       
+        current_section = new_soup.new_tag("section")
+
+        previous_text = "" 
+        for p in soup.find_all("p"):
+            current_text = p.get_text().strip()
+            if self.is_section_start(previous_text, current_text):
+                section_title = previous_text+" " +current_text
                 if current_section:
                     current_section.append(p.extract())
                     new_soup.div.append(current_section)
-                # p.name = 'p'
                 p.tt.b.span.string = section_title
                 p.name = 'h1'
                 current_section = new_soup.new_tag("section")
                 current_section.append(p.extract()) 
             else:
                 current_section.append(p.extract())    
-            previous = text
-        #add remaining
+            previous_text = current_text
+        
         new_soup.append(current_section)
+
         return new_soup.prettify()
-  
+    
+    def get_actor_tags(self, soup):
+        """
+        returns an array containing all suspected actor tags
+        """
+        actor_tags = soup.find_all('p')
+        actors = []
+        for tag in actor_tags:
+            styles = tag.get('style').split(";")
+            name = tag.get_text().strip()
+            if self.is_actor(styles, name):   
+                actors.append(tag)
+                
+        return actors
+
+    def is_actor(self, styles, name):
+        """
+        Tries to identifify actor names
+
+        Actor names are assumed to be in CAPS,
+          and in the middle(ish) of the page,
+
+        The the function allows 20% margin to left and right
+        """
+        name_pattern = r'^[A-Z0-9ÖÄÅ]+\s?(\([^)]*\))?$'
+        value = None
+        
+        for style in styles:
+            if style.startswith('left:'):
+                value_str = ''.join(filter(lambda x: x.isdigit() or x == '.', style)) 
+                value = float(value_str)
+        center = self.page_width / 2
+        margin = self.page_width * 0.2 / 2
+        left_limit = center - margin
+        right_limit = center + margin
+
+        if left_limit <= value <= right_limit and re.match(name_pattern, name):
+            print(f"{name} is flagged as valid name")
+            return True
+        else:
+            print(f"{name} is NOT a name")
+            return False
+        
 
 
+    def is_section_start(self, previous_text, current_text):
+        return re.match(r"^\d+$", previous_text) and re.match(r"[A-Z\dÄÅÖ.]+ [A-Z\dÄÅÖ]+", current_text)
+           

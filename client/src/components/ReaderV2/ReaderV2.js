@@ -2,7 +2,7 @@ import axios from 'axios'
 import 'core-js'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { baseURI } from '../../config'
+import { baseURI, BASE_URI } from '../../config'
 
 function Section({ heading, paragraphs }) {
   const [isExpanded, setIsExpanded] = useState(false)
