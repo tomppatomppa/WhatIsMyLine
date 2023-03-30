@@ -12,13 +12,13 @@ from config import allowed_file
 app = Flask(__name__, static_folder="build/static", template_folder="build")
 CORS(app)
 
-# @app.route("/")
-# def index():
-#     return render_template('index.html')
+@app.route("/")
+def index():
+    return render_template('index.html')
 
-# @app.route('/<path:path>')
-# def catch_all(path):
-#     return render_template('index.html')
+@app.route('/<path:path>')
+def catch_all(path):
+    return render_template('index.html')
 
 @app.route("/api/testfile")
 def read_testfile():
