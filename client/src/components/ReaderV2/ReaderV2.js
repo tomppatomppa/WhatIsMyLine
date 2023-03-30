@@ -2,6 +2,7 @@ import axios from 'axios'
 import 'core-js'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+// eslint-disable-next-line no-unused-vars
 import { baseURI, BASE_URI } from '../../config'
 
 function Section({ heading, paragraphs }) {
