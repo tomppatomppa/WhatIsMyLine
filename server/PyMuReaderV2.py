@@ -12,7 +12,7 @@ class ReaderV2():
     def read_file(self, filename): 
         try:
             self.filename = filename
-            pdf_doc = fitz.open(f'./testfiles/{filename}')         
+            pdf_doc = fitz.open(f'{filename}')         
             for page in pdf_doc:
                 page_content = page.get_text("dict", sort=False)
                 self.page_width = page_content["width"]
@@ -139,7 +139,7 @@ class ReaderV2():
             
         
         new_soup.append(current_section)
-        print(new_soup.prettify())
+        
         return new_soup.prettify()
     
     def get_actor_tags(self, soup):

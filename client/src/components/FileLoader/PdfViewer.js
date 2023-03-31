@@ -3,6 +3,7 @@ import { Document, Page, pdfjs } from 'react-pdf'
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
 
 function PdfViewer({ file }) {
+  // eslint-disable-next-line no-unused-vars
   const [pdfData, setPdfData] = useState(file)
 
   return (

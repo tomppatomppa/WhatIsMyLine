@@ -2,7 +2,7 @@ import React from 'react'
 
 const FileLoader = ({ handleClick, handleAddFile, inputRef }) => {
   return (
-    <div className="">
+    <div>
       <input
         style={{ display: 'none' }}
         ref={inputRef}

@@ -12,7 +12,7 @@ const UploadTestFile = () => {
 
   const handleSend = async () => {
     try {
-      const { data } = await axios.get(`${baseURI}/api/v2/`)
+      const { data } = await axios.get(`${BASE_URI}/api/v2/`)
       const script = parseHTML(data)
       const updated_scripts = currentScripts.concat(script)
       setCurrentScripts(updated_scripts)
