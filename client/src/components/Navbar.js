@@ -48,12 +48,12 @@ const Navbar = ({ selected, setSelected }) => {
             {currentScripts?.map((script, index) => (
               <li
                 className={`${
-                  isSelected(selected, script) ? ' text-black' : 'text-gray-500'
+                  isSelected(selected, script) ? 'text-black' : 'text-gray-500'
                 } cursor-pointer p-2 list-decimal flex`}
                 key={index}
               >
                 <span onClick={() => setSelected(script)} className="flex-1">
-                  {script?.filename}
+                  {index}
                 </span>
                 <button
                   onClick={() => handleDelete(script.filename)}

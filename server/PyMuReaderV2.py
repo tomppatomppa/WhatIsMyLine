@@ -28,8 +28,8 @@ class ReaderV2():
     
     def to_html(self):
         
-        combined_soup = self.make_soup()
-        combined_soup = self.into_sections(combined_soup)
+        soup = self.make_soup()
+        combined_soup = self.into_sections(soup)
         combined_soup = self.remove_tags(combined_soup, "tt")  
         combined_soup = self.into_lines(combined_soup)
        
@@ -49,10 +49,15 @@ class ReaderV2():
        
     def into_lines(self, soup):
         """
-        Identifies what tags belong to an actor and concats them under a single </ul> element
-        
-        This assumes the original pdf document has this pattern
+        Identifies what tags belong to an actor
 
+        Adds the lines that belong to that actor in a single </ul> element
+            <ul id="NAME">
+              <li> ... </li>
+              <li> ... </li>
+              ...etc
+            </ul>
+        
         """
         #TODO proper lines identification
         lines_id = 'left:202.4pt;' 
@@ -79,47 +84,57 @@ class ReaderV2():
                 decompose_this.decompose()        
 
             actor_tag.insert_after(ul_tag)
-            #remove tag containing actor name, it was already added to </ul id="NAME">
+            #remove tag containing actor name, name was already added to </ul id="NAME">
             actor_tag.decompose()
-    
+        
         return soup.prettify()
     
    
     def into_sections(self, soup):
         """
-        Parses given html to section elements.
+        Parses given soup to section elements.
 
         Sections are identified by an r"^\d+$", and r"[A-Z\dÄÅÖ.]+ [A-Z\dÄÅÖ]+" pattern
+
+        examples: text "13804" followed by text "EXT. KLÖSUS KONTOR"
+          gets flagged as a scene start.
+        Adds conequent lines into that section until an new scene gets detected,
+          or no more <p> tags to validate
+
+        example output:    <section id="13804 EXT. KLÖSUS KONTOR">
+                              <p>...</p>
+                           </section>
+                           <section id="..."
+                              <p>...</p>...
+                           </section>
         
-        This assumes the original pdf document has this pattern
+        This of course assumes the original pdf document has this pattern
 
         TODO: detect scene start if INT and PATTERN on the same line
-
-        examples: text <13804> followed by text <EXT. KLÖSUS KONTOR> gets flagged as a scene start
+        
         """
-        new_soup = BeautifulSoup("<div></div>", "html.parser")
-       
-        current_section = new_soup.new_tag("section")
+        current_section = soup.new_tag("section")
 
         previous_text = "" 
         for p in soup.find_all("p"):
             current_text = p.get_text().strip()
             if self.is_section_start(previous_text, current_text):
-                section_title = previous_text+" " +current_text
+                section_title = " ".join([previous_text,current_text])
                 if current_section:
                     current_section.append(p.extract())
-                    new_soup.div.append(current_section)
-                p.tt.b.span.string = section_title
+                    soup.div.append(current_section)
+                p.span.string = section_title
                 p.name = 'h1'
-                current_section = new_soup.new_tag("section")
+                current_section = soup.new_tag("section")
+                current_section["id"] = section_title
                 current_section.append(p.extract()) 
             else:
                 current_section.append(p.extract())    
             previous_text = current_text
         
-        new_soup.append(current_section)
-
-        return new_soup.prettify()
+        soup.append(current_section)
+        
+        return soup.prettify()
     
     def get_actor_tags(self, soup):
         """
@@ -139,10 +154,14 @@ class ReaderV2():
         """
         Tries to identifify actor names
 
-        Actor names are assumed to be in CAPS,
-          and in the middle(ish) of the page,
+        Ideally a script should have elements in a predictable place for easy readability.
+        This function assumes all actor are written in UPPERCASE, and starts in the middle(ish) of the docment,
+        Names can be followed by additional information like NAME (O.S),
+          which is an abbreviation for "Off Screen" etc..
 
         The the function allows 20% margin to left and right
+
+        styles parameter should look like ['top:241.0pt', 'left:202.4pt', 'line-height:11.8pt']
         """
         name_pattern = r'^[A-Z0-9ÖÄÅ]+\s?(\([^)]*\))?$'
         value = None
@@ -151,16 +170,17 @@ class ReaderV2():
             if style.startswith('left:'):
                 value_str = ''.join(filter(lambda x: x.isdigit() or x == '.', style)) 
                 value = float(value_str)
+
         center = self.page_width / 2
         margin = self.page_width * 0.2 / 2
         left_limit = center - margin
         right_limit = center + margin
 
         if left_limit <= value <= right_limit and re.match(name_pattern, name):
-            print(f"{name} is flagged as valid name")
+            #print(f"{name} is flagged as valid name")
             return True
         else:
-            print(f"{name} is NOT a name")
+            #print(f"{name} is NOT a name")
             return False
         
 

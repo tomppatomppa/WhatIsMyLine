@@ -69,7 +69,7 @@ def post():
 def read_v2():
     try:
         reader = ReaderV2()
-        reader.read_file("2023.pdf")
+        reader.read_file("2023.pdf") #add support for default.pdf
         return reader.to_html()   
     except FileNotFoundError as e:
         return json.dumps(e)
