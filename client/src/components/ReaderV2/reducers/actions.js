@@ -7,5 +7,5 @@ const SETTINGS = ({ target, value, property }) => ({
   type: 'SETTINGS',
   payload: { target: target, property: property, value: value },
 })
-
-export { CLOSE_ALL, OPEN_ALL, HIGHLIGHT, SETTINGS }
+const optionsActions = { CLOSE_ALL, OPEN_ALL, HIGHLIGHT, SETTINGS }
+export { optionsActions }
