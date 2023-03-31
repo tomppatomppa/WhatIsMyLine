@@ -86,7 +86,6 @@ function ReaderSection({ heading, paragraphs }) {
         )
       } else if (id && children) {
         const style = options.settings.actor.style
-
         return (
           <div style={style} className="my-4" key={index}>
             <p onClick={() => dispatch(HIGHLIGHT(id))}>{id}</p>

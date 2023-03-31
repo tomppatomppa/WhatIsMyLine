@@ -38,6 +38,21 @@ export const optionsReducer = (state, action) => {
         },
       }
     }
+    case 'SET_STYLE': {
+      const { target, value, property } = action.payload
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          [target]: {
+            style: {
+              ...state.settings[target].style,
+              [property]: value,
+            },
+          },
+        },
+      }
+    }
     default:
       throw Error('Unknown action.')
   }

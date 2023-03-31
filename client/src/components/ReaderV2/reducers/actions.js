@@ -7,5 +7,9 @@ const SETTINGS = ({ target, value, property }) => ({
   type: 'SETTINGS',
   payload: { target: target, property: property, value: value },
 })
-const optionsActions = { CLOSE_ALL, OPEN_ALL, HIGHLIGHT, SETTINGS }
+const SET_STYLE = ({ target, value, property }) => ({
+  type: 'SET_STYLE',
+  payload: { target: target, property: property, value: value },
+})
+const optionsActions = { CLOSE_ALL, OPEN_ALL, HIGHLIGHT, SETTINGS, SET_STYLE }
 export { optionsActions }
