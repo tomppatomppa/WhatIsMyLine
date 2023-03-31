@@ -1,4 +1,4 @@
-export const reducer = (state, action) => {
+export const optionsReducer = (state, action) => {
   switch (action.type) {
     case 'CLOSE_ALL': {
       return {
@@ -42,3 +42,5 @@ export const reducer = (state, action) => {
       throw Error('Unknown action.')
   }
 }
+
+export default optionsReducer

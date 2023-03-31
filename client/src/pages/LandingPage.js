@@ -1,5 +1,4 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 import FileButton from '../components/FileLoader/FileButton'
 import UploadTestFile from '../components/UploadTestFile'
 

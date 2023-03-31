@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
-import ReaderV2 from '../components/ReaderV2/ReaderV2'
+import Reader from '../components/ReaderV2/Reader'
 
 const Home = () => {
   const [selected, setSelected] = useState(null)
@@ -9,7 +9,7 @@ const Home = () => {
     <div className=" text-center">
       <Navbar selected={selected} setSelected={setSelected} />
       {selected ? (
-        <ReaderV2 selected={selected} />
+        <Reader selected={selected}></Reader>
       ) : (
         <h1 className="text-4xl">No file selected</h1>
       )}

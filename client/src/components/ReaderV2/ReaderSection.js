@@ -1,7 +1,8 @@
 import 'core-js'
 import React, { useState } from 'react'
-import { HIGHLIGHT } from '../Reader/scriptActions'
+
 import { useReaderContext } from './contexts/ReaderContext'
+import { HIGHLIGHT } from './reducers/actions'
 
 export function parseHTML(html) {
   const parser = new DOMParser()
@@ -55,7 +56,7 @@ function parseSection(section) {
 function ReaderSection({ heading, paragraphs }) {
   const { options, dispatch } = useReaderContext()
   const [isExpanded, setIsExpanded] = useState(true)
-
+  console.log(options.highlight)
   const renderContent = (paragraphs) => {
     return Array.from(paragraphs).map(({ id, text, children }, index) => {
       if (!id || text) {

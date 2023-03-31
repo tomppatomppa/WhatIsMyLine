@@ -6,7 +6,7 @@ export function useReaderContext() {
   const context = useContext(ReaderContext)
   if (!context) {
     throw new Error(
-      'ScriptReader.* component must be rendered as a child of ScriptReader component'
+      'Reader.* component must be rendered as a child of Reader component'
     )
   }
   return context

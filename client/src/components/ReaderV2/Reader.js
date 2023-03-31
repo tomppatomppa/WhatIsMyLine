@@ -1,7 +1,8 @@
 import 'core-js'
 import React, { useReducer } from 'react'
-import { reducer } from '../Reader/scriptReducer'
+
 import ReaderContext from './contexts/ReaderContext'
+import optionsReducer from './reducers/optionsReducer'
 
 const initialState = {
   showAll: false,
@@ -12,8 +13,8 @@ const initialState = {
   },
 }
 
-const ReaderV2 = ({ selected }) => {
-  const [options, dispatch] = useReducer(reducer, initialState)
+const Reader = ({ selected, children }) => {
+  const [options, dispatch] = useReducer(optionsReducer, initialState)
 
   if (!selected) {
     return <div>Loading...</div>
@@ -21,8 +22,9 @@ const ReaderV2 = ({ selected }) => {
   return (
     <ReaderContext.Provider value={{ options, dispatch }}>
       <div className="mx-auto max-w-2xl">{selected.data}</div>
+      {children}
     </ReaderContext.Provider>
   )
 }
 
-export default ReaderV2
+export default Reader
