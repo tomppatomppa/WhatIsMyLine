@@ -90,7 +90,7 @@ function ReaderSection({ heading, paragraphs }) {
       <h1 className="font-bold" onClick={() => setIsExpanded(!isExpanded)}>
         {heading}
       </h1>
-      {isExpanded && <div className="">{renderContent(paragraphs)}</div>}
+      {isExpanded && <div>{renderContent(paragraphs)}</div>}
     </section>
   )
 }

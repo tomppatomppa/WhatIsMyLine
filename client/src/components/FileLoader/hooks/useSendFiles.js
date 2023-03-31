@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { baseURI } from '../../../config'
-import { parseHTML } from '../../ReaderV2/ReaderSection'
 
 function getPromises(files) {
   return files.map((file) => {
@@ -13,8 +12,7 @@ function getFulfilled(response) {
   const result = []
   response.forEach((element) => {
     if (element.status === 'fulfilled') {
-      const script = parseHTML(element.value.data)
-      result.push(script)
+      result.push(element.value.data)
     }
   })
   return result
