@@ -3,13 +3,15 @@ from bs4 import BeautifulSoup
 import re
 
 class ReaderV2():
-    def __init__(self):   
+    def __init__(self): 
+       self.filename = None  
        self.pages = []     
        self.html = []
        self.page_width = None
 
     def read_file(self, filename): 
         try:
+            self.filename = filename
             pdf_doc = fitz.open(f'./testfiles/{filename}')         
             for page in pdf_doc:
                 page_content = page.get_text("dict", sort=False)
@@ -32,11 +34,11 @@ class ReaderV2():
         combined_soup = self.into_sections(soup)
         combined_soup = self.remove_tags(combined_soup, "tt")  
         combined_soup = self.into_lines(combined_soup)
-       
         return combined_soup
     
     def make_soup(self):
         combined_soup = BeautifulSoup("", "html.parser")
+        combined_soup["id"] = "test"
         for doc in self.html:
             combined_soup.append(BeautifulSoup(doc, "html.parser"))
         return combined_soup
@@ -113,7 +115,10 @@ class ReaderV2():
         TODO: detect scene start if INT and PATTERN on the same line
         
         """
-        current_section = soup.new_tag("section")
+        new_soup = BeautifulSoup("<div></div>", "html.parser")
+        new_soup.div["id"] = self.filename
+
+        current_section = new_soup.new_tag("section")
 
         previous_text = "" 
         for p in soup.find_all("p"):
@@ -122,19 +127,20 @@ class ReaderV2():
                 section_title = " ".join([previous_text,current_text])
                 if current_section:
                     current_section.append(p.extract())
-                    soup.div.append(current_section)
+                    new_soup.div.append(current_section)
                 p.span.string = section_title
                 p.name = 'h1'
-                current_section = soup.new_tag("section")
+                current_section = new_soup.new_tag("section")
                 current_section["id"] = section_title
                 current_section.append(p.extract()) 
             else:
                 current_section.append(p.extract())    
             previous_text = current_text
+            
         
-        soup.append(current_section)
-        
-        return soup.prettify()
+        new_soup.append(current_section)
+        print(new_soup.prettify())
+        return new_soup.prettify()
     
     def get_actor_tags(self, soup):
         """

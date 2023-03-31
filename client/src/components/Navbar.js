@@ -36,45 +36,66 @@ const Navbar = ({ selected, setSelected }) => {
           showMenu ? 'translate-x-0' : '-translate-x-[30rem]'
         } fixed top-14 w-full sm:w-72 shadow-lg h-full translate-all duration-200 bg-white`}
       >
-        <div className="flex flex-col items-center ">
-          <div className="flex flex-row w-full bg-primary p-2">
-            <FileButton />
-            <span className="flex-1"></span>
-            <button onClick={() => setShowMenu(false)}>
-              <AiOutlineCloseCircle size={24} />
-            </button>
-          </div>
-          <div className="flex divide-y w-full flex-col p-2">
-            {currentScripts?.map((script, index) => (
-              <li
-                className={`${
-                  isSelected(selected, script) ? 'text-black' : 'text-gray-500'
-                } cursor-pointer p-2 list-decimal flex`}
-                key={index}
-              >
-                <span onClick={() => setSelected(script)} className="flex-1">
-                  {index}
-                </span>
-                <button
-                  onClick={() => handleDelete(script.filename)}
-                  className="m-2 self-start"
-                >
-                  <AiOutlineDelete color="red" />
-                </button>
-              </li>
-            ))}
-            <button
-              className="flex mt-24 bg-red-400 text-black p-2 rounded-md bottom-0 self-end"
-              onClick={handleReset}
-            >
-              Delete All
-            </button>
-          </div>
-        </div>
+        <NavbarMenu
+          setShowMenu={setShowMenu}
+          currentScripts={currentScripts}
+          selected={selected}
+          setSelected={setSelected}
+          handleDelete={handleDelete}
+          handleReset={handleReset}
+        />
       </div>
     </div>
   )
 }
+const NavbarMenu = (props) => {
+  const {
+    setShowMenu,
+    currentScripts,
+    selected,
+    setSelected,
+    handleDelete,
+    handleReset,
+  } = props
+  return (
+    <div className="flex flex-col items-center ">
+      <div className="flex flex-row w-full bg-primary p-2">
+        <FileButton />
+        <span className="flex-1"></span>
+        <button onClick={() => setShowMenu(false)}>
+          <AiOutlineCloseCircle size={24} />
+        </button>
+      </div>
+      <div className="flex divide-y w-full flex-col p-2">
+        {currentScripts?.map((script, index) => (
+          <li
+            className={`${
+              isSelected(selected, script) ? 'text-black' : 'text-gray-500'
+            } cursor-pointer p-2 list-decimal flex`}
+            key={index}
+          >
+            <span onClick={() => setSelected(script)} className="flex-1">
+              {script.filename}
+            </span>
+            <button
+              onClick={() => handleDelete(script.filename)}
+              className="m-2 self-start"
+            >
+              <AiOutlineDelete color="red" />
+            </button>
+          </li>
+        ))}
+        <button
+          className="flex mt-24 bg-red-400 text-black p-2 rounded-md bottom-0 self-end"
+          onClick={handleReset}
+        >
+          Delete All
+        </button>
+      </div>
+    </div>
+  )
+}
+
 const isSelected = (selectedScript, script) => {
   if (!selectedScript || !script) return false
   return selectedScript.filename === script.filename

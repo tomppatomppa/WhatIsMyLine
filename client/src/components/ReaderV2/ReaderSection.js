@@ -7,6 +7,7 @@ export function parseHTML(html) {
   const parser = new DOMParser()
   const parsedHtml = parser.parseFromString(html, 'text/html')
   const sectionElements = parsedHtml.querySelectorAll('section')
+  const documentFilename = parsedHtml.querySelector('div').id
 
   const sections = []
   sectionElements.forEach((section) => {
@@ -14,7 +15,12 @@ export function parseHTML(html) {
     sections.push(parsedSection)
   })
 
-  return sections
+  const script = {
+    filename: documentFilename,
+    data: sections,
+  }
+
+  return script
 }
 
 function parseSection(section) {
@@ -40,6 +46,7 @@ function parseSection(section) {
   } else {
     heading = 'Document Details'
   }
+
   return (
     <ReaderSection key={heading} heading={heading} paragraphs={paragraphs} />
   )

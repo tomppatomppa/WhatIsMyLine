@@ -8,13 +8,14 @@ import { parseHTML } from './ReaderV2/ReaderSection'
 
 const UploadTestFile = () => {
   const navigate = useNavigate()
-  const { setCurrentScripts } = useCurrentScripts()
+  const { currentScripts, setCurrentScripts } = useCurrentScripts()
 
   const handleSend = async () => {
     try {
-      const { data } = await axios.get(`${baseURI}/api/v2/`)
-      const parsed = parseHTML(data)
-      setCurrentScripts([parsed])
+      const { data } = await axios.get(`${BASE_URI}/api/v2/`)
+      const script = parseHTML(data)
+      const updated_scripts = currentScripts.concat(script)
+      setCurrentScripts(updated_scripts)
       navigate('/home')
     } catch (e) {
       console.log(e)

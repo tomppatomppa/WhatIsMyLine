@@ -1,9 +1,5 @@
 import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
-import ScriptReader from '../components/Reader/ScriptReader'
-import ScriptReaderController from '../components/Reader/ScriptReaderController'
-import ScriptReaderItem from '../components/Reader/ScriptReaderItem'
-import ScriptReaderScene from '../components/Reader/ScriptReaderScene'
 import ReaderV2 from '../components/ReaderV2/ReaderV2'
 
 const Home = () => {

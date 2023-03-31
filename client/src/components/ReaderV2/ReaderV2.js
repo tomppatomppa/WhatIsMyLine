@@ -20,7 +20,7 @@ const ReaderV2 = ({ selected }) => {
   }
   return (
     <ReaderContext.Provider value={{ options, dispatch }}>
-      <div className="mx-auto max-w-2xl">{selected}</div>
+      <div className="mx-auto max-w-2xl">{selected.data}</div>
     </ReaderContext.Provider>
   )
 }
