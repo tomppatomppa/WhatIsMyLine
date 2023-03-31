@@ -20,7 +20,7 @@ const Navbar = ({ selected, setSelected }) => {
     localStorage.setItem('scripts', JSON.stringify(updated_scripts))
     setCurrentScripts(updated_scripts)
   }
-  console.log(currentScripts)
+
   return (
     <div className="w-full mb-24">
       <div className="fixed shadow-md top-0 flex w-full justify-start  bg-white">
@@ -75,7 +75,7 @@ const NavbarMenu = (props) => {
             key={index}
           >
             <span onClick={() => setSelected(script)} className="flex-1">
-              {script?.filename}
+              {script.filename}
             </span>
             <button
               onClick={() => handleDelete(script.filename)}

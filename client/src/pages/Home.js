@@ -9,7 +9,9 @@ const Home = () => {
     <div className=" text-center">
       <Navbar selected={selected} setSelected={setSelected} />
       {selected ? (
-        <Reader selected={selected}></Reader>
+        <Reader selected={selected}>
+          <div className="fixed bottom-0 right-0">This is controlls</div>
+        </Reader>
       ) : (
         <h1 className="text-4xl">No file selected</h1>
       )}
