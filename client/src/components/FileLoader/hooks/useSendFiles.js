@@ -1,18 +1,20 @@
 import axios from 'axios'
-import { baseURI, BASE_URI } from '../../../config'
+import { baseURI } from '../../../config'
+import { parseHTML } from '../../ReaderV2/ReaderSection'
 
 function getPromises(files) {
   return files.map((file) => {
     const formData = new FormData()
     formData.append('file', file)
-    return axios.post(`${BASE_URI}/api/v2/upload`, formData)
+    return axios.post(`${baseURI}/api/v2/upload`, formData)
   })
 }
 function getFulfilled(response) {
   const result = []
   response.forEach((element) => {
     if (element.status === 'fulfilled') {
-      result.push(element.value.data)
+      const script = parseHTML(element.value.data)
+      result.push(script)
     }
   })
   return result
