@@ -8,8 +8,23 @@ const initialState = {
   showAll: false,
   highlight: [],
   settings: {
-    info: { textPosition: 'text-left' },
-    actor: { textPosition: 'text-center' },
+    info: {
+      style: {
+        textAlign: 'center',
+        fontFamily: 'Courier,monospace',
+        fontSize: '11.8pt',
+        color: '#333333',
+      },
+    },
+    actor: {
+      style: {
+        textAlign: 'center',
+        fontFamily: 'Courier,monospace',
+        fontSize: '11.8pt',
+        color: '#333333',
+        backgroundColor: 'red',
+      },
+    },
   },
 }
 

@@ -22,7 +22,20 @@ export function parseHTML(html) {
 
   return script
 }
-
+function parseHtmlStyle(htmlStyle) {
+  const styleObj = {}
+  const stylePairs = htmlStyle.split(';')
+  stylePairs.forEach((pair) => {
+    const [key, value] = pair.split(':')
+    if (key && value) {
+      const styleKey = key
+        .trim()
+        .replace(/-([a-z])/g, (match, letter) => letter.toUpperCase())
+      styleObj[styleKey] = value.trim()
+    }
+  })
+  return styleObj
+}
 function parseSection(section) {
   const elements = section.querySelectorAll(':scope > *:not(h1)')
 
@@ -32,7 +45,12 @@ function parseSection(section) {
   elements.forEach((element) => {
     if (element.tagName.toLowerCase() === 'ul' && element.id) {
       const id = element.id
-      const children = Array.from(element.children).map((li) => li.textContent)
+      const children = Array.from(element.children).map((li) => {
+        const html_style = li.getAttribute('style')
+        const style = parseHtmlStyle(html_style)
+
+        return { text: li.textContent, style }
+      })
       paragraphs.push({ id, children })
     } else {
       paragraphs.push({ text: element.textContent })
@@ -60,21 +78,20 @@ function ReaderSection({ heading, paragraphs }) {
   const renderContent = (paragraphs) => {
     return Array.from(paragraphs).map(({ id, text, children }, index) => {
       if (!id || text) {
+        const infoStyle = options.settings.info.style
         return (
-          <p className="font-light" key={index}>
+          <p style={infoStyle} className="font-light" key={index}>
             {text}
           </p>
         )
       } else if (id && children) {
+        const style = options.settings.actor.style
+
         return (
-          <div className="my-4" key={index}>
+          <div style={style} className="my-4" key={index}>
             <p onClick={() => dispatch(HIGHLIGHT(id))}>{id}</p>
-            <ul
-              className={`${
-                options.highlight.includes(id) ? 'bg-green-200' : ''
-              }`}
-            >
-              {Array.from(children).map((text, index) => (
+            <ul>
+              {Array.from(children).map(({ text }, index) => (
                 <li key={index}>{text}</li>
               ))}
             </ul>
