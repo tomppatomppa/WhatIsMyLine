@@ -2,9 +2,12 @@ import React, { useState } from 'react'
 import useCurrentScripts from '../hooks/useCurrentScripts'
 import { FileButton } from './FileLoader'
 import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'
+import MultiSelect from './MultiSelect'
+import { getSceneTitles } from './ReaderV2/helpers'
 
 const Navbar = ({ selected, setSelected }) => {
   const [showMenu, setShowMenu] = useState(true)
+  const [menuItems, setMenuItems] = useState([])
   const { currentScripts, setCurrentScripts } = useCurrentScripts()
 
   const handleReset = () => {
@@ -12,7 +15,12 @@ const Navbar = ({ selected, setSelected }) => {
     setSelected(null)
     localStorage.removeItem('scripts')
   }
-
+  const handleSelect = (file) => {
+    setSelected(file)
+    const titles = getSceneTitles(file)
+    setMenuItems(titles)
+    setShowMenu(false)
+  }
   const handleDelete = (filename) => {
     const updated_scripts = currentScripts.filter(
       (s) => s.filename !== filename
@@ -25,11 +33,12 @@ const Navbar = ({ selected, setSelected }) => {
     <div className="w-full mb-24">
       <div className="fixed shadow-md top-0 flex w-full justify-start  bg-white">
         <button
-          className="flex self-center m-4 text-black font-bold tracking-widest"
+          className="flex flex-1 self-center m-4 text-black font-bold tracking-widest"
           onClick={() => setShowMenu(!showMenu)}
         >
           SCRIPTS
         </button>
+        <MultiSelect menuItems={menuItems} />
       </div>
       <div
         className={`${
@@ -37,12 +46,12 @@ const Navbar = ({ selected, setSelected }) => {
         } fixed top-14 w-full sm:w-72 shadow-lg h-full translate-all duration-200 bg-white`}
       >
         <NavbarMenu
-          setShowMenu={setShowMenu}
           currentScripts={currentScripts}
           selected={selected}
-          setSelected={setSelected}
+          handleSelect={handleSelect}
           handleDelete={handleDelete}
           handleReset={handleReset}
+          setShowMenu={setShowMenu}
         />
       </div>
     </div>
@@ -53,15 +62,10 @@ const NavbarMenu = (props) => {
     setShowMenu,
     currentScripts,
     selected,
-    setSelected,
+    handleSelect,
     handleDelete,
     handleReset,
   } = props
-
-  const handleSelect = (file) => {
-    setSelected(file)
-    setShowMenu(false)
-  }
 
   return (
     <div className="flex flex-col items-center ">

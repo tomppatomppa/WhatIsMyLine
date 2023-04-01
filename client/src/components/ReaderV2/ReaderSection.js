@@ -1,5 +1,6 @@
 import 'core-js'
 import React, { useState } from 'react'
+import useCurrentScripts from '../../hooks/useCurrentScripts'
 import { useReaderContext } from './contexts/ReaderContext'
 import { optionsActions } from './reducers/'
 
@@ -72,9 +73,9 @@ function parseSection(section) {
 
 function ReaderSection({ heading, paragraphs }) {
   const [isExpanded, setIsExpanded] = useState(true)
-  const { options, dispatch, scenes } = useReaderContext()
+  const { showScenes } = useCurrentScripts()
+  const { options, dispatch } = useReaderContext()
   const { actor, info } = options.settings
-
   const { HIGHLIGHT_TARGET } = optionsActions
 
   const renderContent = (paragraphs) => {
@@ -111,10 +112,10 @@ function ReaderSection({ heading, paragraphs }) {
   }
 
   //Show selected scenes
-  if (scenes.length !== 0) {
+  if (showScenes.length !== 0) {
     return (
       <>
-        {scenes.includes(heading) && (
+        {showScenes.includes(heading) && (
           <section className="cursor-pointer my-2 border shadow-sm rounded-md">
             <strong
               className="underline"
