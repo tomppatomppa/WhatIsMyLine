@@ -22,6 +22,8 @@ const useSendFiles = () => {
   const sendFiles = async (files) => {
     const promises = getPromises(files)
     try {
+      //TODO: backend removes tmp folder as soon as it sends a response back,
+      //The file might get deleted while sending back one of the responses
       const response = await Promise.allSettled(promises)
       const result = getFulfilled(response)
       return result
