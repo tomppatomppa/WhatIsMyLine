@@ -1,3 +1,29 @@
+function generateUniqueColor(highlight) {
+  const colors = [
+    '#86efac',
+    '#d8b4fe',
+    '#f7d8a1',
+    '#e6d5c1',
+    '#d6d2e0',
+    '#c6cfeb',
+    '#b5ccf8',
+    '#a5c9f3',
+    '#94c5ed',
+    '#84c2e8',
+    '#74bedf',
+    '#64bbda',
+  ]
+  const excludedColors = highlight.map((item) => {
+    return item.style.backgroundColor
+  })
+  for (const element of colors) {
+    if (!excludedColors.includes(element)) {
+      return element
+    }
+  }
+  return '#86efac'
+}
+
 export const optionsReducer = (state, action) => {
   switch (action.type) {
     case 'CLOSE_ALL': {
@@ -12,17 +38,27 @@ export const optionsReducer = (state, action) => {
         showAll: true,
       }
     }
-    case 'HIGHLIGHT': {
+
+    case 'HIGHLIGHT_TARGET': {
       const { highlight } = state
-      if (highlight.includes(action.payload)) {
+      const { target, color } = action.payload
+      if (highlight.some((item) => item.id === target)) {
         return {
           ...state,
-          highlight: highlight.filter((name) => name !== action.payload),
+          highlight: highlight.filter((item) => item.id !== target),
         }
+      }
+      const uniqueColor = generateUniqueColor(highlight)
+
+      const style = {
+        id: target,
+        style: {
+          backgroundColor: color ? color : uniqueColor,
+        },
       }
       return {
         ...state,
-        highlight: state.highlight.concat(action.payload),
+        highlight: highlight.concat(style),
       }
     }
     case 'SETTINGS': {

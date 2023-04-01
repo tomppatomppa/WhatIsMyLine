@@ -10,7 +10,9 @@ const Home = () => {
     <div className=" text-center">
       <Navbar selected={selected} setSelected={setSelected} />
       {selected ? (
-        <Reader selected={selected} controller={<Controller />}></Reader>
+        <Reader selected={selected}>
+          <Controller />
+        </Reader>
       ) : (
         <h1 className="text-4xl">No file selected</h1>
       )}

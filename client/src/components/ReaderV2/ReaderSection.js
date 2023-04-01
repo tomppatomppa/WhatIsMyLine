@@ -48,7 +48,6 @@ function parseSection(section) {
       const children = Array.from(element.children).map((li) => {
         const html_style = li.getAttribute('style')
         const style = parseHtmlStyle(html_style)
-
         return { text: li.textContent, style }
       })
       paragraphs.push({ id, children })
@@ -73,7 +72,7 @@ function parseSection(section) {
 function ReaderSection({ heading, paragraphs }) {
   const [isExpanded, setIsExpanded] = useState(true)
   const { options, dispatch } = useReaderContext()
-  const { HIGHLIGHT } = optionsActions
+  const { HIGHLIGHT_TARGET } = optionsActions
 
   const renderContent = (paragraphs) => {
     return Array.from(paragraphs).map(({ id, text, children }, index) => {
@@ -85,11 +84,22 @@ function ReaderSection({ heading, paragraphs }) {
           </p>
         )
       } else if (id && children) {
-        const style = options.settings.actor.style
+        const isSelected = options.highlight.find((item) => item.id === id)
+        const ulStyle = {
+          ...options.settings.actor.style,
+          backgroundColor: isSelected
+            ? isSelected.style.backgroundColor
+            : 'transparent',
+        }
         return (
-          <div style={style} className="my-4" key={index}>
-            <p onClick={() => dispatch(HIGHLIGHT(id))}>{id}</p>
-            <ul>
+          <div className="my-4" key={index}>
+            <p
+              style={{ fontWeight: 'bold' }}
+              onClick={() => dispatch(HIGHLIGHT_TARGET({ target: id }))}
+            >
+              {id}
+            </p>
+            <ul style={ulStyle}>
               {Array.from(children).map(({ text }, index) => (
                 <li key={index}>{text}</li>
               ))}

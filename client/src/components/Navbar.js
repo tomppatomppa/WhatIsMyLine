@@ -57,6 +57,12 @@ const NavbarMenu = (props) => {
     handleDelete,
     handleReset,
   } = props
+
+  const handleSelect = (file) => {
+    setSelected(file)
+    setShowMenu(false)
+  }
+
   return (
     <div className="flex flex-col items-center ">
       <div className="flex flex-row w-full bg-primary p-2">
@@ -74,7 +80,7 @@ const NavbarMenu = (props) => {
             } cursor-pointer p-2 list-decimal flex`}
             key={index}
           >
-            <span onClick={() => setSelected(script)} className="flex-1">
+            <span onClick={() => handleSelect(script)} className="flex-1">
               {script.filename}
             </span>
             <button

@@ -22,13 +22,12 @@ const initialState = {
         fontFamily: 'Courier,monospace',
         fontSize: '11.8pt',
         color: '#333333',
-        backgroundColor: 'red',
       },
     },
   },
 }
 
-const Reader = ({ selected, controller, children }) => {
+const Reader = ({ selected, children }) => {
   const [options, dispatch] = useReducer(optionsReducer, initialState)
 
   if (!selected) {
@@ -38,7 +37,6 @@ const Reader = ({ selected, controller, children }) => {
     <ReaderContext.Provider value={{ options, dispatch }}>
       <div className="mx-auto max-w-2xl">{selected.data}</div>
       {children}
-      <div>{controller}</div>
     </ReaderContext.Provider>
   )
 }

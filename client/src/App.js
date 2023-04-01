@@ -3,18 +3,14 @@ import LandingPage from './pages/LandingPage'
 import Home from './pages/Home'
 import useCurrentScripts from './hooks/useCurrentScripts'
 import { useEffect } from 'react'
-import { BASE_URI } from './config'
 
 function App() {
   const { currentScripts, setCurrentScripts } = useCurrentScripts()
-  console.log(BASE_URI)
-  console.log(process.env.HEROKU_URI)
-  console.log(process.env.NODE_ENV)
+
   const loadScripts = () => {
     const scripts = localStorage.getItem('scripts')
     if (scripts) {
       setCurrentScripts(JSON.parse(scripts))
-      //navigate('/home')
     }
   }
 
