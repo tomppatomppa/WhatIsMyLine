@@ -36,6 +36,7 @@ function parseHtmlStyle(htmlStyle) {
   })
   return styleObj
 }
+
 function parseSection(section) {
   const elements = section.querySelectorAll(':scope > *:not(h1)')
 
@@ -59,7 +60,7 @@ function parseSection(section) {
   const h1Element = section.querySelector('h1')
 
   if (h1Element) {
-    heading = h1Element.textContent
+    heading = h1Element.innerText.trim()
   } else {
     heading = 'Document Details'
   }
@@ -71,7 +72,7 @@ function parseSection(section) {
 
 function ReaderSection({ heading, paragraphs }) {
   const [isExpanded, setIsExpanded] = useState(true)
-  const { options, dispatch } = useReaderContext()
+  const { options, dispatch, scenes } = useReaderContext()
   const { actor, info } = options.settings
 
   const { HIGHLIGHT_TARGET } = optionsActions
@@ -109,11 +110,32 @@ function ReaderSection({ heading, paragraphs }) {
     })
   }
 
+  //Show selected scenes
+  if (scenes.length !== 0) {
+    return (
+      <>
+        {scenes.includes(heading) && (
+          <section className="cursor-pointer my-2 border shadow-sm rounded-md">
+            <strong
+              className="underline"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              {heading}
+            </strong>
+
+            {isExpanded && <div>{renderContent(paragraphs)}</div>}
+          </section>
+        )}
+      </>
+    )
+  }
+  //show all scenes
   return (
     <section className="cursor-pointer my-2 border shadow-sm rounded-md">
       <strong className="underline" onClick={() => setIsExpanded(!isExpanded)}>
         {heading}
       </strong>
+
       {isExpanded && <div>{renderContent(paragraphs)}</div>}
     </section>
   )

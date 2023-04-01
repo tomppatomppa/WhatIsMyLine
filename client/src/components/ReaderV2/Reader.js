@@ -1,5 +1,5 @@
 import 'core-js'
-import React, { useReducer } from 'react'
+import React, { useReducer, useState } from 'react'
 
 import ReaderContext from './contexts/ReaderContext'
 import optionsReducer from './reducers/optionsReducer'
@@ -29,12 +29,16 @@ const initialState = {
 
 const Reader = ({ selected, children }) => {
   const [options, dispatch] = useReducer(optionsReducer, initialState)
+  const [scenes, setScenes] = useState([
+    '13811 EXT. KLÖSUS KONTOR',
+    '11003 INT. MÖTESRUM',
+  ])
 
   if (!selected) {
-    return <div>Loading...</div>
+    return null
   }
   return (
-    <ReaderContext.Provider value={{ options, dispatch }}>
+    <ReaderContext.Provider value={{ options, dispatch, scenes }}>
       <div className="mx-auto max-w-2xl">{selected.data}</div>
       {children}
     </ReaderContext.Provider>
