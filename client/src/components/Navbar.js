@@ -33,7 +33,7 @@ const Navbar = ({ selected, setSelected }) => {
       </div>
       <div
         className={`${
-          showMenu ? 'translate-x-0' : '-translate-x-[30rem]'
+          showMenu ? 'translate-x-0 ' : '-translate-x-[40rem]'
         } fixed top-14 w-full sm:w-72 shadow-lg h-full translate-all duration-200 bg-white`}
       >
         <NavbarMenu
