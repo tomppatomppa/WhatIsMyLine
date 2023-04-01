@@ -10,8 +10,9 @@ const initialState = {
   settings: {
     info: {
       style: {
-        textAlign: 'center',
-        fontFamily: 'Courier,monospace',
+        textAlign: 'left',
+        textIndent: '1em',
+        fontStyle: 'italic',
         fontSize: '11.8pt',
         color: '#333333',
       },
@@ -19,7 +20,6 @@ const initialState = {
     actor: {
       style: {
         textAlign: 'center',
-        fontFamily: 'Courier,monospace',
         fontSize: '11.8pt',
         color: '#333333',
       },

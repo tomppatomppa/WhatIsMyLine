@@ -72,33 +72,31 @@ function parseSection(section) {
 function ReaderSection({ heading, paragraphs }) {
   const [isExpanded, setIsExpanded] = useState(true)
   const { options, dispatch } = useReaderContext()
+  const { actor, info } = options.settings
+
   const { HIGHLIGHT_TARGET } = optionsActions
 
   const renderContent = (paragraphs) => {
     return Array.from(paragraphs).map(({ id, text, children }, index) => {
       if (!id || text) {
-        const infoStyle = options.settings.info.style
         return (
-          <p style={infoStyle} className="font-light" key={index}>
+          <p style={info.style} key={index}>
             {text}
           </p>
         )
       } else if (id && children) {
         const isSelected = options.highlight.find((item) => item.id === id)
         const ulStyle = {
-          ...options.settings.actor.style,
+          ...actor.style,
           backgroundColor: isSelected
             ? isSelected.style.backgroundColor
             : 'transparent',
         }
         return (
           <div className="my-4" key={index}>
-            <p
-              style={{ fontWeight: 'bold' }}
-              onClick={() => dispatch(HIGHLIGHT_TARGET({ target: id }))}
-            >
+            <strong onClick={() => dispatch(HIGHLIGHT_TARGET({ target: id }))}>
               {id}
-            </p>
+            </strong>
             <ul style={ulStyle}>
               {Array.from(children).map(({ text }, index) => (
                 <li key={index}>{text}</li>
@@ -112,10 +110,10 @@ function ReaderSection({ heading, paragraphs }) {
   }
 
   return (
-    <section className="cursor-pointer my-2 border rounded-md">
-      <h1 className="font-bold" onClick={() => setIsExpanded(!isExpanded)}>
+    <section className="cursor-pointer my-2 border shadow-sm rounded-md">
+      <strong className="underline" onClick={() => setIsExpanded(!isExpanded)}>
         {heading}
-      </h1>
+      </strong>
       {isExpanded && <div>{renderContent(paragraphs)}</div>}
     </section>
   )
