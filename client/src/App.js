@@ -3,10 +3,11 @@ import LandingPage from './pages/LandingPage'
 import Home from './pages/Home'
 import useCurrentScripts from './hooks/useCurrentScripts'
 import { useEffect } from 'react'
+import { BASE_URI } from './config'
 
 function App() {
   const { currentScripts, setCurrentScripts } = useCurrentScripts()
-  console.log(process.env.REACT_APP_ENVIROMENT)
+  console.log(BASE_URI)
   const loadScripts = () => {
     const scripts = localStorage.getItem('scripts')
     if (scripts) {
