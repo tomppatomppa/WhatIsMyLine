@@ -18,6 +18,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build-dev": "set \"REACT_APP_ENVIROMENT=development\" &&  react-scripts build && xcopy /s /y /i build ..\\server\\build && rd /s /q build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -40,6 +41,7 @@
     ]
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "tailwindcss": "^3.2.7"
   },
   "proxy": "http://localhost:5000"

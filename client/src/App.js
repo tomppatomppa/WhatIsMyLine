@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 
 function App() {
   const { currentScripts, setCurrentScripts } = useCurrentScripts()
-
+  console.log(process.env.REACT_APP_ENVIROMENT)
   const loadScripts = () => {
     const scripts = localStorage.getItem('scripts')
     if (scripts) {

@@ -1,5 +1,6 @@
 import { useReaderContext } from './contexts/ReaderContext'
 import { optionsActions } from './reducers'
+
 export const Controller = () => {
   const { dispatch } = useReaderContext()
   const { SET_STYLE } = optionsActions

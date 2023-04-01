@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { baseURI } from '../../../config'
+import { BASE_URI } from '../../../config'
 
 function getPromises(files) {
   return files.map((file) => {
     const formData = new FormData()
     formData.append('file', file)
-    return axios.post(`${baseURI}/api/v2/upload`, formData)
+    return axios.post(`${BASE_URI}/api/v2/upload`, formData)
   })
 }
 function getFulfilled(response) {
