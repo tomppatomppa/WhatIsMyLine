@@ -23,20 +23,6 @@ export function parseHTML(html) {
 
   return script
 }
-function parseHtmlStyle(htmlStyle) {
-  const styleObj = {}
-  const stylePairs = htmlStyle.split(';')
-  stylePairs.forEach((pair) => {
-    const [key, value] = pair.split(':')
-    if (key && value) {
-      const styleKey = key
-        .trim()
-        .replace(/-([a-z])/g, (match, letter) => letter.toUpperCase())
-      styleObj[styleKey] = value.trim()
-    }
-  })
-  return styleObj
-}
 
 function parseSection(section) {
   const elements = section.querySelectorAll(':scope > *:not(h1)')
