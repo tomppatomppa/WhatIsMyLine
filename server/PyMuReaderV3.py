@@ -40,31 +40,30 @@ class ReaderV3():
 
     def make_scenes(self, file):
         scenes = []
+        scene_title = "SCRIPT DETAILS"
+        current_scene = {scene_title: []}
         previous_line = None
+        
         for current_line in file["blocks"]:
             if self.is_scene(current_line, previous_line):
-                section_title = " ".join([current_line["text"], previous_line["text"]])
-                print(section_title)
-
-            #print(current_line["text"])
-            
+                if current_scene:
+                   scenes.append(current_scene)
+                   current_scene = None
+                scene_title = " ".join([current_line["text"], previous_line["text"]])
+                current_scene = {scene_title: []}
+            else:
+                current_scene[scene_title].append(current_line["text"])
             previous_line = current_line
+        print(scenes)
 
     def is_scene(self, current_line, previous_line):
         if not previous_line:
             return False
-        
         if(current_line["text"]).isdigit():
             return False
         section_pattern = r'^(?!.*\b[A-Z\dÄÅÖ]+\s\d)[A-Z\dÄÅÖ.-]+(?: [A-Z\dÄÅÖ-]+)*$'
         return re.match(r"^\d+$", previous_line["text"]) and re.match(section_pattern, current_line["text"])
     
-    def str_to_int(self, str):
-        try:
-            my_int = int(str)
-            return my_int
-        except ValueError:
-            print("Conversion failed. Input was not an integer.")
 
 if __name__ == '__main__':
     reader= ReaderV3()
