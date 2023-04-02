@@ -8,7 +8,9 @@ export function parseHTML(html) {
   const parser = new DOMParser()
   const parsedHtml = parser.parseFromString(html, 'text/html')
   const sectionElements = parsedHtml.querySelectorAll('section')
-  const documentFilename = parsedHtml.querySelector('div').id
+  const documentFilename = parsedHtml.querySelector('div')?.id
+
+  if (!sectionElements || !documentFilename) return
 
   const sections = []
   sectionElements.forEach((section) => {

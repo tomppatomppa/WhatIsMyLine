@@ -10,5 +10,13 @@ const getSceneTitles = (file) => {
 
   return titles
 }
+const getIdIfExists = (html) => {
+  const parser = new DOMParser()
+  const parsedHtml = parser.parseFromString(html, 'text/html')
+  const documentFilename = parsedHtml.querySelector('div')?.id
+  console.log(documentFilename)
+  if (documentFilename) return documentFilename
 
-export { getSceneTitles }
+  return null
+}
+export { getSceneTitles, getIdIfExists }

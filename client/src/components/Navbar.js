@@ -3,7 +3,7 @@ import useCurrentScripts from '../hooks/useCurrentScripts'
 import { FileButton } from './FileLoader'
 import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'
 
-import { getSceneTitles } from './ReaderV2/helpers'
+import { getIdIfExists, getSceneTitles } from './ReaderV2/helpers'
 import SelectScene from './SelectScene'
 
 const Navbar = ({ selected, setSelected }) => {
@@ -25,11 +25,16 @@ const Navbar = ({ selected, setSelected }) => {
     setMenuItems(titles)
     setShowMenu(false)
   }
+
   const handleDelete = (filename) => {
     const updated_scripts = currentScripts.filter(
       (s) => s.filename !== filename
     )
-    localStorage.setItem('scripts', JSON.stringify(updated_scripts))
+    const existingScripts = JSON.parse(localStorage.getItem('scripts'))
+    const updatedLocal = existingScripts.filter(
+      (script) => getIdIfExists(script) !== filename
+    )
+    localStorage.setItem('scripts', JSON.stringify(updatedLocal))
     setCurrentScripts(updated_scripts)
   }
 
