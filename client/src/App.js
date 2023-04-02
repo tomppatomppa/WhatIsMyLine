@@ -1,16 +1,23 @@
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import Home from './pages/Home'
 import useCurrentScripts from './hooks/useCurrentScripts'
 import { useEffect } from 'react'
+import { parseHTML } from './components/ReaderV2/ReaderSection'
 
 function App() {
+  const navigate = useNavigate()
   const { currentScripts, setCurrentScripts } = useCurrentScripts()
 
   const loadScripts = () => {
-    const scripts = localStorage.getItem('scripts')
+    const scripts = JSON.parse(localStorage.getItem('scripts'))
+
     if (scripts) {
-      setCurrentScripts(JSON.parse(scripts))
+      const scriptItems = scripts.map((script) => {
+        return parseHTML(script)
+      })
+      setCurrentScripts(scriptItems)
+      navigate('/home')
     }
   }
 

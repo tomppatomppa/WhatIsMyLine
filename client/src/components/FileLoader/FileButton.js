@@ -7,6 +7,16 @@ import FileLoader from './FileLoader'
 import useFile from './hooks/useFile'
 import useSendFiles from './hooks/useSendFiles'
 
+const addScriptToLocalStorage = (result) => {
+  const existingItems = JSON.parse(localStorage.getItem('scripts'))
+
+  if (existingItems) {
+    const updated_scripts = existingItems.concat(result)
+    localStorage.setItem('scripts', JSON.stringify(updated_scripts))
+  } else {
+    localStorage.setItem('scripts', JSON.stringify(result))
+  }
+}
 const FileButton = () => {
   const navigate = useNavigate()
   const { currentScripts, setCurrentScripts } = useCurrentScript()
@@ -19,7 +29,9 @@ const FileButton = () => {
       const parsed = result.map((element) => {
         return parseHTML(element)
       })
+
       const updated_scripts = currentScripts.concat(parsed)
+      addScriptToLocalStorage(result)
       setCurrentScripts(updated_scripts)
       navigate('/home')
       reset()
