@@ -11,7 +11,7 @@ const initialState = {
     info: {
       style: {
         textAlign: 'left',
-        textIndent: '1em',
+        marginLeft: '10px',
         fontStyle: 'italic',
         fontSize: '11.8pt',
         color: '#333333',
@@ -29,10 +29,6 @@ const initialState = {
 
 const Reader = ({ selected, children }) => {
   const [options, dispatch] = useReducer(optionsReducer, initialState)
-  // const [scenes, setScenes] = useState([
-  //   '13811 EXT. KLÖSUS KONTOR',
-  //   '11003 INT. MÖTESRUM',
-  // ])
 
   if (!selected) {
     return null

@@ -4,6 +4,7 @@ import useCurrentScripts from '../hooks/useCurrentScripts'
 
 const SelectScene = ({ menuItems }) => {
   const { setShowScenes } = useCurrentScripts()
+
   const handleChange = (selectedOption) => {
     if (!selectedOption) {
       setShowScenes([])

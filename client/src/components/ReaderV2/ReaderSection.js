@@ -48,9 +48,7 @@ function parseSection(section) {
     if (element.tagName.toLowerCase() === 'ul' && element.id) {
       const id = element.id
       const children = Array.from(element.children).map((li) => {
-        const html_style = li.getAttribute('style')
-        const style = parseHtmlStyle(html_style)
-        return { text: li.textContent, style }
+        return { text: li.textContent }
       })
       paragraphs.push({ id, children })
     } else {
@@ -95,7 +93,7 @@ function ReaderSection({ heading, paragraphs }) {
             : 'transparent',
         }
         return (
-          <div className="my-4" key={index}>
+          <div className="my-4 cursor-pointer" key={index}>
             <strong onClick={() => dispatch(HIGHLIGHT_TARGET({ target: id }))}>
               {id}
             </strong>
@@ -107,7 +105,7 @@ function ReaderSection({ heading, paragraphs }) {
           </div>
         )
       }
-      return <div>Something went wrong</div>
+      return null
     })
   }
 
@@ -116,15 +114,14 @@ function ReaderSection({ heading, paragraphs }) {
     return (
       <>
         {showScenes.includes(heading) && (
-          <section className="cursor-pointer my-2 border shadow-sm rounded-md">
+          <section className="bg-white my-2 border shadow-md rounded-md">
             <strong
-              className="underline"
+              className="underline cursor-pointer"
               onClick={() => setIsExpanded(!isExpanded)}
             >
               {heading}
             </strong>
-
-            {isExpanded && <div>{renderContent(paragraphs)}</div>}
+            {isExpanded && <>{renderContent(paragraphs)}</>}
           </section>
         )}
       </>
@@ -132,12 +129,14 @@ function ReaderSection({ heading, paragraphs }) {
   }
   //show all scenes
   return (
-    <section className="cursor-pointer my-2 border shadow-sm rounded-md">
-      <strong className="underline" onClick={() => setIsExpanded(!isExpanded)}>
+    <section className="bg-white my-2 border shadow-md rounded-md">
+      <strong
+        className="underline cursor-pointer"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
         {heading}
       </strong>
-
-      {isExpanded && <div>{renderContent(paragraphs)}</div>}
+      {isExpanded && <>{renderContent(paragraphs)}</>}
     </section>
   )
 }
