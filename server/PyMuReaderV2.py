@@ -188,7 +188,7 @@ class ReaderV2():
         styles parameter should look like ['top:241.0pt', 'left:202.4pt', 'line-height:11.8pt']
         """
         name_pattern = r'^[A-Z0-9ÖÄÅ]+\s?(\([^)]*\))?$'
-        alt_name_pattern = r'^[A-Z0-9ÖÄÅ]+\s?\(?(\d+|[A-Z]+|\([^)]*\))?\)?$'
+        alt_name_pattern = r'^[A-Z0-9ÖÄÅ]+\s?\(?(\d+|[A-ZÖÄÅ]+|\([^)]*\))?\)?$'
         value = None
         
         for style in styles:
