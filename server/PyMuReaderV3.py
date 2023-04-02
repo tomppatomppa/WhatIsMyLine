@@ -8,23 +8,66 @@ class ReaderV3():
        self.pages = []     
        self.html = []
        self.page_width = None
+       self.file = None
 
     def read_file(self, filename): 
         try:
             self.filename = filename
-            pdf_doc = fitz.open(f'./testfiles/2023.pdf')
+            pdf_doc = fitz.open(f'./testfiles/4.4.pdf')
             
-            arr = []     
+            pages = []     
             for page in pdf_doc:
-                arr.append(page.get_text("dict", sort=False))
-                if len(arr) < 2:
-                    print(page.get_text("dict", sort=False))
-                
-            
+                pages.append(page.get_text("dict", sort=False)) 
+            return self.concat_all_lines(pages)
+                         
         except FileNotFoundError:
             print("File not found")
-   
+     
+    def concat_all_lines(self, pages):
+        merged_dict = {
+            'width': pages[0]['width'],
+            'height': pages[0]['height'],
+            'blocks': [block for d in pages for block in d['blocks']]
+        }
+        lines = [line for block in merged_dict["blocks"] for line in block["lines"]]
+        merged_dict["blocks"] = [span for line in lines for span in line["spans"]]
+        self.file = merged_dict
+       
+
+    def to_json(self):
+      
+        with_scenes = self.make_scenes(self.file)
+
+    def make_scenes(self, file):
+        scenes = []
+        previous_line = None
+        for current_line in file["blocks"]:
+            if self.is_scene(current_line, previous_line):
+                section_title = " ".join([current_line["text"], previous_line["text"]])
+                print(section_title)
+
+            #print(current_line["text"])
+            
+            previous_line = current_line
+
+    def is_scene(self, current_line, previous_line):
+        if not previous_line:
+            return False
+        
+        if(current_line["text"]).isdigit():
+            return False
+        section_pattern = r'^(?!.*\b[A-Z\dÄÅÖ]+\s\d)[A-Z\dÄÅÖ.-]+(?: [A-Z\dÄÅÖ-]+)*$'
+        return re.match(r"^\d+$", previous_line["text"]) and re.match(section_pattern, current_line["text"])
+    
+    def str_to_int(self, str):
+        try:
+            my_int = int(str)
+            return my_int
+        except ValueError:
+            print("Conversion failed. Input was not an integer.")
 
 if __name__ == '__main__':
     reader= ReaderV3()
     reader.read_file("filename")
+    reader.to_json()
+
