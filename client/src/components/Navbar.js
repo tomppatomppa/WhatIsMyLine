@@ -2,17 +2,21 @@ import React, { useState } from 'react'
 import useCurrentScripts from '../hooks/useCurrentScripts'
 import { FileButton } from './FileLoader'
 import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'
-import MultiSelect from './MultiSelect'
+
 import { getSceneTitles } from './ReaderV2/helpers'
+import SelectScene from './SelectScene'
 
 const Navbar = ({ selected, setSelected }) => {
   const [showMenu, setShowMenu] = useState(true)
   const [menuItems, setMenuItems] = useState([])
-  const { currentScripts, setCurrentScripts } = useCurrentScripts()
+  const { setShowScenes, currentScripts, setCurrentScripts } =
+    useCurrentScripts()
 
   const handleReset = () => {
     setCurrentScripts([])
     setSelected(null)
+    setMenuItems([])
+    setShowScenes([])
     localStorage.removeItem('scripts')
   }
   const handleSelect = (file) => {
@@ -38,7 +42,7 @@ const Navbar = ({ selected, setSelected }) => {
         >
           SCRIPTS
         </button>
-        <MultiSelect menuItems={menuItems} />
+        <SelectScene menuItems={menuItems} />
       </div>
       <div
         className={`${
