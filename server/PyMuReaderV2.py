@@ -7,6 +7,7 @@ class ReaderV2():
        self.filename = None  
        self.pages = []     
        self.html = []
+       self.names = {}
        self.page_width = None
 
     def read_file(self, filename): 
@@ -28,12 +29,12 @@ class ReaderV2():
     def get_html(self):
         return self.html
     
-    def to_html(self):
-        
+    def to_html(self):  
         soup = self.make_soup()
         combined_soup = self.into_sections(soup)
         combined_soup = self.remove_tags(combined_soup, "tt")  
         combined_soup = self.into_lines(combined_soup)
+       
         return combined_soup
     
     def make_soup(self):
@@ -61,21 +62,17 @@ class ReaderV2():
             </ul>
         
         """
-        #TODO proper lines identification
-        lines_id = 'left:202.4pt;' 
-       
+
         soup = BeautifulSoup(soup, 'html.parser')   
         actor_tags = self.get_actor_tags(soup)
-     
+       
         for actor_tag in actor_tags:
             ul_tag = soup.new_tag('ul')
-            ul_tag["style"] = actor_tag["style"]
-            # sets actor name as id for ul_tag
-            # used on client side to identify actor
+            ul_tag["style"] = actor_tag["style"]    
+            #id is used on client side to identify actor name
             ul_tag["id"] = actor_tag.get_text().strip()
             sibling_tag = actor_tag.find_next_sibling()
-
-            while sibling_tag and sibling_tag.has_attr("style") and lines_id in sibling_tag['style']:
+            while sibling_tag and sibling_tag.has_attr("style") and self.is_line(sibling_tag):
                 li_tag = soup.new_tag('li')
                 span_tag = sibling_tag.find('span')
                 li_tag["style"] = span_tag["style"]
@@ -84,11 +81,11 @@ class ReaderV2():
                 decompose_this = sibling_tag
                 sibling_tag = sibling_tag.find_next_sibling()
                 decompose_this.decompose()        
-
+            
             actor_tag.insert_after(ul_tag)
             #remove tag containing actor name, name was already added to </ul id="NAME">
             actor_tag.decompose()
-        
+       
         return soup.prettify()
     
    
@@ -124,7 +121,8 @@ class ReaderV2():
         for p in soup.find_all("p"):
             current_text = p.get_text().strip()
             if self.is_section_start(previous_text, current_text):
-                section_title = " ".join([previous_text,current_text])
+                section_title = " ".join([previous_text, current_text])
+                #print("IS SECTION START", section_title)
                 if current_section:
                     current_section.append(p.extract())
                     new_soup.div.append(current_section)
@@ -151,10 +149,30 @@ class ReaderV2():
         for tag in actor_tags:
             styles = tag.get('style').split(";")
             name = tag.get_text().strip()
-            if self.is_actor(styles, name):   
-                actors.append(tag)
-                
+            if self.is_actor(styles, name):
+                if tag is not None:
+                    actors.append(tag)
+       
         return actors
+    
+
+    def is_line(self, line):
+        styles = line.get('style').split(";")
+
+        value = None
+        for style in styles:
+            if style.startswith('left:'):
+                value_str = ''.join(filter(lambda x: x.isdigit() or x == '.', style)) 
+                value = float(value_str)
+        if value > 188 and value < 220:
+            #print(f"{text} is flagged as a line", styles)
+            return True
+        else:
+            #print(f"{line.text} is NOT a line")
+            return False
+       
+    
+
 
     def is_actor(self, styles, name):
         """
@@ -170,6 +188,7 @@ class ReaderV2():
         styles parameter should look like ['top:241.0pt', 'left:202.4pt', 'line-height:11.8pt']
         """
         name_pattern = r'^[A-Z0-9ÖÄÅ]+\s?(\([^)]*\))?$'
+        alt_name_pattern = r'^[A-Z0-9ÖÄÅ]+\s?\(?(\d+|[A-Z]+|\([^)]*\))?\)?$'
         value = None
         
         for style in styles:
@@ -182,15 +201,18 @@ class ReaderV2():
         left_limit = center - margin
         right_limit = center + margin
 
-        if left_limit <= value <= right_limit and re.match(name_pattern, name):
+        if left_limit <= value <= right_limit and re.match(alt_name_pattern, name):
             #print(f"{name} is flagged as valid name")
+            self.names[name] = value
             return True
         else:
             #print(f"{name} is NOT a name")
             return False
-        
-
+    
 
     def is_section_start(self, previous_text, current_text):
-        return re.match(r"^\d+$", previous_text) and re.match(r"[A-Z\dÄÅÖ.]+ [A-Z\dÄÅÖ]+", current_text)
+        if(current_text.isdigit()):
+            return False
+        section_pattern = r'^(?!.*\b[A-Z\dÄÅÖ]+\s\d)[A-Z\dÄÅÖ.-]+(?: [A-Z\dÄÅÖ-]+)*$'
+        return re.match(r"^\d+$", previous_text) and re.match(section_pattern, current_text)
            
