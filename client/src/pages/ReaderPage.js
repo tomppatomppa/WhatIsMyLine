@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import useCurrentScripts from '../hooks/useCurrentScripts'
+import Reader from '../components/ReaderV3/Reader'
 
-const Reader = ({ children }) => {
-  return <div>{children}</div>
-}
 const Line = ({ line }) => {
   const { type, name, lines } = line
 
