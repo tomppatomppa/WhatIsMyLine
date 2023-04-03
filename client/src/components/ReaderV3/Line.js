@@ -1,19 +1,17 @@
+import useCurrentScripts from '../../hooks/useCurrentScripts'
+import { useReaderContext } from './contexts/ReaderContext'
+
 export const Line = ({ line }) => {
   const { type, name, lines } = line
-
-  const styleInfo = {
-    textAlign: 'left',
-  }
-  const styleActor = {
-    textAlign: 'center',
-  }
+  const { options } = useReaderContext()
+  const { info, actor } = options.settings
 
   if (type === 'INFO') {
     return (
       <div>
-        <span style={styleInfo}>
-          {lines.map((line) => (
-            <p>{line}</p>
+        <span style={info.style}>
+          {lines.map((line, index) => (
+            <p key={index}>{line}</p>
           ))}
         </span>
       </div>
@@ -23,9 +21,9 @@ export const Line = ({ line }) => {
     return (
       <div>
         {name}
-        <span style={styleActor}>
-          {lines.map((line) => (
-            <p>{line}</p>
+        <span style={actor.style}>
+          {lines.map((line, index) => (
+            <p key={index}>{line}</p>
           ))}
         </span>
       </div>

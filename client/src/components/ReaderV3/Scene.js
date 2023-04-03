@@ -6,7 +6,7 @@ export const Scene = ({ scene }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const { showScenes } = useCurrentScripts()
   const { id, data } = scene
-  if (!showScenes.includes(id) && showScenes.length) return
+  if (!showScenes.includes(id) && showScenes.length) return //TODO filter earlier
 
   return (
     <section className="border shadow-md my-2">
