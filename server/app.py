@@ -68,7 +68,7 @@ def read_v3():
     try:
         reader = ReaderV3()
         reader.read_file("./testfiles/2023.pdf")
-        json_obejct = reader.to_json()
-        return json.dumps(json_obejct)   
+        result = reader.to_json()
+        return json.dumps(result)   
     except FileNotFoundError as e:
         return json.dumps(e)

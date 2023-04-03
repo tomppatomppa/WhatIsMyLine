@@ -1,7 +1,6 @@
 import fitz
-from bs4 import BeautifulSoup
 import re
-import numpy as np
+
 class ReaderV3():
     def __init__(self):
        self.filename = None
@@ -14,7 +13,6 @@ class ReaderV3():
         try:
             self.filename = filename
             pdf_doc = fitz.open(f'./testfiles/4.4.pdf')
-
             pages = []
             for page in pdf_doc:
                 pages.append(page.get_text("dict", sort=False))
