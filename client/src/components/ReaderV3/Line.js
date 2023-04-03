@@ -1,5 +1,4 @@
-import useCurrentScripts from '../../hooks/useCurrentScripts'
-import { HIGHLIGHT_TARGET, optionsActions } from './actions'
+import { HIGHLIGHT_TARGET } from './actions'
 import { useReaderContext } from './contexts/ReaderContext'
 
 export const Line = ({ line }) => {

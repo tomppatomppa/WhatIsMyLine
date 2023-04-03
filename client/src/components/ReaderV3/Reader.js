@@ -1,6 +1,7 @@
 import React, { useReducer } from 'react'
 import reducer from './reducer'
 import ReaderContext from './contexts/ReaderContext'
+
 const initialState = {
   showAll: false,
   highlight: [],

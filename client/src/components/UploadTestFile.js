@@ -4,7 +4,6 @@ import useCurrentScripts from '../hooks/useCurrentScripts'
 import axios from 'axios'
 
 import { BASE_URI } from '../config'
-import { parseHTML } from './ReaderV2/ReaderSection'
 
 const UploadTestFile = () => {
   const navigate = useNavigate()
@@ -12,11 +11,10 @@ const UploadTestFile = () => {
 
   const handleSend = async () => {
     try {
-      const { data } = await axios.get(`${BASE_URI}/api/v2/`)
-      const script = parseHTML(data)
-      const updated_scripts = currentScripts.concat(script)
+      const { data } = await axios.get(`${BASE_URI}/api/v3/`)
+      const updated_scripts = currentScripts.concat(data)
       setCurrentScripts(updated_scripts)
-      navigate('/home')
+      navigate('/reader')
     } catch (e) {
       console.log(e)
     }
