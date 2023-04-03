@@ -69,13 +69,15 @@ class ReaderV3():
             return False
         if(current_line["text"]).isdigit():
             return False
+        #Quick fix to handle /
+        text = current_line["text"].replace("/", "")
         section_pattern = r'^(?!.*\b[A-Z\dÄÅÖ]+\s\d)[A-Z\dÄÅÖ.-]+(?: [A-Z\dÄÅÖ-]+)*$'
-        return re.match(r"^\d+$", previous_line["text"]) and re.match(section_pattern, current_line["text"])
+        return re.match(r"^\d+$", previous_line["text"]) and re.match(section_pattern, text)
 
     def make_lines(self, file):
-
-        result = {"filename": "data.pdf", "scenes": []}
-        for scene in file[1:]:
+       
+        result = {"filename": self.filename, "scenes": []}
+        for scene in file:
             for scene_name, lines in scene.items():
                 scene_data = {scene_name: []}
                 actor_lines = []
@@ -84,10 +86,11 @@ class ReaderV3():
                     text = line["text"]
                     if self.is_actor(line["origin"][0], text):
                         if actor_lines:
-                            scene_data[scene_name].append({actor_lines[0]: actor_lines[1:]})
+                            scene_data[scene_name].append({"type": "ACTOR", "name":
+                                                            actor_lines[0], "lines": actor_lines[1:]})
                             actor_lines = []
                         if info_lines:
-                           scene_data[scene_name].append({"INFO": info_lines})
+                           scene_data[scene_name].append({"type": "INFO" ,"lines": info_lines})
                            info_lines = []
                         actor_lines.append(text)
                     elif self.is_line(line) and actor_lines:
@@ -95,10 +98,12 @@ class ReaderV3():
                     else:
                         info_lines.append(text)
                 if actor_lines:
-                    scene_data[scene_name].append({actor_lines[0]: actor_lines[1:]})
+                    scene_data[scene_name].append({"type": "ACTOR", "name":
+                                                    actor_lines[0], "lines": actor_lines[1:]})
                 if info_lines:
-                    scene_data[scene_name].append({"INFO": info_lines})
+                    scene_data[scene_name].append({"type": "INFO" ,"lines": info_lines})
                 result["scenes"].append(scene_data)
+        
         return result      
 
     def is_line(self, line):
