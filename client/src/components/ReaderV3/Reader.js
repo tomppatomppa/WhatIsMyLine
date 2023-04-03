@@ -1,8 +1,8 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useState } from 'react'
 import reducer from './reducer'
 import ReaderContext, { useReaderContext } from './contexts/ReaderContext'
 import { CLOSE_ALL, OPEN_ALL } from './actions'
-
+import { BsThreeDots } from 'react-icons/bs'
 const initialState = {
   showAll: false,
   highlight: [],
@@ -37,17 +37,32 @@ export const Reader = ({ children }) => {
 }
 
 const Controller = () => {
-  const { options, dispatch } = useReaderContext()
+  const [minimized, setMinimized] = useState(false)
+  const { dispatch } = useReaderContext()
 
   return (
-    <div>
-      <div className="fixed top-24 right-12">
-        {options.highlight.map((item, index) => (
-          <p key={index}>{item.id}</p>
-        ))}
-        <button onClick={() => dispatch(OPEN_ALL())}>open</button>
-        <button onClick={() => dispatch(CLOSE_ALL())}>close</button>
+    <div className="fixed bottom-12 right-12 bg-green-200">
+      <div className="absolute -top-5 right-0 bg-white h-2">
+        <button onClick={() => setMinimized(!minimized)}>
+          <BsThreeDots size={24} />
+        </button>
       </div>
+      {minimized && (
+        <div>
+          <button
+            className="border border-black p-2"
+            onClick={() => dispatch(OPEN_ALL())}
+          >
+            open
+          </button>
+          <button
+            className="border border-black p-2"
+            onClick={() => dispatch(CLOSE_ALL())}
+          >
+            close
+          </button>
+        </div>
+      )}
     </div>
   )
 }
