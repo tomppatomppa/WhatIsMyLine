@@ -1,6 +1,7 @@
 import React, { useReducer } from 'react'
 import reducer from './reducer'
-import ReaderContext from './contexts/ReaderContext'
+import ReaderContext, { useReaderContext } from './contexts/ReaderContext'
+import { CLOSE_ALL, OPEN_ALL } from './actions'
 
 const initialState = {
   showAll: false,
@@ -29,9 +30,25 @@ export const Reader = ({ children }) => {
 
   return (
     <ReaderContext.Provider value={{ options, dispatch }}>
+      <Controller />
       {children}
     </ReaderContext.Provider>
   )
 }
 
+const Controller = () => {
+  const { options, dispatch } = useReaderContext()
+
+  return (
+    <div>
+      <div className="fixed top-24 right-12">
+        {options.highlight.map((item, index) => (
+          <p key={index}>{item.id}</p>
+        ))}
+        <button onClick={() => dispatch(OPEN_ALL())}>open</button>
+        <button onClick={() => dispatch(CLOSE_ALL())}>close</button>
+      </div>
+    </div>
+  )
+}
 export default Reader

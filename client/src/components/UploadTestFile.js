@@ -2,7 +2,6 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import useCurrentScripts from '../hooks/useCurrentScripts'
 import axios from 'axios'
-
 import { BASE_URI } from '../config'
 
 const UploadTestFile = () => {

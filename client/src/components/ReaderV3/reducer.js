@@ -16,6 +16,7 @@ function generateUniqueColor(highlight) {
   const excludedColors = highlight.map((item) => {
     return item.style.backgroundColor
   })
+
   for (const element of colors) {
     if (!excludedColors.includes(element)) {
       return element

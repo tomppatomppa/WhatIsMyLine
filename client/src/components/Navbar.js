@@ -27,7 +27,6 @@ const Navbar = ({ selected, setSelected }) => {
       }
       return selectOptions
     })
-
     setMenuItems(title)
     setShowMenu(false)
   }
