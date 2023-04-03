@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 from pathlib import Path
 
 from PyMuReaderV2 import ReaderV2
+from PyMuReaderV3 import ReaderV3
 from flask_cors import CORS
 import shutil
 import os
@@ -59,3 +60,15 @@ def process_uploaded_file(file):
     shutil.rmtree(app.config.get('upload_folder')) # remove tmp folder
     
     return reader.to_html()
+
+
+
+@app.route("/api/v3/")
+def read_v3():
+    try:
+        reader = ReaderV3()
+        reader.read_file("./testfiles/2023.pdf")
+        json_obejct = reader.to_json()
+        return json.dumps(json_obejct)   
+    except FileNotFoundError as e:
+        return json.dumps(e)
