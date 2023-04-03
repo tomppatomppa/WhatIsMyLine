@@ -1,26 +1,12 @@
-import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 
 import useCurrentScripts from './hooks/useCurrentScripts'
-import { useEffect } from 'react'
 
-import axios from 'axios'
-import { BASE_URI } from './config'
 import ReaderPage from './pages/ReaderPage'
 
 function App() {
-  const navigate = useNavigate()
-  const { currentScripts, setCurrentScripts } = useCurrentScripts()
-
-  // useEffect(() => {
-  //   const get_data = async () => {
-  //     const { data } = await axios.get(`${BASE_URI}/api/v3`)
-  //     console.log(data)
-  //     setCurrentScripts([data])
-  //     navigate('/reader')
-  //   }
-  //   get_data()
-  // }, [])
+  const { currentScripts } = useCurrentScripts()
 
   return (
     <div className="App">

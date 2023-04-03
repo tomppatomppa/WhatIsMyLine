@@ -11,6 +11,7 @@ const LandingPage = () => {
         <FileButton />
       </div>
       <UploadTestFile />
+      {/* <PdfViewer filePath={file} /> */}
     </div>
   )
 }

@@ -3,6 +3,7 @@ import reducer from './reducer'
 import ReaderContext, { useReaderContext } from './contexts/ReaderContext'
 import { CLOSE_ALL, OPEN_ALL } from './actions'
 import { BsThreeDots } from 'react-icons/bs'
+
 const initialState = {
   showAll: false,
   highlight: [],
@@ -27,12 +28,13 @@ const initialState = {
 }
 export const Reader = ({ children }) => {
   const [options, dispatch] = useReducer(reducer, initialState)
-
   return (
-    <ReaderContext.Provider value={{ options, dispatch }}>
-      <Controller />
-      {children}
-    </ReaderContext.Provider>
+    <div className="max-w-4xl mx-auto">
+      <ReaderContext.Provider value={{ options, dispatch }}>
+        <Controller />
+        {children}
+      </ReaderContext.Provider>
+    </div>
   )
 }
 

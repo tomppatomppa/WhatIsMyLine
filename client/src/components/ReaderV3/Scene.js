@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react'
-import useCurrentScripts from '../../hooks/useCurrentScripts'
+
 import { Line } from './Line'
 import { useReaderContext } from './contexts/ReaderContext'
 
 export const Scene = ({ scene }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const { options } = useReaderContext()
-
-  const { id, data } = scene
 
   //TODO: when scene is manually expanded,
   //close all doesnt work
@@ -16,16 +14,16 @@ export const Scene = ({ scene }) => {
   }, [options.showAll])
 
   return (
-    <section className="border shadow-md my-2">
+    <section className="border shadow-md my-2 bg-white p-2">
       <h1
         onClick={() => setIsExpanded(!isExpanded)}
         className="cursor-pointer font-bold"
       >
-        {id}
+        {scene.id}
       </h1>
       {isExpanded && (
         <div>
-          {data.map((line, index) => (
+          {scene?.data.map((line, index) => (
             <Line key={index} line={line} />
           ))}
         </div>

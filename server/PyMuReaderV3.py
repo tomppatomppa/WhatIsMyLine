@@ -48,10 +48,12 @@ class ReaderV3():
 
         for current_line in file["blocks"]:
             if self.is_scene(current_line, previous_line):
+                print("SCENE START")
                 if current_scene:
                    scenes.append(current_scene)
                    current_scene = None
-                scene_title = " ".join([current_line["text"], previous_line["text"]])
+                scene_title = " ".join([ previous_line["text"], current_line["text"]])
+                print("SCENE START", scene_title)
                 current_scene = {scene_title: []}
             else:
                 current_scene[scene_title].append(current_line)
@@ -65,9 +67,12 @@ class ReaderV3():
             return False
         if(current_line["text"]).isdigit():
             return False
+        if self.is_actor(current_line["origin"][0],current_line["text"]):
+            return False
         #Quick fix to handle /
         text = current_line["text"].replace("/", "")
         section_pattern = r'^(?!.*\b[A-Z\dÄÅÖ]+\s\d)[A-Z\dÄÅÖ.-]+(?: [A-Z\dÄÅÖ-]+)*$'
+       
         return re.match(r"^\d+$", previous_line["text"]) and re.match(section_pattern, text)
 
     def make_lines(self, file):

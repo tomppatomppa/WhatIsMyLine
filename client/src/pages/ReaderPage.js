@@ -16,11 +16,15 @@ const ReaderPage = () => {
   return (
     <div className="text-center bg-orange-50">
       <Navbar selected={selected} setSelected={setSelected} />
-      <Reader selected={selected}>
-        {filtered?.map((scene, index) => (
-          <Scene key={index} scene={scene} />
-        ))}
-      </Reader>
+      {selected ? (
+        <Reader selected={selected}>
+          {filtered?.map((scene, index) => (
+            <Scene key={index} scene={scene} />
+          ))}
+        </Reader>
+      ) : (
+        <div className="text-4xl">No file selected</div>
+      )}
     </div>
   )
 }
