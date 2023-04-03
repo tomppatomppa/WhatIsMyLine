@@ -13,11 +13,5 @@ const SET_STYLE = ({ target, value, property }) => ({
   type: 'SET_STYLE',
   payload: { target: target, property: property, value: value },
 })
-const optionsActions = {
-  CLOSE_ALL,
-  OPEN_ALL,
-  SETTINGS,
-  SET_STYLE,
-  HIGHLIGHT_TARGET,
-}
-export { optionsActions }
+
+export { CLOSE_ALL, OPEN_ALL, SETTINGS, SET_STYLE, HIGHLIGHT_TARGET }

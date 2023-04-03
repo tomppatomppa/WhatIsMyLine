@@ -1,10 +1,17 @@
 import useCurrentScripts from '../../hooks/useCurrentScripts'
+import { HIGHLIGHT_TARGET, optionsActions } from './actions'
 import { useReaderContext } from './contexts/ReaderContext'
 
 export const Line = ({ line }) => {
   const { type, name, lines } = line
-  const { options } = useReaderContext()
+  const { options, dispatch } = useReaderContext()
   const { info, actor } = options.settings
+
+  const isHiglight = options.highlight.find((item) => item.id === name)
+
+  const handleClick = () => {
+    dispatch(HIGHLIGHT_TARGET({ target: name }))
+  }
 
   if (type === 'INFO') {
     return (
@@ -20,10 +27,14 @@ export const Line = ({ line }) => {
   if (type === 'ACTOR') {
     return (
       <div>
-        {name}
-        <span style={actor.style}>
+        <strong className="cursor-pointer" onClick={handleClick}>
+          {name}
+        </strong>
+        <span style={{ ...actor.style }}>
           {lines.map((line, index) => (
-            <p key={index}>{line}</p>
+            <p style={isHiglight?.style} key={index}>
+              {line}
+            </p>
           ))}
         </span>
       </div>
