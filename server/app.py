@@ -62,7 +62,6 @@ def process_uploaded_file(file):
     return reader.to_html()
 
 
-
 @app.route("/api/v3/")
 def read_v3():
     try:

@@ -33,13 +33,11 @@ class ReaderV3():
         merged_dict["blocks"] = [span for line in lines for span in line["spans"]]
         self.file = merged_dict
 
-
     def to_json(self):
 
         with_scenes = self.make_scenes(self.file)
         with_lines = self.make_lines(with_scenes)
         return with_lines
-
 
     def make_scenes(self, file):
 
@@ -113,8 +111,6 @@ class ReaderV3():
         else:
             #print(f"{line.text} is NOT a line")
             return False
-
-
 
     def is_actor(self, value, name):
         name_pattern = r'^[A-Z0-9ÖÄÅ]+\s?\(?(\d+|[A-ZÖÄÅ]+|\([^)]*\))?\)?$'
