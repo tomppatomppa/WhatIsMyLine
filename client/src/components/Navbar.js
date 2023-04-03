@@ -21,8 +21,15 @@ const Navbar = ({ selected, setSelected }) => {
   }
   const handleSelect = (file) => {
     setSelected(file)
-    const titles = getSceneTitles(file)
-    setMenuItems(titles)
+    const title = file.scenes.map((item) => {
+      const selectOptions = {
+        label: item.id,
+        value: item.id,
+      }
+      return selectOptions
+    })
+
+    setMenuItems(title)
     setShowMenu(false)
   }
 

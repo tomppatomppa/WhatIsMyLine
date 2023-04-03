@@ -75,18 +75,18 @@ class ReaderV3():
         result = {"filename": self.filename, "scenes": []}
         for scene in file:
             for scene_name, lines in scene.items():
-                scene_data = {scene_name: []}
+                scene_data = {"id": scene_name, "data": []}
                 actor_lines = []
                 info_lines = []
                 for line in lines:
                     text = line["text"]
                     if self.is_actor(line["origin"][0], text):
                         if actor_lines:
-                            scene_data[scene_name].append({"type": "ACTOR", "name":
+                            scene_data["data"].append({"type": "ACTOR", "name":
                                                             actor_lines[0], "lines": actor_lines[1:]})
                             actor_lines = []
                         if info_lines:
-                           scene_data[scene_name].append({"type": "INFO" ,"lines": info_lines})
+                           scene_data["data"].append({"type": "INFO" ,"lines": info_lines})
                            info_lines = []
                         actor_lines.append(text)
                     elif self.is_line(line) and actor_lines:
@@ -94,10 +94,10 @@ class ReaderV3():
                     else:
                         info_lines.append(text)
                 if actor_lines:
-                    scene_data[scene_name].append({"type": "ACTOR", "name":
+                    scene_data["data"].append({"type": "ACTOR", "name":
                                                     actor_lines[0], "lines": actor_lines[1:]})
                 if info_lines:
-                    scene_data[scene_name].append({"type": "INFO" ,"lines": info_lines})
+                    scene_data["data"].append({"type": "INFO" ,"lines": info_lines})
                 result["scenes"].append(scene_data)
         
         return result      

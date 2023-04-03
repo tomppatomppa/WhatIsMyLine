@@ -4,6 +4,9 @@ import Home from './pages/Home'
 import useCurrentScripts from './hooks/useCurrentScripts'
 import { useEffect } from 'react'
 import { parseHTML } from './components/ReaderV2/ReaderSection'
+import axios from 'axios'
+import { BASE_URI } from './config'
+import ReaderPage from './pages/ReaderPage'
 
 function App() {
   const navigate = useNavigate()
@@ -25,10 +28,19 @@ function App() {
     loadScripts()
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
+  useEffect(() => {
+    const get_data = async () => {
+      const { data } = await axios.get(`${BASE_URI}/api/v3`)
+      console.log(data)
+      setCurrentScripts([data])
+      navigate('/reader')
+    }
+    get_data()
+  }, [])
   return (
     <div className="App">
       <Routes>
+        <Route path="/reader" element={<ReaderPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route
           element={
