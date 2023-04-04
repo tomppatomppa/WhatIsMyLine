@@ -4,8 +4,6 @@ import re
 class ReaderV3():
     def __init__(self):
        self.filename = None
-       self.pages = []
-       self.html = []
        self.page_width = None
        self.file = None
 
@@ -16,18 +14,26 @@ class ReaderV3():
             pages = []
             for page in pdf_doc:
                 pages.append(page.get_text("dict", sort=False))
-            return self.concat_all_lines(pages)
+            
+            return self.flatten_all(pages)
 
         except FileNotFoundError:
             print("File not found")
 
-    def concat_all_lines(self, pages):
+    def set_page_width(self, width):
+        try:
+            float(width)
+            self.page_width = width
+        except ValueError as e:
+            print(e)
+
+    def flatten_all(self, pages):
         merged_dict = {
             'width': pages[0]['width'],
             'height': pages[0]['height'],
             'blocks': [block for d in pages for block in d['blocks']]
         }
-        self.page_width = merged_dict["width"]
+        self.set_page_width(merged_dict["width"])
 
         lines = [line for block in merged_dict["blocks"] for line in block["lines"]]
         merged_dict["blocks"] = [span for line in lines for span in line["spans"]]

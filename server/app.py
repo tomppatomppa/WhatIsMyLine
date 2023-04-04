@@ -1,8 +1,6 @@
 from flask import Flask,request, render_template, jsonify
 from werkzeug.utils import secure_filename
 from pathlib import Path
-
-from PyMuReaderV2 import ReaderV2
 from PyMuReaderV3 import ReaderV3
 from flask_cors import CORS
 import shutil

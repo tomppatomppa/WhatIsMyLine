@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import FileButton from '../components/FileLoader/FileButton'
 import UploadTestFile from '../components/UploadTestFile'
 
@@ -10,6 +10,7 @@ const LandingPage = () => {
         <span className="block">Add PDF(s)</span>
         <FileButton />
       </div>
+
       <UploadTestFile />
       {/* <PdfViewer filePath={file} /> */}
     </div>

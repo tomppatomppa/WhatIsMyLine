@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useCurrentScripts from '../hooks/useCurrentScripts'
 import axios from 'axios'
 import { BASE_URI } from '../config'
 
 const UploadTestFile = () => {
+  const [error, setError] = useState('')
   const navigate = useNavigate()
   const { currentScripts, setCurrentScripts } = useCurrentScripts()
 
@@ -15,16 +16,22 @@ const UploadTestFile = () => {
       setCurrentScripts(updated_scripts)
       navigate('/reader')
     } catch (e) {
-      console.log(e)
+      setError(e.message)
+      setTimeout(() => {
+        setError('')
+      }, 2000)
     }
   }
   return (
-    <button
-      className="mt-24 border border-black animate-pulse bg-primary p-2 rounded-md"
-      onClick={handleSend}
-    >
-      Upload Testfile
-    </button>
+    <div>
+      <button
+        className="mt-24 border border-black animate-pulse bg-primary p-2 rounded-md"
+        onClick={handleSend}
+      >
+        Upload Testfile
+      </button>
+      <p className="text-red-500">{error}</p>
+    </div>
   )
 }
 
