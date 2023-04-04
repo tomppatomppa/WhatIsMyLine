@@ -23,7 +23,6 @@ class ReaderV3():
     def set_page_width(self, width):
         if not float(width):
            raise ValueError(f"Invalid page width value {width}")
-        
         self.page_width = width
 
     def flatten_all(self, pages):
