@@ -19,8 +19,8 @@
   },
   "scripts": {
     "start": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts start",
-    "build": "react-scripts build",
-    "build-dev": "set \"REACT_APP_ENVIROMENT=development\" &&  react-scripts build && xcopy /s /y /i build ..\\server\\build && rd /s /q build",
+    "build": "set \"REACT_APP_ENVIROMENT=production\" && react-scripts build",
+    "build-dev": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts build && xcopy /s /y /i build ..\\server\\build && rd /s /q build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -21,11 +21,10 @@ class ReaderV3():
             print("File not found")
 
     def set_page_width(self, width):
-        try:
-            float(width)
-            self.page_width = width
-        except ValueError as e:
-            print(e)
+        if not float(width):
+           raise ValueError(f"Invalid page width value {width}")
+        
+        self.page_width = width
 
     def flatten_all(self, pages):
         merged_dict = {
@@ -40,7 +39,6 @@ class ReaderV3():
         self.file = merged_dict
 
     def to_json(self):
-
         with_scenes = self.make_scenes(self.file)
         with_lines = self.make_lines(with_scenes)
         return with_lines
@@ -54,12 +52,10 @@ class ReaderV3():
 
         for current_line in file["blocks"]:
             if self.is_scene(current_line, previous_line):
-                print("SCENE START")
                 if current_scene:
                    scenes.append(current_scene)
                    current_scene = None
                 scene_title = " ".join([ previous_line["text"], current_line["text"]])
-                print("SCENE START", scene_title)
                 current_scene = {scene_title: []}
             else:
                 current_scene[scene_title].append(current_line)
