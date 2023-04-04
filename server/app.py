@@ -26,7 +26,7 @@ def catch_all(path):
 def read_v2():
     try:
         reader = ReaderV2()
-        reader.read_file("./testfiles/2023.pdf")
+        reader.read_file("./testfiles/testfile.pdf")
         return reader.to_html()   
     except FileNotFoundError as e:
         return json.dumps(e)
