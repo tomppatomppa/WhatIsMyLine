@@ -31,13 +31,14 @@ export const Reader = ({ children }) => {
   return (
     <div className="max-w-4xl mx-auto">
       <ReaderContext.Provider value={{ options, dispatch }}>
-        <Controller />
+        {/* <Controller /> */}
         {children}
       </ReaderContext.Provider>
     </div>
   )
 }
 
+// eslint-disable-next-line no-unused-vars
 const Controller = () => {
   const [minimized, setMinimized] = useState(false)
   const { dispatch } = useReaderContext()
