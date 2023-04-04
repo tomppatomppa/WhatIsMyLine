@@ -12,7 +12,7 @@ function App() {
 
   const getScripts = () => {
     const foundScripts = JSON.parse(localStorage.getItem('scripts'))
-    console.log(foundScripts)
+
     if (foundScripts) {
       setCurrentScripts(foundScripts)
       navigate('/reader')
