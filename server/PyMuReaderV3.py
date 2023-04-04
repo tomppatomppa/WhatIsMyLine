@@ -12,7 +12,7 @@ class ReaderV3():
     def read_file(self, filename):
         try:
             self.filename = filename
-            pdf_doc = fitz.open(f'./testfiles/4.4.pdf')
+            pdf_doc = fitz.open(f'{filename}')
             pages = []
             for page in pdf_doc:
                 pages.append(page.get_text("dict", sort=False))

@@ -66,7 +66,7 @@ def process_uploaded_file(file):
 def read_v3():
     try:
         reader = ReaderV3()
-        reader.read_file("./testfiles/2023.pdf")
+        reader.read_file("./testfiles/testfile.pdf")
         result = reader.to_json()
         return json.dumps(result)   
     except FileNotFoundError as e:
