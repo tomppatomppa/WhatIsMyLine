@@ -1,12 +1,27 @@
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 
 import useCurrentScripts from './hooks/useCurrentScripts'
 
 import ReaderPage from './pages/ReaderPage'
+import { useEffect } from 'react'
 
 function App() {
-  const { currentScripts } = useCurrentScripts()
+  const navigate = useNavigate()
+  const { currentScripts, setCurrentScripts } = useCurrentScripts()
+
+  const getScripts = () => {
+    const foundScripts = JSON.parse(localStorage.getItem('scripts'))
+    console.log(foundScripts)
+    if (foundScripts) {
+      setCurrentScripts(foundScripts)
+      navigate('/reader')
+    }
+  }
+
+  useEffect(() => {
+    getScripts()
+  }, [])
 
   return (
     <div className="App">

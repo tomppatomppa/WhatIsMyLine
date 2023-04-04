@@ -17,8 +17,8 @@ const FileButton = () => {
     try {
       const result = await sendFiles(files)
       const updated_scripts = currentScripts.concat(result)
-      console.log(updated_scripts)
       setCurrentScripts(updated_scripts)
+      localStorage.setItem('scripts', JSON.stringify(updated_scripts))
       navigate('/reader')
       reset()
     } catch (e) {
