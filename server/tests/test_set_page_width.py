@@ -29,7 +29,7 @@ def test_set_page_width_convertsStrToFloat() -> None:
     assert reader.page_width == 523.00
    
 
-def test_set_page_width_convertsStrToFloat() -> None:
+def test_set_page_width_minimum_page_width() -> None:
     reader = ReaderV3()
     with pytest.raises(ValueError, match=r"Minimum page width 100.0"):
         reader.set_page_width(99)
