@@ -1,6 +1,8 @@
 import fitz
 import re
 
+MIN_PAGE_WIDTH=100.0
+
 class ReaderV3():
     def __init__(self):
        self.filename = None
@@ -23,7 +25,10 @@ class ReaderV3():
     def set_page_width(self, width):
         if not float(width):
            raise ValueError(f"Invalid page width value {width}")
-        self.page_width = width
+        elif float(width) < MIN_PAGE_WIDTH:
+            raise ValueError(f"Minimum page width {MIN_PAGE_WIDTH}")
+        self.page_width = float(width)
+       
 
     def flatten_all(self, pages):
         merged_dict = {
