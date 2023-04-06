@@ -1,12 +1,9 @@
-from flask import Flask,request, render_template, jsonify
-from werkzeug.utils import secure_filename
-from pathlib import Path
+from flask import Flask,request, render_template
 from PyMuReaderV3 import ReaderV3
 from flask_cors import CORS
-import shutil
-import os
 import json
-from config import allowed_file, create_temp_folder, create_upload_folder
+from config import allowed_file, create_upload_folder,process_uploaded_file_v3
+
 
 app = Flask(__name__, static_folder="build/static", template_folder="build")
 CORS(app)
@@ -25,7 +22,7 @@ def catch_all(path):
 def read_v3():
     try:
         reader = ReaderV3()
-        reader.read_file("./testfiles/testfile.pdf")
+        reader.read_file("testfile.pdf")
         result = reader.to_json()
         return json.dumps(result)   
     except FileNotFoundError as e:
@@ -34,8 +31,7 @@ def read_v3():
 
 @app.route("/api/v3/upload", methods=['POST'])
 def upload_v3():
-    create_temp_folder(app)
-    
+
     if "file" not in request.files:
        return 'No file', 500
 
@@ -44,19 +40,8 @@ def upload_v3():
         return 'Invalid filename', 403
 
     if file and allowed_file(file.filename):
-        return process_uploaded_file_v3(file)
+        #create_temp_folder(app)
+        return process_uploaded_file_v3(file, app)
 
     return 'Invalid filetype', 403
 
-def process_uploaded_file_v3(file):
-    filename = secure_filename(file.filename)
-    save_path = os.path.join(app.config.get('upload_folder'), filename)
-    file.save(save_path)
-
-    file_size = Path(save_path).stat().st_size
-    #TODO: check for too large files
-    reader = ReaderV3()
-    reader.read_file(f'./tmp/{filename}')
-    shutil.rmtree(app.config.get('upload_folder')) # remove tmp folder
-    
-    return json.dumps(reader.to_json())  
