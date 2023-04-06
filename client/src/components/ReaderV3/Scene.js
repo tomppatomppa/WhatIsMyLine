@@ -14,7 +14,7 @@ export const Scene = ({ scene }) => {
   }, [options.showAll])
 
   return (
-    <section className="relative border shadow-md my-2 bg-white p-2">
+    <section className="border shadow-md my-2 bg-white p-2">
       <div className="flex items-center justify-center ">
         <h1
           onClick={() => setIsExpanded(!isExpanded)}

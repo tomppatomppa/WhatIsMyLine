@@ -53,7 +53,7 @@ const Navbar = ({ selected, setSelected }) => {
       <div
         className={`${
           showMenu ? 'translate-x-0' : '-translate-x-[40rem]'
-        } z-10 fixed top-14 w-full sm:w-72 shadow-lg h-full translate-all duration-200 bg-white`}
+        } fixed top-14 w-full sm:w-72 shadow-lg h-full translate-all duration-200 bg-white`}
       >
         <NavbarMenu
           currentScripts={currentScripts}

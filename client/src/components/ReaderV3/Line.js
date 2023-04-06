@@ -25,7 +25,7 @@ export const Line = ({ line }) => {
   }
   if (type === 'ACTOR') {
     return (
-      <div>
+      <div className="my-4">
         <strong className="cursor-pointer" onClick={handleClick}>
           {name}
         </strong>
