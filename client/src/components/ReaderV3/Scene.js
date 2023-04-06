@@ -13,14 +13,38 @@ export const Scene = ({ scene }) => {
     setIsExpanded(options.showAll)
   }, [options.showAll])
 
-  return (
-    <section className="border shadow-md my-2 bg-white p-2">
-      <h1
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="cursor-pointer font-bold"
+  const NoteButton = () => {
+    const [note, setNote] = useState(false)
+
+    const handleNote = () => {
+      if (note) {
+        console.log('save changes')
+      }
+      setNote(!note)
+    }
+    return (
+      <div
+        className={`${
+          note ? 'border-red-300 ' : 'border-blue-300 '
+        } self-center border-2 rounded-md p-1`}
       >
-        {scene.id}
-      </h1>
+        <button onClick={handleNote}>{note ? 'save' : 'Note'}</button>
+      </div>
+    )
+  }
+
+  return (
+    <section className="relative border shadow-md my-2 bg-white p-2">
+      <div className="flex items-center justify-center ">
+        <h1
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="shrink-0 cursor-pointer font-bold flex-1"
+        >
+          {scene.id}
+        </h1>
+        <NoteButton />
+      </div>
+
       {isExpanded && (
         <div>
           {scene?.data.map((line, index) => (
