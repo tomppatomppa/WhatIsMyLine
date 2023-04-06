@@ -21,7 +21,7 @@ class ReaderV3():
 
         except FileNotFoundError:
             print("File not found")
-
+    
     def set_page_width(self, width):
         if not float(width):
            raise ValueError(f"Invalid page width value {width}")

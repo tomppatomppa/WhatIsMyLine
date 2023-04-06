@@ -1,7 +1,5 @@
 import os
 
-
-
 def allowed_file(filename):   
     ALLOWED_EXTENSIONS = {'pdf'}
     return '.' in filename and \
@@ -19,3 +17,12 @@ def create_temp_folder(app):
         app.logger.info('An error occurred while creating temp folder')
         app.logger.error('Exception occurred : {}'.format(e))
 
+def create_upload_folder(app):
+    try:
+        path = os.path.dirname(os.path.abspath(__file__))
+        upload_folder = os.path.join(path.replace("/file_folder",""), "uploaded_files")
+        os.makedirs(upload_folder, exist_ok=True)
+        app.config['uploaded_files_folder'] = upload_folder
+    except Exception as e:
+        app.logger.info('An error occurred while creating folder')
+        app.logger.error('Exception occurred : {}'.format(e))

@@ -6,10 +6,12 @@ from flask_cors import CORS
 import shutil
 import os
 import json
-from config import allowed_file, create_temp_folder
+from config import allowed_file, create_temp_folder, create_upload_folder
 
 app = Flask(__name__, static_folder="build/static", template_folder="build")
 CORS(app)
+
+create_upload_folder(app)
 
 @app.route("/")
 def index():
