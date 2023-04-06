@@ -33,8 +33,3 @@ def test_set_page_width_minimum_page_width() -> None:
     with pytest.raises(ValueError, match=r"Minimum page width 100.0"):
         reader.set_page_width(99)
     
-   
-   
-def test_this_test_should_fail() -> None:
-    result = 1 + 1
-    assert result == 3
