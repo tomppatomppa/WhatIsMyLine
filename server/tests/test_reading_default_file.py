@@ -1,5 +1,4 @@
 from PyMuReaderV3 import ReaderV3
-import pytest
 import os
 
 folder_path = './uploaded_files'
