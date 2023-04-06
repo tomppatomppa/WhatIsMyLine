@@ -27,6 +27,10 @@ jobs:
           cd server
           pip install -r requirements.txt
 
+      - name: List Directory Content
+        run: |
+          ls -l
+
       - name: Run python tests
         run: |
           pytest
