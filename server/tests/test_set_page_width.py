@@ -35,5 +35,6 @@ def test_set_page_width_minimum_page_width() -> None:
     
    
    
-    
-    
+def test_this_test_should_fail() -> None:
+    result = 1 + 1
+    assert result == 3
