@@ -1,16 +1,17 @@
 from PyMuReaderV3 import ReaderV3
 import os
 
-folder_path = './uploaded_files'
+folder_path = '/github/workspace/server/uploaded_files'
 testfile = "testfile.pdf"
 
 def test_uploaded_files_folder_exists() -> None:
- 
-    assert os.path.exists(folder_path)
+    folder_exists = os.path.exists(folder_path)
+    print(folder_exists)
+    assert folder_exists
 
 def test_testfile_exists() -> None:
- 
-    assert os.path.exists(f"{folder_path}/{testfile}")
+    file_exists = os.path.exists(f"{folder_path}/{testfile}")
+    assert file_exists
 
 def test_reader_reads_file() -> None:
     reader = ReaderV3()
