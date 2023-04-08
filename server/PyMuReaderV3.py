@@ -17,6 +17,7 @@ class ReaderV3():
             for page in pdf_doc:
                 pages.append(page.get_text("dict", sort=False))
             
+            self.set_page_width(pages[0]['width'])
             self.flatten_all(pages)
 
         except FileNotFoundError:
@@ -36,7 +37,7 @@ class ReaderV3():
             'height': pages[0]['height'],
             'blocks': [block for page in pages for block in page['blocks']]
         }
-        self.set_page_width(merged_dict["width"])
+        # self.set_page_width(merged_dict["width"])
 
         lines = [line for block in merged_dict["blocks"] for line in block["lines"]]
         merged_dict["blocks"] = [span for line in lines for span in line["spans"]]
