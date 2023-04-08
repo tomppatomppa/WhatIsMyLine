@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
+  <a href="#limitations">Limitations</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#credits">Credits</a> •
   <a href="#description">Description</a> •
@@ -22,12 +23,17 @@
 ## Key Features
 
 - Supports PDF files
-- uploading your own scripts
-- supports multiple files at the same time
+- Upload your own scripts
+- Supports multiple scripts
 - Search and isolate scenes
 - Highlight selected actor lines
   - unique colors for easy actor identification
 - Saves coverted scripts to localstorage
+
+## Limitations
+
+- Text in the PDF file is assumed to be formatted in a specific way.
+- Look at the testfile.pdf in server/testfiles/ folder
 
 ## How To Use
 
