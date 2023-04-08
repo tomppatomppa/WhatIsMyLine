@@ -31,7 +31,6 @@ def read_v3():
 
 @app.route("/api/v3/upload", methods=['POST'])
 def upload_v3():
-
     if "file" not in request.files:
        return 'No file', 500
 

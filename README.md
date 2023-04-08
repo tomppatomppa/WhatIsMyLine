@@ -33,7 +33,7 @@
 ## Limitations
 
 - Text in the PDF file is assumed to be formatted in a specific way.
-- Look at the testfile.pdf in server/testfiles/ folder
+- Look at the testfile.pdf in server/uploaded_files/ folder
 
 ## How To Use
 
