@@ -32,15 +32,23 @@ class ReaderV3():
        
 
     def flatten_all(self, pages):
+        '''
+        This function flattens all the pages and their text content into one list called "blocks"
+
+        For more info on the structure visit https://pymupdf.readthedocs.io/en/latest/app1.html#dict-or-json
+        '''
+        #flatten all pages
+        blocks = [block for page in pages for block in page['blocks']]
+        #flatten all lines
+        lines = [line for block in blocks for line in block["lines"]]
+
         merged_dict = {
             'width': pages[0]['width'],
             'height': pages[0]['height'],
-            'blocks': [block for page in pages for block in page['blocks']]
+            # flatten all spans
+            'blocks': [span for line in lines for span in line["spans"]]
         }
-        # self.set_page_width(merged_dict["width"])
-
-        lines = [line for block in merged_dict["blocks"] for line in block["lines"]]
-        merged_dict["blocks"] = [span for line in lines for span in line["spans"]]
+       
         self.file = merged_dict
 
     def to_json(self):
