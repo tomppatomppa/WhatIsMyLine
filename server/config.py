@@ -28,7 +28,6 @@ def create_upload_folder(app):
 def process_uploaded_file_v3(file, app):
     try:
         filename = secure_filename(file.filename)
-
         #Create unique filename to avoid duplicates
         uuid_filename = create_uuid_filename()
         save_path = os.path.join(app.config.get('uploaded_files_folder'), uuid_filename)

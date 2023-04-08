@@ -1,5 +1,6 @@
 import fitz
 import re
+import json
 
 MIN_PAGE_WIDTH=100.0
 
@@ -52,8 +53,30 @@ class ReaderV3():
         self.file = merged_dict
 
     def to_json(self):
+        '''
+        Converts text content to a script item with the following structure   
+        {
+           filename: string
+           scenes: [
+             {
+               id: string
+               data: [
+                    {
+                        type: string
+                        lines: [
+                           
+                        ]
+                    }
+               ]        
+             }
+             ...
+           ]
+        }
+
+        '''
         with_scenes = self.make_scenes(self.file)
         with_lines = self.make_lines(with_scenes)
+        
         return with_lines
 
     def make_scenes(self, file):
