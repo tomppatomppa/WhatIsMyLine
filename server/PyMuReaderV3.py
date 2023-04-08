@@ -36,7 +36,8 @@ class ReaderV3():
         '''
         This function flattens all the pages and their text content into one list called "blocks"
 
-        For more info on the structure visit https://pymupdf.readthedocs.io/en/latest/app1.html#dict-or-json
+        For more info on the json structure created by PyMuPdf
+          visit https://pymupdf.readthedocs.io/en/latest/app1.html#dict-or-json
         '''
         #flatten all pages
         blocks = [block for page in pages for block in page['blocks']]
@@ -64,7 +65,7 @@ class ReaderV3():
                     {
                         type: string
                         lines: [
-                           
+                           string, string, ...
                         ]
                     }
                ]        
@@ -80,7 +81,15 @@ class ReaderV3():
         return with_lines
 
     def make_scenes(self, file):
+        '''
+        Tries to divide file into different scenes if they exists
 
+        appends consequent lines into current scene until a new scene is detected
+
+        returned file structure should look something like
+          [{"SCENE DETAILS: [...]}, {"00001 SCENE WITH SOMETHING: [...]}]
+
+        '''
         scenes = []
         scene_title = "SCRIPT DETAILS"
         current_scene = {scene_title: []}
@@ -91,16 +100,26 @@ class ReaderV3():
                 if current_scene:
                    scenes.append(current_scene)
                    current_scene = None
-                scene_title = " ".join([ previous_line["text"], current_line["text"]])
+                scene_title = " ".join([previous_line["text"], current_line["text"]])
                 current_scene = {scene_title: []}
             else:
                 current_scene[scene_title].append(current_line)
             previous_line = current_line
         scenes.append(current_scene)
-
+       
         return scenes
 
     def is_scene(self, current_line, previous_line):
+        '''
+        Hardcoded scene detection
+        
+        Scene is assumed to begin with an INT followed by UPPERCASE LETTERS
+
+        If the current line is detected as an actor return False
+
+        #TODO: Flag as scene if they exists on the same line
+
+        '''
         if not previous_line:
             return False
         if(current_line["text"]).isdigit():
@@ -156,6 +175,11 @@ class ReaderV3():
             return False
 
     def is_actor(self, value, name):
+        '''
+        Actors NAMES are expected to be UPPERCASE and positioned in the middle of the document
+            with an margin of 20% to left and right
+        
+        '''
         name_pattern = r'^[A-Z0-9ÖÄÅ]+\s?\(?(\d+|[A-ZÖÄÅ]+|\([^)]*\))?\)?$'
         center = self.page_width / 2
         margin = self.page_width * 0.2 / 2
