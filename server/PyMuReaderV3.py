@@ -1,6 +1,5 @@
 import fitz
 import re
-import json
 
 MIN_PAGE_WIDTH=100.0
 

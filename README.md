@@ -59,7 +59,7 @@ $ cd client && npm install && npm run build-dev
 $ cd ../server
 
 # Create a virtual env and activate
-$ python -m venv env && .\env\Scripts\activate
+$ python -m venv venv && .\venv\Scripts\activate
 
 # Install Python dependecies
 $ pip install -r requirements.txt
