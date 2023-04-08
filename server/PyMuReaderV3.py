@@ -17,7 +17,7 @@ class ReaderV3():
             for page in pdf_doc:
                 pages.append(page.get_text("dict", sort=False))
             
-            return self.flatten_all(pages)
+            self.flatten_all(pages)
 
         except FileNotFoundError:
             print("File not found")
@@ -34,7 +34,7 @@ class ReaderV3():
         merged_dict = {
             'width': pages[0]['width'],
             'height': pages[0]['height'],
-            'blocks': [block for d in pages for block in d['blocks']]
+            'blocks': [block for page in pages for block in page['blocks']]
         }
         self.set_page_width(merged_dict["width"])
 
