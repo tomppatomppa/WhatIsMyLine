@@ -1,0 +1,9 @@
+.reader {
+  @apply text-left flex relative border-l-4;
+  &.default {
+    @apply border-emerald-700 bg-emerald-100;
+  }
+  &.edit {
+    @apply border-indigo-700 bg-indigo-100;
+  }
+}
