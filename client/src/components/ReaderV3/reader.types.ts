@@ -29,3 +29,10 @@ export type ReducerAction<T, P> = {
   type: T
   payload: P
 }
+
+export interface Actor {
+  id: string
+  style: {
+    backgroundColor: string
+  }
+}

@@ -3,7 +3,7 @@ const PlayIcon = () => {
     <svg
       className="h-6 w-6"
       viewBox="0 0 24 24"
-      fill="none"
+      fill="#32CD32"
       xmlns="http://www.w3.org/2000/svg"
     >
       <g id="Media / Play">

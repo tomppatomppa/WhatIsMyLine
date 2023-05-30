@@ -1,6 +1,6 @@
 interface ReaderMenuButtonProps {
   show: boolean
-  text: string
+  text?: string
   icon?: JSX.Element
   onClick: () => void
 }
