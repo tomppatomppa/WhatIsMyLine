@@ -1,8 +1,10 @@
 import React, { useReducer, useState } from 'react'
+import clsx from 'clsx'
 import reducer from './reducer'
 import ReaderContext, { useReaderContext } from './contexts/ReaderContext'
 import { CLOSE_ALL, OPEN_ALL } from './actions'
 import { BsThreeDots } from 'react-icons/bs'
+import styles from './Reader.module.css'
 
 const initialState = {
   showAll: false,
@@ -26,12 +28,12 @@ const initialState = {
     },
   },
 }
+
 export const Reader = ({ children }) => {
   const [options, dispatch] = useReducer(reducer, initialState)
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className={clsx(styles.reader, styles['read'])}>
       <ReaderContext.Provider value={{ options, dispatch }}>
-        {/* <Controller /> */}
         {children}
       </ReaderContext.Provider>
     </div>
@@ -44,7 +46,7 @@ const Controller = () => {
   const { dispatch } = useReaderContext()
 
   return (
-    <div className="fixed bottom-12 right-12 bg-green-200">
+    <div className="fixed bottom-12  right-12 bg-green-200">
       <div className="absolute -top-5 right-0 bg-white h-2">
         <button onClick={() => setMinimized(!minimized)}>
           <BsThreeDots size={24} />

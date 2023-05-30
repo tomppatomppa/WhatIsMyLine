@@ -1,0 +1,9 @@
+.reader {
+  @apply relative border-l-4 max-w-4xl mx-auto;
+  &.read {
+    @apply border-emerald-700 bg-emerald-100;
+  }
+  &.edit {
+    @apply border-red-700 bg-indigo-100;
+  }
+}
