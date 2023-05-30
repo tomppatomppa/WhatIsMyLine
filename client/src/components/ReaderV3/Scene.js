@@ -1,18 +1,10 @@
-import { useEffect, useState } from 'react'
-
 import { Line } from './Line'
 import { useReaderContext } from './contexts/ReaderContext'
 import { SET_EXPAND } from './actions'
 
 export const Scene = ({ scene }) => {
-  //const [isExpanded, setIsExpanded] = useState(false)
   const { options, dispatch } = useReaderContext()
   const isExpanded = options.expanded.includes(scene.id)
-  //TODO: when scene is manually expanded,
-  //close all doesnt work
-  // useEffect(() => {
-  //   setIsExpanded(options.showAll)
-  // }, [options.showAll])
 
   return (
     <section className="border shadow-md my-2 bg-white p-2">

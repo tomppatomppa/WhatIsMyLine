@@ -9,6 +9,8 @@ import EditIcon from './icons/EditIcon'
 import ArrowDown from './icons/ArrowDown'
 import ArrowUp from './icons/ArrowUp'
 import ReaderMenuButton from './ReaderMenuButton'
+import PlayIcon from './icons/PlayIcon'
+import ChatIcon from './icons/ChatIcon'
 
 const ReaderMenu = () => {
   const { options, dispatch } = useReaderContext()
@@ -35,9 +37,19 @@ const ReaderMenu = () => {
         text="Close All"
         onClick={() => dispatch(CLOSE_ALL())}
       />
-
       <p className="flex-1"></p>
-      <div id="menu-buttons">
+
+      <div id="menu-buttons" className="flex gap-4">
+        <ReaderMenuButton
+          onClick={() => console.log('Speak')}
+          show
+          icon={<ChatIcon />}
+        />
+        <ReaderMenuButton
+          onClick={() => console.log('play')}
+          show
+          icon={<PlayIcon />}
+        />
         <button onClick={() => dispatch(SET_MODE())}>
           {isEditing ? <>Save</> : <EditIcon />}
         </button>

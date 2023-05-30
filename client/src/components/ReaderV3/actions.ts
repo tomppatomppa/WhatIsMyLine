@@ -1,4 +1,5 @@
 const CLOSE_ALL = () => ({ type: 'CLOSE_ALL' })
+
 const OPEN_ALL = () => ({ type: 'OPEN_ALL' })
 
 const SET_EXPAND = ({ sceneId }: any) => ({
