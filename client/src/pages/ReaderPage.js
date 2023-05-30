@@ -17,7 +17,7 @@ const ReaderPage = () => {
     <div className="text-center bg-orange-50">
       <Navbar selected={selected} setSelected={setSelected} />
       {selected ? (
-        <Reader selected={selected}>
+        <Reader mode="read" selected={selected}>
           {filtered?.map((scene, index) => (
             <Scene key={index} scene={scene} />
           ))}

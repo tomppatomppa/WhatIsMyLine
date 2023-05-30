@@ -5,6 +5,7 @@ import ReaderContext, { useReaderContext } from './contexts/ReaderContext'
 import { CLOSE_ALL, OPEN_ALL } from './actions'
 import { BsThreeDots } from 'react-icons/bs'
 import styles from './Reader.module.css'
+import ModeContextProvider from './contexts/ModeContextProvider'
 
 const initialState = {
   showAll: false,
@@ -29,14 +30,18 @@ const initialState = {
   },
 }
 
-export const Reader = ({ children }) => {
+export const Reader = (props) => {
+  const { mode, children } = props
+
   const [options, dispatch] = useReducer(reducer, initialState)
   return (
-    <div className={clsx(styles.reader, styles['read'])}>
-      <ReaderContext.Provider value={{ options, dispatch }}>
-        {children}
-      </ReaderContext.Provider>
-    </div>
+    <ModeContextProvider mode={mode}>
+      <div className={clsx(styles.reader, styles[mode])}>
+        <ReaderContext.Provider value={{ options, dispatch }}>
+          {children}
+        </ReaderContext.Provider>
+      </div>
+    </ModeContextProvider>
   )
 }
 
