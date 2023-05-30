@@ -1,9 +1,19 @@
 .reader {
-  @apply relative border-l-4 max-w-4xl mx-auto;
+  @apply border-l-4 max-w-4xl mx-auto text-center my-12;
   &.read {
-    @apply border-emerald-700 bg-emerald-100;
+    @apply border-purple-700 bg-purple-100;
   }
   &.edit {
-    @apply border-red-700 bg-indigo-100;
+    @apply border-red-700 bg-red-100;
+  }
+}
+
+.menu {
+  @apply fixed left-0 -z-0 w-full bg-white border-b border-black;
+  &.top {
+    @apply top-14;
+  }
+  &.bottom {
+    @apply bottom-0;
   }
 }

@@ -1,3 +1,6 @@
+// @ts-nocheck
+import { OptionState, ReducerAction } from './reader.types'
+
 function generateUniqueColor(highlight) {
   const colors = [
     '#86efac',
@@ -13,6 +16,9 @@ function generateUniqueColor(highlight) {
     '#74bedf',
     '#64bbda',
   ]
+  {
+    /* @ts-ignore */
+  }
   const excludedColors = highlight.map((item) => {
     return item.style.backgroundColor
   })
@@ -25,7 +31,11 @@ function generateUniqueColor(highlight) {
   return '#86efac'
 }
 
-export const reducer = (state, action) => {
+export const reducer = (
+  state: OptionState,
+
+  action: ReducerAction
+): OptionState => {
   switch (action.type) {
     case 'CLOSE_ALL': {
       return {
@@ -88,6 +98,13 @@ export const reducer = (state, action) => {
             },
           },
         },
+      }
+    }
+    case 'SET_MODE': {
+      const { mode } = state
+      return {
+        ...state,
+        mode: mode === 'edit' ? 'read' : 'edit',
       }
     }
     default:

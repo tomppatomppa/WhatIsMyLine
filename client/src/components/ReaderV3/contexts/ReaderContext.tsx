@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-const ReaderContext = createContext(null)
+const ReaderContext = createContext<any>(null)
 
 export function useReaderContext() {
   const context = useContext(ReaderContext)

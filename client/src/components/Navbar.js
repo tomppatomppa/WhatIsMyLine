@@ -40,7 +40,7 @@ const Navbar = ({ selected, setSelected }) => {
   }
 
   return (
-    <div className="w-full mb-24">
+    <div className="w-full mb-24 ">
       <div className="fixed shadow-md top-0 flex w-full justify-start  bg-white">
         <button
           className="flex flex-1 self-center m-4 text-black font-bold tracking-widest"
@@ -53,7 +53,7 @@ const Navbar = ({ selected, setSelected }) => {
       <div
         className={`${
           showMenu ? 'translate-x-0' : '-translate-x-[40rem]'
-        } fixed top-14 w-full sm:w-72 shadow-lg h-full translate-all duration-200 bg-white`}
+        } fixed top-14 z-50 w-full sm:w-72 shadow-lg h-full translate-all duration-200 bg-white`}
       >
         <NavbarMenu
           currentScripts={currentScripts}
@@ -78,7 +78,7 @@ const NavbarMenu = (props) => {
   } = props
 
   return (
-    <div className="flex flex-col items-center ">
+    <div className="flex flex-col items-center">
       <div className="flex flex-row w-full bg-primary p-2">
         <FileButton />
         <span className="flex-1"></span>
