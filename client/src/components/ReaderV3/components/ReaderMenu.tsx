@@ -26,20 +26,18 @@ const ReaderMenu = () => {
     }
     SetMenuBarPosition('top')
   }
-  console.log(options.highlight)
+
   return (
     <div id="reader-menu" className={clsx(styles.menu, styles[menuPosition])}>
       <button onClick={handleSetMenuBarPosition}>
         {menuPosition === 'top' ? <ArrowDown /> : <ArrowUp />}
       </button>
-
       <ReaderMenuButton
         show={hasExpandedScenes}
         text="Close All"
         onClick={() => dispatch(CLOSE_ALL())}
       />
       <p className="flex-1"></p>
-
       <div id="menu-buttons" className="flex gap-4">
         <ReaderSelectActor actors={options.highlight} />
         <ReaderMenuButton

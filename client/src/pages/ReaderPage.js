@@ -39,6 +39,7 @@ const ReaderPage = () => {
     ? selected?.scenes.filter((item) => showScenes.includes(item.id))
     : selected?.scenes
 
+  console.log(selected)
   return (
     <div className=" bg-orange-50">
       <Navbar selected={selected} setSelected={setSelected} />

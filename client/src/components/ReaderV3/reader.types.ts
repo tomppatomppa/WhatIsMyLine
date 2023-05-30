@@ -36,3 +36,5 @@ export interface Actor {
     backgroundColor: string
   }
 }
+
+export type ReaderMenuActions = ReducerAction<'SET_EXPAND', string>

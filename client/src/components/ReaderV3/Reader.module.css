@@ -9,14 +9,11 @@
 }
 
 .menu {
-  @apply fixed flex left-0 -z-0 w-full h-10 items-center bg-white border-b border-black;
+  @apply fixed flex left-0 w-full h-10 items-center bg-white border-b border-black;
   &.top {
     @apply top-14;
   }
   &.bottom {
     @apply bottom-0;
-  }
-  &.actions {
-    @apply bg-red-900 mr-16;
   }
 }
