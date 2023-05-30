@@ -3,27 +3,45 @@ import { useState } from 'react'
 import clsx from 'clsx'
 import styles from '../Reader.module.css'
 import { MenuBarPosition } from '../reader.types'
-
-import { SET_MODE } from '../actions'
+import { SET_MODE, CLOSE_ALL } from '../actions'
 import { useReaderContext } from '../contexts/ReaderContext'
 import EditIcon from './icons/EditIcon'
+import ArrowDown from './icons/ArrowDown'
+import ArrowUp from './icons/ArrowUp'
+import ReaderMenuButton from './ReaderMenuButton'
 
 const ReaderMenu = () => {
-  const { dispatch } = useReaderContext()
+  const { options, dispatch } = useReaderContext()
+  const [menuPosition, SetMenuBarPosition] = useState<MenuBarPosition>('top')
 
-  const [menuBarPosition, SetMenuBarPosition] = useState<MenuBarPosition>('top')
+  const isEditing = options.mode === 'edit' ? true : false
+  const hasExpanded = options.expanded.length > 0
+
+  const handleSetMenuBarPosition = () => {
+    if (menuPosition === 'top') {
+      SetMenuBarPosition('bottom')
+      return
+    }
+    SetMenuBarPosition('top')
+  }
+
   return (
-    <div className={clsx(styles.menu, styles[menuBarPosition])}>
-      <button
-        onClick={() =>
-          SetMenuBarPosition(menuBarPosition === 'top' ? 'bottom' : 'top')
-        }
-      >
-        Menu position
+    <div id="reader-menu" className={clsx(styles.menu, styles[menuPosition])}>
+      <button onClick={handleSetMenuBarPosition}>
+        {menuPosition === 'top' ? <ArrowDown /> : <ArrowUp />}
       </button>
-      <button onClick={() => dispatch(SET_MODE())}>
-        <EditIcon />
-      </button>
+      <ReaderMenuButton
+        show={hasExpanded}
+        text="Close All"
+        onClick={() => dispatch(CLOSE_ALL())}
+      />
+
+      <p className="flex-1"></p>
+      <div id="menu-buttons">
+        <button onClick={() => dispatch(SET_MODE())}>
+          {isEditing ? <>Save</> : <EditIcon />}
+        </button>
+      </div>
     </div>
   )
 }

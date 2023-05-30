@@ -10,6 +10,7 @@ const initialState = {
   mode: 'read',
   showAll: false,
   highlight: [],
+  expanded: [],
   settings: {
     info: {
       style: {

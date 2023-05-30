@@ -33,14 +33,13 @@ function generateUniqueColor(highlight) {
 
 export const reducer = (
   state: OptionState,
-
   action: ReducerAction
 ): OptionState => {
   switch (action.type) {
     case 'CLOSE_ALL': {
       return {
         ...state,
-        showAll: false,
+        expanded: [],
       }
     }
     case 'OPEN_ALL': {
@@ -49,7 +48,20 @@ export const reducer = (
         showAll: true,
       }
     }
-
+    case 'SET_EXPAND': {
+      const { expanded } = state
+      const isExpanded = expanded.includes(action.payload.sceneId)
+      if (isExpanded) {
+        return {
+          ...state,
+          expanded: expanded.filter((id) => id !== action.payload.sceneId),
+        }
+      }
+      return {
+        ...state,
+        expanded: expanded.concat(action.payload.sceneId),
+      }
+    }
     case 'HIGHLIGHT_TARGET': {
       const { highlight } = state
       const { target, color } = action.payload
@@ -107,6 +119,7 @@ export const reducer = (
         mode: mode === 'edit' ? 'read' : 'edit',
       }
     }
+
     default:
       throw Error('Unknown action.')
   }

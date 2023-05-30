@@ -1,7 +1,7 @@
 export type ReaderMode = 'read' | 'edit'
 
 export type ReaderMenu = 'read' | 'edit'
-export type MenuBarPosition = 'top' | 'bottom'
+export type MenuPosition = 'top' | 'bottom'
 
 export interface Style {
   textAlign: string
@@ -14,6 +14,7 @@ export interface OptionState {
   mode: string
   showAll: boolean
   highlight: string[]
+  expanded: string[]
   settings: {
     info: {
       style: Style
