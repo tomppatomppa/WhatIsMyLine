@@ -38,6 +38,11 @@ const ReaderMenu = () => {
         onClick={() => dispatch(CLOSE_ALL())}
       />
       <p className="flex-1"></p>
+      <ReaderMenuButton
+        show
+        text="test"
+        onClick={() => options.onPress('hello')}
+      />
       <div id="menu-buttons" className="flex gap-4">
         <ReaderSelectActor actors={options.highlight} />
         <ReaderMenuButton

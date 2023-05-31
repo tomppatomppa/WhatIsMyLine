@@ -1,7 +1,5 @@
 const CLOSE_ALL = () => ({ type: 'CLOSE_ALL' })
 
-const OPEN_ALL = () => ({ type: 'OPEN_ALL' })
-
 const SET_EXPAND = ({ sceneId }: any) => ({
   type: 'SET_EXPAND',
   payload: { sceneId },
@@ -28,7 +26,6 @@ const SET_MODE = () => ({
 
 export {
   CLOSE_ALL,
-  OPEN_ALL,
   SETTINGS,
   SET_STYLE,
   HIGHLIGHT_TARGET,

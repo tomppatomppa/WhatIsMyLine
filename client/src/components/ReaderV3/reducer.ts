@@ -1,7 +1,6 @@
-// @ts-nocheck
-import { OptionState, ReducerAction } from './reader.types'
+import { Actor, OptionState, ReaderMenuActions } from './reader.types'
 
-function generateUniqueColor(highlight) {
+function generateUniqueColor(highlight: Actor[]) {
   const colors = [
     '#86efac',
     '#d8b4fe',
@@ -16,9 +15,7 @@ function generateUniqueColor(highlight) {
     '#74bedf',
     '#64bbda',
   ]
-  {
-    /* @ts-ignore */
-  }
+
   const excludedColors = highlight.map((item) => {
     return item.style.backgroundColor
   })
@@ -33,19 +30,13 @@ function generateUniqueColor(highlight) {
 
 export const reducer = (
   state: OptionState,
-  action: ReducerAction
+  action: ReaderMenuActions
 ): OptionState => {
   switch (action.type) {
     case 'CLOSE_ALL': {
       return {
         ...state,
         expanded: [],
-      }
-    }
-    case 'OPEN_ALL': {
-      return {
-        ...state,
-        showAll: true,
       }
     }
     case 'SET_EXPAND': {

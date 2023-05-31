@@ -10,10 +10,12 @@ export interface Style {
   fontSize: string
   color: string
 }
+
+export type LineType = 'info' | 'actor'
 export interface OptionState {
   mode: string
   showAll: boolean
-  highlight: string[]
+  highlight: Actor[]
   expanded: string[]
   settings: {
     info: {
@@ -37,4 +39,16 @@ export interface Actor {
   }
 }
 
-export type ReaderMenuActions = ReducerAction<'SET_EXPAND', string>
+export type ReaderMenuActions =
+  | ReducerAction<'CLOSE_ALL', {}>
+  | ReducerAction<'SET_EXPAND', { sceneId: string }>
+  | ReducerAction<'HIGHLIGHT_TARGET', { target: string; color: string }>
+  | ReducerAction<
+      'SETTINGS',
+      { target: LineType; value: string; property: string }
+    >
+  | ReducerAction<
+      'SET_STYLE',
+      { target: LineType; value: string; property: string }
+    >
+  | ReducerAction<'SET_MODE', {}>

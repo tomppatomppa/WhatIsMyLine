@@ -6,7 +6,7 @@ import { Scene } from '../components/ReaderV3/Scene'
 import useCurrentScripts from '../hooks/useCurrentScripts'
 import ReaderMenu from '../components/ReaderV3/components/ReaderMenu'
 
-const initialState = {
+let initialState = {
   mode: 'read',
   showAll: false,
   highlight: [],
@@ -29,6 +29,9 @@ const initialState = {
       },
     },
   },
+  onPress: (value) => {
+    console.log('Tapped!', value)
+  },
 }
 
 const ReaderPage = () => {
@@ -39,7 +42,6 @@ const ReaderPage = () => {
     ? selected?.scenes.filter((item) => showScenes.includes(item.id))
     : selected?.scenes
 
-  console.log(selected)
   return (
     <div className=" bg-orange-50">
       <Navbar selected={selected} setSelected={setSelected} />
