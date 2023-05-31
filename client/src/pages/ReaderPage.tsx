@@ -2,8 +2,8 @@ import { useState } from 'react'
 import Navbar from '../components/Navbar'
 
 import Reader from '../components/ReaderV3/Reader'
-import { SceneComponent } from '../components/ReaderV3/SceneComponent'
-import useCurrentScripts from '../hooks/useCurrentScripts'
+import { SceneComponent } from '../components/ReaderV3/components/SceneComponent'
+
 import ReaderMenu from '../components/ReaderV3/components/ReaderMenu'
 import {
   ReaderConfiguration,
@@ -38,12 +38,10 @@ const initialState = {
 
 const ReaderPage = () => {
   const [selected, setSelected] = useState<Script | null>(null)
-  const { showScenes } = useCurrentScripts()
-
-  const filtered = showScenes.length
-    ? selected?.scenes.filter((item: Scene) => showScenes.includes(item.id))
-    : selected?.scenes
-
+  const onSave = (index: number, scene: Scene) => {
+    const updated = selected?.scenes[index]
+    console.log(updated)
+  }
   return (
     <div className="bg-orange-50">
       <Navbar selected={selected} setSelected={setSelected} />
@@ -52,14 +50,11 @@ const ReaderPage = () => {
           script={selected}
           initialState={initialState}
           renderItem={(scene, index) => (
-            <SceneComponent scene={scene} index={index} />
+            <SceneComponent scene={scene} index={index} onSave={onSave} />
           )}
         >
           <ReaderHeading />
           <ReaderMenu />
-          {/* {selected?.scenes?.map((scene, index) => (
-            <SceneComponent key={index} scene={scene} />
-          ))} */}
         </Reader>
       )}
     </div>

@@ -19,7 +19,7 @@ export const Reader = (props: ReaderProps) => {
 
   return (
     <div className={clsx(styles.reader, styles[options.mode])}>
-      <ReaderContext.Provider value={{ options, dispatch }}>
+      <ReaderContext.Provider value={{ options, dispatch, script }}>
         {children}
         <section id="scene-content">
           {script.scenes?.map((scene, index) => {

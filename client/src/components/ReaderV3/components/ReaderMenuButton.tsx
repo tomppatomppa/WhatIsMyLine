@@ -1,4 +1,7 @@
+import clsx from 'clsx'
+
 interface ReaderMenuButtonProps {
+  className?: string
   show: boolean
   text?: string
   icon?: JSX.Element
@@ -7,7 +10,7 @@ interface ReaderMenuButtonProps {
 const ReaderMenuButton = (props: ReaderMenuButtonProps) => {
   const { text, show, icon = null, onClick } = props
   return show ? (
-    <button onClick={onClick}>
+    <button className={clsx(props.className)} onClick={onClick}>
       {text}
       {icon}
     </button>

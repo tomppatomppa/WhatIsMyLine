@@ -1,5 +1,5 @@
-import { useReaderContext } from './contexts/ReaderContext'
-import { Actor, Line } from './reader.types'
+import { useReaderContext } from '../contexts/ReaderContext'
+import { Actor, Line } from '../reader.types'
 
 interface LineProps {
   line: Line

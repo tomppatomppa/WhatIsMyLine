@@ -15,6 +15,7 @@ export type Line = {
 export type Scene = {
   id: string | 'SCRIPT DETAILS'
   data: Line[]
+  isEditing?: boolean
 }
 
 export type Script = {

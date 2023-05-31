@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import Reader from 'src/components/ReaderV3/Reader'
 import '@testing-library/jest-dom'
-import { SceneComponent } from 'src/components/ReaderV3/SceneComponent'
+import { SceneComponent } from 'src/components/ReaderV3/components/SceneComponent'
 import {
   ReaderConfiguration,
   Script,
@@ -67,7 +67,7 @@ describe('Reader.tsx', () => {
         script={script}
         initialState={initialState}
         renderItem={(scene, index) => (
-          <SceneComponent scene={scene} index={index} />
+          <SceneComponent scene={scene} index={index} onSave={() => {}} />
         )}
       ></Reader>
     )
