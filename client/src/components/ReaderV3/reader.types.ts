@@ -5,7 +5,7 @@ export type MenuPosition = 'top' | 'bottom'
 
 //Scene types
 
-type SceneLine = 'ACTOR' | 'INFO'
+export type SceneLine = 'ACTOR' | 'INFO'
 
 export type Line = {
   type: SceneLine
@@ -32,15 +32,16 @@ export interface Style {
 }
 
 export type LineType = 'info' | 'actor'
+export type Settings = {
+  [key in LineType]: {
+    style: Style
+  }
+}
 export interface ReaderConfiguration {
   mode: ReaderMode
   highlight: Actor[]
   expanded: string[]
-  settings: {
-    [key in LineType]: {
-      style: Style
-    }
-  }
+  settings: Settings
 }
 
 export type ReducerAction<T, P> = {

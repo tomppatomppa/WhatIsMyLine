@@ -17,13 +17,30 @@
     @apply bottom-0;
   }
 }
-
+@keyframes pulse {
+  0% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: red;
+  }
+  100% {
+    border-color: transparent;
+  }
+}
 .scene {
   @apply border shadow-md my-2 bg-white p-2;
   &.read {
     @apply border-green-200 bg-green-50;
   }
   &.edit {
-    @apply border-red-700 animate-spin bg-red-100;
+    @apply animate-pulse;
+    animation-name: pulse;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    background-color: var(--neutral-200);
   }
 }

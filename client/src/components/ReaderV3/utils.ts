@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { Actor } from './reader.types'
+import { Actor, ReaderConfiguration, SceneLine, Settings } from './reader.types'
 
 export function generateUniqueColor(highlight: Actor[]) {
   const colors = [
@@ -27,4 +27,16 @@ export function generateUniqueColor(highlight: Actor[]) {
     }
   }
   return '#86efac'
+}
+
+export function getLineStyle(
+  type: SceneLine,
+  options: ReaderConfiguration,
+  name?: string
+) {
+  if (type === 'ACTOR') {
+    const shouldHighLight = options.highlight?.find((item) => item.id === name)
+    return { ...options.settings.actor.style, ...shouldHighLight?.style }
+  }
+  return options.settings.info.style
 }

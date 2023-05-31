@@ -1,13 +1,14 @@
 import clsx from 'clsx'
 
 type Variant = 'cancel' | 'confirm'
-interface ReaderMenuButtonProps {
+interface ReaderMenuButtonProps extends React.HTMLProps<HTMLButtonElement> {
   variant?: Variant
   className?: string
   show: boolean
   text?: string
   icon?: JSX.Element
-  onClick: () => void
+  onClick?: () => void
+  type?: 'button' | 'submit' | 'reset'
 }
 
 const VARIANT = {
@@ -19,6 +20,7 @@ const ReaderMenuButton = (props: ReaderMenuButtonProps) => {
   const { text, show, icon = null, onClick, variant = 'normal' } = props
   return show ? (
     <button
+      type={props.type}
       className={clsx(props.className, VARIANT[variant])}
       onClick={onClick}
     >
