@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 import '@testing-library/jest-dom'
-import { OptionState } from 'src/components/ReaderV3/reader.types'
+import { ReaderConfiguration } from 'src/components/ReaderV3/reader.types'
 import reducer from 'src/components/ReaderV3/reducer'
 import { useReducer } from 'react'
 
@@ -26,7 +26,7 @@ let initialState = {
       },
     },
   },
-} as OptionState
+} as ReaderConfiguration
 
 describe('reducer.ts', () => {
   test('Should set mode to edit', () => {

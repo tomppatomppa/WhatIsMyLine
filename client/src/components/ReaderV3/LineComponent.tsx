@@ -4,6 +4,7 @@ import { Actor, Line } from './reader.types'
 interface LineProps {
   line: Line
 }
+
 export const LineComponent = ({ line }: LineProps) => {
   const { type, name, lines } = line
   const { options, dispatch } = useReaderContext()

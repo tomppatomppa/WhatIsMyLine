@@ -17,6 +17,10 @@ export type Scene = {
   data: Line[]
 }
 
+export type Script = {
+  filename: string
+  scenes: Scene[]
+}
 // Line types
 export interface Style {
   textAlign?: string
@@ -27,8 +31,8 @@ export interface Style {
 }
 
 export type LineType = 'info' | 'actor'
-export interface OptionState {
-  mode: string
+export interface ReaderConfiguration {
+  mode: ReaderMode
   highlight: Actor[]
   expanded: string[]
   settings: {

@@ -1,11 +1,11 @@
 //@ts-nocheck
-import { OptionState, ReaderMenuActions } from './reader.types'
+import { ReaderConfiguration, ReaderMenuActions } from './reader.types'
 import { generateUniqueColor } from './utils'
 
 export const reducer = (
-  state: OptionState,
+  state: ReaderConfiguration,
   action: ReaderMenuActions
-): OptionState => {
+): ReaderConfiguration => {
   switch (action.type) {
     case 'CLOSE_ALL': {
       return {

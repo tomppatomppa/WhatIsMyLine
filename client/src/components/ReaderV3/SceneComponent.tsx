@@ -4,8 +4,10 @@ import { Scene } from './reader.types'
 
 interface SceneProps {
   scene: Scene
+  index: number
 }
-export const SceneComponent = ({ scene }: SceneProps) => {
+
+export const SceneComponent = ({ scene, index }: SceneProps) => {
   const { options, dispatch } = useReaderContext()
   const isExpanded = options.expanded.includes(scene.id)
 
