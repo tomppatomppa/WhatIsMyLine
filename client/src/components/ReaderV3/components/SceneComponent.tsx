@@ -32,8 +32,8 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
     setIsEditing(true)
   }
   const handleSave = () => {
-    if (!modifiedScene) return
-    onSave(index, modifiedScene)
+    onSave(index, modifiedScene as any)
+    setIsEditing(false)
   }
   const cancelEdit = () => {
     setIsEditing(false)
@@ -57,12 +57,13 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
         />
         <div className="flex absolute right-2 gap-2">
           <ReaderMenuButton
-            className="hover:text-red-900 p-1 right-2 "
+            variant="cancel"
             show={isEditing}
             onClick={cancelEdit}
             text="cancel"
           />
           <ReaderMenuButton
+            variant="confirm"
             className="hover:bg-emerald-400 border bg-emerald-500 p-1 right-2 "
             show={isEditing}
             onClick={handleSave}
@@ -73,7 +74,12 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
       {isExpanded && (
         <div>
           {scene?.data.map((line, index) => (
-            <LineComponent key={index} line={line} />
+            <LineComponent
+              key={index}
+              line={line}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+            />
           ))}
         </div>
       )}
