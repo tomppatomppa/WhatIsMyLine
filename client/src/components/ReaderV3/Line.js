@@ -1,4 +1,3 @@
-import { HIGHLIGHT_TARGET } from './actions'
 import { useReaderContext } from './contexts/ReaderContext'
 
 export const Line = ({ line }) => {
@@ -9,7 +8,7 @@ export const Line = ({ line }) => {
   const isHiglight = options.highlight.find((item) => item.id === name)
 
   const handleClick = () => {
-    dispatch(HIGHLIGHT_TARGET({ target: name }))
+    dispatch({ type: 'HIGHLIGHT_TARGET', payload: { target: name } })
   }
 
   if (type === 'INFO') {

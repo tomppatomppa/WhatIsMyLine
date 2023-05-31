@@ -2,7 +2,7 @@ import { useState } from 'react'
 import clsx from 'clsx'
 import styles from '../Reader.module.css'
 import { MenuPosition } from '../reader.types'
-import { SET_MODE, CLOSE_ALL } from '../actions'
+
 import { useReaderContext } from '../contexts/ReaderContext'
 import EditIcon from './icons/EditIcon'
 import ArrowDown from './icons/ArrowDown'
@@ -35,7 +35,11 @@ const ReaderMenu = () => {
       <ReaderMenuButton
         show={hasExpandedScenes}
         text="Close All"
-        onClick={() => dispatch(CLOSE_ALL())}
+        onClick={() =>
+          dispatch({
+            type: 'CLOSE_ALL',
+          })
+        }
       />
       <p className="flex-1"></p>
       <ReaderMenuButton
@@ -55,7 +59,13 @@ const ReaderMenu = () => {
           show={hasExpandedScenes}
           icon={<PlayIcon />}
         />
-        <button onClick={() => dispatch(SET_MODE())}>
+        <button
+          onClick={() =>
+            dispatch({
+              type: 'SET_MODE',
+            })
+          }
+        >
           {isEditing ? <>Save</> : <EditIcon />}
         </button>
       </div>

@@ -42,6 +42,7 @@ describe('reducer.ts', () => {
 
     expect(result.current[0].mode).toBe('edit')
   })
+
   test('Should add and remove id from expanded array', () => {
     const { result } = renderHook(() => useReducer(reducer, initialState))
     const sceneId = '10042 ID. SCENE'
@@ -116,5 +117,26 @@ describe('reducer.ts', () => {
       })
     })
     expect(result.current[0].settings[target].style[property]).toEqual(value)
+  })
+  test('Should reset expanded array', () => {
+    const { result } = renderHook(() => useReducer(reducer, initialState))
+    const sceneId = '10042 ID. SCENE'
+    //Add
+    act(() => {
+      result.current[1]({
+        type: 'SET_EXPAND',
+        payload: { sceneId },
+      })
+    })
+    expect(result.current[0].expanded).toHaveLength(1)
+
+    act(() => {
+      result.current[1]({
+        type: 'CLOSE_ALL',
+        payload: {},
+      })
+    })
+
+    expect(result.current[0].expanded).toHaveLength(0)
   })
 })
