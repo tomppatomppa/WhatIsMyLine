@@ -1,11 +1,15 @@
-import { Line } from './Line'
+import { LineComponent } from './LineComponent'
 import { useReaderContext } from './contexts/ReaderContext'
+import { Scene } from './reader.types'
 
-export const Scene = ({ scene }) => {
+interface SceneProps {
+  scene: Scene
+}
+export const SceneComponent = ({ scene }: SceneProps) => {
   const { options, dispatch } = useReaderContext()
   const isExpanded = options.expanded.includes(scene.id)
 
-  const handleExpandScene = (sceneId) => {
+  const handleExpandScene = (sceneId: string) => {
     if (!sceneId) return
     dispatch({
       type: 'SET_EXPAND',
@@ -28,7 +32,7 @@ export const Scene = ({ scene }) => {
       {isExpanded && (
         <div>
           {scene?.data.map((line, index) => (
-            <Line key={index} line={line} />
+            <LineComponent key={index} line={line} />
           ))}
         </div>
       )}

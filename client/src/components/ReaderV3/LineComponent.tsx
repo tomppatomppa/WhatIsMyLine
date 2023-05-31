@@ -1,11 +1,15 @@
 import { useReaderContext } from './contexts/ReaderContext'
+import { Actor, Line } from './reader.types'
 
-export const Line = ({ line }) => {
+interface LineProps {
+  line: Line
+}
+export const LineComponent = ({ line }: LineProps) => {
   const { type, name, lines } = line
   const { options, dispatch } = useReaderContext()
   const { info, actor } = options.settings
 
-  const isHiglight = options.highlight.find((item) => item.id === name)
+  const isHiglight = options.highlight.find((item: Actor) => item.id === name)
 
   const handleClick = () => {
     dispatch({ type: 'HIGHLIGHT_TARGET', payload: { target: name } })
@@ -38,4 +42,5 @@ export const Line = ({ line }) => {
       </div>
     )
   }
+  return null
 }

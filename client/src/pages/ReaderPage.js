@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 
 import Reader from '../components/ReaderV3/Reader'
-import { Scene } from '../components/ReaderV3/Scene'
+import { SceneComponent } from '../components/ReaderV3/SceneComponent'
 import useCurrentScripts from '../hooks/useCurrentScripts'
 import ReaderMenu from '../components/ReaderV3/components/ReaderMenu'
 
@@ -47,7 +47,7 @@ const ReaderPage = () => {
       <Reader selected={selected} initialState={initialState}>
         <ReaderMenu />
         {filtered?.map((scene, index) => (
-          <Scene key={index} scene={scene} />
+          <SceneComponent key={index} scene={scene} />
         ))}
       </Reader>
     </div>

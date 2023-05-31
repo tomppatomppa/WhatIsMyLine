@@ -1,7 +1,8 @@
-import { render, fireEvent, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import Reader from 'src/components/ReaderV3/Reader'
 import '@testing-library/jest-dom'
-import { Scene } from 'src/components/ReaderV3/Scene'
+import { SceneComponent } from 'src/components/ReaderV3/SceneComponent'
+import { Scene } from 'src/components/ReaderV3/reader.types'
 
 const initialState = {
   mode: 'read',
@@ -52,14 +53,14 @@ const scenes = [
       },
     ],
   },
-]
+] as unknown as Scene[]
 
 describe('Reader.tsx', () => {
   test('Renders scene ids', async () => {
     render(
       <Reader initialState={initialState}>
         {scenes.map((scene, index) => (
-          <Scene key={index} scene={scene} />
+          <SceneComponent key={index} scene={scene} />
         ))}
       </Reader>
     )

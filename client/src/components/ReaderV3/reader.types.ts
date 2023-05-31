@@ -3,6 +3,21 @@ export type ReaderMode = 'read' | 'edit'
 export type ReaderMenu = 'read' | 'edit'
 export type MenuPosition = 'top' | 'bottom'
 
+//Scene types
+
+type SceneLine = 'ACTOR' | 'INFO'
+
+export type Line = {
+  type: SceneLine
+  name: string
+  lines: string[]
+}
+export type Scene = {
+  id: string | 'SCRIPT DETAILS'
+  data: Line[]
+}
+
+// Line types
 export interface Style {
   textAlign?: string
   marginLeft?: string | number
