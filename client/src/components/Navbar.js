@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import useCurrentScripts from '../hooks/useCurrentScripts'
 import { FileButton } from './FileLoader'
 import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'

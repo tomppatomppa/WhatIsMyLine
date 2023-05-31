@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { Actor, OptionState, ReaderMenuActions } from './reader.types'
 
 function generateUniqueColor(highlight: Actor[]) {

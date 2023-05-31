@@ -2,6 +2,7 @@ import { render, fireEvent, screen } from '@testing-library/react'
 import Reader from 'src/components/ReaderV3/Reader'
 import '@testing-library/jest-dom'
 import { Scene } from 'src/components/ReaderV3/Scene'
+
 const initialState = {
   mode: 'read',
   showAll: false,
@@ -29,15 +30,16 @@ const initialState = {
 
 const scenes = [
   {
+    id: 'SCRIPT DETAILS',
     data: [
       {
         type: 'INFO',
         lines: ['first line', 'secon line', 'third line'],
       },
     ],
-    id: 'SCRIPT DETAILS',
   },
   {
+    id: '7701 TEST. LOCATION',
     data: [
       {
         type: 'INFO',
@@ -49,7 +51,6 @@ const scenes = [
         lines: ['actor line 1', 'actor line 1', 'actor line 1'],
       },
     ],
-    id: '7701 TEST. LOCATION',
   },
 ]
 

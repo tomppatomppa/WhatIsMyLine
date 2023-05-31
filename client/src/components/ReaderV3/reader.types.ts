@@ -4,24 +4,20 @@ export type ReaderMenu = 'read' | 'edit'
 export type MenuPosition = 'top' | 'bottom'
 
 export interface Style {
-  textAlign: string
-  marginLeft?: string
+  textAlign?: string
+  marginLeft?: string | number
   fontStyle?: string
-  fontSize: string
-  color: string
+  fontSize?: string | number
+  color?: string
 }
 
 export type LineType = 'info' | 'actor'
 export interface OptionState {
   mode: string
-  showAll: boolean
   highlight: Actor[]
   expanded: string[]
   settings: {
-    info: {
-      style: Style
-    }
-    actor: {
+    [key in LineType]: {
       style: Style
     }
   }
@@ -29,7 +25,7 @@ export interface OptionState {
 
 export type ReducerAction<T, P> = {
   type: T
-  payload: P
+  payload?: P
 }
 
 export interface Actor {
@@ -42,13 +38,13 @@ export interface Actor {
 export type ReaderMenuActions =
   | ReducerAction<'CLOSE_ALL', {}>
   | ReducerAction<'SET_EXPAND', { sceneId: string }>
-  | ReducerAction<'HIGHLIGHT_TARGET', { target: string; color: string }>
+  | ReducerAction<'HIGHLIGHT_TARGET', { target: string; color?: string }>
   | ReducerAction<
       'SETTINGS',
       { target: LineType; value: string; property: string }
     >
   | ReducerAction<
       'SET_STYLE',
-      { target: LineType; value: string; property: string }
+      { target: LineType; value: string; property: keyof Style }
     >
   | ReducerAction<'SET_MODE', {}>

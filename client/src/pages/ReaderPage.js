@@ -8,7 +8,6 @@ import ReaderMenu from '../components/ReaderV3/components/ReaderMenu'
 
 let initialState = {
   mode: 'read',
-  showAll: false,
   highlight: [],
   expanded: [],
   settings: {
