@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { LineComponent } from './LineComponent'
 import { useReaderContext } from '../contexts/ReaderContext'
 import { Scene } from '../reader.types'
 import EditIcon from './icons/EditIcon'
 import ReaderMenuButton from './ReaderMenuButton'
 import styles from '../Reader.module.css'
 import clsx from 'clsx'
+import { Formik, Field, FieldArray } from 'formik'
+
 interface SceneProps {
   scene: Scene
   index: number
@@ -17,6 +18,7 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
   const isExpanded = options.expanded.includes(scene.id)
   const [isEditing, setIsEditing] = useState(false)
   const [modifiedScene, setModifiedScene] = useState<Scene | null>(null)
+  const { info, actor } = options.settings
 
   const handleExpandScene = (sceneId: string) => {
     if (!sceneId) return
@@ -26,6 +28,10 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
         sceneId,
       },
     })
+  }
+
+  const handleHighlight = (name: string) => {
+    dispatch({ type: 'HIGHLIGHT_TARGET', payload: { target: name } })
   }
 
   const handleSetEditing = () => {
@@ -72,16 +78,67 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
         </div>
       </div>
       {isExpanded && (
-        <div>
-          {scene?.data.map((line, index) => (
-            <LineComponent
-              key={index}
-              line={line}
-              isEditing={isEditing}
-              setIsEditing={setIsEditing}
-            />
-          ))}
-        </div>
+        <Formik
+          onSubmit={(values) => console.log(values)}
+          initialValues={scene}
+        >
+          <fieldset disabled={!isEditing}>
+            <FieldArray
+              name="data"
+              render={(arrayHelpers) => (
+                <div>
+                  {scene.data.map((line, index) => (
+                    <div
+                      style={line.type === 'INFO' ? info.style : actor.style}
+                      key={index}
+                    >
+                      <div className="my-2 w-full">
+                        <Field
+                          className="hover:cursor-pointer"
+                          onClick={() => {
+                            if (!isEditing && line.type === 'ACTOR') {
+                              handleHighlight(line.name)
+                            }
+                          }}
+                          style={
+                            line.type === 'ACTOR' ? actor.style : info.style
+                          }
+                          name={`data[${index}].name`}
+                        />
+                        {line.lines.map((_, lineIndex) => (
+                          <Field
+                            style={
+                              line.type === 'ACTOR' ? actor.style : info.style
+                            }
+                            key={lineIndex}
+                            name={`data[${index}].lines[${lineIndex}]`}
+                            className="w-full"
+                          />
+                        ))}
+
+                        {/* <button
+                      type="button"
+                      onClick={() => arrayHelpers.remove(index)}
+                    >
+                      -
+                    </button> */}
+                      </div>
+                    </div>
+                  ))}
+                  <button type="submit" className="bg-red-900">
+                    submit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => arrayHelpers.push({ name: '', age: '' })}
+                  >
+                    +
+                  </button>
+                </div>
+              )}
+            ></FieldArray>
+          </fieldset>
+        </Formik>
       )}
     </section>
   )
