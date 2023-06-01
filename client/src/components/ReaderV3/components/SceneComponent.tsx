@@ -6,7 +6,6 @@ import ReaderMenuButton from './ReaderMenuButton'
 import styles from '../Reader.module.css'
 import clsx from 'clsx'
 import EditableSceneItem from './EditableSceneItem'
-import ConfirmIcon from './icons/ConfirmIcon'
 
 interface SceneProps {
   scene: Scene
