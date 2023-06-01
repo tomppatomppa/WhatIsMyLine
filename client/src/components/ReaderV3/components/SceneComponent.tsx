@@ -6,6 +6,7 @@ import ReaderMenuButton from './ReaderMenuButton'
 import styles from '../Reader.module.css'
 import clsx from 'clsx'
 import EditableSceneItem from './EditableSceneItem'
+import ConfirmIcon from './icons/ConfirmIcon'
 
 interface SceneProps {
   scene: Scene
@@ -41,10 +42,11 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
       <div className="flex items-center justify-center">
         <h1
           onClick={() => handleExpandScene(scene.id)}
-          className=" flex-1  cursor-pointer font-bold"
+          className=" flex-1 cursor-pointer font-bold"
         >
           {scene.id}
         </h1>
+
         <ReaderMenuButton
           show={isExpanded && !isEditing}
           icon={<EditIcon />}

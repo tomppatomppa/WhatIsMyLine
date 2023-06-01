@@ -1,15 +1,9 @@
 .reader {
-  @apply border-l-4 max-w-4xl mx-auto text-center my-12 border-green-200 bg-green-50;
+  @apply border-l-4 pt-24 max-w-4xl mx-auto text-center my-12 border-green-200 bg-green-50;
 }
 
 .menu {
-  @apply fixed z-50 flex left-0 w-full h-10 items-center bg-white border-b border-black;
-  &.top {
-    @apply top-14;
-  }
-  &.bottom {
-    @apply bottom-0;
-  }
+  @apply fixed z-50 top-14 flex left-0 w-full h-10 items-center bg-white border-b border-black;
 }
 @keyframes pulse {
   0% {
@@ -54,4 +48,11 @@
   &.edit {
     @apply shadow-md;
   }
+}
+
+.sidebar {
+  @apply relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto shadow-lg bg-gray-800 text-green-500 hover:bg-green-600 hover:text-white rounded-3xl hover:rounded-xl;
+}
+.tooltip {
+  @apply absolute w-auto p-2 m-2 min-w-max top-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold origin-top;
 }
