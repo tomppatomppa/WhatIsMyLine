@@ -1,11 +1,5 @@
 .reader {
-  @apply border-l-4 max-w-4xl mx-auto text-center my-12;
-  &.read {
-    @apply border-green-200 bg-green-50;
-  }
-  &.edit {
-    @apply border-red-700 bg-red-100;
-  }
+  @apply border-l-4 max-w-4xl mx-auto text-center my-12 border-green-200 bg-green-50;
 }
 
 .menu {
@@ -42,5 +36,22 @@
     border-style: solid;
     border-color: transparent;
     background-color: var(--neutral-200);
+  }
+}
+
+.insert {
+  @apply cursor-pointer hover:bg-blue-200 p-0.5 w-full flex mx-auto justify-center items-center;
+  &.read {
+    @apply invisible;
+  }
+  &.edit {
+    @apply visible;
+  }
+}
+
+.textarea {
+  @apply my-2 flex flex-col relative;
+  &.edit {
+    @apply shadow-md;
   }
 }

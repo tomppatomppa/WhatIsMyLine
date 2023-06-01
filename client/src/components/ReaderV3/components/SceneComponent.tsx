@@ -33,7 +33,7 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
   }
 
   const handleSave = (scene: Scene) => {
-    console.log(scene)
+    onSave(index, scene)
   }
 
   return (
@@ -41,7 +41,7 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
       <div className="flex items-center justify-center">
         <h1
           onClick={() => handleExpandScene(scene.id)}
-          className=" hover:bg-blue-200 flex-1  cursor-pointer font-bold w-1/2"
+          className=" flex-1  cursor-pointer font-bold"
         >
           {scene.id}
         </h1>
@@ -51,7 +51,7 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
           onClick={() => setIsEditing(true)}
         />
       </div>
-      {isExpanded && (
+      {isExpanded ? (
         <EditableSceneItem
           scene={scene}
           isEditing={isEditing}
@@ -60,7 +60,7 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
           setIsEditing={setIsEditing}
           options={options}
         />
-      )}
+      ) : null}
     </section>
   )
 }

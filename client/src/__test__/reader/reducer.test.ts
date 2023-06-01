@@ -29,20 +29,6 @@ let initialState = {
 } as ReaderConfiguration
 
 describe('reducer.ts', () => {
-  test('Should set mode to edit', () => {
-    const { result } = renderHook(() => useReducer(reducer, initialState))
-    expect(result.current[0].mode).toBe(initialState.mode)
-
-    act(() => {
-      result.current[1]({
-        type: 'SET_MODE',
-        payload: {},
-      })
-    })
-
-    expect(result.current[0].mode).toBe('edit')
-  })
-
   test('Should add and remove id from expanded array', () => {
     const { result } = renderHook(() => useReducer(reducer, initialState))
     const sceneId = '10042 ID. SCENE'

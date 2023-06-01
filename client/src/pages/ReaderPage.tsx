@@ -13,7 +13,6 @@ import {
 import ReaderHeading from 'src/components/ReaderV3/components/ReaderHeading'
 
 const initialState = {
-  mode: 'read',
   highlight: [],
   expanded: [],
   settings: {
@@ -38,6 +37,7 @@ const initialState = {
 
 const ReaderPage = () => {
   const [selected, setSelected] = useState<Script | null>(null)
+
   const scenes = selected?.scenes.map((scene) => {
     return {
       ...scene,
@@ -50,9 +50,11 @@ const ReaderPage = () => {
     }
   })
   const newScript = { ...selected, scenes }
+
   const onSave = (index: number, scene: Scene) => {
-    const updated = selected?.scenes[index]
-    console.log(updated)
+    const oldScene = selected?.scenes[index]
+
+    console.log(oldScene, scene)
   }
 
   return (

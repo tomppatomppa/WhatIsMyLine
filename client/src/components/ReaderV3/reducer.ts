@@ -37,7 +37,6 @@ export const reducer = (
         }
       }
       const uniqueColor = generateUniqueColor(highlight)
-
       const style = {
         id: target,
         style: {

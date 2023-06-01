@@ -4,7 +4,6 @@ import styles from '../Reader.module.css'
 import { MenuPosition } from '../reader.types'
 
 import { useReaderContext } from '../contexts/ReaderContext'
-import EditIcon from './icons/EditIcon'
 import ArrowDown from './icons/ArrowDown'
 import ArrowUp from './icons/ArrowUp'
 import ReaderMenuButton from './ReaderMenuButton'
@@ -16,7 +15,6 @@ const ReaderMenu = () => {
   const { options, dispatch } = useReaderContext()
   const [menuPosition, SetMenuBarPosition] = useState<MenuPosition>('top')
 
-  const isEditing = options.mode === 'edit' ? true : false
   const hasExpandedScenes = options.expanded.length > 0
 
   const handleSetMenuBarPosition = () => {
@@ -55,15 +53,6 @@ const ReaderMenu = () => {
           show={hasExpandedScenes}
           icon={<PlayIcon />}
         />
-        <button
-          onClick={() =>
-            dispatch({
-              type: 'SET_MODE',
-            })
-          }
-        >
-          {isEditing ? <>Save</> : <EditIcon />}
-        </button>
       </div>
     </div>
   )

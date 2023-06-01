@@ -1,7 +1,8 @@
 import { useField } from 'formik'
 import { useReaderContext } from '../contexts/ReaderContext'
-import { SceneLine, Style } from '../reader.types'
+import { Actor, SceneLine } from '../reader.types'
 import { useRef, useEffect } from 'react'
+import { getLineStyle } from '../utils'
 
 interface FormikTextAreaProps {
   label: string
@@ -10,9 +11,9 @@ interface FormikTextAreaProps {
   name: string
   props?: FormikTextAreaProps
   value: string[]
-  style: Style
+  lineName: string
 }
-const FormikTextArea = ({ label, style, ...props }: FormikTextAreaProps) => {
+const FormikTextArea = ({ label, lineName, ...props }: FormikTextAreaProps) => {
   const [field, meta] = useField(props)
   const { options } = useReaderContext()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -26,10 +27,14 @@ const FormikTextArea = ({ label, style, ...props }: FormikTextAreaProps) => {
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.backgroundColor =
-        options.highlight?.[0]?.style?.backgroundColor || '#fff'
+      const actor: Actor | undefined = options?.highlight?.find(
+        (item: Actor) => item.id === lineName
+      )
+      textareaRef.current.style.backgroundColor = actor
+        ? actor.style.backgroundColor
+        : '#fff'
     }
-  }, [options.highlight, style.color])
+  }, [lineName, options?.highlight])
 
   return (
     <>
@@ -37,7 +42,7 @@ const FormikTextArea = ({ label, style, ...props }: FormikTextAreaProps) => {
       <textarea
         ref={textareaRef}
         className="text-area"
-        style={style as any}
+        style={getLineStyle(props.type, options, lineName) as any}
         {...field}
       />
       {meta.touched && meta.error ? (

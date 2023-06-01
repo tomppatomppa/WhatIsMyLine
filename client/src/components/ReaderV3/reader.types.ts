@@ -1,6 +1,5 @@
 export type ReaderMode = 'read' | 'edit'
 
-export type ReaderMenu = 'read' | 'edit'
 export type MenuPosition = 'top' | 'bottom'
 
 //Scene types
@@ -38,7 +37,6 @@ export type Settings = {
   }
 }
 export interface ReaderConfiguration {
-  mode: ReaderMode
   highlight: Actor[]
   expanded: string[]
   settings: Settings
@@ -68,4 +66,3 @@ export type ReaderMenuActions =
       'SET_STYLE',
       { target: LineType; value: string; property: keyof Style }
     >
-  | ReducerAction<'SET_MODE', {}>

@@ -18,7 +18,7 @@ export const Reader = (props: ReaderProps) => {
   const [options, dispatch] = useReducer(reducer, initialState)
 
   return (
-    <div className={clsx(styles.reader, styles[options.mode])}>
+    <div className={clsx(styles.reader)}>
       <ReaderContext.Provider value={{ options, dispatch, script }}>
         {children}
         <section id="scene-content">
