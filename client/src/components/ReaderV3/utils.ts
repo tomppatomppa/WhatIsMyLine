@@ -40,3 +40,9 @@ export function getLineStyle(
   }
   return options.settings.info.style
 }
+
+export function addLineBreaksStringArray(array: string[]): string[] {
+  console.log(array)
+  const arrayWithLineBreaks = array.map((line) => line + '\n')
+  return arrayWithLineBreaks
+}

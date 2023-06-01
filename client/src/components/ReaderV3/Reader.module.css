@@ -9,7 +9,7 @@
 }
 
 .menu {
-  @apply fixed flex left-0 w-full h-10 items-center bg-white border-b border-black;
+  @apply fixed z-50 flex left-0 w-full h-10 items-center bg-white border-b border-black;
   &.top {
     @apply top-14;
   }

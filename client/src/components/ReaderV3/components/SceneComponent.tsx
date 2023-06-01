@@ -6,8 +6,6 @@ import ReaderMenuButton from './ReaderMenuButton'
 import styles from '../Reader.module.css'
 import clsx from 'clsx'
 import EditableSceneItem from './EditableSceneItem'
-import { LineComponent } from './LineComponent'
-import StaticSceneItem from './StaticSceneItem'
 
 interface SceneProps {
   scene: Scene
@@ -17,8 +15,8 @@ interface SceneProps {
 
 export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
   const { options, dispatch } = useReaderContext()
-  const isExpanded = options.expanded.includes(scene.id)
   const [isEditing, setIsEditing] = useState(false)
+  const isExpanded = options.expanded.includes(scene.id)
 
   const handleExpandScene = (sceneId: string) => {
     if (!sceneId) return
@@ -34,13 +32,8 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
     dispatch({ type: 'HIGHLIGHT_TARGET', payload: { target: name } })
   }
 
-  const handleSetEditing = () => {
-    setIsEditing(true)
-  }
   const handleSave = (scene: Scene) => {
     console.log(scene)
-    // onSave(index, modifiedScene as any)
-    // setIsEditing(false)
   }
 
   return (
@@ -58,23 +51,16 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
           onClick={() => setIsEditing(true)}
         />
       </div>
-      {isExpanded &&
-        (isEditing ? (
-          <EditableSceneItem
-            scene={scene}
-            isEditing={isEditing}
-            handleHighlight={handleHighlight}
-            handleSave={handleSave}
-            setIsEditing={setIsEditing}
-            options={options}
-          />
-        ) : (
-          <StaticSceneItem
-            scene={scene}
-            handleHighlight={handleHighlight}
-            options={options}
-          />
-        ))}
+      {isExpanded && (
+        <EditableSceneItem
+          scene={scene}
+          isEditing={isEditing}
+          handleHighlight={handleHighlight}
+          handleSave={handleSave}
+          setIsEditing={setIsEditing}
+          options={options}
+        />
+      )}
     </section>
   )
 }

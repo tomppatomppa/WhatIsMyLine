@@ -38,16 +38,29 @@ const initialState = {
 
 const ReaderPage = () => {
   const [selected, setSelected] = useState<Script | null>(null)
+  const scenes = selected?.scenes.map((scene) => {
+    return {
+      ...scene,
+      data: scene.data.map((line) => {
+        return {
+          ...line,
+          lines: line.lines.join('\n'),
+        }
+      }),
+    }
+  })
+  const newScript = { ...selected, scenes }
   const onSave = (index: number, scene: Scene) => {
     const updated = selected?.scenes[index]
     console.log(updated)
   }
+
   return (
     <div className="bg-orange-50">
       <Navbar selected={selected} setSelected={setSelected} />
-      {selected && (
+      {newScript && (
         <Reader
-          script={selected}
+          script={newScript as any}
           initialState={initialState}
           renderItem={(scene, index) => (
             <SceneComponent scene={scene} index={index} onSave={onSave} />
