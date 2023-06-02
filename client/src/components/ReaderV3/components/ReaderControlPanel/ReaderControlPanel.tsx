@@ -12,12 +12,12 @@ const ReaderControlPanel = () => {
 
   return (
     <div
-      id="reader-menu"
+      id="reader-controlpanel"
       className={clsx(
-        `z-50 fixed top-16 md:w-1/2 ${
+        `z-50 flex sticky top-2 md:w-1/2 ${
           minimized ? 'h-2' : ''
-        } left-1/2 -translate-x-1/2 pr-4 gap-4 rounded-md
-         flex flex-row bg-indigo-200 shadow-lg text-white`
+        } left-1/2  md:-translate-x-1/2 px-4 rounded-md
+         bg-indigo-200 shadow-lg text-white`
       )}
     >
       <span className="flex-1" />

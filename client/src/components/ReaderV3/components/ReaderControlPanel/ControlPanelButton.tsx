@@ -2,7 +2,13 @@ import clsx from 'clsx'
 import useComponentVisible from 'src/hooks/useComponentVisible'
 import styles from '../../Reader.module.css'
 
-export const ControlPanelButton = ({ icon, children, onClick }: any) => {
+export const ControlPanelButton = ({
+  className = '',
+  icon,
+  children,
+  onClick,
+  show = true,
+}: any) => {
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false)
 
@@ -13,7 +19,7 @@ export const ControlPanelButton = ({ icon, children, onClick }: any) => {
     }
     onClick()
   }
-  return (
+  return show ? (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
       onClick={() => handleOnClick()}
@@ -27,6 +33,7 @@ export const ControlPanelButton = ({ icon, children, onClick }: any) => {
         <span
           className={clsx(
             styles['tooltip'],
+
             `transition-all duration-200 ${
               isComponentVisible ? 'scale-100' : 'scale-0'
             }`
@@ -36,5 +43,5 @@ export const ControlPanelButton = ({ icon, children, onClick }: any) => {
         </span>
       )}
     </div>
-  )
+  ) : null
 }

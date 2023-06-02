@@ -4,11 +4,15 @@ import LandingPage from './pages/LandingPage'
 import useCurrentScripts from './hooks/useCurrentScripts'
 
 import ReaderPage from './pages/ReaderPage'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import Navbar from './components/Navbar'
 
 function App() {
   const navigate = useNavigate()
+  const [selected, setSelected] = useState(null)
   const { currentScripts, setCurrentScripts } = useCurrentScripts()
+
+  const defaultScript = currentScripts.length ? currentScripts[0] : []
 
   const getScripts = () => {
     const foundScripts = JSON.parse(localStorage.getItem('scripts'))
@@ -26,6 +30,7 @@ function App() {
 
   return (
     <div className="App">
+      <Navbar selected={selected} setSelected={setSelected} />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route
@@ -36,7 +41,10 @@ function App() {
             />
           }
         >
-          <Route path="/reader" element={<ReaderPage />} />
+          <Route
+            path="/reader"
+            element={<ReaderPage selected={defaultScript} />}
+          />
         </Route>
       </Routes>
     </div>

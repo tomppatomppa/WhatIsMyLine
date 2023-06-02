@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import { Scene } from '../../reader.types'
 import EditIcon from '../icons/EditIcon'
-import ReaderMenuButton from '../ReaderControlPanel/ReaderMenuButton'
 import styles from '../../Reader.module.css'
 import clsx from 'clsx'
 import EditableSceneItem from './EditableSceneItem'
 
 import DelayWrapper from 'src/hooks/useDelayUnmount/useDelayUnmount'
+import { CancelIcon, ConfirmIcon } from '../icons'
+import ReaderMenuButton from '../ReaderControlPanel/ReaderMenuButton'
 
 interface SceneProps {
   scene: Scene
@@ -41,18 +42,28 @@ const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
 
   return (
     <section className={clsx(styles.scene, styles[variant])}>
-      <div className="flex items-center justify-center">
+      <div className="flex justify-center ">
+        <span className="flex-1" />
         <h1
           onClick={() => handleExpandScene(scene.id)}
-          className=" flex-1 cursor-pointer font-bold"
+          className="cursor-pointer
+           mx-auto justify-center font-bold"
         >
           {scene.id}
         </h1>
-        <ReaderMenuButton
-          show={isExpanded && !isEditing}
-          icon={<EditIcon />}
-          onClick={() => setIsEditing(true)}
-        />
+        <div className="flex flex-1 justify-end items-center gap-4 ">
+          <ReaderMenuButton
+            type="submit"
+            icon={<ConfirmIcon />}
+            show={isEditing && isExpanded}
+          />
+          <button
+            className={clsx(isExpanded ? 'visible' : 'invisible')}
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            {isEditing ? <CancelIcon /> : <EditIcon />}
+          </button>
+        </div>
       </div>
       <DelayWrapper isMounted={isExpanded}>
         <EditableSceneItem

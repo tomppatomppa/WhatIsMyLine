@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import Navbar from '../components/Navbar'
-
 import {
   ReaderConfiguration,
   Scene,
@@ -35,9 +32,10 @@ const initialState = {
   },
 } as ReaderConfiguration
 
-const ReaderPage = () => {
-  const [selected, setSelected] = useState<Script | null>(null)
-
+interface ReaderPageProps {
+  selected: Script
+}
+const ReaderPage = ({ selected }: ReaderPageProps) => {
   const scenes = selected?.scenes.map((scene) => {
     return {
       ...scene,
@@ -53,13 +51,11 @@ const ReaderPage = () => {
 
   const onSave = (index: number, scene: Scene) => {
     const oldScene = selected?.scenes[index]
-
     console.log(oldScene, scene)
   }
 
   return (
-    <div className="mt-48">
-      <Navbar selected={selected} setSelected={setSelected} />
+    <div className="bg-red-900">
       {newScript && (
         <Reader
           script={newScript as any}

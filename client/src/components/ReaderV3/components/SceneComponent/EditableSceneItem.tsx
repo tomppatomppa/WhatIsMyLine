@@ -4,13 +4,9 @@ import { getLineStyle } from '../../utils'
 import clsx from 'clsx'
 import FormikTextArea from './FormikTextArea'
 import { useEffect, useState } from 'react'
-import ReaderMenuButton from '../ReaderControlPanel/ReaderMenuButton'
-import ConfirmIcon from '../icons/ConfirmIcon'
-import CancelIcon from '../icons/CancelIcon'
-import DeleteIcon from '../icons/DeleteIcon'
-import PlusIcon from '../icons/PlusIcon'
 
 import styles from '../../Reader.module.css'
+import { DeleteIcon, PlusIcon } from '../icons'
 
 interface EditableSceneItemProps {
   scene: Scene
@@ -43,11 +39,10 @@ const EditableSceneItem = (props: EditableSceneItemProps) => {
 
   return (
     <Formik onSubmit={handleSave} initialValues={scene}>
-      {({ values, resetForm }) => (
+      {({ values, resetForm, submitForm }) => (
         <FieldArray key={formKey} name="data">
           {({ insert, remove }) => (
             <Form className="flex flex-col">
-              <EditMenu {...props} resetForm={resetForm} />
               <fieldset disabled={!isEditing}>
                 {values.data.map(({ name, type, lines }, index) => (
                   <div key={index}>
@@ -80,14 +75,12 @@ const EditableSceneItem = (props: EditableSceneItemProps) => {
                         value={lines}
                       />
                       {isEditing && (
-                        <>
-                          <label
-                            onClick={() => remove(index)}
-                            className="absolute w-6 right-0 top-0"
-                          >
-                            <DeleteIcon />
-                          </label>
-                        </>
+                        <label
+                          onClick={() => remove(index)}
+                          className="absolute w-6 right-0 top-0"
+                        >
+                          <DeleteIcon />
+                        </label>
                       )}
                     </div>
                   </div>
@@ -100,28 +93,5 @@ const EditableSceneItem = (props: EditableSceneItemProps) => {
     </Formik>
   )
 }
-const EditMenu = (props: any) => {
-  const { isEditing, setIsEditing } = props
 
-  return (
-    <div className="flex justify-end relative -top-6">
-      {isEditing && (
-        <div className="flex gap-4">
-          <ReaderMenuButton
-            className="hover:scale-110"
-            show
-            type="submit"
-            icon={<ConfirmIcon />}
-          />
-          <ReaderMenuButton
-            show
-            type="reset"
-            onClick={() => setIsEditing(false)}
-            icon={<CancelIcon />}
-          />
-        </div>
-      )}
-    </div>
-  )
-}
 export default EditableSceneItem

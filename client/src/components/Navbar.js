@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import useCurrentScripts from '../hooks/useCurrentScripts'
 import { FileButton } from './FileLoader'
 import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'
@@ -38,14 +38,10 @@ const Navbar = ({ selected, setSelected }) => {
     localStorage.setItem('scripts', JSON.stringify(updated_scripts))
     setCurrentScripts(updated_scripts)
   }
-  useEffect(() => {
-    if (!selected && currentScripts.length > 0) {
-      setSelected(currentScripts[0])
-    }
-  }, [])
+
   return (
-    <div className="w-full sticky z-[90000]">
-      <div className="fixed shadow-md top-0 flex w-full justify-start bg-primary ">
+    <div>
+      <div className="sticky bottom-0 shadow-md  flex w-full justify-start bg-primary ">
         <button
           className="flex flex-1 self-center m-4 text-black font-bold tracking-widest"
           onClick={() => setShowMenu(!showMenu)}

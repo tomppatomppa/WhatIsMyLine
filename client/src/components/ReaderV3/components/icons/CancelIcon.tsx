@@ -1,7 +1,7 @@
 const CancelIcon = () => {
   return (
     <svg
-      className="h-5 w-5"
+      className="h-4 w-4"
       viewBox="0 0 24 24"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
@@ -16,8 +16,7 @@ const CancelIcon = () => {
           y2="100%"
           id="linearGradient-1"
         >
-          <stop stopColor="#FC4343" offset="0%"></stop>
-          <stop stopColor="#F82020" offset="100%"></stop>
+          <stop stopColor="#000000"></stop>
         </linearGradient>
       </defs>
       <g
