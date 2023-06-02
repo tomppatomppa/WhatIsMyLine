@@ -9,7 +9,8 @@ module.exports = {
         'hero-pattern': "url('assets/images/blob-scene-haikei.png')",
       },
       colors: {
-        primary: '#14b8a6',
+        primary: '#CED7FD',
+        primaryLight: '#A5B4FC',
         secondary: '#00ABE4',
         action: '#2997FF',
         ...colors,

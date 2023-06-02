@@ -1,9 +1,9 @@
 const PlayIcon = () => {
   return (
     <svg
-      className="h-6 w-6"
+      className="h-6 w-6 opacity-70"
       viewBox="0 0 24 24"
-      fill="#32CD32"
+      fill="#22C55E"
       xmlns="http://www.w3.org/2000/svg"
     >
       <g id="Media / Play">

@@ -5,6 +5,8 @@ import ReaderMenuButton from './ReaderMenuButton'
 import ConfirmIcon from './icons/ConfirmIcon'
 import useComponentVisible from 'src/hooks/useComponentVisible'
 import { useState } from 'react'
+import PlayIcon from './icons/PlayIcon'
+import ChatIcon from './icons/ChatIcon'
 
 const ReaderMenu = () => {
   const { options, dispatch } = useReaderContext()
@@ -23,7 +25,7 @@ const ReaderMenu = () => {
       <span className="flex-1" />
       <MinimizeButton onClick={() => setMinimized(!minimized)} />
       {!minimized && (
-        <div id="button-container" className="flex">
+        <div id="button-container" className="flex gap-2">
           <MenuBarIcon icon={<ConfirmIcon />}>
             <button
               className={clsx(!hasExpandedScenes && 'text-neutral-600')}
@@ -36,24 +38,15 @@ const ReaderMenu = () => {
             >
               Close All
             </button>
-            <ReaderMenuButton
-              className="text-white"
-              onClick={() => console.log('Speak')}
-              show
-              text="Speak"
-            />
-            <ReaderMenuButton
-              className="text-white"
-              onClick={() => console.log('play')}
-              show
-              text="Play"
-            />
           </MenuBarIcon>
-          <MenuBarIcon icon={<ConfirmIcon />}>
-            <button>Action</button>
-            <button>Action</button>
-            <button>Action</button>
-          </MenuBarIcon>
+          <MenuBarIcon
+            onClick={() => console.log('play')}
+            icon={<PlayIcon />}
+          />
+          <MenuBarIcon
+            onClick={() => console.log('speak')}
+            icon={<ChatIcon />}
+          />
         </div>
       )}
     </div>
@@ -73,14 +66,21 @@ const MinimizeButton = (props: MinimizeButtonProps) => {
     />
   )
 }
-const MenuBarIcon = ({ icon, children }: any) => {
+const MenuBarIcon = ({ icon, children, onClick }: any) => {
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false)
 
+  const handleOnClick = () => {
+    if (!onClick) {
+      setIsComponentVisible(true)
+      return
+    }
+    onClick()
+  }
   return (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
-      onClick={() => setIsComponentVisible(true)}
+      onClick={() => handleOnClick()}
       className={clsx(
         styles['menubar'],
         'menubar-icon transition-all duration-200'

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useCurrentScripts from '../hooks/useCurrentScripts'
 import { FileButton } from './FileLoader'
 import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'
@@ -6,7 +6,7 @@ import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'
 import SelectScene from './SelectScene'
 
 const Navbar = ({ selected, setSelected }) => {
-  const [showMenu, setShowMenu] = useState(true)
+  const [showMenu, setShowMenu] = useState(false)
   const [menuItems, setMenuItems] = useState([])
   const { setShowScenes, currentScripts, setCurrentScripts } =
     useCurrentScripts()
@@ -38,10 +38,14 @@ const Navbar = ({ selected, setSelected }) => {
     localStorage.setItem('scripts', JSON.stringify(updated_scripts))
     setCurrentScripts(updated_scripts)
   }
-
+  useEffect(() => {
+    if (!selected && currentScripts.length > 0) {
+      setSelected(currentScripts[0])
+    }
+  }, [])
   return (
     <div className="w-full mb-24 sticky z-[90000]">
-      <div className="fixed shadow-md top-0 flex w-full justify-start  bg-white">
+      <div className="fixed shadow-md  top-0 flex w-full justify-start bg-primary ">
         <button
           className="flex flex-1 self-center m-4 text-black font-bold tracking-widest"
           onClick={() => setShowMenu(!showMenu)}

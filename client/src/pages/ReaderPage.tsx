@@ -10,7 +10,6 @@ import {
   Scene,
   Script,
 } from 'src/components/ReaderV3/reader.types'
-import ReaderHeading from 'src/components/ReaderV3/components/ReaderHeading'
 
 const initialState = {
   highlight: [],
@@ -68,7 +67,6 @@ const ReaderPage = () => {
             <SceneComponent scene={scene} index={index} onSave={onSave} />
           )}
         >
-          <ReaderHeading />
           <ReaderMenu />
         </Reader>
       )}
