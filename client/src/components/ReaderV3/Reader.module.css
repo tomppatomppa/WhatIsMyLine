@@ -2,9 +2,6 @@
   @apply border-l-4 max-w-4xl mx-auto text-center my-12 border-green-200 bg-green-50;
 }
 
-.menu {
-  @apply fixed z-50 top-14 flex left-0 w-full h-10 items-center bg-white border-b border-black;
-}
 @keyframes pulse {
   0% {
     border-color: transparent;

@@ -14,7 +14,7 @@ const ReaderControlPanel = () => {
     <div
       id="reader-menu"
       className={clsx(
-        `z-50 fixed top-16 w-1/2 ${
+        `z-50 fixed top-16 md:w-1/2 ${
           minimized ? 'h-2' : ''
         } left-1/2 -translate-x-1/2 pr-4 gap-4 rounded-md
          flex flex-row bg-indigo-200 shadow-lg text-white`
