@@ -55,7 +55,7 @@ const ReaderPage = ({ selected }: ReaderPageProps) => {
   }
 
   return (
-    <div className="bg-red-900">
+    <div className="pb-24 pt-4">
       {newScript && (
         <Reader
           script={newScript as any}

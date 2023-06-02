@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { Actor, ReaderConfiguration, SceneLine, Settings } from './reader.types'
+import { Actor, ReaderConfiguration, SceneLine } from './reader.types'
 
 export function generateUniqueColor(highlight: Actor[]) {
   const colors = [
@@ -42,7 +42,6 @@ export function getLineStyle(
 }
 
 export function addLineBreaksStringArray(array: string[]): string[] {
-  console.log(array)
   const arrayWithLineBreaks = array.map((line) => line + '\n')
   return arrayWithLineBreaks
 }
