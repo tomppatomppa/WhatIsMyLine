@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { useReaderContext } from '../contexts/ReaderContext'
-import { Scene } from '../reader.types'
-import EditIcon from './icons/EditIcon'
-import ReaderMenuButton from './ReaderMenuButton'
-import styles from '../Reader.module.css'
+import { useReaderContext } from '../../contexts/ReaderContext'
+import { Scene } from '../../reader.types'
+import EditIcon from '../icons/EditIcon'
+import ReaderMenuButton from '../ReaderControlPanel/ReaderMenuButton'
+import styles from '../../Reader.module.css'
 import clsx from 'clsx'
 import EditableSceneItem from './EditableSceneItem'
 
@@ -13,7 +13,7 @@ interface SceneProps {
   onSave: (index: number, scene: Scene) => void
 }
 
-export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
+const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
   const { options, dispatch } = useReaderContext()
   const [isEditing, setIsEditing] = useState(false)
   const isExpanded = options.expanded.includes(scene.id)
@@ -65,3 +65,4 @@ export const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
     </section>
   )
 }
+export default SceneComponent

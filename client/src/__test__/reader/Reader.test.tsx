@@ -1,11 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import Reader from 'src/components/ReaderV3/Reader'
 import '@testing-library/jest-dom'
-import { SceneComponent } from 'src/components/ReaderV3/components/SceneComponent'
+
 import {
   ReaderConfiguration,
   Script,
 } from 'src/components/ReaderV3/reader.types'
+import { SceneComponent } from 'src/components/ReaderV3'
 
 const initialState = {
   mode: 'read',

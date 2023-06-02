@@ -1,16 +1,16 @@
 import { Formik, Field, FieldArray, Form } from 'formik'
-import { ReaderConfiguration, Scene } from '../reader.types'
-import { getLineStyle } from '../utils'
+import { ReaderConfiguration, Scene } from '../../reader.types'
+import { getLineStyle } from '../../utils'
 import clsx from 'clsx'
 import FormikTextArea from './FormikTextArea'
 import { useEffect, useState } from 'react'
-import ReaderMenuButton from './ReaderMenuButton'
-import ConfirmIcon from './icons/ConfirmIcon'
-import CancelIcon from './icons/CancelIcon'
-import DeleteIcon from './icons/DeleteIcon'
-import PlusIcon from './icons/PlusIcon'
+import ReaderMenuButton from '../ReaderControlPanel/ReaderMenuButton'
+import ConfirmIcon from '../icons/ConfirmIcon'
+import CancelIcon from '../icons/CancelIcon'
+import DeleteIcon from '../icons/DeleteIcon'
+import PlusIcon from '../icons/PlusIcon'
 
-import styles from '../Reader.module.css'
+import styles from '../../Reader.module.css'
 
 interface EditableSceneItemProps {
   scene: Scene

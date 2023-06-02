@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import Navbar from '../components/Navbar'
 
-import Reader from '../components/ReaderV3/Reader'
-import { SceneComponent } from '../components/ReaderV3/components/SceneComponent'
-
 import {
   ReaderConfiguration,
   Scene,
   Script,
 } from 'src/components/ReaderV3/reader.types'
-import ReaderControlPanel from 'src/components/ReaderV3/components/ReaderControlPanel/ReaderControlPanel'
+import {
+  Reader,
+  ReaderControlPanel,
+  SceneComponent,
+} from 'src/components/ReaderV3'
 
 const initialState = {
   highlight: [],

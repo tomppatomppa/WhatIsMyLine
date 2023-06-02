@@ -1,8 +1,8 @@
 import { useField } from 'formik'
-import { useReaderContext } from '../contexts/ReaderContext'
-import { Actor, SceneLine } from '../reader.types'
+import { useReaderContext } from '../../contexts/ReaderContext'
+import { Actor, SceneLine } from '../../reader.types'
 import { useRef, useEffect } from 'react'
-import { getLineStyle } from '../utils'
+import { getLineStyle } from '../../utils'
 
 interface FormikTextAreaProps {
   label: string
