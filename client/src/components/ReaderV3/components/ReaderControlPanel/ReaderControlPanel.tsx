@@ -1,13 +1,9 @@
 import clsx from 'clsx'
-
 import { useState } from 'react'
-import PlayIcon from '../icons/PlayIcon'
-import ChatIcon from '../icons/ChatIcon'
 import { useReaderContext } from '../../contexts/ReaderContext'
-import ConfirmIcon from '../icons/ConfirmIcon'
-
 import { MinimizeButton } from './MinimizeButton'
 import { ControlPanelButton } from './ControlPanelButton'
+import { ChatIcon, ConfirmIcon, PlayIcon } from '../icons'
 
 const ReaderControlPanel = () => {
   const { options, dispatch } = useReaderContext()
