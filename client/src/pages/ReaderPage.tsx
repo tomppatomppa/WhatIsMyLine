@@ -58,7 +58,7 @@ const ReaderPage = () => {
   }
 
   return (
-    <div className="bg-orange-50">
+    <div className="mt-48">
       <Navbar selected={selected} setSelected={setSelected} />
       {newScript && (
         <Reader

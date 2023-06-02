@@ -44,8 +44,8 @@ const Navbar = ({ selected, setSelected }) => {
     }
   }, [])
   return (
-    <div className="w-full mb-24 sticky z-[90000]">
-      <div className="fixed shadow-md  top-0 flex w-full justify-start bg-primary ">
+    <div className="w-full sticky z-[90000]">
+      <div className="fixed shadow-md top-0 flex w-full justify-start bg-primary ">
         <button
           className="flex flex-1 self-center m-4 text-black font-bold tracking-widest"
           onClick={() => setShowMenu(!showMenu)}

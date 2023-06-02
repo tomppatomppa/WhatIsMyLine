@@ -7,6 +7,8 @@ import styles from '../../Reader.module.css'
 import clsx from 'clsx'
 import EditableSceneItem from './EditableSceneItem'
 
+import DelayWrapper from 'src/hooks/useDelayUnmount/useDelayUnmount'
+
 interface SceneProps {
   scene: Scene
   index: number
@@ -17,6 +19,7 @@ const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
   const { options, dispatch } = useReaderContext()
   const [isEditing, setIsEditing] = useState(false)
   const isExpanded = options.expanded.includes(scene.id)
+  const variant = isExpanded && !isEditing ? 'open' : isEditing ? 'edit' : ''
 
   const handleExpandScene = (sceneId: string) => {
     if (!sceneId) return
@@ -37,13 +40,7 @@ const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
   }
 
   return (
-    <section
-      className={clsx(
-        styles.scene,
-        styles[!isExpanded ? '' : 'open'],
-        styles[!isEditing ? '' : 'edit']
-      )}
-    >
+    <section className={clsx(styles.scene, styles[variant])}>
       <div className="flex items-center justify-center">
         <h1
           onClick={() => handleExpandScene(scene.id)}
@@ -51,14 +48,13 @@ const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
         >
           {scene.id}
         </h1>
-
         <ReaderMenuButton
           show={isExpanded && !isEditing}
           icon={<EditIcon />}
           onClick={() => setIsEditing(true)}
         />
       </div>
-      {isExpanded ? (
+      <DelayWrapper isMounted={isExpanded}>
         <EditableSceneItem
           scene={scene}
           isEditing={isEditing}
@@ -67,7 +63,7 @@ const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
           setIsEditing={setIsEditing}
           options={options}
         />
-      ) : null}
+      </DelayWrapper>
     </section>
   )
 }

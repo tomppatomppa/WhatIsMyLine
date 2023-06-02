@@ -1,5 +1,5 @@
 .reader {
-  @apply max-w-4xl mx-auto text-center;
+  @apply max-w-4xl bg-indigo-50 rounded-md md:p-12 p-1 mx-auto text-center;
 }
 
 @keyframes pulse {
@@ -45,4 +45,26 @@
 }
 .tooltip {
   @apply absolute w-auto p-2 m-2 min-w-max top-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold origin-top;
+}
+
+@keyframes inAnimation {
+  0% {
+    opacity: 0;
+    max-height: 0px;
+  }
+  100% {
+    opacity: 1;
+    max-height: 600px;
+  }
+}
+
+@keyframes outAnimation {
+  0% {
+    opacity: 1;
+    max-height: 600px;
+  }
+  100% {
+    opacity: 0;
+    max-height: 0px;
+  }
 }
