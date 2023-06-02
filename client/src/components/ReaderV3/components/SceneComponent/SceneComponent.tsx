@@ -37,7 +37,13 @@ const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
   }
 
   return (
-    <section className={clsx(styles.scene, styles[!isEditing ? '' : 'edit'])}>
+    <section
+      className={clsx(
+        styles.scene,
+        styles[!isExpanded ? '' : 'open'],
+        styles[!isEditing ? '' : 'edit']
+      )}
+    >
       <div className="flex items-center justify-center">
         <h1
           onClick={() => handleExpandScene(scene.id)}

@@ -1,5 +1,5 @@
 .reader {
-  @apply border-l-4 max-w-4xl mx-auto text-center my-12 border-green-200 bg-green-50;
+  @apply max-w-4xl mx-auto text-center;
 }
 
 @keyframes pulse {
@@ -7,26 +7,19 @@
     border-color: transparent;
   }
   50% {
-    border-color: red;
+    border-color: #ef4444;
   }
   100% {
     border-color: transparent;
   }
 }
 .scene {
-  @apply border shadow-md my-2 bg-white p-2;
-  &.read {
-    @apply border-green-200 bg-green-50;
+  @apply shadow-md my-2 bg-white p-2 border-l-4 border-orange-200;
+  &.open {
+    @apply border-green-200;
   }
   &.edit {
-    @apply animate-pulse;
-    animation-name: pulse;
-    animation-duration: 2s;
-    animation-iteration-count: infinite;
-    border-width: 1px;
-    border-style: solid;
-    border-color: transparent;
-    background-color: var(--neutral-200);
+    @apply border-rose-700 animate-pulse border-l-4 border;
   }
 }
 
