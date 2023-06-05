@@ -6,10 +6,17 @@ interface DragProps extends Omit<DraggableChildrenFn, 'children'> {
   className?: string
   index: number
   children: React.ReactNode
+  isDragDisabled: boolean
 }
-export const Drag = ({ id, index, children, ...props }: DragProps) => {
+export const Drag = ({
+  id,
+  index,
+  children,
+  isDragDisabled,
+  ...props
+}: DragProps) => {
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable isDragDisabled={isDragDisabled} draggableId={id} index={index}>
       {(provided, snapshot) => {
         return (
           <div ref={provided.innerRef} {...provided.draggableProps} {...props}>

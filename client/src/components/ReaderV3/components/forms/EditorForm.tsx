@@ -16,8 +16,19 @@ const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
     >
       {({ values }) => (
         <Drop key={scene.id} id={scene.id} type="droppable-item">
-          <button onClick={() => AddLine(sceneIndex)}>add</button>
-          <button onClick={() => setIsEditing(!isEditing)}>Edit</button>
+          <button
+            className="drag-handle"
+            disabled={!isEditing}
+            onClick={() => AddLine(sceneIndex)}
+          >
+            add
+          </button>
+          <button
+            className="drag-handle"
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            Edit
+          </button>
           <Form>
             {values.data.map((line: any, lineIndex: number) => {
               return (
@@ -26,14 +37,13 @@ const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
                   key={line.id}
                   id={line.id}
                   index={lineIndex}
+                  isDragDisabled={!isEditing}
                 >
-                  <button
-                    type="button"
-                    onClick={() => DeleteLine(sceneIndex, lineIndex)}
+                  <fieldset
+                    className="w-full my-2 flex flex-col"
+                    disabled={!isEditing}
+                    key={lineIndex}
                   >
-                    delete
-                  </button>
-                  <div className="w-full my-2 flex flex-col" key={lineIndex}>
                     <ConditionalField
                       key={lineIndex}
                       show={isEditing}
@@ -49,6 +59,12 @@ const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
                         <option value="INFO">Info</option>
                         <option value="ACTOR">Actor</option>
                       </Field>
+                      <button
+                        type="button"
+                        onClick={() => DeleteLine(sceneIndex, lineIndex)}
+                      >
+                        delete
+                      </button>
                     </ConditionalField>
                     <Field
                       className="text-center"
@@ -59,7 +75,7 @@ const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
                       lineName={line.name}
                       name={`data[${lineIndex}].lines`}
                     />
-                  </div>
+                  </fieldset>
                 </Drag>
               )
             })}

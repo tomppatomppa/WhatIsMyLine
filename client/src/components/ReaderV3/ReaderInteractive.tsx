@@ -67,6 +67,7 @@ const ReaderInteractive = ({
                 key={scene.id}
                 id={scene.id}
                 index={sceneIndex}
+                isDragDisabled={false}
               >
                 <div className="category-container">
                   <h2
