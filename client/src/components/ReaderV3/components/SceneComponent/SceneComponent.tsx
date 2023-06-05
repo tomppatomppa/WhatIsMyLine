@@ -7,8 +7,7 @@ import clsx from 'clsx'
 import EditableSceneItem from './EditableSceneItem'
 
 import DelayWrapper from 'src/hooks/useDelayUnmount/useDelayUnmount'
-import { CancelIcon, ConfirmIcon } from '../icons'
-import ReaderMenuButton from '../ReaderControlPanel/ReaderMenuButton'
+import SceneEditor from './SceneEditor'
 
 interface SceneProps {
   scene: Scene
@@ -21,9 +20,9 @@ const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const isExpanded = options.expanded.includes(scene.id)
   const variant = isExpanded && !isEditing ? 'open' : isEditing ? 'edit' : ''
-
+  console.log(scene)
   const handleExpandScene = (sceneId: string) => {
-    if (!sceneId) return
+    if (!sceneId || isEditing) return
     dispatch({
       type: 'SET_EXPAND',
       payload: {
@@ -33,6 +32,7 @@ const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
   }
 
   const handleHighlight = (name: string) => {
+    if (isEditing) return
     dispatch({ type: 'HIGHLIGHT_TARGET', payload: { target: name } })
   }
 
@@ -42,16 +42,17 @@ const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
 
   return (
     <section className={clsx(styles.scene, styles[variant])}>
-      <div className="flex justify-center ">
-        <span className="flex-1" />
-        <h1
-          onClick={() => handleExpandScene(scene.id)}
-          className="cursor-pointer
-           mx-auto justify-center font-bold"
-        >
-          {scene.id}
-        </h1>
-        <div className="flex flex-1 justify-end items-center gap-4 ">
+      <fieldset disabled={!isEditing}>
+        <div className="flex justify-center">
+          <h1
+            id="scene-id"
+            onClick={() => handleExpandScene(scene.id)}
+            className="cursor-pointer font-bold text-center"
+          >
+            {scene.id}
+          </h1>
+
+          {/* <div className="flex flex-1 justify-end items-center gap-4 ">
           <ReaderMenuButton
             type="submit"
             icon={<ConfirmIcon />}
@@ -63,18 +64,27 @@ const SceneComponent = ({ scene, index, onSave }: SceneProps) => {
           >
             {isEditing ? <CancelIcon /> : <EditIcon />}
           </button>
+        </div> */}
         </div>
-      </div>
-      <DelayWrapper isMounted={isExpanded}>
-        <EditableSceneItem
+        <DelayWrapper isMounted={isExpanded}>
+          <SceneEditor
+            isEditing={isEditing}
+            scene={scene}
+            isExpanded={isExpanded}
+            setIsEditing={setIsEditing}
+            handleHighlight={handleHighlight}
+          />
+        </DelayWrapper>
+        {/* <EditableSceneItem
           scene={scene}
           isEditing={isEditing}
           handleHighlight={handleHighlight}
           handleSave={handleSave}
           setIsEditing={setIsEditing}
           options={options}
-        />
-      </DelayWrapper>
+        /> */}
+        {/* </DelayWrapper> */}
+      </fieldset>
     </section>
   )
 }

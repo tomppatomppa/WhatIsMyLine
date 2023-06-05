@@ -1,4 +1,4 @@
-import { useReducer } from 'react'
+import { useReducer, useState, useEffect } from 'react'
 import clsx from 'clsx'
 import reducer from './reducer'
 import ReaderContext from './contexts/ReaderContext'

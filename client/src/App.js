@@ -5,6 +5,7 @@ import useCurrentScripts from './hooks/useCurrentScripts'
 
 import ReaderPage from './pages/ReaderPage'
 import { useEffect, useState } from 'react'
+
 import Navbar from './components/Navbar'
 
 function App() {

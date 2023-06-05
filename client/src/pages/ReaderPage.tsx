@@ -1,13 +1,14 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import {
   ReaderConfiguration,
-  Scene,
   Script,
 } from 'src/components/ReaderV3/reader.types'
-import {
-  Reader,
-  ReaderControlPanel,
-  SceneComponent,
-} from 'src/components/ReaderV3'
+
+import { useState } from 'react'
+
+import ReaderInteractive from 'src/components/ReaderV3/ReaderInteractive'
+import { reorder } from 'src/NestedListComponent'
 
 const initialState = {
   highlight: [],
@@ -35,38 +36,82 @@ const initialState = {
 interface ReaderPageProps {
   selected: Script
 }
+
 const ReaderPage = ({ selected }: ReaderPageProps) => {
-  const scenes = selected?.scenes.map((scene) => {
+  const scenesConcatLines = selected?.scenes.map((scene, sceneIndex) => {
     return {
       ...scene,
-      data: scene.data.map((line) => {
+      name: scene.id,
+      data: scene.data.map((line, index) => {
         return {
           ...line,
+          id: `scene-${sceneIndex}:line-${index}`,
           lines: line.lines.join('\n'),
         }
       }),
     }
   })
-  const newScript = { ...selected, scenes }
 
-  const onSave = (index: number, scene: Scene) => {
-    const oldScene = selected?.scenes[index]
-    console.log(oldScene, scene)
+  const [scenes, setScenes] = useState(scenesConcatLines)
+
+  const handleDragEnd = (result: any) => {
+    const { type, source, destination } = result
+    if (!destination) return
+
+    const sourceSceneId = source.droppableId
+    const destinationSceneId = destination.droppableId
+
+    if (type === 'droppable-item') {
+      if (sourceSceneId === destinationSceneId) {
+        const updatedOrder = reorder(
+          scenes.find((scene) => scene.id === sourceSceneId).data,
+          source.index,
+          destination.index
+        )
+        const updatedCategories = scenes.map((scene) =>
+          scene.id !== sourceSceneId ? scene : { ...scene, data: updatedOrder }
+        )
+
+        setScenes(updatedCategories)
+      }
+    }
+
+    // Reordering categories
+    if (type === 'droppable-category') {
+      const updatedCategories = reorder(scenes, source.index, destination.index)
+
+      setScenes(updatedCategories)
+    }
+  }
+
+  const AddLine = (sceneIndex: number) => {
+    const updatedScenes = [...scenes]
+
+    updatedScenes[sceneIndex].data.push({
+      type: '',
+      name: '',
+      id: `scene-${[sceneIndex]}:line-${scenes[sceneIndex].data.length}`,
+      lines: 'new lines\new line\n',
+    })
+
+    setScenes(updatedScenes)
+  }
+
+  const DeleteLine = (sceneIndex: number, lineIndex: number) => {
+    const updatedScenes = [...scenes]
+    updatedScenes[sceneIndex].data.splice(lineIndex, 1)
+
+    setScenes(updatedScenes)
   }
 
   return (
-    <div className="pb-24 pt-4">
-      {newScript && (
-        <Reader
-          script={newScript as any}
-          initialState={initialState}
-          renderItem={(scene, index) => (
-            <SceneComponent scene={scene} index={index} onSave={onSave} />
-          )}
-        >
-          <ReaderControlPanel />
-        </Reader>
-      )}
+    <div>
+      <ReaderInteractive
+        data={scenes}
+        handleDragEnd={handleDragEnd}
+        AddLine={AddLine}
+        DeleteLine={DeleteLine}
+      />
     </div>
   )
 }

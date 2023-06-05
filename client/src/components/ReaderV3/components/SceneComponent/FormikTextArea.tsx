@@ -5,16 +5,13 @@ import { useRef, useEffect } from 'react'
 import { getLineStyle } from '../../utils'
 
 interface FormikTextAreaProps {
-  label: string
-  id: string
   type: SceneLine
   name: string
   props?: FormikTextAreaProps
-  value: string[]
   lineName: string
 }
-const FormikTextArea = ({ label, lineName, ...props }: FormikTextAreaProps) => {
-  const [field, meta] = useField(props)
+const FormikTextArea = ({ lineName, ...props }: FormikTextAreaProps) => {
+  const [field, meta] = useField(props.name)
   const { options } = useReaderContext()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -38,7 +35,7 @@ const FormikTextArea = ({ label, lineName, ...props }: FormikTextAreaProps) => {
 
   return (
     <>
-      <label htmlFor={props.id || field.name}></label>
+      <label htmlFor={field.name} />
       <textarea
         ref={textareaRef}
         className="text-area"
@@ -46,7 +43,7 @@ const FormikTextArea = ({ label, lineName, ...props }: FormikTextAreaProps) => {
         {...field}
       />
       {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
+        <div className="error bg-red">{meta.error}</div>
       ) : null}
     </>
   )

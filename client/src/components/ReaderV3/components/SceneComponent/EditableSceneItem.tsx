@@ -31,7 +31,7 @@ const EditableSceneItem = (props: EditableSceneItemProps) => {
   }
 
   /**
-   * Force form to rerender by updating key
+   * Force FieldArray to rerender whenever isEditing prop changes
    */
   useEffect(() => {
     setFormKey((prev) => prev + 1)
@@ -66,14 +66,13 @@ const EditableSceneItem = (props: EditableSceneItemProps) => {
                         name={`data[${index}].name`}
                         value={name || ''}
                       />
-                      <FormikTextArea
+                      {/* <FormikTextArea
                         lineName={name}
                         type={type}
-                        label="lines"
                         id="text-area"
                         name={`data[${index}].lines`}
                         value={lines}
-                      />
+                      /> */}
                       {isEditing && (
                         <label
                           onClick={() => remove(index)}
