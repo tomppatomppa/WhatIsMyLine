@@ -61,7 +61,7 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
                   </button>
                 </div>
               </ConditionalField>
-              <span
+              <strong
                 onClick={() => {
                   if (!isEditing) {
                     dispatch({
@@ -76,7 +76,7 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
                   disabled={!isEditing || line.type === 'INFO'}
                   name={`data[${lineIndex}].name`}
                 />
-              </span>
+              </strong>
               <FormikTextArea
                 style={{
                   ...getLineStyle(line.type),
