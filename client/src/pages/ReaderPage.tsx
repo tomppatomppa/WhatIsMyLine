@@ -17,8 +17,9 @@ const ReaderPage = ({ selected }: ReaderPageProps) => {
       data: scene.data.map((line, index) => {
         return {
           ...line,
-          id: `scene-${sceneIndex}:line-${index}`,
+          name: line.name || '',
           lines: line.lines.join('\n'),
+          id: `scene-${sceneIndex}:line-${index}`,
         }
       }),
     }

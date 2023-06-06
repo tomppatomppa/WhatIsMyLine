@@ -10,23 +10,29 @@ const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
   const [isEditing, setIsEditing] = useState(false)
 
   return (
-    <Formik
-      enableReinitialize={true}
-      initialValues={scene as Scene}
-      onSubmit={(values) => console.log(values)}
+    <div
+      className={`border-l-4 ${
+        isEditing ? 'border-red-700' : 'border-green-300'
+      }`}
     >
-      <Drop key={scene.id} id={scene.id} type="droppable-item">
-        <Form autoComplete="off">
-          <SceneEditorPanel
-            isEditing={isEditing}
-            AddLine={AddLine}
-            sceneIndex={sceneIndex}
-            setIsEditing={setIsEditing}
-          />
-          <LineList sceneIndex={sceneIndex} isEditing={isEditing} />
-        </Form>
-      </Drop>
-    </Formik>
+      <Formik
+        enableReinitialize={true}
+        initialValues={scene as Scene}
+        onSubmit={(values) => console.log(values)}
+      >
+        <Drop key={scene.id} id={scene.id} type="droppable-item">
+          <Form autoComplete="off">
+            <SceneEditorPanel
+              isEditing={isEditing}
+              AddLine={AddLine}
+              sceneIndex={sceneIndex}
+              setIsEditing={setIsEditing}
+            />
+            <LineList sceneIndex={sceneIndex} isEditing={isEditing} />
+          </Form>
+        </Drop>
+      </Formik>
+    </div>
   )
 }
 
