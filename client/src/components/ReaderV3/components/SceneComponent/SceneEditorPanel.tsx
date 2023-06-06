@@ -4,6 +4,7 @@ const SceneEditorPanel = (props: any) => {
   const { dirty } = useFormikContext()
   const { isEditing, setIsEditing, AddLine, sceneIndex } = props
   const className = dirty ? 'text-black' : 'text-gray-400'
+  
   return (
     <div className="flex justify-end gap-2 bg-blue-200 p-2">
       {isEditing ? (

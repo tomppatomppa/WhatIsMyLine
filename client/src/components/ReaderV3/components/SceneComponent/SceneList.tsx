@@ -7,6 +7,7 @@ interface SceneListProps {
   handleSetExpanded: (value: string) => void
   expanded: string[]
 }
+
 const SceneList = ({ scenes, handleSetExpanded, expanded }: SceneListProps) => {
   return (
     <>
@@ -17,7 +18,7 @@ const SceneList = ({ scenes, handleSetExpanded, expanded }: SceneListProps) => {
             key={scene.id}
             id={scene.id}
             index={sceneIndex}
-            isDragDisabled={true}
+            isDragDisabled={false}
           >
             <div className="w-full">
               <h2

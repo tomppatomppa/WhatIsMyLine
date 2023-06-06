@@ -10,6 +10,7 @@ interface LineListProps {
   sceneIndex: boolean
   isEditing: boolean
 }
+
 const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
   const { values } = useFormikContext<Scene>()
   const { options, dispatch } = useReaderContext()
