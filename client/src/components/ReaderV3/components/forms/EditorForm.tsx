@@ -1,10 +1,9 @@
-import { Field, Form, Formik } from 'formik'
-import { Drag, Drop } from 'src/components/drag-and-drop'
+import { Form, Formik } from 'formik'
+import { Drop } from 'src/components/drag-and-drop'
 import { useState } from 'react'
-import { ConditionalField } from './ConditionalField'
-import { FormikTextArea } from './FormikTextArea'
+
 import SceneEditorActions from '../SceneComponent/SceneEditorActions'
-import { DeleteIcon } from '../icons'
+
 import LineList from '../SceneComponent/LineList'
 import { Scene } from '../../reader.types'
 

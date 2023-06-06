@@ -7,6 +7,7 @@ import ReaderContext from './contexts/ReaderContext'
 import reducer from './reducer'
 
 import EditorForm from './components/forms/EditorForm'
+import SceneList from './components/SceneComponent/SceneList'
 
 interface ReaderInteractiveProps {
   data: any[]
@@ -60,34 +61,11 @@ const ReaderInteractive = ({
     <ReaderContext.Provider value={{ options, dispatch }}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <Drop id="droppable" type="droppable-category">
-          {data.map((scene, sceneIndex) => {
-            return (
-              <Drag
-                className="draggable-category"
-                key={scene.id}
-                id={scene.id}
-                index={sceneIndex}
-                isDragDisabled={false}
-              >
-                <div className="category-container">
-                  <h2
-                    onClick={() => handleSetExpanded(scene.id)}
-                    className="item"
-                  >
-                    {scene.id}
-                  </h2>
-                  {expanded.includes(scene.id) && (
-                    <EditorForm
-                      scene={scene}
-                      AddLine={AddLine}
-                      sceneIndex={sceneIndex}
-                      DeleteLine={DeleteLine}
-                    />
-                  )}
-                </div>
-              </Drag>
-            )
-          })}
+          <SceneList
+            scenes={data}
+            expanded={expanded}
+            handleSetExpanded={handleSetExpanded}
+          />
         </Drop>
       </DragDropContext>
     </ReaderContext.Provider>

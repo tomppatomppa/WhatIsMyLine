@@ -6,7 +6,6 @@ import { DeleteIcon } from '../icons'
 import { ConditionalField } from '../forms/ConditionalField'
 import { FormikTextArea } from '../forms/FormikTextArea'
 import { Scene } from '../../reader.types'
-import { useState } from 'react'
 
 interface LineListProps {
   sceneIndex: boolean

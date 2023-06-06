@@ -1,4 +1,7 @@
+import { useFormikContext } from 'formik'
+
 const SceneEditorActions = (props: any) => {
+  const { dirty } = useFormikContext()
   const { isEditing, setIsEditing, AddLine, sceneIndex } = props
   return (
     <div className="flex justify-end gap-2 bg-blue-200 p-2">
@@ -11,7 +14,11 @@ const SceneEditorActions = (props: any) => {
           >
             Add Line
           </button>
-          <button type="submit" disabled={!isEditing}>
+          <button
+            className={`${dirty ? '' : 'text-gray-400'}`}
+            type="submit"
+            disabled={!dirty}
+          >
             Save
           </button>
         </>
