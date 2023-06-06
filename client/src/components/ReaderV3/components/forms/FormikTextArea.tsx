@@ -9,8 +9,13 @@ interface FormikTextAreaProps {
   name: string
   props?: FormikTextAreaProps
   lineName: string
+  disabled?: boolean
 }
-export const FormikTextArea = ({ lineName, ...props }: FormikTextAreaProps) => {
+export const FormikTextArea = ({
+  lineName,
+  disabled,
+  ...props
+}: FormikTextAreaProps) => {
   const [field, meta] = useField(props.name)
   const { options } = useReaderContext()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -37,6 +42,7 @@ export const FormikTextArea = ({ lineName, ...props }: FormikTextAreaProps) => {
     <>
       <label htmlFor={field.name} />
       <textarea
+        disabled={disabled}
         ref={textareaRef}
         className="text-area"
         style={getLineStyle(props.type, options, lineName) as any}

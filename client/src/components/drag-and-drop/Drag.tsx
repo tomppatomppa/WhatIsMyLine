@@ -18,12 +18,15 @@ export const Drag = ({
   return (
     <Draggable isDragDisabled={isDragDisabled} draggableId={id} index={index}>
       {(provided, snapshot) => {
+        console.log(snapshot)
         return (
           <div ref={provided.innerRef} {...provided.draggableProps} {...props}>
             {children}
-            <div className="drag-handle" {...provided.dragHandleProps}>
-              Drag
-            </div>
+            {!isDragDisabled ? (
+              <div className="drag-handle" {...provided.dragHandleProps}>
+                Drag
+              </div>
+            ) : null}
           </div>
         )
       }}

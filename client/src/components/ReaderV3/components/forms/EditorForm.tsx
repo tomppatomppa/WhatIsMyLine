@@ -1,12 +1,10 @@
 import { Field, Form, Formik } from 'formik'
-
 import { Drag, Drop } from 'src/components/drag-and-drop'
-
 import { useState } from 'react'
 import { ConditionalField } from './ConditionalField'
 import { FormikTextArea } from './FormikTextArea'
-
-const components = [{ componentType: 'textarea', component: FormikTextArea }]
+import SceneEditorActions from '../SceneComponent/SceneEditorActions'
+import { DeleteIcon } from '../icons'
 
 const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
   const [isEditing, setIsEditing] = useState(false)
@@ -17,22 +15,15 @@ const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
       initialValues={scene}
       onSubmit={(values) => console.log(values)}
     >
-      {({ values }) => (
+      {({ values, dirty, resetForm }) => (
         <Drop key={scene.id} id={scene.id} type="droppable-item">
-          <button
-            className="drag-handle"
-            disabled={!isEditing}
-            onClick={() => AddLine(sceneIndex)}
-          >
-            add
-          </button>
-          <button
-            className="drag-handle"
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            Edit
-          </button>
-          <Form>
+          <Form autoComplete="off">
+            <SceneEditorActions
+              isEditing={isEditing}
+              AddLine={AddLine}
+              sceneIndex={sceneIndex}
+              setIsEditing={setIsEditing}
+            />
             {values.data.map((line: any, lineIndex: number) => {
               return (
                 <Drag
@@ -42,43 +33,58 @@ const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
                   index={lineIndex}
                   isDragDisabled={!isEditing}
                 >
-                  <fieldset
-                    className="w-full my-2 flex flex-col"
-                    disabled={!isEditing}
-                    key={lineIndex}
-                  >
+                  <div className="w-full flex flex-col" key={lineIndex}>
                     <ConditionalField
                       key={lineIndex}
                       show={isEditing}
                       onShow={() => {}}
-                      onCollapse={() => {}}
+                      onCollapse={() => {
+                        if (!dirty) return
+                        const result = window.confirm(
+                          'There are unsaved changes!\nSave or Discard.'
+                        )
+                        if (result) {
+                          console.log('Save Changes')
+                        } else {
+                          console.log('Discard Changes')
+                          resetForm()
+                        }
+                        return
+                      }}
                     >
-                      <Field
-                        className="border border-black"
-                        placeholder="select type"
-                        as="select"
-                        name={`data[${lineIndex}].type`}
-                      >
-                        <option value="INFO">Info</option>
-                        <option value="ACTOR">Actor</option>
-                      </Field>
-                      <button
-                        type="button"
-                        onClick={() => DeleteLine(sceneIndex, lineIndex)}
-                      >
-                        delete
-                      </button>
+                      <div className="w-full bg-neutral-200 flex justify-end ">
+                        <label htmlFor={`data[${lineIndex}].type`}>
+                          Line Type
+                        </label>
+                        <Field
+                          className="border w-6 border-black"
+                          as="select"
+                          name={`data[${lineIndex}].type`}
+                        >
+                          <option value="INFO">Info</option>
+                          <option value="ACTOR">Actor</option>
+                        </Field>
+                        <button
+                          className="w-auto"
+                          type="button"
+                          onClick={() => DeleteLine(sceneIndex, lineIndex)}
+                        >
+                          <DeleteIcon />
+                        </button>
+                      </div>
                     </ConditionalField>
                     <Field
+                      disabled={values.data[lineIndex].type === 'INFO'}
                       className="text-center"
                       name={`data[${lineIndex}].name`}
                     />
                     <FormikTextArea
+                      disabled={!isEditing}
                       type={line.type}
                       lineName={line.name}
                       name={`data[${lineIndex}].lines`}
                     />
-                  </fieldset>
+                  </div>
                 </Drag>
               )
             })}
