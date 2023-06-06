@@ -1,16 +1,13 @@
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Field, FieldArray, Form, Formik } from 'formik'
-import FormikTextArea from './FormikTextArea'
+import { FormikTextArea } from '../forms'
 
 interface SceneEditorProps {
   scene: any
 }
 const SceneEditorInteractive = ({ scene, ...props }: SceneEditorProps) => {
-  const [formKey, setFormKey] = useState(0)
-
   return (
     <Formik
-      key={formKey}
       onSubmit={(values) => console.log('Save', values)}
       initialValues={scene}
     >

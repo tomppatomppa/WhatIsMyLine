@@ -10,7 +10,7 @@ interface FormikTextAreaProps {
   props?: FormikTextAreaProps
   lineName: string
 }
-const FormikTextArea = ({ lineName, ...props }: FormikTextAreaProps) => {
+export const FormikTextArea = ({ lineName, ...props }: FormikTextAreaProps) => {
   const [field, meta] = useField(props.name)
   const { options } = useReaderContext()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -48,5 +48,3 @@ const FormikTextArea = ({ lineName, ...props }: FormikTextAreaProps) => {
     </>
   )
 }
-
-export default FormikTextArea

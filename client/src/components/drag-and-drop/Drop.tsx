@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Droppable, DroppableId, DroppableProps } from 'react-beautiful-dnd'
+import { Droppable, DroppableProps } from 'react-beautiful-dnd'
 
 //Fix for react strict mode
 //https://github.com/atlassian/react-beautiful-dnd/issues/2399#issuecomment-1175638194

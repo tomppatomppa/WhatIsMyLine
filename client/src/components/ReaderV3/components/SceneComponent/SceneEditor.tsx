@@ -4,7 +4,7 @@ import styles from '../../Reader.module.css'
 import { Field, FieldArray, Form, Formik } from 'formik'
 import { Scene } from '../../reader.types'
 import { CancelIcon, EditIcon } from '../icons'
-import FormikTextArea from './FormikTextArea'
+import { FormikTextArea } from '../forms'
 
 interface SceneEditorProps {
   scene: Scene

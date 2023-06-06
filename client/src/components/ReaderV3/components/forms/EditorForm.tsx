@@ -1,9 +1,12 @@
 import { Field, Form, Formik } from 'formik'
 
 import { Drag, Drop } from 'src/components/drag-and-drop'
-import FormikTextArea from '../SceneComponent/FormikTextArea'
+
 import { useState } from 'react'
 import { ConditionalField } from './ConditionalField'
+import { FormikTextArea } from './FormikTextArea'
+
+const components = [{ componentType: 'textarea', component: FormikTextArea }]
 
 const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
   const [isEditing, setIsEditing] = useState(false)
