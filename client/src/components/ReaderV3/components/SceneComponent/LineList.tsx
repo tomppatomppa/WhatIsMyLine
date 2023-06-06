@@ -1,8 +1,6 @@
 import { Field, useFormikContext } from 'formik'
 import { Drag } from 'src/components/drag-and-drop'
-
 import { DeleteIcon } from '../icons'
-
 import { ConditionalField } from '../forms/ConditionalField'
 import { FormikTextArea } from '../forms/FormikTextArea'
 import { Scene } from '../../reader.types'
@@ -39,7 +37,7 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
                     as="select"
                     name={`data[${lineIndex}].type`}
                   >
-                    <option value={'INFO'}>Info</option>
+                    <option value="INFO">Info</option>
                     <option value="ACTOR">Actor</option>
                   </Field>
                   <button
@@ -52,12 +50,12 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
                 </div>
               </ConditionalField>
               <Field
-                disabled={values.data[lineIndex].type === 'INFO'}
+                disabled={values.data[lineIndex].type === 'INFO' || !isEditing}
                 className="text-center"
-                name={`data[${lineIndex}].name`}
+                name={`data[${lineIndex}].name` || ''}
               />
               <FormikTextArea
-                disabled={false}
+                disabled={!isEditing}
                 type={line.type}
                 lineName={line.name}
                 name={`data[${lineIndex}].lines`}

@@ -1,37 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-import {
-  ReaderConfiguration,
-  Script,
-} from 'src/components/ReaderV3/reader.types'
+import { Script } from 'src/components/ReaderV3/reader.types'
 
 import { useState } from 'react'
-
-import ReaderInteractive from 'src/components/ReaderV3/ReaderInteractive'
 import { reorder } from 'src/NestedListComponent'
-
-const initialState = {
-  highlight: [],
-  expanded: [],
-  settings: {
-    info: {
-      style: {
-        textAlign: 'left',
-        marginLeft: '10px',
-        fontStyle: 'italic',
-        fontSize: '11.8pt',
-        color: '#333333',
-      },
-    },
-    actor: {
-      style: {
-        textAlign: 'center',
-        fontSize: '11.8pt',
-        color: '#333333',
-      },
-    },
-  },
-} as ReaderConfiguration
+import { DropResult } from 'react-beautiful-dnd'
+import { Reader } from 'src/components/ReaderV3/Reader'
 
 interface ReaderPageProps {
   selected: Script
@@ -54,7 +26,7 @@ const ReaderPage = ({ selected }: ReaderPageProps) => {
 
   const [scenes, setScenes] = useState(scenesConcatLines)
 
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = (result: DropResult) => {
     const { type, source, destination } = result
     if (!destination) return
 
@@ -64,7 +36,7 @@ const ReaderPage = ({ selected }: ReaderPageProps) => {
     if (type === 'droppable-item') {
       if (sourceSceneId === destinationSceneId) {
         const updatedOrder = reorder(
-          scenes.find((scene) => scene.id === sourceSceneId).data,
+          scenes.find((scene) => scene.id === sourceSceneId)!.data,
           source.index,
           destination.index
         )
@@ -88,7 +60,7 @@ const ReaderPage = ({ selected }: ReaderPageProps) => {
     const updatedScenes = [...scenes]
 
     updatedScenes[sceneIndex].data.unshift({
-      type: '',
+      type: 'ACTOR',
       name: '',
       id: `scene-${[sceneIndex]}:line-${scenes[sceneIndex].data.length}`,
       lines: 'new lines\new line\n',
@@ -106,7 +78,7 @@ const ReaderPage = ({ selected }: ReaderPageProps) => {
 
   return (
     <div>
-      <ReaderInteractive
+      <Reader
         data={scenes}
         handleDragEnd={handleDragEnd}
         AddLine={AddLine}

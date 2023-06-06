@@ -2,10 +2,9 @@ import { Form, Formik } from 'formik'
 import { Drop } from 'src/components/drag-and-drop'
 import { useState } from 'react'
 
-import SceneEditorActions from '../SceneComponent/SceneEditorActions'
-
 import LineList from '../SceneComponent/LineList'
 import { Scene } from '../../reader.types'
+import SceneEditorPanel from '../SceneComponent/SceneEditorPanel'
 
 const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
   const [isEditing, setIsEditing] = useState(false)
@@ -18,7 +17,7 @@ const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
     >
       <Drop key={scene.id} id={scene.id} type="droppable-item">
         <Form autoComplete="off">
-          <SceneEditorActions
+          <SceneEditorPanel
             isEditing={isEditing}
             AddLine={AddLine}
             sceneIndex={sceneIndex}

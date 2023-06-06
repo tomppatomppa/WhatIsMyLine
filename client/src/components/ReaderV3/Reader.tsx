@@ -1,38 +1,72 @@
-import { useReducer, useState, useEffect } from 'react'
-import clsx from 'clsx'
-import reducer from './reducer'
+import { useReducer } from 'react'
+import { useState } from 'react'
+import { DragDropContext } from 'react-beautiful-dnd'
+import { Drop } from '../drag-and-drop'
 import ReaderContext from './contexts/ReaderContext'
-
-import styles from './Reader.module.css'
-import { ReaderConfiguration, Scene, Script } from './reader.types'
+import reducer from './reducer'
+import SceneList from './components/SceneComponent/SceneList'
+import ReaderControlPanel from './components/ReaderControlPanel/ReaderControlPanel'
 
 interface ReaderProps {
-  children?: React.ReactNode
-  script: Script
-  initialState: ReaderConfiguration
-  renderItem: (scene: Scene, index: number) => React.ReactNode
+  data: any[]
+  handleDragEnd: (values: any) => void
+  AddLine: (values: number) => void
+  DeleteLine: (sceneIndex: number, lineIndex: number) => void
 }
 
-export const Reader = (props: ReaderProps) => {
-  const { children, initialState, script, renderItem } = props
+const initialState = {
+  highlight: [],
+  expanded: [],
+  settings: {
+    info: {
+      style: {
+        textAlign: 'left',
+        marginLeft: '10px',
+        fontStyle: 'italic',
+        fontSize: '11.8pt',
+        color: '#333333',
+      },
+    },
+    actor: {
+      style: {
+        textAlign: 'center',
+        fontSize: '11.8pt',
+        color: '#333333',
+      },
+    },
+  },
+} as any
+
+export const Reader = ({
+  data,
+  handleDragEnd,
+  AddLine,
+  DeleteLine,
+}: ReaderProps) => {
   const [options, dispatch] = useReducer(reducer, initialState)
+  const [expanded, setExpanded] = useState<string[]>([])
+
+  const handleSetExpanded = (id: string) => {
+    let updatedExpanded
+    if (expanded.includes(id)) {
+      updatedExpanded = expanded.filter((item) => item !== id)
+    } else {
+      updatedExpanded = [...expanded, id]
+    }
+    setExpanded(updatedExpanded)
+  }
 
   return (
-    <div className={clsx(styles.reader)}>
-      <ReaderContext.Provider value={{ options, dispatch, script }}>
-        {children}
-        <section id="scene-content">
-          {script.scenes?.map((scene, index) => {
-            return (
-              <div id="row" key={index}>
-                {renderItem(scene, index)}
-              </div>
-            )
-          })}
-        </section>
-      </ReaderContext.Provider>
-    </div>
+    <ReaderContext.Provider value={{ options, dispatch }}>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Drop id="droppable" type="droppable-category">
+          <SceneList
+            scenes={data}
+            expanded={expanded}
+            handleSetExpanded={handleSetExpanded}
+          />
+        </Drop>
+      </DragDropContext>
+    </ReaderContext.Provider>
   )
 }
-
-export default Reader

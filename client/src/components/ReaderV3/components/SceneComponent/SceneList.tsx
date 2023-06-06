@@ -17,7 +17,7 @@ const SceneList = ({ scenes, handleSetExpanded, expanded }: SceneListProps) => {
             key={scene.id}
             id={scene.id}
             index={sceneIndex}
-            isDragDisabled={false}
+            isDragDisabled={true}
           >
             <div className="category-container">
               <h2 onClick={() => handleSetExpanded(scene.id)} className="item">

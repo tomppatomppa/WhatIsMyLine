@@ -1,5 +1,4 @@
 export type ReaderMode = 'read' | 'edit'
-
 export type MenuPosition = 'top' | 'bottom'
 
 //Scene types

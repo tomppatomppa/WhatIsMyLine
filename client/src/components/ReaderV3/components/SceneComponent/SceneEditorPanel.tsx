@@ -1,24 +1,20 @@
 import { useFormikContext } from 'formik'
 
-const SceneEditorActions = (props: any) => {
+const SceneEditorPanel = (props: any) => {
   const { dirty } = useFormikContext()
   const { isEditing, setIsEditing, AddLine, sceneIndex } = props
+  const className = dirty ? 'text-black' : 'text-gray-400'
   return (
     <div className="flex justify-end gap-2 bg-blue-200 p-2">
       {isEditing ? (
         <>
-          <button
-            type="button"
-            disabled={!isEditing}
-            onClick={() => AddLine(sceneIndex)}
-          >
+          <button type="button" onClick={() => console.log('Undo')}>
+            Undo
+          </button>
+          <button type="button" onClick={() => AddLine(sceneIndex)}>
             Add Line
           </button>
-          <button
-            className={`${dirty ? '' : 'text-gray-400'}`}
-            type="submit"
-            disabled={!dirty}
-          >
+          <button disabled={!dirty} className={className} type="submit">
             Save
           </button>
         </>
@@ -30,4 +26,4 @@ const SceneEditorActions = (props: any) => {
   )
 }
 
-export default SceneEditorActions
+export default SceneEditorPanel
