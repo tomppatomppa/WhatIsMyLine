@@ -2,7 +2,7 @@ import { Form, Formik } from 'formik'
 import { Drop } from 'src/components/drag-and-drop'
 import { useState } from 'react'
 
-import LineList from '../SceneComponent/LineList'
+import LineList from './LineList'
 import { Scene } from '../../reader.types'
 import SceneEditorPanel from '../SceneComponent/SceneEditorPanel'
 

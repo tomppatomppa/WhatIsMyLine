@@ -5,7 +5,6 @@ import { Drop } from '../drag-and-drop'
 import ReaderContext from './contexts/ReaderContext'
 import reducer from './reducer'
 import SceneList from './components/SceneComponent/SceneList'
-import ReaderControlPanel from './components/ReaderControlPanel/ReaderControlPanel'
 
 interface ReaderProps {
   data: any[]
@@ -29,6 +28,7 @@ const initialState = {
     },
     actor: {
       style: {
+        
         textAlign: 'center',
         fontSize: '11.8pt',
         color: '#333333',

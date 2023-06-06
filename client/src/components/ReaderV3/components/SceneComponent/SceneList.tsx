@@ -13,14 +13,17 @@ const SceneList = ({ scenes, handleSetExpanded, expanded }: SceneListProps) => {
       {scenes.map((scene, sceneIndex) => {
         return (
           <Drag
-            className="draggable-category"
+            className="flex justify-center items-center gap-4 my-4 max-w-4xl mx-auto"
             key={scene.id}
             id={scene.id}
             index={sceneIndex}
             isDragDisabled={true}
           >
-            <div className="category-container">
-              <h2 onClick={() => handleSetExpanded(scene.id)} className="item">
+            <div className="w-full">
+              <h2
+                onClick={() => handleSetExpanded(scene.id)}
+                className="border  p-4 w-full bg-primaryLight border-primary"
+              >
                 {scene.id}
               </h2>
               {expanded.includes(scene.id) && (

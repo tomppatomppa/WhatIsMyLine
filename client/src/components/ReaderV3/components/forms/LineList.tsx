@@ -1,8 +1,8 @@
 import { Field, useFormikContext } from 'formik'
 import { Drag } from 'src/components/drag-and-drop'
 import { DeleteIcon } from '../icons'
-import { ConditionalField } from '../forms/ConditionalField'
-import { FormikTextArea } from '../forms/FormikTextArea'
+import { ConditionalField } from './ConditionalField'
+import { FormikTextArea } from './FormikTextArea'
 import { Actor, LineType, Scene } from '../../reader.types'
 import { useReaderContext } from '../../contexts/ReaderContext'
 
@@ -15,7 +15,7 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
   const { options, dispatch } = useReaderContext()
 
   const getLineStyle = (type: LineType) => {
-    const style = options.settings[type.toLocaleLowerCase()].style
+    const style = options.settings[type.toLowerCase()].style
     return style || {}
   }
 
@@ -29,7 +29,7 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
       {values.data.map((line: any, lineIndex: number) => {
         return (
           <Drag
-            className="draggable"
+            className="mt-3"
             key={line.id}
             id={line.id}
             index={lineIndex}
@@ -73,7 +73,7 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
               >
                 <Field
                   style={getLineStyle(line.type)}
-                  disabled={!isEditing}
+                  disabled={!isEditing || line.type === 'INFO'}
                   name={`data[${lineIndex}].name`}
                 />
               </span>

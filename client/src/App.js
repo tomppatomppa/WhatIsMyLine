@@ -30,7 +30,7 @@ function App() {
   }, [])
 
   return (
-    <div className="App ">
+    <div className="text-center ">
       <Navbar selected={selected} setSelected={setSelected} />
       <Routes>
         <Route path="/" element={<LandingPage />} />

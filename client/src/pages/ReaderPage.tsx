@@ -1,9 +1,10 @@
 import { Script } from 'src/components/ReaderV3/reader.types'
 
 import { useState } from 'react'
-import { reorder } from 'src/NestedListComponent'
+
 import { DropResult } from 'react-beautiful-dnd'
 import { Reader } from 'src/components/ReaderV3/Reader'
+import { reorder } from 'src/components/ReaderV3/utils'
 
 interface ReaderPageProps {
   selected: Script
