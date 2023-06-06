@@ -3,7 +3,8 @@ import { Drag } from 'src/components/drag-and-drop'
 import { DeleteIcon } from '../icons'
 import { ConditionalField } from '../forms/ConditionalField'
 import { FormikTextArea } from '../forms/FormikTextArea'
-import { Scene } from '../../reader.types'
+import { Actor, LineType, Scene } from '../../reader.types'
+import { useReaderContext } from '../../contexts/ReaderContext'
 
 interface LineListProps {
   sceneIndex: boolean
@@ -11,6 +12,17 @@ interface LineListProps {
 }
 const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
   const { values } = useFormikContext<Scene>()
+  const { options, dispatch } = useReaderContext()
+
+  const getLineStyle = (type: LineType) => {
+    const style = options.settings[type.toLocaleLowerCase()].style
+    return style || {}
+  }
+
+  const getTextAreaColor = (name: string) => {
+    const actor = options?.highlight.find((item: Actor) => item.id === name)
+    return actor ? actor.style : {}
+  }
 
   return (
     <>
@@ -49,12 +61,27 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
                   </button>
                 </div>
               </ConditionalField>
-              <Field
-                disabled={values.data[lineIndex].type === 'INFO' || !isEditing}
-                className="text-center"
-                name={`data[${lineIndex}].name` || ''}
-              />
+              <span
+                onClick={() => {
+                  if (!isEditing) {
+                    dispatch({
+                      type: 'HIGHLIGHT_TARGET',
+                      payload: { target: line.name },
+                    })
+                  }
+                }}
+              >
+                <Field
+                  style={getLineStyle(line.type)}
+                  disabled={!isEditing}
+                  name={`data[${lineIndex}].name`}
+                />
+              </span>
               <FormikTextArea
+                style={{
+                  ...getLineStyle(line.type),
+                  ...getTextAreaColor(line.name),
+                }}
                 disabled={!isEditing}
                 type={line.type}
                 lineName={line.name}

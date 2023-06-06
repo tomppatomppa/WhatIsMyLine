@@ -26,6 +26,7 @@ export interface Style {
   fontStyle?: string
   fontSize?: string | number
   color?: string
+  backgroundColor?: string
 }
 
 export type LineType = 'info' | 'actor'
