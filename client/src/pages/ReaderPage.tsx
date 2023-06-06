@@ -87,7 +87,7 @@ const ReaderPage = ({ selected }: ReaderPageProps) => {
   const AddLine = (sceneIndex: number) => {
     const updatedScenes = [...scenes]
 
-    updatedScenes[sceneIndex].data.push({
+    updatedScenes[sceneIndex].data.unshift({
       type: '',
       name: '',
       id: `scene-${[sceneIndex]}:line-${scenes[sceneIndex].data.length}`,

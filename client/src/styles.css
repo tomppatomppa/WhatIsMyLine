@@ -5,9 +5,8 @@
 
 .draggable {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: 1rem;
+  align-items: start;
+  margin-top: 12px;
 }
 
 .draggable-category {
