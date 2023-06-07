@@ -1,10 +1,11 @@
 import fitz
 import re
-
+from ReaderSettings import ReaderSettings
 MIN_PAGE_WIDTH=100.0
 
 class ReaderV3():
     def __init__(self, settings = None):
+       self.settings = settings
        self.filename = None
        self.page_width = None
        self.file = None
@@ -68,14 +69,17 @@ class ReaderV3():
                         ]
                     }
                ]        
-             }
+             },
              ...
+           
            ]
         }
 
         '''
         with_scenes = self.make_scenes(self.file)
-        with_lines = self.make_lines(with_scenes)
+        if(self.settings):
+            with_scenes = self.clean_lines(with_scenes)
+        with_lines = self.make_lines_recursive(with_scenes)
         
         return with_lines
 
@@ -105,7 +109,7 @@ class ReaderV3():
                 current_scene[scene_title].append(current_line)
             previous_line = current_line
         scenes.append(current_scene)
-       
+
         return scenes
 
     def is_scene(self, current_line, previous_line):
@@ -150,7 +154,7 @@ class ReaderV3():
                                                             actor_lines[0], "lines": actor_lines[1:]})
                             actor_lines = []
                         if info_lines:
-                           scene_data["data"].append({"type": "INFO" ,"lines": info_lines})
+                           scene_data["data"].append({"type": "INFO" ,"name": "", "lines": info_lines})
                            info_lines = []
                         actor_lines.append(text)
                     elif self.is_line(line) and actor_lines:
@@ -161,11 +165,64 @@ class ReaderV3():
                     scene_data["data"].append({"type": "ACTOR", "name":
                                                     actor_lines[0], "lines": actor_lines[1:]})
                 if info_lines:
-                    scene_data["data"].append({"type": "INFO" ,"lines": info_lines})
+                    scene_data["data"].append({"type": "INFO" ,"name": "","lines": info_lines})
                 result["scenes"].append(scene_data)
         
         return result      
 
+    def clean_lines(self, file):
+        cleaned_file = []
+        for scene in file:
+            for name, lines in scene.items():
+                print(lines)
+                filtered_items = [item for item in lines if item['size'] >= self.settings.get_min_font_size()]                                  
+                filtered_items = [item for item in filtered_items if item['origin'][0] <= self.settings.get_lines_max_start_x_axis()]
+              
+                cleaned_file.append({name: filtered_items})
+        return cleaned_file
+    
+    def get_line_type(self, line):
+        if self.is_actor(line["origin"][0], line["text"]):
+            return "ACTOR"
+        if self.is_line(line):
+            return "ACTOR"
+        return "INFO"
+    
+    def make_lines_recursive(self, file, lines = [], index = 0, currentScene = [], result = []):
+
+        if(index >= len(file)):
+            return {"filename":"testfile","scenes": result}
+        
+        #current scene id
+        key = list(file[index].keys())[0]
+        #current scene lines
+        lines = file[index][key]             
+        line = lines.pop(0)
+
+        if not len(lines):
+            result.append({"id": key, "data": currentScene})
+            return self.make_lines_recursive(file, lines, index + 1, [], result)
+        
+        line_type = self.get_line_type(line)
+        name = line["text"] if line_type == "ACTOR" else ""
+        text = [line["text"]] if name == "" else []
+        if(len(currentScene) > 0):
+            previous_line_type = currentScene[-1]["type"]  
+            #If current line is the same type as previous, add to the last element in currentScene "lines"
+            if(line_type == previous_line_type):          
+                currentScene[-1]["lines"].append(line["text"])
+            else:
+                currentScene.append({"type": line_type, "name": name, "lines": text})
+        else:
+            currentScene.append({"type": line_type, "name": name, "lines": [line["text"]]})      
+        return self.make_lines_recursive(file, lines, index, currentScene, result)
+ 
+        
+       
+  
+      
+
+       
     def is_line(self, line):
         originX = line["origin"][0]
 
@@ -180,7 +237,7 @@ class ReaderV3():
         '''
         Actors NAMES are expected to be UPPERCASE and positioned in the middle of the document
             with an margin of 20% to left and right
-        
+
         '''
         name_pattern = r'^[A-Z0-9ÖÄÅ]+\s?\(?(\d+|[A-ZÖÄÅ]+|\([^)]*\))?\)?$'
         center = self.page_width / 2
@@ -196,7 +253,10 @@ class ReaderV3():
             return False
 
 if __name__ == '__main__':
-    reader= ReaderV3()
-    reader.read_file("filename")
+    settings = ReaderSettings()
+   
+    reader = ReaderV3(settings)
+    reader.read_file("testfile.pdf")
+    
     print(reader.to_json())
 
