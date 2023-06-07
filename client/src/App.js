@@ -7,21 +7,22 @@ import ReaderPage from './pages/ReaderPage'
 import { useEffect, useState } from 'react'
 
 import Navbar from './components/Navbar'
-import { useAddScript, useScript, useSetScripts } from './store/scriptStore'
+import {  useScriptStore, useSetCurrentScript, useSetScripts } from './store/scriptStore'
 
 function App() {
   const navigate = useNavigate()
   const [selected, setSelected] = useState(null)
   const { currentScripts, setCurrentScripts } = useCurrentScripts()
-  const scripts = useScript()
   const setScripts = useSetScripts()
   const defaultScript = currentScripts.length ? currentScripts[0] : []
+  const store = useScriptStore()
 
   const getScripts = () => {
     const foundScripts = JSON.parse(localStorage.getItem('scripts'))
-
+   
     if (foundScripts) {
       setScripts(foundScripts)
+      store.setActiveScript(0)
       setCurrentScripts(foundScripts)
       navigate('/reader')
     }
@@ -31,16 +32,17 @@ function App() {
     getScripts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  console.log(scripts)
+  
   return (
     <div className="text-center ">
+    
       <Navbar selected={selected} setSelected={setSelected} />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route
           element={
             <ProtectedRoute
-              isAllowed={currentScripts.length}
+              isAllowed={store.activeScript !== null}
               redirectPath="/"
             />
           }

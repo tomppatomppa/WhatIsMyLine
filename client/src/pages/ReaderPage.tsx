@@ -1,17 +1,15 @@
-import { Script } from 'src/components/ReaderV3/reader.types'
 
 import { useState } from 'react'
 
 import { DropResult } from 'react-beautiful-dnd'
 import { Reader } from 'src/components/ReaderV3/Reader'
 import { reorder } from 'src/components/ReaderV3/utils'
+import { useAddScene,   useGetActiveScript} from 'src/store/scriptStore'
 
-interface ReaderPageProps {
-  selected: Script
-}
 
-const ReaderPage = ({ selected }: ReaderPageProps) => {
-  const scenesConcatLines = selected?.scenes.map((scene, sceneIndex) => {
+const ReaderPage = () => {
+  const script = useGetActiveScript()
+  const scenesConcatLines = script?.scenes.map((scene, sceneIndex) => {
     return {
       ...scene,
       name: scene.id,
@@ -25,15 +23,21 @@ const ReaderPage = ({ selected }: ReaderPageProps) => {
       }),
     }
   })
+  const [scenes =[], setScenes] = useState(scenesConcatLines)
+ 
+  
+  const addScene = useAddScene()
+ 
 
-  const [scenes, setScenes] = useState(scenesConcatLines)
-
+  
+ 
   const handleDragEnd = (result: DropResult) => {
     const { type, source, destination } = result
     if (!destination) return
 
     const sourceSceneId = source.droppableId
     const destinationSceneId = destination.droppableId
+    
 
     if (type === 'droppable-item') {
       if (sourceSceneId === destinationSceneId) {
@@ -59,6 +63,7 @@ const ReaderPage = ({ selected }: ReaderPageProps) => {
   }
 
   const AddLine = (sceneIndex: number) => {
+    
     const updatedScenes = [...scenes]
 
     updatedScenes[sceneIndex].data.unshift({
@@ -77,9 +82,11 @@ const ReaderPage = ({ selected }: ReaderPageProps) => {
 
     setScenes(updatedScenes)
   }
-
+  console.log(script)
   return (
     <div>
+      <button onClick={() => addScene({id: "name", data: []})}>Add Scene to Current</button>
+
       <Reader
         data={scenes}
         handleDragEnd={handleDragEnd}

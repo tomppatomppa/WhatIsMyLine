@@ -4,7 +4,7 @@ import re
 MIN_PAGE_WIDTH=100.0
 
 class ReaderV3():
-    def __init__(self):
+    def __init__(self, settings = None):
        self.filename = None
        self.page_width = None
        self.file = None
@@ -123,7 +123,10 @@ class ReaderV3():
             return False
         if(current_line["text"]).isdigit():
             return False
-        if self.is_actor(current_line["origin"][0],current_line["text"]):
+        if self.is_actor(current_line["origin"][0], current_line["text"]):
+            return False
+        #temp fix to handle page numbers flagged as scene start
+        if(previous_line["origin"][0] > self.page_width / 2):
             return False
         #Quick fix to handle /
         text = current_line["text"].replace("/", "")
