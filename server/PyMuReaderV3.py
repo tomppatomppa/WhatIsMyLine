@@ -160,15 +160,17 @@ class ReaderV3():
             return "LINE"
         return "INFO"
     
-    def make_lines_recursive(self, scenes, current_lines = None, scene_index = 0, currentScene = None, result = []):
-        
+    def make_lines_recursive(self, scenes, current_lines = None, scene_index = 0, currentScene = None, result = None):
+        if not result:
+            result = []
+            
         if(scene_index >= len(scenes)):
             return { "filename": self.filename,"scenes": result }
         
         scene_id = list(scenes[scene_index].keys())[0]     
         current_lines = scenes[scene_index][scene_id]             
         line = current_lines.pop(0)
-
+        #Add to result array go to next scene
         if not current_lines:
             currentScene[-1]["lines"].append(line["text"])
             result.append({"id": scene_id, "data": currentScene})
@@ -180,7 +182,7 @@ class ReaderV3():
 
         if currentScene:
             previous_type = currentScene[-1]["type"]
-            if(line_type == "LINE" or line_type == "INFO" and line_type == previous_type):          
+            if(line_type == "LINE" or "INFO" and line_type == previous_type):          
                 currentScene[-1]["lines"].append(line["text"])
             else:
                 currentScene.append({"type": line_type, "name": name, "lines": text})   
@@ -248,9 +250,9 @@ class ReaderV3():
 
         if(self.settings):
             result = self.clean_lines(result)
-
-        result = self.make_lines_recursive(result)
         
+        result = self.make_lines_recursive(result)
+       
         if(self.line_id):
             result = self.add_uuid(result)
         if(self.lines_as_string):

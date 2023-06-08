@@ -42,12 +42,10 @@ def test_reader_to_json_outputs_correct_number_of_scenes() -> None:
     result = reader_to_json()
     assert len(result["scenes"]) == len(testfile_scenes)
    
-
 def test_reader_to_json_outputs_correct_scene_ids() -> None:
     for scene in reader_to_json()["scenes"]:
         assert scene["id"] in testfile_scenes
-    
-
+        
 def test_reader_to_json_scenes_have_data_attribute_as_list() -> None:
     for scene in reader_to_json()["scenes"]:
         assert isinstance(scene["data"], list) 
@@ -97,14 +95,10 @@ def test_reader_to_json_data_objects_return_lines_as_string_if_specified() -> No
 With Settings
 '''
 
-# def test_reader_to_json_with_settings_outputs_correct_number_of_scenes() -> None:
-#     settings = ReaderSettings()
-#     reader = ReaderV3(settings, line_id=True, lines_as_string=True)
-#     reader.read_file(testfile)
-#     result = reader.to_json()
-   
-#     assert len(result["scenes"]) == len(testfile_scenes)
-   
-       
-  
-    #assert len(result["scenes"]) == len(testfile_scenes)
+def test_reader_to_json_with_settings_outputs_correct_number_of_scenes() -> None:
+    settings = ReaderSettings()
+    reader = ReaderV3(settings, line_id=True, lines_as_string=True)
+    reader.read_file(testfile)
+    result = reader.to_json()
+ 
+    assert len(result["scenes"]) == len(testfile_scenes)

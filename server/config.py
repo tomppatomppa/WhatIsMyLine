@@ -33,7 +33,7 @@ def process_uploaded_file_v3(file, app):
         save_path = os.path.join(app.config.get('uploaded_files_folder'), uuid_filename)
         file.save(save_path)
         
-        reader = ReaderV3()
+        reader = ReaderV3(settings=None, line_id=True, lines_as_string=True)
         reader.read_file(f'{uuid_filename}')
 
         result = reader.to_json()

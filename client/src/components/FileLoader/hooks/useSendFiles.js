@@ -15,6 +15,7 @@ function getFulfilled(response) {
       result.push(element.value.data)
     }
   })
+  
   return result
 }
 

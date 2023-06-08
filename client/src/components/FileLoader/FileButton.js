@@ -16,10 +16,11 @@ const FileButton = () => {
   const handleSend = async () => {
     try {
       const result = await sendFiles(files)
-      const updated_scripts = currentScripts.concat(result)
-      setCurrentScripts(updated_scripts)
-      localStorage.setItem('scripts', JSON.stringify(updated_scripts))
-      navigate('/reader')
+      console.log(result)
+      // const updated_scripts = currentScripts.concat(result)
+      // setCurrentScripts(updated_scripts)
+      // localStorage.setItem('scripts', JSON.stringify(updated_scripts))
+      // navigate('/reader')
       reset()
     } catch (e) {
       console.log(e)
