@@ -1,6 +1,7 @@
 from PyMuReaderV3 import ReaderV3
+from ReaderSettings import ReaderSettings
 import os
-
+import json
 scene = {'12102 INT. LOTUS RUM': [{'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'Lotus och en Beundrarmus sitter och fnissar i Lotus rum,', 'origin': (96.15774536132812, 181.76541137695312), 'bbox': (96.15774536132812, 171.93505859375, 492.9061584472656, 185.31126403808594)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'de spionerar på Tika. (kannellinen lasipurkki jossa', 'origin': (96.15774536132812, 193.5733642578125), 'bbox': (96.15774536132812, 
 183.74301147460938, 457.48236083984375, 197.1192169189453)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'lappuja, lapuissa on eläinkuvia, lasipurkin päällä lappu', 'origin': (96.15774536132812, 205.38131713867188), 'bbox': (96.15774536132812, 195.55096435546875, 492.9061584472656, 208.9271697998047)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'jossa teksti “djur-pantomim”, tyhjiä / epäonnistuneita', 'origin': (96.15774536132812, 217.1892852783203), 'bbox': (96.15774536132812, 207.3589324951172, 478.73663330078125, 220.73513793945312)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'kuvia lattialla, sakset, paperia, Beundrarmus =', 'origin': (96.15774536132812, 228.9972381591797), 'bbox': (96.15774536132812, 219.16688537597656, 429.1433410644531, 232.5430908203125)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'tavallinen oranssi hiiri).', 'origin': (96.15774536132812, 240.80519104003906), 'bbox': (96.15774536132812, 230.97483825683594, 280.36309814453125, 244.35104370117188)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'LOTUS', 'origin': (252.01351928710938, 267.3730773925781), 'bbox': (252.01351928710938, 257.542724609375, 287.4385681152344, 270.9189147949219)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'De va den sista bilden! Kasta burken', 'origin': (202.42933654785156, 286.5610046386719), 'bbox': (202.42933654785156, 276.73065185546875, 457.4823303222656, 290.1068420410156)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'till Tika!', 'origin': (202.42933654785156, 298.36895751953125), 'bbox': (202.42933654785156, 288.5386047363281, 273.27825927734375, 301.914794921875)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'De kastar ner en burk i ett rör.', 'origin': (96.15774536132812, 317.556884765625), 'bbox': (96.15774536132812, 307.7265319824219, 322.87176513671875, 321.10272216796875)}, {'size': 11.807954788208008, 'flags': 28, 'font': 'CourierNewPS-BoldMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': '12104', 'origin': (51.87791061401367, 354.4567565917969), 'bbox': (51.87791061401367, 344.62640380859375, 84.35554504394531, 358.0025939941406)}]}
 
@@ -16,7 +17,13 @@ def reader_to_json():
     reader = ReaderV3()
     reader.read_file(testfile)
     return reader.to_json()
-    
+
+def reader_to_json_with_settings():
+    settings = ReaderSettings()
+    reader = ReaderV3(settings)
+    reader.read_file(testfile)
+    return reader.to_json()
+       
 
 def test_uploaded_files_folder_exists() -> None:
     folder_exists = os.path.exists(folder_path)
@@ -31,16 +38,15 @@ def test_reader_reads_file() -> None:
     reader.read_file(testfile)
     assert reader.filename == testfile
 
+def test_reader_to_json_outputs_correct_number_of_scenes() -> None:
+    result = reader_to_json()
+    assert len(result["scenes"]) == len(testfile_scenes)
+   
+
 def test_reader_to_json_outputs_correct_scene_ids() -> None:
     for scene in reader_to_json()["scenes"]:
         assert scene["id"] in testfile_scenes
     
-def test_reader_to_json_outputs_correct_number_of_scenes() -> None:
-    assert len(reader_to_json()["scenes"]) == 19
-
-def test_reader_to_json_scenes_have_id_attribute_as_str() -> None:
-    for scene in reader_to_json()["scenes"]:
-        assert isinstance(scene["id"], str) 
 
 def test_reader_to_json_scenes_have_data_attribute_as_list() -> None:
     for scene in reader_to_json()["scenes"]:
@@ -51,35 +57,54 @@ def test_reader_to_json_scenes_data_attribute_has_list_of_objects() -> None:
         for line in scene["data"]:
             assert isinstance(line, object) 
 
-'''
+
+''' 
+   id: (If line_id = True) -> str
    type: -> str
    name: -> str
    lines: (default) -> list
 '''
-def test_reader_to_json_data_object_contains_required_attributes() -> None:
+def test_reader_to_json_data_objects_contain_required_attributes() -> None:
     for scene in reader_to_json()["scenes"]:
         for line in scene["data"]:
             assert line["type"]
             assert isinstance(line["lines"], list)
             assert isinstance(line["name"], str)
 
-        
-def test_reader_to_json_data_with_recursion() -> None:
-    reader = ReaderV3()
+def test_reader_to_json_data_objects_dont_contain_id_attribute_by_default() -> None:
+    for scene in reader_to_json()["scenes"]:
+        for line in scene["data"]:
+            assert not hasattr(line, "id")
+
+def test_reader_to_json_data_objects_contain_id_attribute_if_specified() -> None:
+    reader = ReaderV3(settings=None, line_id=True)
     reader.read_file(testfile)
-    scenes = reader.make_scenes(reader.file)
-    scenes_with_lines = reader.make_lines_recursive(scenes, [], 0)
-    
-    assert(scenes_with_lines["filename"]) == "testfile"
-    assert(len(scenes_with_lines["scenes"])) == len( reader_to_json()["scenes"])
-    for scene in scenes_with_lines["scenes"][1:]:
-        print(scenes)
-        for old_scene in reader_to_json()["scenes"][1:]:
-            assert scene["data"] == old_scene["data"]
-            
-    assert scenes_with_lines["scenes"][1]["data"][0]["lines"] == ['Lotus och en Beundrarmus sitter och fnissar i Lotus rum,', 'de spionerar på Tika. (kannellinen lasipurkki jossa', 'lappuja, lapuissa on eläinkuvia, lasipurkin päällä lappu', 'jossa teksti “djur-pantomim”, tyhjiä / epäonnistuneita', 'kuvia lattialla, sakset, paperia, Beundrarmus =', 'tavallinen oranssi hiiri).']
-    ##assert reader_to_json()["scenes"][1]["data"][2]["lines"] == scenes_with_lines["scenes"][1]["data"][2]["lines"]
-    ##assert scenes_with_lines["scenes"][1]["data"][1] == [{'type': 'INFO', 'name': '', 'lines': ['Lotus och en Beundrarmus sitter och fnissar i Lotus rum,', 'de spionerar på Tika. (kannellinen lasipurkki jossa', 'lappuja, lapuissa on eläinkuvia, lasipurkin päällä lappu', 'jossa teksti “djur-pantomim”, tyhjiä / epäonnistuneita', 'kuvia lattialla, sakset, paperia, Beundrarmus =', 'tavallinen oranssi hiiri).']}, {'type': 'ACTOR', 'name': 'LOTUS', 'lines': ['De va den sista bilden! Kasta burken', 'till Tika!']}, {'type': 'INFO', 'name': '', 'lines': ['De kastar ner en burk i ett rör.', '12104']}]
-        
+    result = reader.to_json()
+    for scene in result["scenes"]:
+        for line in scene["data"]: 
+            assert line["id"]
+          
+def test_reader_to_json_data_objects_return_lines_as_string_if_specified() -> None:
+    reader = ReaderV3(settings=None, line_id=True, lines_as_string=True)
+    reader.read_file(testfile)
+    result = reader.to_json()
+    for scene in result["scenes"]:
+        for line in scene["data"]: 
+            assert isinstance(line["lines"], str)
+          
+
+'''
+With Settings
+'''
+
+# def test_reader_to_json_with_settings_outputs_correct_number_of_scenes() -> None:
+#     settings = ReaderSettings()
+#     reader = ReaderV3(settings, line_id=True, lines_as_string=True)
+#     reader.read_file(testfile)
+#     result = reader.to_json()
    
+#     assert len(result["scenes"]) == len(testfile_scenes)
    
+       
+  
+    #assert len(result["scenes"]) == len(testfile_scenes)

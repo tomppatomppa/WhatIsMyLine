@@ -24,7 +24,7 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
     const actor = options?.highlight.find((item: Actor) => item.id === name)
     return actor ? actor.style : {}
   }
-
+ 
   return (
     <>
       {values.data.map((line: any, lineIndex: number) => {

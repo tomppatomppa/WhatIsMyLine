@@ -1,14 +1,18 @@
 import fitz
 import re
 from ReaderSettings import ReaderSettings
+import json
+from uuid import uuid4
 MIN_PAGE_WIDTH=100.0
 
 class ReaderV3():
-    def __init__(self, settings = None):
+    def __init__(self, settings = None, line_id = False, lines_as_string = False):
        self.settings = settings
        self.filename = None
        self.page_width = None
        self.file = None
+       self.line_id = line_id
+       self.lines_as_string = lines_as_string
 
     def read_file(self, filename):
         try:
@@ -19,7 +23,7 @@ class ReaderV3():
                 pages.append(page.get_text("dict", sort=False))
             
             self.set_page_width(pages[0]['width'])
-            self.flatten_all(pages)
+            self.file = self.flatten_all(pages)
 
         except FileNotFoundError:
             print("File not found")
@@ -29,8 +33,7 @@ class ReaderV3():
            raise ValueError(f"Invalid page width value {width}")
         elif float(width) < MIN_PAGE_WIDTH:
             raise ValueError(f"Minimum page width {MIN_PAGE_WIDTH}")
-        self.page_width = float(width)
-       
+        self.page_width = float(width)      
 
     def flatten_all(self, pages):
         '''
@@ -50,38 +53,9 @@ class ReaderV3():
             # flatten all spans
             'blocks': [span for line in lines for span in line["spans"]]
         }
-       
-        self.file = merged_dict
-
-    def to_json(self):
-        '''
-        Converts text content to a script item with the following structure   
-        {
-           filename: string
-           scenes: [
-             {
-               id: string
-               data: [
-                    {
-                        type: string
-                        lines: [
-                           string, string, ...
-                        ]
-                    }
-               ]        
-             },
-             ...
-           
-           ]
-        }
-
-        '''
-        with_scenes = self.make_scenes(self.file)
-        if(self.settings):
-            with_scenes = self.clean_lines(with_scenes)
-        with_lines = self.make_lines_recursive(with_scenes)
+        return merged_dict
         
-        return with_lines
+
 
     def make_scenes(self, file):
         '''
@@ -109,7 +83,7 @@ class ReaderV3():
                 current_scene[scene_title].append(current_line)
             previous_line = current_line
         scenes.append(current_scene)
-
+        
         return scenes
 
     def is_scene(self, current_line, previous_line):
@@ -173,11 +147,9 @@ class ReaderV3():
     def clean_lines(self, file):
         cleaned_file = []
         for scene in file:
-            for name, lines in scene.items():
-                print(lines)
+            for name, lines in scene.items():        
                 filtered_items = [item for item in lines if item['size'] >= self.settings.get_min_font_size()]                                  
-                filtered_items = [item for item in filtered_items if item['origin'][0] <= self.settings.get_lines_max_start_x_axis()]
-              
+                filtered_items = [item for item in filtered_items if item['origin'][0] <= self.settings.get_lines_max_start_x_axis()]         
                 cleaned_file.append({name: filtered_items})
         return cleaned_file
     
@@ -185,44 +157,38 @@ class ReaderV3():
         if self.is_actor(line["origin"][0], line["text"]):
             return "ACTOR"
         if self.is_line(line):
-            return "ACTOR"
+            return "LINE"
         return "INFO"
     
-    def make_lines_recursive(self, file, lines = [], index = 0, currentScene = [], result = []):
-
-        if(index >= len(file)):
-            return {"filename":"testfile","scenes": result}
+    def make_lines_recursive(self, scenes, current_lines = None, scene_index = 0, currentScene = None, result = []):
         
-        #current scene id
-        key = list(file[index].keys())[0]
-        #current scene lines
-        lines = file[index][key]             
-        line = lines.pop(0)
+        if(scene_index >= len(scenes)):
+            return { "filename": self.filename,"scenes": result }
+        
+        scene_id = list(scenes[scene_index].keys())[0]     
+        current_lines = scenes[scene_index][scene_id]             
+        line = current_lines.pop(0)
 
-        if not len(lines):
-            result.append({"id": key, "data": currentScene})
-            return self.make_lines_recursive(file, lines, index + 1, [], result)
+        if not current_lines:
+            currentScene[-1]["lines"].append(line["text"])
+            result.append({"id": scene_id, "data": currentScene})
+            return self.make_lines_recursive(scenes, current_lines, scene_index + 1, None, result)
         
         line_type = self.get_line_type(line)
         name = line["text"] if line_type == "ACTOR" else ""
         text = [line["text"]] if name == "" else []
-        if(len(currentScene) > 0):
-            previous_line_type = currentScene[-1]["type"]  
-            #If current line is the same type as previous, add to the last element in currentScene "lines"
-            if(line_type == previous_line_type):          
+
+        if currentScene:
+            previous_type = currentScene[-1]["type"]
+            if(line_type == "LINE" or line_type == "INFO" and line_type == previous_type):          
                 currentScene[-1]["lines"].append(line["text"])
             else:
-                currentScene.append({"type": line_type, "name": name, "lines": text})
-        else:
-            currentScene.append({"type": line_type, "name": name, "lines": [line["text"]]})      
-        return self.make_lines_recursive(file, lines, index, currentScene, result)
- 
+                currentScene.append({"type": line_type, "name": name, "lines": text})   
+        else: 
+            currentScene = [{"type": line_type, "name": name, "lines": [line["text"]]}]
         
-       
-  
-      
-
-       
+        return self.make_lines_recursive(scenes, current_lines, scene_index, currentScene, result)
+ 
     def is_line(self, line):
         originX = line["origin"][0]
 
@@ -252,11 +218,55 @@ class ReaderV3():
             #print(f"{name} is NOT a name")
             return False
 
-if __name__ == '__main__':
-    settings = ReaderSettings()
-   
-    reader = ReaderV3(settings)
-    reader.read_file("testfile.pdf")
+    def add_uuid(self, script):
+        for scene in script["scenes"]:
+            for line in scene["data"]:
+                line["id"] = str(uuid4())
+        return script
     
-    print(reader.to_json())
+    def lines_into_string(self, script):
+        for scene in script["scenes"]:
+           for line in scene["data"]:
+               line["lines"] = "\n".join(line["lines"])
+        return script
+      
+    def to_json(self):
+        '''
+        Converts text content to a script item with the following structure   
+        {
+           filename: string
+           scenes: [
+             {
+               id: string
+               data: [{ type: string, name: string, lines: [string]}, ...]           
+             },
+           ]
+        }
+
+        '''
+        result = self.make_scenes(self.file)
+
+        if(self.settings):
+            result = self.clean_lines(result)
+
+        result = self.make_lines_recursive(result)
+        
+        if(self.line_id):
+            result = self.add_uuid(result)
+        if(self.lines_as_string):
+            result = self.lines_into_string(result)
+
+        return result
+    
+    
+#if __name__ == '__main__':
+    # settings = ReaderSettings()
+   
+    # reader = ReaderV3(settings, line_id=True, lines_as_string=True)
+    # reader.read_file("testfile.pdf")
+    # result = reader.to_json()
+
+    # print(len(result["scenes"]))
+   
+    # print(json.dumps(result, indent=4))
 
