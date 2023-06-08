@@ -9,7 +9,6 @@ const useFile = () => {
     if (!fileObj) {
       return
     }
-
     event.target.value = null
 
     if (files.some((file) => file.name === fileObj.name)) {

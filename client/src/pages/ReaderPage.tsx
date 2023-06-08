@@ -9,6 +9,7 @@ import { useAddScene,   useGetActiveScript} from 'src/store/scriptStore'
 
 const ReaderPage = () => {
   const script = useGetActiveScript()
+  
   const scenesConcatLines = script?.scenes.map((scene, sceneIndex) => {
     return {
       ...scene,

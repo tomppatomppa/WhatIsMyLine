@@ -4,10 +4,12 @@ import { FileButton } from './FileLoader'
 import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'
 
 import SelectScene from './SelectScene'
+import { useScripts } from 'src/store/scriptStore'
 
 const Navbar = ({ selected, setSelected }) => {
   const [showMenu, setShowMenu] = useState(false)
   const [menuItems, setMenuItems] = useState([])
+  const scripts = useScripts()
   const { setShowScenes, currentScripts, setCurrentScripts } =
     useCurrentScripts()
 
@@ -56,7 +58,7 @@ const Navbar = ({ selected, setSelected }) => {
         } fixed top-14 z-50 w-full sm:w-72 shadow-lg h-full translate-all duration-200 bg-white`}
       >
         <NavbarMenu
-          currentScripts={currentScripts}
+          currentScripts={scripts}
           selected={selected}
           handleSelect={handleSelect}
           handleDelete={handleDelete}
