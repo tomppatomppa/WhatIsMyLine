@@ -1,7 +1,8 @@
-import FileLoader from './FileLoader'
+
 import useFile from './hooks/useFile'
 import useSendFiles from './hooks/useSendFiles'
 import {useAddScript} from '../../store/scriptStore'
+import FileLoader from './FileLoader'
 
 const FileButton = () => {
   const { files, inputRef, handleClick, handleAddFile, reset } = useFile()
@@ -12,6 +13,8 @@ const FileButton = () => {
     try {
       const result = await sendFiles(files)
       addScript(result as any)
+      const foundScripts = JSON.parse(localStorage.getItem('scripts') as string) || []
+      localStorage.setItem('scripts', JSON.stringify(foundScripts.concat(result)) )
       reset()
     } catch (e) {
       console.log(e)

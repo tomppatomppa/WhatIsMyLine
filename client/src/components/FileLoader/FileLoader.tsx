@@ -1,6 +1,11 @@
-import React from 'react'
 
-const FileLoader = ({ handleClick, handleAddFile, inputRef }) => {
+interface FileLoaderProps {
+  handleClick: () => void
+  handleAddFile: () => void
+  inputRef: React.RefObject<HTMLInputElement>
+}
+
+const FileLoader = ({ handleClick, handleAddFile, inputRef }: FileLoaderProps) => {
   return (
     <div>
       <input

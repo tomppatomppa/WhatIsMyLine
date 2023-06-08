@@ -1,19 +1,19 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import useCurrentScripts from '../hooks/useCurrentScripts'
+
 import axios from 'axios'
 import { BASE_URI } from '../config'
 
 const UploadTestFile = () => {
   const [error, setError] = useState('')
   const navigate = useNavigate()
-  const { currentScripts, setCurrentScripts } = useCurrentScripts()
+
 
   const handleSend = async () => {
     try {
       const { data } = await axios.get(`${BASE_URI}/api/v3/`)
-      const updated_scripts = currentScripts.concat(data)
-      setCurrentScripts(updated_scripts)
+   
+     
       navigate('/reader')
     } catch (e) {
       setError(e.message)

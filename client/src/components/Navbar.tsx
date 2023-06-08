@@ -1,45 +1,15 @@
 import { useState } from 'react'
-import useCurrentScripts from '../hooks/useCurrentScripts'
-import { FileButton } from './FileLoader'
+
 import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'
 
-import SelectScene from './SelectScene'
-import { useScripts } from 'src/store/scriptStore'
+import { useDeleteScript,  useScripts, useSetActiveScriptFilename } from 'src/store/scriptStore'
+import FileButton from './FileLoader/FileButton'
 
-const Navbar = ({ selected, setSelected }) => {
+const Navbar = ({ selected, setSelected }: any) => {
   const [showMenu, setShowMenu] = useState(false)
-  const [menuItems, setMenuItems] = useState([])
   const scripts = useScripts()
-  const { setShowScenes, currentScripts, setCurrentScripts } =
-    useCurrentScripts()
-
-  const handleReset = () => {
-    setCurrentScripts([])
-    setSelected(null)
-    setMenuItems([])
-    setShowScenes([])
-    localStorage.removeItem('scripts')
-  }
-  const handleSelect = (file) => {
-    setSelected(file)
-    const title = file.scenes.map((item) => {
-      const selectOptions = {
-        label: item.id,
-        value: item.id,
-      }
-      return selectOptions
-    })
-    setMenuItems(title)
-    setShowMenu(false)
-  }
-
-  const handleDelete = (filename) => {
-    const updated_scripts = currentScripts.filter(
-      (s) => s.filename !== filename
-    )
-    localStorage.setItem('scripts', JSON.stringify(updated_scripts))
-    setCurrentScripts(updated_scripts)
-  }
+  const deleteScript = useDeleteScript()
+  const setActiveScript = useSetActiveScriptFilename()
 
   return (
     <div>
@@ -50,7 +20,6 @@ const Navbar = ({ selected, setSelected }) => {
         >
           SCRIPTS
         </button>
-        <SelectScene menuItems={menuItems} />
       </div>
       <div
         className={`${
@@ -58,23 +27,22 @@ const Navbar = ({ selected, setSelected }) => {
         } fixed top-14 z-50 w-full sm:w-72 shadow-lg h-full translate-all duration-200 bg-white`}
       >
         <NavbarMenu
-          currentScripts={scripts}
+          scripts={scripts}
           selected={selected}
-          handleSelect={handleSelect}
-          handleDelete={handleDelete}
-          handleReset={handleReset}
+          setActiveScript={setActiveScript}
+          handleDelete={deleteScript}
           setShowMenu={setShowMenu}
         />
       </div>
     </div>
   )
 }
-const NavbarMenu = (props) => {
+const NavbarMenu = (props: any) => {
   const {
     setShowMenu,
-    currentScripts,
+    scripts,
     selected,
-    handleSelect,
+    setActiveScript,
     handleDelete,
     handleReset,
   } = props
@@ -89,18 +57,18 @@ const NavbarMenu = (props) => {
         </button>
       </div>
       <div className="flex divide-y w-full flex-col p-2">
-        {currentScripts?.map((script, index) => (
+        {scripts?.map((script: any, index: number) => (
           <li
             className={`${
               isSelected(selected, script) ? 'text-black' : 'text-gray-500'
             } cursor-pointer p-2 list-decimal flex`}
             key={index}
           >
-            <span onClick={() => handleSelect(script)} className="flex-1">
+            <span onClick={() => setActiveScript(script.filename)} className="flex-1">
               {script.filename}
             </span>
             <button
-              onClick={() => handleDelete(script.filename)}
+              onClick={() => handleDelete(index)}
               className="m-2 self-start"
             >
               <AiOutlineDelete color="red" />
@@ -118,7 +86,7 @@ const NavbarMenu = (props) => {
   )
 }
 
-const isSelected = (selectedScript, script) => {
+const isSelected = (selectedScript : any, script: any) => {
   if (!selectedScript || !script) return false
   return selectedScript.filename === script.filename
 }

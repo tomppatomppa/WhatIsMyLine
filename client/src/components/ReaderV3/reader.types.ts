@@ -8,7 +8,8 @@ export type SceneLine = 'ACTOR' | 'INFO'
 export type Line = {
   type: SceneLine
   name: string
-  lines: string[]
+  id?: string
+  lines: string
 }
 export type Scene = {
   id: string | 'SCRIPT DETAILS'
