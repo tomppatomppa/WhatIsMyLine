@@ -1,6 +1,7 @@
 import { Script } from 'src/components/ReaderV3/reader.types'
-import { create } from 'zustand'
+import { SetState, StateCreator, create } from 'zustand'
 import { swapScenes } from './helpers'
+import { devtools, persist } from 'zustand/middleware'
 
 interface ScriptState {
   scripts: Script[]
@@ -15,26 +16,31 @@ interface ScriptActions {
   reorderScenes: (sourceId: number, destinationId: number) => void
 }
 
-  
-export const useScriptStore = create<ScriptState & ScriptActions>((set, get) => ({
+const scriptStore: StateCreator<ScriptState & ScriptActions> = ((set) => ({
   scripts: [],
   activeScriptFilename: "",
 
-  setActiveScriptFilename: (filename: string)  => set(() => ({activeScriptFilename: filename})),
-  setScripts: (scripts: Script[]) => set(() => ({scripts: scripts})),
-  addScript: (script: Script) => set((state) => ({scripts: state.scripts.concat(script)})),
+  setActiveScriptFilename: (filename: string) => set(() => ({ activeScriptFilename: filename })),
+  setScripts: (scripts: Script[]) => set(() => ({ scripts: scripts })),
+  addScript: (script: Script) => set((state: { scripts: any[]} ) => ({ scripts: state.scripts.concat(script) })),
   reorderScenes: (sourceId: number, destinationId: number) => set((state) => ({
-    scripts: state.scripts.map((script) =>
-      script.filename !== state.activeScriptFilename
-        ? script
-        : { ...script, scenes: swapScenes(script.scenes, sourceId, destinationId) }
+    scripts: state.scripts.map((script) => script.filename !== state.activeScriptFilename
+      ? script
+      : { ...script, scenes: swapScenes(script.scenes, sourceId, destinationId) }
     )
   })),
   deleteScriptByIndex: (index: number) => set((state) => ({
     scripts: state.scripts.filter((_, i) => i !== index)
   })),
-
 }))
+
+export const useScriptStore = create<ScriptState & ScriptActions>()(
+  devtools(persist(scriptStore, {
+   name: "scripts",
+ })) 
+ ) 
+
+
 
 export const useScripts = () => useScriptStore(state => state.scripts)
 export const useSetScripts = () => useScriptStore((state) => state.setScripts)
