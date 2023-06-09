@@ -1,16 +1,24 @@
 import { useState } from 'react'
 import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'
-import { useDeleteScript,  useScriptStore,  useScripts, useSetActiveScriptFilename } from 'src/store/scriptStore'
-import FileButton from './FileLoader/FileButton'
+import {
+  useDeleteScript,
+  useScriptStore,
+  useScripts,
+  useSetActiveScriptFilename,
+} from 'src/store/scriptStore'
+
+import UploadFile from './FileLoader/UploadFile'
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
   const scripts = useScripts()
-  const activeScriptFilename = useScriptStore(state => state.activeScriptFilename)
-  
+  const activeScriptFilename = useScriptStore(
+    (state) => state.activeScriptFilename
+  )
+
   const deleteScript = useDeleteScript()
   const setActiveScript = useSetActiveScriptFilename()
- 
+
   return (
     <div>
       <div className="sticky bottom-0 shadow-md  flex w-full justify-start bg-primary ">
@@ -50,7 +58,7 @@ const NavbarMenu = (props: any) => {
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-row w-full bg-primary p-2">
-        <FileButton />
+        <UploadFile />
         <span className="flex-1"></span>
         <button onClick={() => setShowMenu(false)}>
           <AiOutlineCloseCircle size={24} />
@@ -60,11 +68,16 @@ const NavbarMenu = (props: any) => {
         {scripts?.map((script: any, index: number) => (
           <li
             className={`${
-              activeScriptFilename === script.filename ? 'text-black' : 'text-gray-500'
+              activeScriptFilename === script.filename
+                ? 'text-black'
+                : 'text-gray-500'
             } cursor-pointer p-2 list-decimal flex`}
             key={index}
           >
-            <span onClick={() => setActiveScript(script.filename)} className="flex-1">
+            <span
+              onClick={() => setActiveScript(script.filename)}
+              className="flex-1"
+            >
               {script.filename}
             </span>
             <button
@@ -85,6 +98,5 @@ const NavbarMenu = (props: any) => {
     </div>
   )
 }
-
 
 export default Navbar

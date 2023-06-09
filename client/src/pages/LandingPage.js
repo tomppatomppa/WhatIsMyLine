@@ -1,4 +1,4 @@
-import FileButton from '../components/FileLoader/FileButton'
+import UploadFile from 'src/components/FileLoader/UploadFile'
 import UploadTestFile from '../components/UploadTestFile'
 
 const LandingPage = () => {
@@ -7,7 +7,7 @@ const LandingPage = () => {
       <div className="flex items-center justify-center flex-col">
         <h1 className="my-24 text-4xl uppercase font-bold">Script Converter</h1>
         <span className="block">Add PDF(s)</span>
-        <FileButton />
+        <UploadFile />
       </div>
       <UploadTestFile />
     </div>

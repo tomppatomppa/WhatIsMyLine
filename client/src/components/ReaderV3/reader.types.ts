@@ -14,6 +14,7 @@ export type Line = {
 export type Scene = {
   id: string | 'SCRIPT DETAILS'
   data: Line[]
+  trash?: boolean
 }
 
 export type Script = {
