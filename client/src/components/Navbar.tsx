@@ -1,16 +1,16 @@
 import { useState } from 'react'
-
 import { AiOutlineDelete, AiOutlineCloseCircle } from 'react-icons/ai'
-
-import { useDeleteScript,  useScripts, useSetActiveScriptFilename } from 'src/store/scriptStore'
+import { useDeleteScript,  useScriptStore,  useScripts, useSetActiveScriptFilename } from 'src/store/scriptStore'
 import FileButton from './FileLoader/FileButton'
 
-const Navbar = ({ selected, setSelected }: any) => {
+const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
   const scripts = useScripts()
+  const activeScriptFilename = useScriptStore(state => state.activeScriptFilename)
+  
   const deleteScript = useDeleteScript()
   const setActiveScript = useSetActiveScriptFilename()
-
+ 
   return (
     <div>
       <div className="sticky bottom-0 shadow-md  flex w-full justify-start bg-primary ">
@@ -28,7 +28,7 @@ const Navbar = ({ selected, setSelected }: any) => {
       >
         <NavbarMenu
           scripts={scripts}
-          selected={selected}
+          activeScriptFilename={activeScriptFilename}
           setActiveScript={setActiveScript}
           handleDelete={deleteScript}
           setShowMenu={setShowMenu}
@@ -41,7 +41,7 @@ const NavbarMenu = (props: any) => {
   const {
     setShowMenu,
     scripts,
-    selected,
+    activeScriptFilename,
     setActiveScript,
     handleDelete,
     handleReset,
@@ -60,7 +60,7 @@ const NavbarMenu = (props: any) => {
         {scripts?.map((script: any, index: number) => (
           <li
             className={`${
-              isSelected(selected, script) ? 'text-black' : 'text-gray-500'
+              activeScriptFilename === script.filename ? 'text-black' : 'text-gray-500'
             } cursor-pointer p-2 list-decimal flex`}
             key={index}
           >
@@ -86,8 +86,5 @@ const NavbarMenu = (props: any) => {
   )
 }
 
-const isSelected = (selectedScript : any, script: any) => {
-  if (!selectedScript || !script) return false
-  return selectedScript.filename === script.filename
-}
+
 export default Navbar

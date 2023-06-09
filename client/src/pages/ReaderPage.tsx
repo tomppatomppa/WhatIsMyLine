@@ -1,16 +1,14 @@
 import { useState } from 'react'
 import { DropResult} from 'react-beautiful-dnd'
 import { Reader } from 'src/components/ReaderV3/Reader'
-
-import { getCurrentScript, swapLines } from 'src/store/helpers'
-import { useScriptStore} from 'src/store/scriptStore'
+import { useActiveScript, useScriptStore} from 'src/store/scriptStore'
 
 type OrderHistory = [number, number];
   
 
 const ReaderPage = () => {
-  const {scripts, activeScriptFilename , reorderScenes ,reorderLines} = useScriptStore((state) => state)
-  const script = getCurrentScript(scripts, activeScriptFilename)
+  const { reorderScenes, reorderLines} = useScriptStore((state) => state)
+  const script = useActiveScript()
   const [orderHistory, setOrderHistory] = useState<OrderHistory[]>([])
   const hasEdited = orderHistory.length > 0
   
