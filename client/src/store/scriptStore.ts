@@ -1,6 +1,6 @@
 import { Script } from 'src/components/ReaderV3/reader.types'
 import {  StateCreator, create } from 'zustand'
-import { swapScenes } from './helpers'
+import { swapLines, swapScenes } from './helpers'
 import { devtools, persist } from 'zustand/middleware'
 
 interface ScriptState {
@@ -14,22 +14,36 @@ interface ScriptActions {
   setActiveScriptFilename: (filename: string)  => void
   deleteScriptByIndex: (index: number) =>void
   reorderScenes: (sourceId: number, destinationId: number) => void
+  reorderLines: (sceneId: string, sourceId: number, destinationId: number) => void
+  getActiveScript: () => Script | undefined
 }
 
-const scriptStore: StateCreator<ScriptState & ScriptActions> = ((set) => ({
+const scriptStore: StateCreator<ScriptState & ScriptActions> = ((set, get) => ({
   scripts: [],
   activeScriptFilename: "",
   
   setActiveScriptFilename: (filename: string) => set(() => ({ activeScriptFilename: filename })),
   setScripts: (scripts: Script[]) => set(() => ({ scripts: scripts })),
   addScript: (script: Script) => set((state: { scripts: any[]} ) => ({ scripts: state.scripts.concat(script) })),
- 
+  
+  /** 
+   * Active Script mutations
+  */
+  getActiveScript: () => get().scripts.find(({filename}) => filename === get().activeScriptFilename),
   reorderScenes: (sourceId: number, destinationId: number) => set((state) => ({
     scripts: state.scripts.map((script) => script.filename !== state.activeScriptFilename
       ? script
       : { ...script, scenes: swapScenes(script.scenes, sourceId, destinationId) }
     )
   })),
+  reorderLines: (sceneId: string, sourceId: number, destinationId: number) => set(({scripts, activeScriptFilename}) => ({
+    scripts: scripts.map((script) => script.filename !== activeScriptFilename
+      ? script
+      : { ...script, 
+        scenes: script.scenes.map((scene) => scene.id !== sceneId ? scene : swapLines(scene, sourceId, destinationId)) }
+    )
+  })),
+
   deleteScriptByIndex: (index: number) => set((state) => ({
     scripts: state.scripts.filter((_, i) => i !== index)
   })),
