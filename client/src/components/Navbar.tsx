@@ -54,7 +54,9 @@ const NavbarMenu = (props: any) => {
     handleDelete,
     handleReset,
   } = props
-
+  const filteredScipts = scripts.filter(
+    (script: { trash: boolean }) => script.trash !== true
+  )
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-row w-full bg-primary p-2">
@@ -65,7 +67,7 @@ const NavbarMenu = (props: any) => {
         </button>
       </div>
       <div className="flex divide-y w-full flex-col p-2">
-        {scripts?.map((script: any, index: number) => (
+        {filteredScipts?.map((script: any, index: number) => (
           <li
             className={`${
               activeScriptFilename === script.filename

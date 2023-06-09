@@ -14,12 +14,12 @@ export type Line = {
 export type Scene = {
   id: string | 'SCRIPT DETAILS'
   data: Line[]
-  trash?: boolean
 }
 
 export type Script = {
   filename: string
   scenes: Scene[]
+  trash?: boolean
 }
 // Line types
 export interface Style {
