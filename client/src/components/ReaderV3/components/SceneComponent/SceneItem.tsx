@@ -3,12 +3,17 @@ import { Drag } from 'src/components/drag-and-drop'
 import EditorForm from '../forms/EditorForm'
 
 interface SceneItemProps {
-    scene: Scene
-    sceneIndex: number
-    handleSetExpanded: () => void
-    show: boolean
+  scene: Scene
+  sceneIndex: number
+  handleSetExpanded: () => void
+  show: boolean
 }
-const SceneItem = ({scene, sceneIndex, handleSetExpanded, show}: SceneItemProps) => {
+const SceneItem = ({
+  scene,
+  sceneIndex,
+  handleSetExpanded,
+  show,
+}: SceneItemProps) => {
   return (
     <Drag
       className="flex justify-center items-center gap-4 my-4 px-1 mx-auto"
@@ -26,10 +31,8 @@ const SceneItem = ({scene, sceneIndex, handleSetExpanded, show}: SceneItemProps)
         </h2>
         {show && (
           <EditorForm
-            scene={scene}
-            AddLine={() => console.log('Add line')}
-            sceneIndex={sceneIndex}
-            DeleteLine={() => console.log('Delete line')}
+            scene={scene}       
+            sceneIndex={sceneIndex} 
           />
         )}
       </div>

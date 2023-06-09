@@ -6,7 +6,11 @@ import LineList from './LineList'
 import { Scene } from '../../reader.types'
 import SceneEditorPanel from '../SceneComponent/SceneEditorPanel'
 
-const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
+interface EditorFormProps {
+  scene: Scene
+  sceneIndex: number
+}
+const EditorForm = ({ scene, sceneIndex }: EditorFormProps) => {
   const [isEditing, setIsEditing] = useState(false)
 
   return (
@@ -17,14 +21,13 @@ const EditorForm = ({ scene, AddLine, sceneIndex, DeleteLine }: any) => {
     >
       <Formik
         enableReinitialize={true}
-        initialValues={scene as Scene}
-        onSubmit={(values) => console.log(values)}
+        initialValues={scene}
+        onSubmit={(values: Scene) => console.log(values)}
       >
         <Drop key={scene.id} id={scene.id} type="droppable-item">
           <Form autoComplete="off">
             <SceneEditorPanel
               isEditing={isEditing}
-              AddLine={AddLine}
               sceneIndex={sceneIndex}
               setIsEditing={setIsEditing}
             />
