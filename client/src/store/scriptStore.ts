@@ -1,5 +1,5 @@
 import { Script } from 'src/components/ReaderV3/reader.types'
-import { SetState, StateCreator, create } from 'zustand'
+import {  StateCreator, create } from 'zustand'
 import { swapScenes } from './helpers'
 import { devtools, persist } from 'zustand/middleware'
 
@@ -19,10 +19,11 @@ interface ScriptActions {
 const scriptStore: StateCreator<ScriptState & ScriptActions> = ((set) => ({
   scripts: [],
   activeScriptFilename: "",
-
+  
   setActiveScriptFilename: (filename: string) => set(() => ({ activeScriptFilename: filename })),
   setScripts: (scripts: Script[]) => set(() => ({ scripts: scripts })),
   addScript: (script: Script) => set((state: { scripts: any[]} ) => ({ scripts: state.scripts.concat(script) })),
+ 
   reorderScenes: (sourceId: number, destinationId: number) => set((state) => ({
     scripts: state.scripts.map((script) => script.filename !== state.activeScriptFilename
       ? script

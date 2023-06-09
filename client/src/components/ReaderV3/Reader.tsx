@@ -62,7 +62,7 @@ export const Reader = ({
               scene={scene}
               sceneIndex={index}
               handleSetExpanded={() => handleSetExpanded(scene.id)}
-              show={expanded.includes(scene.id)} 
+              show={expanded.includes(scene?.id)} 
             />
           ))}
         </Drop>
