@@ -1,7 +1,8 @@
-import { Scene, SceneLine, Script } from '../../reader.types'
+import { Scene, SceneLine } from '../../reader.types'
 import { Drag } from 'src/components/drag-and-drop'
 import EditorForm from '../forms/EditorForm'
-import { useActiveScript, useUpdateScene } from 'src/store/scriptStore'
+import { useActiveScript, useAddLine, useUpdateScene } from 'src/store/scriptStore'
+import uuid from 'react-uuid';
 
 interface SceneItemProps {
   scene: Scene
@@ -16,6 +17,7 @@ const SceneItem = ({
   show,
 }: SceneItemProps) => {
   const updateScene = useUpdateScene()
+  const addLine = useAddLine()
   const script = useActiveScript()
   
   const onSubmit = (updatedScene: Scene) => {
@@ -23,15 +25,23 @@ const SceneItem = ({
     scene.id !== updatedScene.id ? scene : updatedScene
     ) ?? [];
   
-    const updatedScript: Script = {
+    const updatedScript = {
       ...script!,
       scenes: updatedScenes,
     };
 
     updateScene(updatedScript);
-    console.log(updatedScript);
+    
   }
-
+  const handleAddLine = () => {
+    if(!script) return
+    const newLine = {id: uuid(), name: "Select Name", type: "ACTOR" as SceneLine, lines: "New Line\n"}
+    
+    const updatedLines = [...scene.data]
+    updatedLines.unshift(newLine)
+    addLine({...scene, data: updatedLines})
+  
+  }
   return (
     <Drag
       className="flex justify-center items-center gap-4 my-4 px-1 mx-auto"
@@ -52,6 +62,7 @@ const SceneItem = ({
             scene={scene}       
             sceneIndex={sceneIndex}
             onSubmit={onSubmit}
+            addLine={handleAddLine}
           />
         )}
       </div>

@@ -1,4 +1,4 @@
-import { Line, Scene, Script } from 'src/components/ReaderV3/reader.types'
+import { Scene, Script } from 'src/components/ReaderV3/reader.types'
 import { StateCreator, create } from 'zustand'
 import { swapLines, swapScenes } from './helpers'
 import { devtools, persist } from 'zustand/middleware'
@@ -22,6 +22,7 @@ interface ScriptActions {
     destinationId: number
   ) => void
   getActiveScript: () => Script | undefined
+  addLineToScene: (updatedScene: Scene) => void
 }
 
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
@@ -51,6 +52,10 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
        ),
          
       })),
+  addLineToScene: (updatedScene: Scene) => set(({scripts, activeScriptId}) => ({
+    scripts: scripts.map(script => script.id !== activeScriptId ? script :
+      {...script, scenes: script.scenes.map(scene => scene.id !== updatedScene.id ? scene : updatedScene)})
+  })),
   reorderScenes: (sourceId: number, destinationId: number) =>
     set((state) => ({
       scripts: state.scripts.map((script) =>
@@ -62,6 +67,7 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
             }
       ),
     })),
+
   reorderLines: (sceneId: string, sourceId: number, destinationId: number) =>
     set(({ scripts, activeScriptId }) => ({
       scripts: scripts.map((script) =>
@@ -95,7 +101,10 @@ export const useScriptStore = create<ScriptState & ScriptActions>()(
 export const useScripts = () => useScriptStore((state) => state.scripts)
 export const useSetScripts = () => useScriptStore((state) => state.setScripts)
 export const useAddScript = () => useScriptStore((state) => state.addScript)
+
 export const useUpdateScene = () => useScriptStore((state) => state.updateSceneInScript)
+export const useAddLine = () => useScriptStore((state) => state.addLineToScene)
+
 export const useSetActiveScriptId = () =>
   useScriptStore((state) => state.setActiveScriptId)
 export const useDeleteScript = () =>

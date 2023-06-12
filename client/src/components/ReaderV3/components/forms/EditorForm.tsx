@@ -10,8 +10,9 @@ interface EditorFormProps {
   scene: Scene
   sceneIndex: number
   onSubmit: (scene: Scene) => void
+  addLine: () => void
 }
-const EditorForm = ({ scene, sceneIndex, onSubmit }: EditorFormProps) => {
+const EditorForm = ({ scene, sceneIndex, onSubmit, addLine }: EditorFormProps) => {
   const [isEditing, setIsEditing] = useState(false)
 
   return (
@@ -34,6 +35,7 @@ const EditorForm = ({ scene, sceneIndex, onSubmit }: EditorFormProps) => {
               isEditing={isEditing}
               sceneIndex={sceneIndex}
               setIsEditing={setIsEditing}
+              addLine={addLine}
             />
             <LineList sceneIndex={sceneIndex} isEditing={isEditing} />
           </Form>
