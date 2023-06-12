@@ -12,7 +12,7 @@ interface LineListProps {
 }
 
 const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
-  const { values } = useFormikContext<Scene>()
+  const { values, dirty } = useFormikContext<Scene>()
   const { options, dispatch } = useReaderContext()
 
   const getLineStyle = (type: LineType) => {
@@ -41,7 +41,9 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
                 key={lineIndex}
                 show={isEditing}
                 onShow={() => {}}
-                onCollapse={() => {}}
+                onCollapse={() => {
+                  if(dirty) console.log("unsaved changes")
+                }}
               >
                 <div className="w-full bg-neutral-200 flex justify-end ">
                   <label htmlFor={`data[${lineIndex}].type`}>Line Type</label>

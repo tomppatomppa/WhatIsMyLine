@@ -1,4 +1,4 @@
-import { Script } from 'src/components/ReaderV3/reader.types'
+import { Line, Scene, Script } from 'src/components/ReaderV3/reader.types'
 import { StateCreator, create } from 'zustand'
 import { swapLines, swapScenes } from './helpers'
 import { devtools, persist } from 'zustand/middleware'
@@ -14,6 +14,7 @@ interface ScriptActions {
   addScript: (script: Script) => void
   setActiveScriptId: (id: string) => void
   deleteScriptByUuid: (id: string) => void
+  updateSceneInScript: (updatedScript: Script) => void
   reorderScenes: (sourceId: number, destinationId: number) => void
   reorderLines: (
     sceneId: string,
@@ -26,6 +27,7 @@ interface ScriptActions {
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   scripts: [],
   activeScriptId: "",
+  
   setActiveScriptId: (id: string) =>
     set(() => ({ activeScriptId: id })),
   setScripts: (scripts: Script[]) => set(() => ({ scripts: scripts })),
@@ -41,6 +43,14 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
     get().scripts.find(
       ({ id, trash }) => id === get().activeScriptId && !trash
     ),
+
+  updateSceneInScript: (updatedScript: Script) =>
+      set((state) => ({
+        scripts: state.scripts.map((script) => 
+        script.id !== state.activeScriptId ? script : updatedScript
+       ),
+         
+      })),
   reorderScenes: (sourceId: number, destinationId: number) =>
     set((state) => ({
       scripts: state.scripts.map((script) =>
@@ -85,7 +95,7 @@ export const useScriptStore = create<ScriptState & ScriptActions>()(
 export const useScripts = () => useScriptStore((state) => state.scripts)
 export const useSetScripts = () => useScriptStore((state) => state.setScripts)
 export const useAddScript = () => useScriptStore((state) => state.addScript)
-
+export const useUpdateScene = () => useScriptStore((state) => state.updateSceneInScript)
 export const useSetActiveScriptId = () =>
   useScriptStore((state) => state.setActiveScriptId)
 export const useDeleteScript = () =>

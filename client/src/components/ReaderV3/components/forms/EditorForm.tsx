@@ -9,8 +9,9 @@ import SceneEditorPanel from '../SceneComponent/SceneEditorPanel'
 interface EditorFormProps {
   scene: Scene
   sceneIndex: number
+  onSubmit: (scene: Scene) => void
 }
-const EditorForm = ({ scene, sceneIndex }: EditorFormProps) => {
+const EditorForm = ({ scene, sceneIndex, onSubmit }: EditorFormProps) => {
   const [isEditing, setIsEditing] = useState(false)
 
   return (
@@ -22,7 +23,10 @@ const EditorForm = ({ scene, sceneIndex }: EditorFormProps) => {
       <Formik
         enableReinitialize={true}
         initialValues={scene}
-        onSubmit={(values: Scene) => console.log(values)}
+        onSubmit={ (values) => {
+          setIsEditing(false)
+          onSubmit(values)
+        }}
       >
         <Drop key={scene.id} id={scene.id} type="droppable-item">
           <Form autoComplete="off">

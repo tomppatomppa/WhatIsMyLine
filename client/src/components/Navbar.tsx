@@ -4,7 +4,6 @@ import {
   useDeleteScript,
   useScriptStore,
   useScripts,
-  
   useSetActiveScriptId,
   useSetScripts,
 } from 'src/store/scriptStore'
@@ -34,20 +33,21 @@ const Navbar = () => {
       <div
         className={`${
           showMenu ? 'translate-x-0' : '-translate-x-[40rem]'
-        } fixed top-14 z-50 w-full sm:w-72 shadow-lg h-full translate-all duration-200 bg-white`}
+        } fixed top-14 z-50 w-full sm:w-72 shadow-lg divide-y-4 h-full translate-all duration-200 bg-white`}
       >
         <NavbarMenu
           scripts={scripts}
           activeScriptId={activeScriptId}
           setActiveScript={setActiveScript}
           handleDelete={deleteScript}
-          setShowMenu={setShowMenu}
+          setShowMenu={ () => setShowMenu(false)}
           handleReset={() => deleteAll([])}
         />
       </div>
     </div>
   )
 }
+
 const NavbarMenu = (props: any) => {
   const {
     setShowMenu,
@@ -57,20 +57,21 @@ const NavbarMenu = (props: any) => {
     handleDelete,
     handleReset,
   } = props
-  // const filteredScipts = scripts.filter(
-  //   (script: { trash: boolean }) => script.trash !== true
-  // )
+  
+  const filteredScipts = scripts?.filter(
+    (script: { trash: boolean }) => script.trash !== true
+  )
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-row w-full bg-primary p-2">
         <UploadFile />
         <span className="flex-1"></span>
-        <button onClick={() => setShowMenu(false)}>
+        <button onClick={setShowMenu}>
           <AiOutlineCloseCircle size={24} />
         </button>
       </div>
       <div className="flex divide-y w-full flex-col p-2">
-        {scripts?.map((script: any, index: number) => (
+        {filteredScipts?.map((script: any, index: number) => (
           <li
             className={`${
               activeScriptId === script.id

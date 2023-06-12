@@ -1,6 +1,7 @@
-import { Scene } from '../../reader.types'
+import { Scene, SceneLine, Script } from '../../reader.types'
 import { Drag } from 'src/components/drag-and-drop'
 import EditorForm from '../forms/EditorForm'
+import { useActiveScript, useUpdateScene } from 'src/store/scriptStore'
 
 interface SceneItemProps {
   scene: Scene
@@ -14,6 +15,23 @@ const SceneItem = ({
   handleSetExpanded,
   show,
 }: SceneItemProps) => {
+  const updateScene = useUpdateScene()
+  const script = useActiveScript()
+  
+  const onSubmit = (updatedScene: Scene) => {
+    const updatedScenes = script?.scenes.map((scene) =>
+    scene.id !== updatedScene.id ? scene : updatedScene
+    ) ?? [];
+  
+    const updatedScript: Script = {
+      ...script!,
+      scenes: updatedScenes,
+    };
+
+    updateScene(updatedScript);
+    console.log(updatedScript);
+  }
+
   return (
     <Drag
       className="flex justify-center items-center gap-4 my-4 px-1 mx-auto"
@@ -32,7 +50,8 @@ const SceneItem = ({
         {show && (
           <EditorForm
             scene={scene}       
-            sceneIndex={sceneIndex} 
+            sceneIndex={sceneIndex}
+            onSubmit={onSubmit}
           />
         )}
       </div>
