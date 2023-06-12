@@ -146,9 +146,10 @@ class ReaderV3():
         name = line["text"] if line_type == "ACTOR" else ""
         text = [line["text"]] if name == "" else []
 
-        if currentScene:
+        if currentScene:    
             previous_type = currentScene[-1]["type"]
-            if(line_type == "LINE" or "INFO" and line_type == previous_type):          
+            if(line_type == "LINE" or line_type ==  "INFO" and line_type == previous_type):
+                      
                 currentScene[-1]["lines"].append(line["text"])
             else:
                 currentScene.append({"type": line_type, "name": name, "lines": text})   
@@ -223,18 +224,8 @@ class ReaderV3():
             result = self.add_uuid(result)
         if(self.lines_as_string):
             result = self.lines_into_string(result)
-
+        result["id"] = result["filename"]
+        
         return result
     
     
-#if __name__ == '__main__':
-    # settings = ReaderSettings()
-   
-    # reader = ReaderV3(settings, line_id=True, lines_as_string=True)
-    # reader.read_file("testfile.pdf")
-    # result = reader.to_json()
-
-    # print(len(result["scenes"]))
-   
-    # print(json.dumps(result, indent=4))
-

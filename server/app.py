@@ -37,7 +37,7 @@ def upload_v3():
     file = request.files['file']
     if file.filename == '':
         return 'Invalid filename', 403
-
+    
     if file and allowed_file(file.filename):
         #create_temp_folder(app)
         return process_uploaded_file_v3(file, app)

@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 from PyMuReaderV3 import ReaderV3
 import os
 import json
+from ReaderSettings import ReaderSettings
 
 def allowed_file(filename):   
     ALLOWED_EXTENSIONS = {'pdf'}
@@ -32,12 +33,15 @@ def process_uploaded_file_v3(file, app):
         uuid_filename = create_uuid_filename()
         save_path = os.path.join(app.config.get('uploaded_files_folder'), uuid_filename)
         file.save(save_path)
-        
-        reader = ReaderV3(settings=None, line_id=True, lines_as_string=True)
+
+        settings = ReaderSettings()
+        reader = ReaderV3(settings, line_id=True, lines_as_string=True)
         reader.read_file(f'{uuid_filename}')
 
         result = reader.to_json()
+        
         result["filename"] = filename
+        
 
         return json.dumps(result)
     

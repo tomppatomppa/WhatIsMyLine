@@ -38,6 +38,11 @@ def test_reader_reads_file() -> None:
     reader.read_file(testfile)
     assert reader.filename == testfile
 
+def test_reader_to_json_outputs_has_uuid() -> None:
+    result = reader_to_json()
+    assert result["id"]
+   
+
 def test_reader_to_json_outputs_correct_number_of_scenes() -> None:
     result = reader_to_json()
     assert len(result["scenes"]) == len(testfile_scenes)
