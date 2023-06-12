@@ -224,7 +224,8 @@ class ReaderV3():
             result = self.add_uuid(result)
         if(self.lines_as_string):
             result = self.lines_into_string(result)
-        result["id"] = result["filename"]
+        
+        result["id"] = result["filename"].replace(".pdf", "")
         
         return result
     

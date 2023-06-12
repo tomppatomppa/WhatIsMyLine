@@ -20,6 +20,7 @@ export type Script = {
   filename: string
   scenes: Scene[]
   trash?: boolean
+  id: string
 }
 // Line types
 export interface Style {

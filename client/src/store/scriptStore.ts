@@ -5,14 +5,15 @@ import { devtools, persist } from 'zustand/middleware'
 
 interface ScriptState {
   scripts: Script[]
-  activeScriptFilename: string
+  activeScriptId: string
+
 }
 
 interface ScriptActions {
   setScripts: (scripts: Script[]) => void
   addScript: (script: Script) => void
-  setActiveScriptFilename: (filename: string) => void
-  deleteScriptByIndex: (index: number) => void
+  setActiveScriptId: (id: string) => void
+  deleteScriptByUuid: (id: string) => void
   reorderScenes: (sourceId: number, destinationId: number) => void
   reorderLines: (
     sceneId: string,
@@ -24,10 +25,9 @@ interface ScriptActions {
 
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   scripts: [],
-  activeScriptFilename: '',
-
-  setActiveScriptFilename: (filename: string) =>
-    set(() => ({ activeScriptFilename: filename })),
+  activeScriptId: "",
+  setActiveScriptId: (id: string) =>
+    set(() => ({ activeScriptId: id })),
   setScripts: (scripts: Script[]) => set(() => ({ scripts: scripts })),
   addScript: (script: Script) =>
     set((state: { scripts: Script[] }) => ({
@@ -39,12 +39,12 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
    */
   getActiveScript: () =>
     get().scripts.find(
-      ({ filename, trash }) => filename === get().activeScriptFilename && !trash
+      ({ id, trash }) => id === get().activeScriptId && !trash
     ),
   reorderScenes: (sourceId: number, destinationId: number) =>
     set((state) => ({
       scripts: state.scripts.map((script) =>
-        script.filename !== state.activeScriptFilename
+        script.id !== state.activeScriptId
           ? script
           : {
               ...script,
@@ -53,9 +53,9 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
       ),
     })),
   reorderLines: (sceneId: string, sourceId: number, destinationId: number) =>
-    set(({ scripts, activeScriptFilename }) => ({
+    set(({ scripts, activeScriptId }) => ({
       scripts: scripts.map((script) =>
-        script.filename !== activeScriptFilename
+        script.id !== activeScriptId
           ? script
           : {
               ...script,
@@ -68,12 +68,10 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
       ),
     })),
 
-  deleteScriptByIndex: (index: number) =>
+  deleteScriptByUuid: (id: string) =>
     set((state) => ({
-      scripts: state.scripts.map((script, i) =>
-        i !== index ? script : { ...script, trash: true }
-      ),
-    })),
+        scripts: state.scripts.filter((script) => script.id!== id)
+    }))
 })
 
 export const useScriptStore = create<ScriptState & ScriptActions>()(
@@ -87,9 +85,10 @@ export const useScriptStore = create<ScriptState & ScriptActions>()(
 export const useScripts = () => useScriptStore((state) => state.scripts)
 export const useSetScripts = () => useScriptStore((state) => state.setScripts)
 export const useAddScript = () => useScriptStore((state) => state.addScript)
-export const useSetActiveScriptFilename = () =>
-  useScriptStore((state) => state.setActiveScriptFilename)
+
+export const useSetActiveScriptId = () =>
+  useScriptStore((state) => state.setActiveScriptId)
 export const useDeleteScript = () =>
-  useScriptStore((state) => state.deleteScriptByIndex)
+  useScriptStore((state) => state.deleteScriptByUuid)
 export const useActiveScript = () =>
   useScriptStore((state) => state.getActiveScript())

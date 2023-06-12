@@ -4,7 +4,9 @@ import {
   useDeleteScript,
   useScriptStore,
   useScripts,
-  useSetActiveScriptFilename,
+  
+  useSetActiveScriptId,
+  useSetScripts,
 } from 'src/store/scriptStore'
 
 import UploadFile from './FileLoader/UploadFile'
@@ -12,12 +14,12 @@ import UploadFile from './FileLoader/UploadFile'
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
   const scripts = useScripts()
-  const activeScriptFilename = useScriptStore(
-    (state) => state.activeScriptFilename
+  const activeScriptId = useScriptStore(
+    (state) => state.activeScriptId
   )
-
+  const deleteAll = useSetScripts()
   const deleteScript = useDeleteScript()
-  const setActiveScript = useSetActiveScriptFilename()
+  const setActiveScript = useSetActiveScriptId()
 
   return (
     <div>
@@ -36,10 +38,11 @@ const Navbar = () => {
       >
         <NavbarMenu
           scripts={scripts}
-          activeScriptFilename={activeScriptFilename}
+          activeScriptId={activeScriptId}
           setActiveScript={setActiveScript}
           handleDelete={deleteScript}
           setShowMenu={setShowMenu}
+          handleReset={() => deleteAll([])}
         />
       </div>
     </div>
@@ -49,14 +52,14 @@ const NavbarMenu = (props: any) => {
   const {
     setShowMenu,
     scripts,
-    activeScriptFilename,
+    activeScriptId,
     setActiveScript,
     handleDelete,
     handleReset,
   } = props
-  const filteredScipts = scripts.filter(
-    (script: { trash: boolean }) => script.trash !== true
-  )
+  // const filteredScipts = scripts.filter(
+  //   (script: { trash: boolean }) => script.trash !== true
+  // )
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-row w-full bg-primary p-2">
@@ -67,23 +70,23 @@ const NavbarMenu = (props: any) => {
         </button>
       </div>
       <div className="flex divide-y w-full flex-col p-2">
-        {filteredScipts?.map((script: any, index: number) => (
+        {scripts?.map((script: any, index: number) => (
           <li
             className={`${
-              activeScriptFilename === script.filename
+              activeScriptId === script.id
                 ? 'text-black'
                 : 'text-gray-500'
             } cursor-pointer p-2 list-decimal flex`}
             key={index}
           >
             <span
-              onClick={() => setActiveScript(script.filename)}
+              onClick={() => setActiveScript(script.id)}
               className="flex-1"
             >
               {script.filename}
             </span>
             <button
-              onClick={() => handleDelete(index)}
+              onClick={() => handleDelete(script.id)}
               className="m-2 self-start"
             >
               <AiOutlineDelete color="red" />

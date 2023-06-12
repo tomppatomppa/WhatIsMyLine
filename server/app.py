@@ -40,6 +40,7 @@ def upload_v3():
     
     if file and allowed_file(file.filename):
         #create_temp_folder(app)
+       
         return process_uploaded_file_v3(file, app)
 
     return 'Invalid filetype', 403

@@ -10,7 +10,7 @@ const ReaderPage = () => {
   const script = useActiveScript()
   const [orderHistory, setOrderHistory] = useState<OrderHistory[]>([])
   const hasEdited = orderHistory.length > 0
-  console.log(script)
+  
   const handleDragEnd = (result: DropResult) => {
     const { type, source, destination } = result
     if (!destination) return
