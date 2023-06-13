@@ -13,9 +13,7 @@ import UploadFile from './FileLoader/UploadFile'
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
   const scripts = useScripts()
-  const activeScriptId = useScriptStore(
-    (state) => state.activeScriptId
-  )
+  const activeScriptId = useScriptStore((state) => state.activeScriptId)
   const deleteAll = useSetScripts()
   const deleteScript = useDeleteScript()
   const setActiveScript = useSetActiveScriptId()
@@ -40,7 +38,7 @@ const Navbar = () => {
           activeScriptId={activeScriptId}
           setActiveScript={setActiveScript}
           handleDelete={deleteScript}
-          setShowMenu={ () => setShowMenu(false)}
+          setShowMenu={() => setShowMenu(false)}
           handleReset={() => deleteAll([])}
         />
       </div>
@@ -57,7 +55,7 @@ const NavbarMenu = (props: any) => {
     handleDelete,
     handleReset,
   } = props
-  
+
   const filteredScipts = scripts?.filter(
     (script: { trash: boolean }) => script.trash !== true
   )
@@ -74,16 +72,11 @@ const NavbarMenu = (props: any) => {
         {filteredScipts?.map((script: any, index: number) => (
           <li
             className={`${
-              activeScriptId === script.id
-                ? 'text-black'
-                : 'text-gray-500'
+              activeScriptId === script.id ? 'text-black' : 'text-gray-500'
             } cursor-pointer p-2 list-decimal flex`}
             key={index}
           >
-            <span
-              onClick={() => setActiveScript(script.id)}
-              className="flex-1"
-            >
+            <span onClick={() => setActiveScript(script.id)} className="flex-1">
               {script.filename}
             </span>
             <button

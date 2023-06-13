@@ -1,14 +1,15 @@
 import { useReducer } from 'react'
 import { useState } from 'react'
-import { DragDropContext } from 'react-beautiful-dnd'
+import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { Drop } from '../drag-and-drop'
 import ReaderContext from './contexts/ReaderContext'
 import reducer from './reducer'
 import SceneItem from './components/SceneComponent/SceneItem'
+import { Scene } from './reader.types'
 
 interface ReaderProps {
-  data: any[]
-  handleDragEnd: (values: any) => void
+  data: Scene[]
+  handleDragEnd: (values: DropResult) => void
 }
 
 const initialState = {
@@ -26,7 +27,6 @@ const initialState = {
     },
     actor: {
       style: {
-        
         textAlign: 'center',
         fontSize: '11.8pt',
         color: '#333333',
@@ -35,10 +35,7 @@ const initialState = {
   },
 } as any
 
-export const Reader = ({
-  data,
-  handleDragEnd,
-}: ReaderProps) => {
+export const Reader = ({ data, handleDragEnd }: ReaderProps) => {
   const [options, dispatch] = useReducer(reducer, initialState)
   const [expanded, setExpanded] = useState<string[]>([])
 
@@ -62,7 +59,7 @@ export const Reader = ({
               scene={scene}
               sceneIndex={index}
               handleSetExpanded={() => handleSetExpanded(scene.id)}
-              show={expanded.includes(scene?.id)} 
+              show={expanded.includes(scene?.id)}
             />
           ))}
         </Drop>
