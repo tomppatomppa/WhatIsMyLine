@@ -5,7 +5,6 @@ import {
   useScriptStore,
   useScripts,
   useSetActiveScriptId,
-  useSetScripts,
 } from 'src/store/scriptStore'
 
 import UploadFile from './FileLoader/UploadFile'
@@ -14,7 +13,7 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
   const scripts = useScripts()
   const activeScriptId = useScriptStore((state) => state.activeScriptId)
-  const deleteAll = useSetScripts()
+
   const deleteScript = useDeleteScript()
   const setActiveScript = useSetActiveScriptId()
 
@@ -39,7 +38,6 @@ const Navbar = () => {
           setActiveScript={setActiveScript}
           handleDelete={deleteScript}
           setShowMenu={() => setShowMenu(false)}
-          handleReset={() => deleteAll([])}
         />
       </div>
     </div>
@@ -53,7 +51,6 @@ const Sidebar = (props: any) => {
     activeScriptId,
     setActiveScript,
     handleDelete,
-    handleReset,
   } = props
 
   const filteredScipts = scripts?.filter(
@@ -68,31 +65,25 @@ const Sidebar = (props: any) => {
           <AiOutlineCloseCircle size={24} />
         </button>
       </div>
-      <div className="flex divide-y w-full flex-col p-2">
+      <div className="flex w-full flex-col p-1">
         {filteredScipts?.map((script: any, index: number) => (
           <li
             className={`${
-              activeScriptId === script.id ? 'text-black' : 'text-gray-500'
-            } cursor-pointer p-2 list-decimal flex`}
+              activeScriptId === script.id
+                ? 'text-black  border-green-300'
+                : 'text-gray-500'
+            } cursor-pointer border-l-2 list-decimal flex`}
             key={index}
           >
             <span onClick={() => setActiveScript(script.id)} className="flex-1">
               {script.filename}
             </span>
-            <button
-              onClick={() => handleDelete(script.id)}
-              className="m-2 self-start"
-            >
+
+            <button onClick={() => handleDelete(script.id)} className="m-2">
               <AiOutlineDelete color="red" />
             </button>
           </li>
         ))}
-        <button
-          className="flex mt-24 bg-red-400 text-black p-2 rounded-md bottom-0 self-end"
-          onClick={handleReset}
-        >
-          Delete All
-        </button>
       </div>
     </div>
   )
