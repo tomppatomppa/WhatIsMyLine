@@ -7,11 +7,11 @@ import { Actor, LineType, Scene } from '../../reader.types'
 import { useReaderContext } from '../../contexts/ReaderContext'
 
 interface LineListProps {
-  sceneIndex: number
   isEditing: boolean
+  deleteLine: (lineIndex: number) => void
 }
 
-const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
+const LineList = ({ isEditing, deleteLine }: LineListProps) => {
   const { values, dirty } = useFormikContext<Scene>()
   const { options, dispatch } = useReaderContext()
 
@@ -58,7 +58,7 @@ const LineList = ({ sceneIndex, isEditing }: LineListProps) => {
                   <button
                     className="w-auto"
                     type="button"
-                    onClick={() => console.log(sceneIndex, lineIndex)}
+                    onClick={() => deleteLine(lineIndex)}
                   >
                     <DeleteIcon />
                   </button>

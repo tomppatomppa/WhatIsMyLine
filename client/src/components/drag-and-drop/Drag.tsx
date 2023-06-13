@@ -25,6 +25,7 @@ export const Drag = ({
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             {...props}
+            
           >
             {children}
           </div>

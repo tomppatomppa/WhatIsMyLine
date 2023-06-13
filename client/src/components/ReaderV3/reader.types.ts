@@ -2,7 +2,7 @@ export type ReaderMode = 'read' | 'edit'
 export type MenuPosition = 'top' | 'bottom'
 
 //Scene types
-
+export type LineIndex = [number, number]
 export type SceneLine = 'ACTOR' | 'INFO'
 
 export type Line = {

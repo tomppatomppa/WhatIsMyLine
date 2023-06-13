@@ -11,8 +11,10 @@ interface EditorFormProps {
   sceneIndex: number
   onSubmit: (scene: Scene) => void
   addLine: () => void
+  deleteLine: (lineIndex: number) => void
 }
-const EditorForm = ({ scene, sceneIndex, onSubmit, addLine }: EditorFormProps) => {
+
+const EditorForm = ({ scene, sceneIndex, onSubmit, addLine, deleteLine }: EditorFormProps) => {
   const [isEditing, setIsEditing] = useState(false)
 
   return (
@@ -24,7 +26,7 @@ const EditorForm = ({ scene, sceneIndex, onSubmit, addLine }: EditorFormProps) =
       <Formik
         enableReinitialize={true}
         initialValues={scene}
-        onSubmit={ (values) => {
+        onSubmit={(values) => {
           setIsEditing(false)
           onSubmit(values)
         }}
@@ -37,7 +39,7 @@ const EditorForm = ({ scene, sceneIndex, onSubmit, addLine }: EditorFormProps) =
               setIsEditing={setIsEditing}
               addLine={addLine}
             />
-            <LineList sceneIndex={sceneIndex} isEditing={isEditing} />
+            <LineList isEditing={isEditing} deleteLine={deleteLine} />
           </Form>
         </Drop>
       </Formik>

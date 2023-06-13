@@ -14,7 +14,7 @@ interface ScriptActions {
   addScript: (script: Script) => void
   setActiveScriptId: (id: string) => void
   deleteScriptByUuid: (id: string) => void
-  updateSceneInScript: (updatedScript: Script) => void
+ 
   reorderScenes: (sourceId: number, destinationId: number) => void
   reorderLines: (
     sceneId: string,
@@ -22,7 +22,7 @@ interface ScriptActions {
     destinationId: number
   ) => void
   getActiveScript: () => Script | undefined
-  addLineToScene: (updatedScene: Scene) => void
+  updateScene: (updatedScene: Scene) => void
 }
 
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
@@ -45,14 +45,7 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
       ({ id, trash }) => id === get().activeScriptId && !trash
     ),
 
-  updateSceneInScript: (updatedScript: Script) =>
-      set((state) => ({
-        scripts: state.scripts.map((script) => 
-        script.id !== state.activeScriptId ? script : updatedScript
-       ),
-         
-      })),
-  addLineToScene: (updatedScene: Scene) => set(({scripts, activeScriptId}) => ({
+  updateScene: (updatedScene: Scene) => set(({scripts, activeScriptId}) => ({
     scripts: scripts.map(script => script.id !== activeScriptId ? script :
       {...script, scenes: script.scenes.map(scene => scene.id !== updatedScene.id ? scene : updatedScene)})
   })),
@@ -83,7 +76,7 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
             }
       ),
     })),
-
+  
   deleteScriptByUuid: (id: string) =>
     set((state) => ({
         scripts: state.scripts.filter((script) => script.id!== id)
@@ -102,8 +95,8 @@ export const useScripts = () => useScriptStore((state) => state.scripts)
 export const useSetScripts = () => useScriptStore((state) => state.setScripts)
 export const useAddScript = () => useScriptStore((state) => state.addScript)
 
-export const useUpdateScene = () => useScriptStore((state) => state.updateSceneInScript)
-export const useAddLine = () => useScriptStore((state) => state.addLineToScene)
+
+export const useUpdateScript = () => useScriptStore((state) => state.updateScene)
 
 export const useSetActiveScriptId = () =>
   useScriptStore((state) => state.setActiveScriptId)

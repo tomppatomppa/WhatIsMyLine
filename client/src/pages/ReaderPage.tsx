@@ -12,6 +12,7 @@ const ReaderPage = () => {
   const hasEdited = orderHistory.length > 0
   
   const handleDragEnd = (result: DropResult) => {
+    
     const { type, source, destination } = result
     if (!destination) return
 
