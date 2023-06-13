@@ -1,11 +1,11 @@
 import { useReducer } from 'react'
-import { useState } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { Drop } from '../drag-and-drop'
 import ReaderContext from './contexts/ReaderContext'
 import reducer from './reducer'
 import SceneItem from './components/Scene/SceneItem'
-import { Scene } from './reader.types'
+import { ReaderConfiguration, Scene } from './reader.types'
+import ReaderControlPanel from './components/ReaderControlPanel/ReaderControlPanel'
 
 interface ReaderProps {
   data: Scene[]
@@ -13,6 +13,7 @@ interface ReaderProps {
 }
 
 const initialState = {
+  mode: 'idle',
   highlight: [],
   expanded: [],
   settings: {
@@ -33,7 +34,7 @@ const initialState = {
       },
     },
   },
-} as any
+} as ReaderConfiguration
 
 export const Reader = ({ data, handleDragEnd }: ReaderProps) => {
   const [options, dispatch] = useReducer(reducer, initialState)
@@ -42,6 +43,10 @@ export const Reader = ({ data, handleDragEnd }: ReaderProps) => {
     <ReaderContext.Provider value={{ options, dispatch }}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <Drop id="droppable" type="droppable-category">
+          <div className="w-full flex mx-auto justify-center">
+            <ReaderControlPanel />
+          </div>
+
           {data.map((scene, index) => (
             <SceneItem
               key={index}

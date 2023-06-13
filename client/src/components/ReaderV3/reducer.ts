@@ -77,10 +77,10 @@ export const reducer = (
       }
     }
     case 'SET_MODE': {
-      const { mode } = state
+      const { setMode } = action.payload
       return {
         ...state,
-        mode: mode === 'edit' ? 'read' : 'edit',
+        mode: setMode,
       }
     }
 

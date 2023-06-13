@@ -1,4 +1,4 @@
-export type ReaderMode = 'read' | 'edit'
+export type ReaderMode = 'read' | 'edit' | 'idle'
 export type MenuPosition = 'top' | 'bottom'
 
 //Scene types
@@ -39,6 +39,7 @@ export type Settings = {
   }
 }
 export interface ReaderConfiguration {
+  mode: ReaderMode
   highlight: Actor[]
   expanded: string[]
   settings: Settings
