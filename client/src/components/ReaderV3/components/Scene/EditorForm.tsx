@@ -1,15 +1,14 @@
 import { Form, Formik } from 'formik'
 import { Drop } from 'src/components/drag-and-drop'
 import { useState } from 'react'
-
 import { Actor, LineType, Scene } from '../../reader.types'
-import SceneEditorPanel from '../SceneComponent/SceneEditorPanel'
+import SceneEditorPanel from './SceneEditorPanel'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import { Field } from 'formik'
 import { Drag } from 'src/components/drag-and-drop'
 import { DeleteIcon } from '../icons'
-import { ConditionalField } from './ConditionalField'
-import { FormikTextArea } from './FormikTextArea'
+import { ConditionalField } from '../forms/ConditionalField'
+import { FormikTextArea } from '../forms/FormikTextArea'
 
 interface EditorFormProps {
   scene: Scene

@@ -4,7 +4,7 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { Drop } from '../drag-and-drop'
 import ReaderContext from './contexts/ReaderContext'
 import reducer from './reducer'
-import SceneItem from './components/SceneComponent/SceneItem'
+import SceneItem from './components/Scene/SceneItem'
 import { Scene } from './reader.types'
 
 interface ReaderProps {

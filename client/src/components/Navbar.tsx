@@ -33,7 +33,7 @@ const Navbar = () => {
           showMenu ? 'translate-x-0' : '-translate-x-[40rem]'
         } fixed top-14 z-50 w-full sm:w-72 shadow-lg divide-y-4 h-full translate-all duration-200 bg-white`}
       >
-        <NavbarMenu
+        <Sidebar
           scripts={scripts}
           activeScriptId={activeScriptId}
           setActiveScript={setActiveScript}
@@ -46,7 +46,7 @@ const Navbar = () => {
   )
 }
 
-const NavbarMenu = (props: any) => {
+const Sidebar = (props: any) => {
   const {
     setShowMenu,
     scripts,

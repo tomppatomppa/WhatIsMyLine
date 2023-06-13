@@ -1,9 +1,10 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useState, useRef } from 'react'
 import { uploadfile } from 'src/API/uploadApi'
 import { useAddScript } from 'src/store/scriptStore'
 
 const UploadFile = () => {
   const [file, setFile] = useState<File | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const addScript = useAddScript()
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -13,7 +14,7 @@ const UploadFile = () => {
   }
 
   const handleUploadClick = async () => {
-    if (!file) {
+    if (!file || !inputRef.current) {
       return
     }
 
@@ -23,18 +24,19 @@ const UploadFile = () => {
     try {
       const result = await uploadfile(formData)
       addScript(result)
-      setFile(null)
     } catch (e) {
       console.log(e)
     }
+    setFile(null)
+    inputRef.current.value = ''
   }
 
   return (
-    <div className="w-full">
-      <input type="file" onChange={handleFileChange} />
+    <div className="w-24">
+      <input ref={inputRef} type="file" onChange={handleFileChange} />
       {file ? (
         <button
-          className="border border-action  p-1 rounded-md"
+          className="border my-2 border-action p-1 rounded-md"
           onClick={handleUploadClick}
         >
           Upload

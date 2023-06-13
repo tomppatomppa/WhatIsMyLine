@@ -1,6 +1,6 @@
 import { Scene, SceneLine } from '../../reader.types'
 import { Drag } from 'src/components/drag-and-drop'
-import EditorForm from '../forms/EditorForm'
+import EditorForm from './EditorForm'
 import { useUpdateScript } from 'src/store/scriptStore'
 import uuid from 'react-uuid'
 

@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import { useState } from 'react'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import { MinimizeButton } from './MinimizeButton'
@@ -13,7 +12,7 @@ const ReaderControlPanel = () => {
   const minimizedStyle = minimized ? 'minimized' : ''
 
   return (
-    <div className={clsx(styles['controlpanel'], styles[minimizedStyle])}>
+    <div className={(styles['controlpanel'], styles[minimizedStyle])}>
       <div id="reader-controlpanel">
         <span className="flex-1" />
         <MinimizeButton onClick={() => setMinimized(!minimized)} />
@@ -21,7 +20,7 @@ const ReaderControlPanel = () => {
           <div id="button-container" className="flex gap-2">
             <ControlPanelButton icon={<ConfirmIcon />}>
               <button
-                className={clsx(!hasExpandedScenes && 'text-neutral-600')}
+                className={!hasExpandedScenes ? 'text-neutral-600' : ''}
                 disabled={!hasExpandedScenes}
                 onClick={() =>
                   dispatch({
