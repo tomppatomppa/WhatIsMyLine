@@ -15,16 +15,16 @@ export const reducer = (
     }
     case 'SET_EXPAND': {
       const { expanded } = state
-      const isExpanded = expanded.includes(action.payload.sceneId)
-      if (isExpanded) {
-        return {
-          ...state,
-          expanded: expanded.filter((id) => id !== action.payload.sceneId),
-        }
+      let updatedExpanded
+
+      if (expanded.includes(action.payload.sceneId)) {
+        updatedExpanded = expanded.filter((id) => id !== action.payload.sceneId)
+      } else {
+        updatedExpanded = [...expanded, action.payload.sceneId]
       }
       return {
         ...state,
-        expanded: expanded.concat(action.payload.sceneId),
+        expanded: updatedExpanded,
       }
     }
     case 'HIGHLIGHT_TARGET': {

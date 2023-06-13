@@ -37,17 +37,6 @@ const initialState = {
 
 export const Reader = ({ data, handleDragEnd }: ReaderProps) => {
   const [options, dispatch] = useReducer(reducer, initialState)
-  const [expanded, setExpanded] = useState<string[]>([])
-
-  const handleSetExpanded = (id: string) => {
-    let updatedExpanded
-    if (expanded.includes(id)) {
-      updatedExpanded = expanded.filter((item) => item !== id)
-    } else {
-      updatedExpanded = [...expanded, id]
-    }
-    setExpanded(updatedExpanded)
-  }
 
   return (
     <ReaderContext.Provider value={{ options, dispatch }}>
@@ -58,8 +47,10 @@ export const Reader = ({ data, handleDragEnd }: ReaderProps) => {
               key={index}
               scene={scene}
               sceneIndex={index}
-              handleSetExpanded={() => handleSetExpanded(scene.id)}
-              show={expanded.includes(scene?.id)}
+              handleSetExpanded={() =>
+                dispatch({ type: 'SET_EXPAND', payload: { sceneId: scene.id } })
+              }
+              show={options.expanded.includes(scene?.id)}
             />
           ))}
         </Drop>

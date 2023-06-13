@@ -65,21 +65,24 @@ const Sidebar = (props: any) => {
           <AiOutlineCloseCircle size={24} />
         </button>
       </div>
-      <div className="flex w-full flex-col p-1">
+      <div className="flex w-full flex-col">
         {filteredScipts?.map((script: any, index: number) => (
           <li
             className={`${
               activeScriptId === script.id
-                ? 'text-black  border-green-300'
+                ? 'text-black border-green-300'
                 : 'text-gray-500'
-            } cursor-pointer border-l-2 list-decimal flex`}
+            } cursor-pointer border-l-4 flex h-12 items-center`}
             key={index}
           >
             <span onClick={() => setActiveScript(script.id)} className="flex-1">
               {script.filename}
             </span>
 
-            <button onClick={() => handleDelete(script.id)} className="m-2">
+            <button
+              onClick={() => handleDelete(script.id)}
+              className="w-6 flex-0 mx-auto flex items-center justify-center"
+            >
               <AiOutlineDelete color="red" />
             </button>
           </li>
