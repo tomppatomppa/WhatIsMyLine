@@ -10,7 +10,7 @@ const ReaderControlPanel = () => {
 
   const hasExpandedScenes = options.expanded.length
   const isReading = options.mode === 'read'
-  console.log(isReading)
+
   return (
     <div
       className={`z-50 flex sticky mt-2 w-48 mx-auto justify-center rounded-md bg-indigo-200 shadow-md`}
