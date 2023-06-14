@@ -5,18 +5,22 @@ export type User = {
   email: string
   name: string
   picture: string
+  access_token: string
 }
 
 interface UserStore {
   user: User | null
-  setUser: (user: User) => void
+  login: (user: User) => void
   logout: () => void
+  setAccessToken: (access_token: string) => void
 }
 
 const settingsStore: StateCreator<UserStore> = (set: any) => ({
   user: null,
-  setUser: (user: User) => set(() => ({ user })),
+  login: (user: User) => set(() => ({ user })),
   logout: () => set(() => ({ user: null })),
+  setAccessToken: (access_token: string) =>
+    set((state: UserStore) => ({ user: { ...state.user, access_token } })),
 })
 
 export const useUserStore = create<UserStore>()(
@@ -28,3 +32,9 @@ export const useUserStore = create<UserStore>()(
 )
 
 export const useLogout = () => useUserStore((state) => state.logout)
+export const useLogin = () => useUserStore((state) => state.login)
+export const useSetAccessToken = () =>
+  useUserStore((state) => state.setAccessToken)
+
+export const useAccessToken = () =>
+  useUserStore((state) => state.user?.access_token)

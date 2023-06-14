@@ -9,6 +9,8 @@ import {
 
 import UploadFile from './FileLoader/UploadFile'
 import GoogleLoginButton from './GoogleLoginButton'
+import GooglePicker from './google/GooglePicker'
+import { useAccessToken, useSetAccessToken } from 'src/store/userStore'
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
@@ -56,6 +58,9 @@ const Sidebar = (props: any) => {
     handleDelete,
   } = props
 
+  const setAccessToken = useSetAccessToken()
+  const access_token = useAccessToken()
+
   const filteredScipts = scripts?.filter(
     (script: { trash: boolean }) => script.trash !== true
   )
@@ -63,11 +68,16 @@ const Sidebar = (props: any) => {
     <div className="flex flex-col items-center">
       <div className="flex flex-row w-full bg-primary p-2">
         <UploadFile />
+
         <span className="flex-1"></span>
         <button onClick={setShowMenu}>
           <AiOutlineCloseCircle size={24} />
         </button>
       </div>
+      <GooglePicker
+        setAccessToken={setAccessToken}
+        access_token={access_token}
+      />
       <div className="flex w-full flex-col">
         {filteredScipts?.map((script: any, index: number) => (
           <li
