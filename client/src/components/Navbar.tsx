@@ -8,6 +8,7 @@ import {
 } from 'src/store/scriptStore'
 
 import UploadFile from './FileLoader/UploadFile'
+import GoogleLoginButton from './GoogleLoginButton'
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
@@ -21,11 +22,13 @@ const Navbar = () => {
     <div>
       <div className="sticky bottom-0 shadow-md  flex w-full justify-start bg-primary ">
         <button
-          className="flex flex-1 self-center m-4 text-black font-bold tracking-widest"
+          className="flex  self-center m-4 text-black font-bold tracking-widest"
           onClick={() => setShowMenu(!showMenu)}
         >
           SCRIPTS
         </button>
+        <span className="flex-1"></span>
+        <GoogleLoginButton />
       </div>
       <div
         className={`${
