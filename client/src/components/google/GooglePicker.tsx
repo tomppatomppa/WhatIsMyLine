@@ -8,6 +8,7 @@ interface GooglePickerProps {
   setAccessToken: (access_token: string) => void
   access_token?: string
 }
+
 const GooglePicker = ({ setAccessToken, access_token }: GooglePickerProps) => {
   const [openPicker, authResponse] = useDrivePicker()
 

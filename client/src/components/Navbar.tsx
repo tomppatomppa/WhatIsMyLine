@@ -8,7 +8,7 @@ import {
 } from 'src/store/scriptStore'
 
 import UploadFile from './FileLoader/UploadFile'
-import GoogleLoginButton from './GoogleLoginButton'
+import GoogleLoginButton from './google/GoogleLoginButton'
 import GooglePicker from './google/GooglePicker'
 import { useAccessToken, useSetAccessToken } from 'src/store/userStore'
 
