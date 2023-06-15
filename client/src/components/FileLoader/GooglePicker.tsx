@@ -1,17 +1,20 @@
 import useDrivePicker from 'react-google-drive-picker'
 import { useEffect } from 'react'
-import { getUserFile } from 'src/API/googleApi'
+import { getFileGoogleDrive } from 'src/API/googleApi'
+import { FaGoogleDrive } from 'react-icons/fa'
 
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
 const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY
 
 interface GooglePickerProps {
+  className?: string
   setAccessToken?: (access_token: string) => void
   onFileSelect?: (result: File) => void
   access_token?: string
 }
 
 const GooglePicker = ({
+  className,
   setAccessToken,
   access_token,
   onFileSelect,
@@ -36,10 +39,11 @@ const GooglePicker = ({
           console.log('User clicked cancel/close button')
         } else if (data.docs && onFileSelect && token) {
           try {
-            const result = await getUserFile(data?.docs[0].id, token)
+            const result = await getFileGoogleDrive(data?.docs[0].id, token)
             const file = new File([result], data.docs[0].name, {
               type: data.docs[0].mimeType,
             })
+            console.log(result)
             onFileSelect(file)
           } catch (e) {
             console.log(e)
@@ -56,11 +60,8 @@ const GooglePicker = ({
   }, [authResponse, setAccessToken])
 
   return (
-    <button
-      onClick={() => handleOpenPicker()}
-      className="p-2 rounded-md bg-blue-200 my-2"
-    >
-      Google Drive
+    <button className={className} onClick={() => handleOpenPicker()}>
+      <FaGoogleDrive size={22} />
     </button>
   )
 }

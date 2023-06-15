@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-export const getUserFile = async (fileId: string, access_token: string) => {
+export const getFileGoogleDrive = async (
+  fileId: string,
+  access_token: string
+) => {
   const { data } = await axios.get(
     `https://www.googleapis.com/drive/v3/files/${fileId}`,
     {

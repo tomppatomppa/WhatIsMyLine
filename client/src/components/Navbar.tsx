@@ -6,9 +6,8 @@ import {
   useScripts,
   useSetActiveScriptId,
 } from 'src/store/scriptStore'
-
-import UploadFile from './FileLoader/UploadFile'
 import GoogleLoginButton from './google/GoogleLoginButton'
+import FileUpload from 'src/containers/FileUpload'
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
@@ -60,16 +59,15 @@ const Sidebar = (props: any) => {
     (script: { trash: boolean }) => script.trash !== true
   )
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center border border-black">
       <div className="flex flex-row w-full bg-primary p-2">
-        <UploadFile />
-
+        {/* <UploadFile /> */}
         <span className="flex-1"></span>
         <button onClick={setShowMenu}>
           <AiOutlineCloseCircle size={24} />
         </button>
       </div>
-
+      <FileUpload />
       <div className="flex w-full flex-col">
         {filteredScipts?.map((script: any, index: number) => (
           <li

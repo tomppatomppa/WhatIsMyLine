@@ -4,8 +4,7 @@ import './index.css'
 import App from './App'
 import { BrowserRouter } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google'
-
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 const queryClient = new QueryClient()
 
