@@ -1,12 +1,11 @@
-import ReaderPage from './pages/ReaderPage'
+import { RouterProvider } from 'react-router-dom'
 
-import Navbar from './components/Navbar'
+import { router } from './router'
 
 function App() {
   return (
-    <div className="text-center ">
-      <Navbar />
-      <ReaderPage />
+    <div className="app text-center">
+      <RouterProvider router={router} />
     </div>
   )
 }

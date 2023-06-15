@@ -1,8 +1,9 @@
 import useDrivePicker from 'react-google-drive-picker'
-import { useEffect } from 'react'
-import { getFileGoogleDrive } from 'src/API/googleApi'
+import { getGoogleDriveFileById } from 'src/API/googleApi'
 import { FaGoogleDrive } from 'react-icons/fa'
 import { useMutation } from 'react-query'
+import { PickerCallback } from 'react-google-drive-picker/dist/typeDefs'
+
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
 const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY
 
@@ -18,7 +19,7 @@ const GooglePicker = ({
   onFileSelect,
 }: GooglePickerProps) => {
   const [openPicker, authResponse] = useDrivePicker()
-  const { mutate } = useMutation(getFileGoogleDrive, {
+  const { mutate } = useMutation(getGoogleDriveFileById, {
     onSuccess: (pdfFile, variables) => {
       const file = new File([pdfFile], variables.docs.name, {
         type: variables.docs.mimeType,
@@ -39,8 +40,7 @@ const GooglePicker = ({
       showUploadFolders: true,
       supportDrives: true,
       multiselect: false,
-
-      callbackFunction: async (data: any) => {
+      callbackFunction: async (data: PickerCallback) => {
         if (data.action === 'picked') {
           mutate({ docs: data.docs[0], access_token: token })
         }

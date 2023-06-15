@@ -18,6 +18,8 @@ def index():
 def catch_all(path):
     return render_template('index.html')
 
+
+
 @app.route("/api/v3/")
 def read_v3():
     try:
@@ -50,3 +52,5 @@ def upload_v3():
 def text_to_speech():
     text_to_mp3("Elenda", "Bryt! Du måste känna skuggan i dansen\nockså! Och varsågod!")
     return "text-to-speech endpoint", 200
+
+

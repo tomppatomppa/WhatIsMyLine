@@ -38,3 +38,6 @@ export const useSetAccessToken = () =>
 
 export const useAccessToken = () =>
   useUserStore((state) => state.user?.access_token)
+
+export const useAuth = () =>
+  useUserStore((state) => (state.user ? true : false))

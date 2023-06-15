@@ -3,9 +3,9 @@ import { uploadfile } from 'src/API/uploadApi'
 import { useAddScript } from 'src/store/scriptStore'
 
 import { useMutation } from 'react-query'
-import GooglePicker from 'src/components/FileLoader/GooglePicker'
-import UploadButton from 'src/components/FileLoader/UploadButton'
-import LocalFilePicker from 'src/components/FileLoader/LocalFilePicker'
+import GooglePicker from 'src/components/FileUpload/GooglePicker'
+import UploadButton from 'src/components/FileUpload/UploadButton'
+import LocalFilePicker from 'src/components/FileUpload/LocalFilePicker'
 
 const FileUpload = () => {
   const [file, setFile] = useState<File | null>(null)
@@ -20,8 +20,8 @@ const FileUpload = () => {
 
   return (
     <div className="w-full bg-gray-700 text-white items-center p-2 flex justify-start">
-      <div className="flex-1 text-start">{file ? '' : 'Upload Files'}</div>
-      <div className="flex gap-4 group px-4">
+      <div className="flex-1 text-start">{file ? '' : 'Upload PDF'}</div>
+      <div className="flex gap-4 group">
         {!file ? (
           <>
             <GooglePicker

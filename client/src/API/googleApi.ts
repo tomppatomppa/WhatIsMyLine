@@ -1,16 +1,11 @@
 import axios from 'axios'
-
-type Docs = {
-  id: string
-  name: string
-  mimeType: string
-}
+import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 
 interface getFileGoogleDriveProps {
-  docs: Docs
+  docs: CallbackDoc
   access_token: string
 }
-export const getFileGoogleDrive = async ({
+export const getGoogleDriveFileById = async ({
   docs,
   access_token,
 }: getFileGoogleDriveProps) => {
