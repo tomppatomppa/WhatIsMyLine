@@ -1,4 +1,5 @@
 import { AiOutlineClose } from 'react-icons/ai'
+import EmptyScriptList from 'src/components/EmptyScriptList'
 import ScriptList from 'src/components/ScriptList'
 import FileUpload from 'src/containers/FileUpload'
 import {
@@ -33,12 +34,16 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
           </button>
         </div>
         <FileUpload />
-        <ScriptList
-          scripts={scripts}
-          deleteScript={deleteScript}
-          setActiveScript={setActiveScript}
-          activeScriptId={activeScriptId}
-        />
+        {scripts.length ? (
+          <ScriptList
+            scripts={scripts}
+            deleteScript={deleteScript}
+            setActiveScript={setActiveScript}
+            activeScriptId={activeScriptId}
+          />
+        ) : (
+          <EmptyScriptList />
+        )}
       </div>
     </div>
   )
