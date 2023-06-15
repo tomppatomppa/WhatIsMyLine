@@ -9,8 +9,6 @@ import {
 
 import UploadFile from './FileLoader/UploadFile'
 import GoogleLoginButton from './google/GoogleLoginButton'
-import GooglePicker from './google/GooglePicker'
-import { useAccessToken, useSetAccessToken } from 'src/store/userStore'
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
@@ -58,9 +56,6 @@ const Sidebar = (props: any) => {
     handleDelete,
   } = props
 
-  const setAccessToken = useSetAccessToken()
-  const access_token = useAccessToken()
-
   const filteredScipts = scripts?.filter(
     (script: { trash: boolean }) => script.trash !== true
   )
@@ -74,10 +69,7 @@ const Sidebar = (props: any) => {
           <AiOutlineCloseCircle size={24} />
         </button>
       </div>
-      <GooglePicker
-        setAccessToken={setAccessToken}
-        access_token={access_token}
-      />
+
       <div className="flex w-full flex-col">
         {filteredScipts?.map((script: any, index: number) => (
           <li

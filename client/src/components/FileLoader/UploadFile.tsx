@@ -1,6 +1,7 @@
 import { ChangeEvent, useState, useRef } from 'react'
 import { uploadfile } from 'src/API/uploadApi'
 import { useAddScript } from 'src/store/scriptStore'
+import GooglePicker from '../google/GooglePicker'
 
 const UploadFile = () => {
   const [file, setFile] = useState<File | null>(null)
@@ -34,6 +35,11 @@ const UploadFile = () => {
   return (
     <div className="w-24">
       <input ref={inputRef} type="file" onChange={handleFileChange} />
+      <GooglePicker
+        onFileSelect={async (file: File) => {
+          if (file) setFile(file)
+        }}
+      />
       {file ? (
         <button
           className="border my-2 border-action p-1 rounded-md"
