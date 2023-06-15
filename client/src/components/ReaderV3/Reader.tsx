@@ -5,7 +5,6 @@ import ReaderContext from './contexts/ReaderContext'
 import reducer from './reducer'
 import SceneItem from './components/Scene/SceneItem'
 import { ReaderConfiguration, Scene } from './reader.types'
-import ReaderControlPanel from './components/ReaderControlPanel/ReaderControlPanel'
 
 interface ReaderProps {
   data: Scene[]
@@ -43,9 +42,6 @@ export const Reader = ({ data, handleDragEnd }: ReaderProps) => {
     <ReaderContext.Provider value={{ options, dispatch }}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <Drop id="droppable" type="droppable-category">
-          {/* <div className="w-full flex mx-auto justify-center">
-            <ReaderControlPanel />
-          </div> */}
           {data.map((scene, index) => (
             <SceneItem
               key={index}

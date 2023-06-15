@@ -1,5 +1,4 @@
 import GoogleLoginButton from 'src/components/auth/GoogleLoginButton'
-import UploadTestFile from '../components/UploadTestFile'
 
 const LandingPage = () => {
   return (
@@ -9,8 +8,6 @@ const LandingPage = () => {
         <span className="block">Add PDF(s)</span>
         <GoogleLoginButton />
       </div>
-
-      <UploadTestFile />
     </div>
   )
 }

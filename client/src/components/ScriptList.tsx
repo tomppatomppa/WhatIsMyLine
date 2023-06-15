@@ -30,7 +30,7 @@ const ScriptList = ({
           </span>
           <button
             onClick={() => deleteScript(script.id)}
-            className="w-6  flex-0 mx-auto flex items-center justify-center"
+            className="w-6 flex-0 mx-auto flex items-center justify-center"
           >
             <AiOutlineDelete color="red" />
           </button>
