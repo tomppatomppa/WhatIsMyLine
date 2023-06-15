@@ -43,10 +43,9 @@ export const Reader = ({ data, handleDragEnd }: ReaderProps) => {
     <ReaderContext.Provider value={{ options, dispatch }}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <Drop id="droppable" type="droppable-category">
-          <div className="w-full flex mx-auto justify-center">
+          {/* <div className="w-full flex mx-auto justify-center">
             <ReaderControlPanel />
-          </div>
-
+          </div> */}
           {data.map((scene, index) => (
             <SceneItem
               key={index}

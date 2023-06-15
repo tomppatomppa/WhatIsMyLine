@@ -24,7 +24,7 @@ class ReaderV3():
             
             self.set_page_width(pages[0]['width'])
             self.file = self.flatten_all(pages)
-
+           
         except FileNotFoundError:
             print("File not found")
     
