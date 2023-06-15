@@ -1,13 +1,14 @@
 import React from 'react'
 
 interface UploadButtonProps {
+  disabled: boolean
   text: string
   show: boolean
   upload: () => void
 }
-const UploadButton = ({ text, show, upload }: UploadButtonProps) => {
+const UploadButton = ({ disabled, text, show, upload }: UploadButtonProps) => {
   return show ? (
-    <button onClick={upload} className="border p-1">
+    <button disabled={disabled} onClick={upload} className="border p-1">
       {text}
     </button>
   ) : null

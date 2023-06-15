@@ -14,6 +14,9 @@ const ScriptList = ({
   setActiveScript,
   deleteScript,
 }: ScriptListProps) => {
+  if (!scripts.length) {
+    return <div>No Scripts</div>
+  }
   return (
     <div className="flex w-full flex-col">
       {scripts?.map((script: Script, index: number) => (

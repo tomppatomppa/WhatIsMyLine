@@ -11,7 +11,7 @@ const FileUpload = () => {
   const [file, setFile] = useState<File | null>(null)
   const addScript = useAddScript()
 
-  const { mutate } = useMutation(uploadfile, {
+  const { mutate, isLoading } = useMutation(uploadfile, {
     onSuccess: (script) => {
       addScript(script)
       setFile(null)
@@ -21,7 +21,7 @@ const FileUpload = () => {
   return (
     <div className="w-full bg-gray-700 text-white items-center p-2 flex justify-start">
       <div className="flex-1 text-start">{file ? '' : 'Upload PDF'}</div>
-      <div className="flex gap-4 group">
+      <div className="flex gap-2">
         {!file ? (
           <>
             <GooglePicker
@@ -42,7 +42,8 @@ const FileUpload = () => {
         ) : (
           <>
             <UploadButton
-              text="Upload"
+              disabled={isLoading}
+              text={isLoading ? 'uploading...' : 'Upload'}
               show={!!file}
               upload={() => {
                 if (file) {

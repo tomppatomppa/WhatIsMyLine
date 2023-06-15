@@ -1,6 +1,5 @@
 import { AiOutlineClose } from 'react-icons/ai'
 import ScriptList from 'src/components/ScriptList'
-
 import FileUpload from 'src/containers/FileUpload'
 import {
   useDeleteScript,

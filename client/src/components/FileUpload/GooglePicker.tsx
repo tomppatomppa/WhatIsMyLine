@@ -3,6 +3,7 @@ import { getGoogleDriveFileById } from 'src/API/googleApi'
 import { FaGoogleDrive } from 'react-icons/fa'
 import { useMutation } from 'react-query'
 import { PickerCallback } from 'react-google-drive-picker/dist/typeDefs'
+import Spinner from '../common/Spinner'
 
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
 const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY
@@ -19,7 +20,7 @@ const GooglePicker = ({
   onFileSelect,
 }: GooglePickerProps) => {
   const [openPicker, authResponse] = useDrivePicker()
-  const { mutate } = useMutation(getGoogleDriveFileById, {
+  const { mutate, isLoading } = useMutation(getGoogleDriveFileById, {
     onSuccess: (pdfFile, variables) => {
       const file = new File([pdfFile], variables.docs.name, {
         type: variables.docs.mimeType,
@@ -48,7 +49,9 @@ const GooglePicker = ({
     })
   }
 
-  return (
+  return isLoading ? (
+    <Spinner show={isLoading} delay={400} />
+  ) : (
     <button className={className} onClick={() => handleOpenPicker()}>
       <FaGoogleDrive size={22} />
     </button>

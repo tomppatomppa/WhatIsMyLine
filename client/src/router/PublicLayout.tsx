@@ -1,6 +1,6 @@
 import GoogleLoginButton from 'src/components/auth/GoogleLoginButton'
 
-const LandingPage = () => {
+const PublicLayout = () => {
   return (
     <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center  h-screen justify-center text-center">
       <div className="flex items-center justify-center flex-col">
@@ -12,4 +12,4 @@ const LandingPage = () => {
   )
 }
 
-export default LandingPage
+export default PublicLayout
