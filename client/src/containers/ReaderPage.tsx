@@ -8,6 +8,7 @@ type OrderHistory = [number, number]
 export function Loader() {
   return useAuth()
 }
+
 const ReaderPage = () => {
   const { reorderScenes, reorderLines } = useScriptStore((state) => state)
   const script = useActiveScript()

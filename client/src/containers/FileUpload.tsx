@@ -6,14 +6,21 @@ import { useMutation } from 'react-query'
 import GooglePicker from 'src/components/FileUpload/GooglePicker'
 import UploadButton from 'src/components/FileUpload/UploadButton'
 import LocalFilePicker from 'src/components/FileUpload/LocalFilePicker'
-import { createFolder } from 'src/API/googleApi'
+import {
+  downloadFolderWithMP3,
+  getSceneAudioFromScript,
+} from 'src/API/googleApi'
 import { useAccessToken } from 'src/store/userStore'
 
+const testfile = {
+  scriptId: '35a2f575-6fff-4f93-b3c2-5e17f0235b31',
+  sceneId: '7701 INT. KÄLLAREN',
+}
+
 const FileUpload = () => {
-  const token = useAccessToken()
   const [file, setFile] = useState<File | null>(null)
   const addScript = useAddScript()
-
+  const access_token = useAccessToken()
   const { mutate: upload, isLoading } = useMutation(uploadfile, {
     onSuccess: (script) => {
       addScript(script)
@@ -21,7 +28,7 @@ const FileUpload = () => {
     },
   })
 
-  const { mutate } = useMutation(createFolder, {
+  const { mutate } = useMutation(downloadFolderWithMP3, {
     onSuccess: (data) => {
       console.log(data)
     },
@@ -29,6 +36,9 @@ const FileUpload = () => {
       console.log(error)
     },
   })
+
+  console.log(access_token)
+
   return (
     <div className="w-full h-14 bg-gray-700 text-white items-center p-2 flex justify-start">
       <div className="flex-1 text-start">{file ? '' : 'Upload File'}</div>
@@ -37,10 +47,15 @@ const FileUpload = () => {
           <>
             <button
               onClick={() => {
-                if (token) mutate(token)
+                if (access_token) {
+                  mutate({
+                    scriptId: '1DYmk4uAwIPTmVptATCTD9yhsD1sRwbmG',
+                    access_token,
+                  })
+                }
               }}
             >
-              create
+              get data
             </button>
             <GooglePicker
               className="hover:bg-gray-600 p-2 rounded-md"

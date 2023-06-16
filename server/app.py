@@ -3,7 +3,7 @@ from PyMuReaderV3 import ReaderV3
 from flask_cors import CORS
 import json
 from config import allowed_file, create_upload_folder,process_uploaded_file_v3
-from TextToSpeech import text_to_mp3
+from TextToSpeech import text_to_mp3, create_data
 
 app = Flask(__name__, static_folder="build/static", template_folder="build")
 CORS(app)
@@ -51,7 +51,10 @@ def upload_v3():
 
 @app.route("/api/v3/text-to-speech", methods=["POST"])
 def text_to_speech():
-    text_to_mp3("Elenda", "Bryt! Du måste känna skuggan i dansen\nockså! Och varsågod!")
+   
+    data = request.json["script"]
+    
+    #create_data(data)
     return "text-to-speech endpoint", 200
 
 

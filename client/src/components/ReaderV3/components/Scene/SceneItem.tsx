@@ -39,7 +39,7 @@ const SceneItem = ({
     updatedLines.splice(lineIndex, 1)
     updateScript({ ...scene, data: updatedLines })
   }
-  console.log(scene)
+
   return (
     <Drag
       className="flex justify-center items-center gap-4 my-4 px-1 mx-auto"

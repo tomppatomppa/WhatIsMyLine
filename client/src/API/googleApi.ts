@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
+import { Script } from 'src/components/ReaderV3/reader.types'
+import { BASE_URI } from 'src/config'
 
 interface getFileGoogleDriveProps {
   docs: CallbackDoc
@@ -25,6 +27,49 @@ export const getGoogleDriveFileById = async ({
 
   return data
 }
+interface getSceneAudioFromScriptProps {
+  scriptId: string
+  sceneId: string
+  access_token: string
+}
+export const getSceneAudioFromScript = async ({
+  scriptId,
+  sceneId,
+  access_token,
+}: getSceneAudioFromScriptProps) => {
+  const { data } = await axios.get(
+    `https://www.googleapis.com/drive/v3/files/${scriptId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        Accept: 'application/json',
+      },
+      responseType: 'blob',
+      params: {
+        alt: 'media',
+      },
+    }
+  )
+  return data
+}
+
+interface downloadFolderWithMP3Props {
+  scriptId: string
+  access_token: string
+}
+
+export const downloadFolderWithMP3 = async ({
+  access_token,
+}: downloadFolderWithMP3Props) => {
+  const folderId = '1qpJ6O5Biw9JMi74f4Ej7QOPLXgBsiSnq'
+  const filesUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+mimeType='audio/mpeg'&access_token=${access_token}`
+  const filesResponse = await fetch(filesUrl)
+  const filesData = await filesResponse.json()
+  const mp3Files = filesData.files
+
+  // Return the MP3 files
+  return mp3Files
+}
 
 export const createFolder = async (access_token: string) => {
   let createFolderOptions = {
@@ -42,5 +87,12 @@ export const createFolder = async (access_token: string) => {
     'https://www.googleapis.com/drive/v3/files',
     createFolderOptions
   )
+  return data
+}
+
+export const createTextToSpeech = async (script: Script) => {
+  const { data } = await axios.post(`${BASE_URI}/api/v3/text-to-speech`, {
+    script,
+  })
   return data
 }

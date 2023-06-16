@@ -27,7 +27,7 @@ const GooglePicker = ({ className, onFileSelect }: GooglePickerProps) => {
   })
   //TODO: remove
   const setToken = useSetAccessToken()
-  const token = useAccessToken()
+  const token = authResponse?.access_token || ''
 
   const handleOpenPicker = () => {
     openPicker({
