@@ -11,7 +11,7 @@ const FileUpload = () => {
   const [file, setFile] = useState<File | null>(null)
   const addScript = useAddScript()
 
-  const { mutate, isLoading } = useMutation(uploadfile, {
+  const { mutate: upload, isLoading } = useMutation(uploadfile, {
     onSuccess: (script) => {
       addScript(script)
       setFile(null)
@@ -19,8 +19,8 @@ const FileUpload = () => {
   })
 
   return (
-    <div className="w-full bg-gray-700 text-white items-center p-2 flex justify-start">
-      <div className="flex-1 text-start">{file ? '' : 'Upload PDF'}</div>
+    <div className="w-full h-14 bg-gray-700 text-white items-center p-2 flex justify-start">
+      <div className="flex-1 text-start">{file ? '' : 'Upload File'}</div>
       <div className="flex gap-2">
         {!file ? (
           <>
@@ -49,7 +49,7 @@ const FileUpload = () => {
                 if (file) {
                   const formData = new FormData()
                   formData.append('file', file)
-                  mutate(formData)
+                  upload(formData)
                 }
               }}
             />

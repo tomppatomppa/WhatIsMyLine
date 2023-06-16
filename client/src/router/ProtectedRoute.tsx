@@ -1,7 +1,11 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from 'src/store/userStore'
 
-export const ProtectedRoute = ({ children }: any) => {
+interface ProtectedRouteProps {
+  children: JSX.Element
+}
+
+export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const user = useAuth()
 
   if (!user) {
