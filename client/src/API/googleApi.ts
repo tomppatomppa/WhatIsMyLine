@@ -25,3 +25,22 @@ export const getGoogleDriveFileById = async ({
 
   return data
 }
+
+export const createFolder = async (access_token: string) => {
+  let createFolderOptions = {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      mimeType: 'application/vnd.google-apps.folder',
+      name: 'My new google drive folder!',
+    }),
+  }
+  const { data } = await axios.post(
+    'https://www.googleapis.com/drive/v3/files',
+    createFolderOptions
+  )
+  return data
+}

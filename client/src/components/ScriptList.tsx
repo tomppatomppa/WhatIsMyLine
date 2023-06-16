@@ -18,6 +18,7 @@ const ScriptList = ({
     <div id="script-list" className="flex w-full flex-col">
       {scripts?.map((script: Script, index: number) => (
         <ScriptListItem
+          key={index}
           id={`script-list-item-${index}`}
           selected={activeScriptId === script.id}
           script={script}

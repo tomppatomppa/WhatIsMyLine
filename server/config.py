@@ -2,7 +2,6 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 from PyMuReaderV3 import ReaderV3
-import os
 import json
 from ReaderSettings import ReaderSettings
 
@@ -20,8 +19,11 @@ def create_upload_folder(app):
     try:
         path = os.path.dirname(os.path.abspath(__file__))
         upload_folder = os.path.join(path.replace("/file_folder",""), "uploaded_files")
+        processed_audio = os.path.join(path.replace("/file_folder",""), "processed_audio")
         os.makedirs(upload_folder, exist_ok=True)
+        os.makedirs(processed_audio, exist_ok=True)
         app.config['uploaded_files_folder'] = upload_folder
+        app.config['processed_audio'] = upload_folder
     except Exception as e:
         app.logger.info('An error occurred while creating folder')
         app.logger.error('Exception occurred : {}'.format(e))

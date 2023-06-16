@@ -2,9 +2,8 @@ import os
 from google.cloud import texttospeech
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "key.json"
 
-def text_to_mp3(voice_name, text):
+def text_to_mp3(folder_id, scene_id, line_id, text):
 
-   
     client = texttospeech.TextToSpeechClient()
 
     synthesis_input = texttospeech.SynthesisInput(text=text)
@@ -23,8 +22,37 @@ def text_to_mp3(voice_name, text):
     response = client.synthesize_speech(
         input=synthesis_input, voice=voice, audio_config=audio_config
     )
-    filename = f"{voice_name}.wav"
-    with open(f"audio/{filename}", "wb") as out:
+
+    filename = f"{line_id}.mp3"
+    with open(f"processed_audio/{folder_id}/{scene_id}/{filename}", "wb") as out:
         # Write the response to the output file.
         out.write(response.audio_content)
-        print('Audio content written to file "output.mp3"')
+
+'''
+Root folder === script["id"]
+Scene folder(s) === scene["id"]
+
+Should create the following folder strucure
+    Root -
+        sub_folder-
+        sub_folder-
+           
+'''
+
+def create_folders(data):
+    folder_id = data["id"]
+    scene_ids = [scene["id"] for scene in data["scenes"]]
+    try:
+        os.makedirs(f"processed_audio/{folder_id}", exist_ok=True)
+        for scene_id in scene_ids:   
+            os.makedirs(f"processed_audio/{folder_id}/{scene_id}", exist_ok=True)
+        return True
+    except OSError as error:
+        print("Directory '%s' can not be created")
+  
+def create_audio(data):
+    for scene in data["scenes"]:
+        for line in scene["data"]:
+            text_to_mp3(data["id"], scene["id"], line["id"], line["lines"])
+           
+       
