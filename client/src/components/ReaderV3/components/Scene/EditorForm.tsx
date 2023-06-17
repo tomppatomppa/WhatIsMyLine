@@ -46,7 +46,7 @@ const EditorForm = ({
     >
       <Formik
         enableReinitialize={true}
-        initialValues={scene}
+        initialValues={scene as Scene}
         onSubmit={(values) => {
           setIsEditing(false)
           onSubmit(values)

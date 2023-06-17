@@ -54,14 +54,15 @@ export const getSceneAudioFromScript = async ({
 }
 
 interface downloadFolderWithMP3Props {
-  scriptId: string
+  scriptId?: string
+  folderId: string
   access_token: string
 }
 
 export const downloadFolderWithMP3 = async ({
   access_token,
+  folderId,
 }: downloadFolderWithMP3Props) => {
-  const folderId = '1qpJ6O5Biw9JMi74f4Ej7QOPLXgBsiSnq'
   const filesUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+mimeType='audio/mpeg'&access_token=${access_token}`
   const filesResponse = await fetch(filesUrl)
   const filesData = await filesResponse.json()

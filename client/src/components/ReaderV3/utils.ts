@@ -28,3 +28,19 @@ export function generateUniqueColor(highlight: Actor[]) {
   }
   return '#86efac'
 }
+
+export function arrayAttributeMatch(arr1: any[], arr2: any[]): boolean {
+  if (arr1?.length !== arr2?.length) {
+    return false
+  }
+
+  const attributes = arr1.map((item) => item.name?.replaceAll?.('.mp3', ''))
+
+  for (let i = 0; i < arr2.length; i++) {
+    if (!attributes.includes(arr2[i].id)) {
+      return false
+    }
+  }
+
+  return true
+}

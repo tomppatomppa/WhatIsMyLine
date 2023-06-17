@@ -36,7 +36,7 @@ const FileUpload = () => {
       <div className="flex gap-2">
         {!file ? (
           <>
-            <button
+            {/* <button
               onClick={() => {
                 if (access_token) {
                   mutate({
@@ -47,7 +47,7 @@ const FileUpload = () => {
               }}
             >
               get data
-            </button>
+            </button> */}
             <GooglePicker
               className="hover:bg-gray-600 p-2 rounded-md"
               onFileSelect={async (file: File) => {
