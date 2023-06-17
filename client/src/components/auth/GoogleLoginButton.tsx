@@ -18,7 +18,7 @@ const GoogleLoginButton = () => {
   }, [authRes?.access_token, navigate, setToken])
 
   return user ? (
-    <button className="border p-2 rounded-md" onClick={() => logout()}>
+    <button className="mr-2" onClick={() => logout()}>
       logout
     </button>
   ) : (

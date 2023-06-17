@@ -28,22 +28,3 @@ export function generateUniqueColor(highlight: Actor[]) {
   }
   return '#86efac'
 }
-
-export function getLineStyle(
-  type: SceneLine,
-  options: ReaderConfiguration,
-  name?: string
-) {
-  if (type === 'ACTOR') {
-    const shouldHighLight = options.highlight?.find((item) => item.id === name)
-    return { ...options.settings.actor.style, ...shouldHighLight?.style }
-  }
-  return options.settings.info.style
-}
-
-export function addLineBreaksStringArray(array: string[]): string[] {
-  const arrayWithLineBreaks = array.map((line) => line + '\n')
-  return arrayWithLineBreaks
-}
-
-
