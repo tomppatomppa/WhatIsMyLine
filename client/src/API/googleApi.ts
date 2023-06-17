@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { ResponseType } from 'axios'
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 import { Script } from 'src/components/ReaderV3/reader.types'
 import { BASE_URI } from 'src/config'
@@ -6,10 +6,13 @@ import { BASE_URI } from 'src/config'
 interface getFileGoogleDriveProps {
   docs: CallbackDoc
   access_token: string
+  responseType?: ResponseType
 }
+
 export const getGoogleDriveFileById = async ({
   docs,
   access_token,
+  responseType = 'arraybuffer',
 }: getFileGoogleDriveProps) => {
   const { data } = await axios.get(
     `https://www.googleapis.com/drive/v3/files/${docs.id}`,
@@ -18,38 +21,13 @@ export const getGoogleDriveFileById = async ({
         Authorization: `Bearer ${access_token}`,
         Accept: 'application/json',
       },
-      responseType: 'arraybuffer',
+      responseType: responseType,
       params: {
         alt: 'media',
       },
     }
   )
 
-  return data
-}
-interface getSceneAudioFromScriptProps {
-  scriptId: string
-  sceneId: string
-  access_token: string
-}
-export const getSceneAudioFromScript = async ({
-  scriptId,
-  sceneId,
-  access_token,
-}: getSceneAudioFromScriptProps) => {
-  const { data } = await axios.get(
-    `https://www.googleapis.com/drive/v3/files/${scriptId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        Accept: 'application/json',
-      },
-      responseType: 'blob',
-      params: {
-        alt: 'media',
-      },
-    }
-  )
   return data
 }
 
@@ -67,7 +45,7 @@ export const downloadFolderWithMP3 = async ({
   const filesResponse = await fetch(filesUrl)
   const filesData = await filesResponse.json()
   const mp3Files = filesData.files
-
+  console.log(filesData)
   // Return the MP3 files
   return mp3Files
 }
