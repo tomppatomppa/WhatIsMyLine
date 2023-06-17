@@ -6,21 +6,14 @@ import { useMutation } from 'react-query'
 import GooglePicker from 'src/components/FileUpload/GooglePicker'
 import UploadButton from 'src/components/FileUpload/UploadButton'
 import LocalFilePicker from 'src/components/FileUpload/LocalFilePicker'
-import {
-  downloadFolderWithMP3,
-  getSceneAudioFromScript,
-} from 'src/API/googleApi'
+import { downloadFolderWithMP3 } from 'src/API/googleApi'
 import { useAccessToken } from 'src/store/userStore'
 
-const testfile = {
-  scriptId: '35a2f575-6fff-4f93-b3c2-5e17f0235b31',
-  sceneId: '7701 INT. KÄLLAREN',
-}
-
 const FileUpload = () => {
+  const access_token = useAccessToken()
   const [file, setFile] = useState<File | null>(null)
   const addScript = useAddScript()
-  const access_token = useAccessToken()
+
   const { mutate: upload, isLoading } = useMutation(uploadfile, {
     onSuccess: (script) => {
       addScript(script)
@@ -36,8 +29,6 @@ const FileUpload = () => {
       console.log(error)
     },
   })
-
-  console.log(access_token)
 
   return (
     <div className="w-full h-14 bg-gray-700 text-white items-center p-2 flex justify-start">
@@ -62,6 +53,7 @@ const FileUpload = () => {
               onFileSelect={async (file: File) => {
                 if (file) setFile(file)
               }}
+              access_token={access_token || ''}
             />
             <LocalFilePicker
               className="hover:bg-gray-600 p-2 rounded-md"

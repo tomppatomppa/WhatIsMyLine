@@ -1,32 +1,28 @@
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
-import jwt_decode from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
-import { User, useLogin, useLogout, useUserStore } from 'src/store/userStore'
+import { useLogout, useSetAccessToken, useUserStore } from 'src/store/userStore'
+import { useGoogleAccessToken } from './hooks/useGoogleAccessToken'
+import { useEffect } from 'react'
 
 const GoogleLoginButton = () => {
+  const { getAccessToken, authRes } = useGoogleAccessToken()
+  const setToken = useSetAccessToken()
+  const logout = useLogout()
   const navigate = useNavigate()
   const { user } = useUserStore((state) => state)
-  const logout = useLogout()
-  const login = useLogin()
 
-  const onSuccess = (response: CredentialResponse) => {
-    if (!response.credential) return
-    const decoded_jwt = jwt_decode(response.credential)
+  useEffect(() => {
+    if (authRes?.access_token) {
+      setToken(authRes.access_token)
+      navigate('/')
+    }
+  }, [authRes?.access_token, navigate, setToken])
 
-    login(decoded_jwt as User)
-    navigate('/', { replace: true })
-  }
-
-  const onError = (response: void | undefined) => {
-    console.log(response)
-  }
-
-  return !user ? (
-    <GoogleLogin onSuccess={onSuccess} onError={onError} />
-  ) : (
+  return user ? (
     <button className="border p-2 rounded-md" onClick={() => logout()}>
       logout
     </button>
+  ) : (
+    <button onClick={getAccessToken}>Login</button>
   )
 }
 

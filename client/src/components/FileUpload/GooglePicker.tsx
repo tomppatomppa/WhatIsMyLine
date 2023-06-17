@@ -4,18 +4,20 @@ import { FaGoogleDrive } from 'react-icons/fa'
 import { useMutation } from 'react-query'
 import { PickerCallback } from 'react-google-drive-picker/dist/typeDefs'
 import Spinner from '../common/Spinner'
-import { useAccessToken, useSetAccessToken } from 'src/store/userStore'
-import { useEffect } from 'react'
-
-const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
-const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY
+import { API_KEY, CLIENT_ID } from 'src/config'
 
 interface GooglePickerProps {
   className?: string
   onFileSelect: (result: File) => void
+  access_token: string
 }
 
-const GooglePicker = ({ className, onFileSelect }: GooglePickerProps) => {
+const GooglePicker = ({
+  className,
+  onFileSelect,
+  access_token,
+}: GooglePickerProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [openPicker, authResponse] = useDrivePicker()
   const { mutate, isLoading } = useMutation(getGoogleDriveFileById, {
     onSuccess: (pdfFile, variables) => {
@@ -25,34 +27,24 @@ const GooglePicker = ({ className, onFileSelect }: GooglePickerProps) => {
       onFileSelect(file)
     },
   })
-  //TODO: remove
-  const setToken = useSetAccessToken()
-  const token = authResponse?.access_token || ''
 
   const handleOpenPicker = () => {
     openPicker({
       clientId: CLIENT_ID as string,
       developerKey: API_KEY as string,
       viewId: 'PDFS',
-      token: token,
+      token: access_token,
       showUploadView: true,
       showUploadFolders: true,
       supportDrives: true,
       multiselect: false,
       callbackFunction: async (data: PickerCallback) => {
-        if (data.action === 'picked' && token) {
-          mutate({ docs: data.docs[0], access_token: token })
+        if (data.action === 'picked' && access_token) {
+          mutate({ docs: data.docs[0], access_token: access_token })
         }
       },
     })
   }
-
-  //TODO: remove
-  useEffect(() => {
-    if (authResponse?.access_token) {
-      setToken(authResponse?.access_token)
-    }
-  }, [authResponse, setToken])
 
   return isLoading ? (
     <Spinner show={isLoading} delay={400} />
