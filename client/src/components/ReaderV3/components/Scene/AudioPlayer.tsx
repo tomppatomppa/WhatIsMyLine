@@ -1,45 +1,87 @@
-import React, { useRef } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
+import Spinner from 'src/components/common/Spinner'
 
 interface AudioPlayerProps {
+  setListen: () => void
+  stopListen: () => void
   files: HTMLAudioElement[]
+  transcript: any
+  listening: boolean
 }
-const AudioPlayer = ({ files }: AudioPlayerProps) => {
-  const audioRef = useRef<HTMLAudioElement>(null)
-  const currentFileIndex = useRef<number>(0)
-  const isPlaying = useRef<boolean>(false)
+const AudioPlayer = ({
+  files,
+  setListen,
+  stopListen,
+  transcript,
+  listening,
+}: AudioPlayerProps) => {
+  const timeoutRef = useRef<any>(null)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const currentFileIndex = useRef(0)
 
-  const playNextFile = () => {
+  const audioRef = useRef<HTMLAudioElement>(null)
+
+  const playNextFile = useCallback(() => {
     const audioElement = audioRef.current
 
     if (audioElement && currentFileIndex.current < files.length) {
       audioElement.src = files[currentFileIndex.current].src
       audioElement.play()
-      currentFileIndex.current++
-      isPlaying.current = true
+      currentFileIndex.current = currentFileIndex.current + 1
+      setIsPlaying(true)
+      stopListen()
+
+      timeoutRef.current = null
     }
-  }
+  }, [])
 
   const pausePlayback = () => {
     const audioElement = audioRef.current
 
-    if (audioElement && isPlaying.current) {
+    if (audioElement && isPlaying) {
       audioElement.pause()
-      isPlaying.current = false
+      setIsPlaying(false)
     }
   }
 
   const resumePlayback = () => {
     const audioElement = audioRef.current
 
-    if (audioElement && !isPlaying.current) {
+    if (audioElement && !isPlaying) {
       audioElement.play()
-      isPlaying.current = true
+      setIsPlaying(true)
     }
   }
 
+  useEffect(() => {
+    clearTimeout(timeoutRef.current)
+    if (!isPlaying && listening) {
+      timeoutRef.current = setTimeout(() => {
+        playNextFile()
+      }, 1500)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playNextFile, transcript])
+
   return (
     <div className="flex gap-2">
-      <audio ref={audioRef} onEnded={playNextFile} />
+      {isPlaying ? (
+        <div className="absolute flex justify-center items-center inset-0 h">
+          <label> Modal</label>
+        </div>
+      ) : (
+        <div className="flex items-center">
+          <label>listening...</label>
+          <Spinner show />
+        </div>
+      )}
+      <audio
+        ref={audioRef}
+        onEnded={() => {
+          setIsPlaying(false)
+          setListen()
+        }}
+      />
       <button type="button" onClick={playNextFile}>
         Play
       </button>
@@ -49,7 +91,12 @@ const AudioPlayer = ({ files }: AudioPlayerProps) => {
       <button type="button" onClick={resumePlayback}>
         Resume
       </button>
-      <button type="button" onClick={() => currentFileIndex.current === 0}>
+      <button
+        type="button"
+        onClick={() => {
+          currentFileIndex.current = 0
+        }}
+      >
         Reset
       </button>
     </div>

@@ -8,7 +8,6 @@ const useAudio = () => {
   const { mutate: download } = useMutation(getGoogleDriveFilesByIds, {
     onSuccess: (files) => {
       const audioFileArray = arrayBufferIntoHTMLAudioElement(files)
-      console.log(audioFileArray)
       setAudioFiles(audioFileArray)
     },
   })

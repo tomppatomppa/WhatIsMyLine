@@ -1,5 +1,4 @@
 import { useFormikContext } from 'formik'
-
 import SceneRehearsalPanel from './SceneRehearsalPanel'
 
 const SceneEditorPanel = (props: any) => {

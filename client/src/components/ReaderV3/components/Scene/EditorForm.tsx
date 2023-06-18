@@ -54,7 +54,7 @@ const EditorForm = ({
       >
         {({ values, dirty }) => (
           <Drop key={scene.id} id={scene.id} type="droppable-item">
-            <Form autoComplete="off">
+            <Form className="relative" autoComplete="off">
               <SceneEditorPanel
                 isEditing={isEditing}
                 sceneIndex={sceneIndex}
