@@ -7,7 +7,6 @@ import { Scene } from '../reader.types'
 import { arrayAttributeMatch } from '../utils'
 
 const useVerifyAudio = (scene: Scene) => {
-  const [verify, setVerify] = useState(false)
   const [isValid, setIsValid] = useState(false)
   const token = useAccessToken()
   const folderId = '1qpJ6O5Biw9JMi74f4Ej7QOPLXgBsiSnq'
@@ -22,19 +21,18 @@ const useVerifyAudio = (scene: Scene) => {
           setIsValid(true)
         }
       },
-      onSettled: () => {
-        setVerify(false)
-      },
-      enabled: !!access_token && !!verify,
+
+      enabled: !!access_token,
     }
   )
+
   useEffect(() => {
     if (arrayAttributeMatch(data, scene?.data)) {
       setIsValid(true)
     }
   }, [data, scene?.data])
 
-  return { setVerify, isValid, data }
+  return { isValid, data }
 }
 
 export default useVerifyAudio

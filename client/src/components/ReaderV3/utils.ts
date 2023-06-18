@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { Actor, ReaderConfiguration, SceneLine } from './reader.types'
+import { Actor } from './reader.types'
 
 export function generateUniqueColor(highlight: Actor[]) {
   const colors = [
@@ -43,4 +43,23 @@ export function arrayAttributeMatch(arr1: any[], arr2: any[]): boolean {
   }
 
   return true
+}
+
+type AudioData = {
+  id: string
+  data: Blob
+}
+export function arrayBufferIntoHTMLAudioElement(
+  audioArray: AudioData[]
+): HTMLAudioElement[] {
+  const result = audioArray.map((file) => {
+    const fileUrl = URL.createObjectURL(
+      new Blob([file.data], { type: 'audio/mpeg' })
+    )
+    const audio = new Audio(fileUrl)
+
+    audio.key = file.id
+    return audio
+  })
+  return result
 }

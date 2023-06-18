@@ -3,6 +3,39 @@ import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 import { Script } from 'src/components/ReaderV3/reader.types'
 import { BASE_URI } from 'src/config'
 
+interface getGoogleDriveFilesByIdsProps {
+  docs: CallbackDoc[]
+  access_token: string
+  responseType?: ResponseType
+}
+export const getGoogleDriveFilesByIds = async ({
+  docs,
+  access_token,
+  responseType = 'arraybuffer',
+}: getGoogleDriveFilesByIdsProps) => {
+  const results = await Promise.all(
+    docs.map((doc) =>
+      axios.get(`https://www.googleapis.com/drive/v3/files/${doc.id}`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          Accept: 'application/json',
+        },
+        responseType: responseType,
+        params: {
+          alt: 'media',
+        },
+      })
+    )
+  )
+  //const dataArray = results.map((result) => result.data)
+  const dataArray = results.map((result, index) => ({
+    id: docs[index].name.replace('.mp3', ''),
+    data: result.data,
+  }))
+
+  return dataArray
+}
+
 interface getFileGoogleDriveProps {
   docs: CallbackDoc
   access_token: string
@@ -45,8 +78,7 @@ export const downloadFolderWithMP3 = async ({
   const filesResponse = await fetch(filesUrl)
   const filesData = await filesResponse.json()
   const mp3Files = filesData.files
-  console.log(filesData)
-  // Return the MP3 files
+
   return mp3Files
 }
 
