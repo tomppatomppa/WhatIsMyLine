@@ -8,8 +8,9 @@ interface getGoogleDriveFilesByIdsProps {
   access_token: string
   responseType?: ResponseType
 }
+
 export const getGoogleDriveFilesByIds = async ({
-  docs,
+  docs = [],
   access_token,
   responseType = 'arraybuffer',
 }: getGoogleDriveFilesByIdsProps) => {
@@ -27,7 +28,7 @@ export const getGoogleDriveFilesByIds = async ({
       })
     )
   )
-  //const dataArray = results.map((result) => result.data)
+
   const dataArray = results.map((result, index) => ({
     id: docs[index].name.replace('.mp3', ''),
     data: result.data,

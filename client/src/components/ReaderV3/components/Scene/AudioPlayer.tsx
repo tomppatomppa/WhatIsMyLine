@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Spinner from 'src/components/common/Spinner'
 
 interface AudioPlayerProps {
@@ -8,6 +8,7 @@ interface AudioPlayerProps {
   transcript: any
   listening: boolean
 }
+
 const AudioPlayer = ({
   files,
   setListen,
@@ -18,10 +19,9 @@ const AudioPlayer = ({
   const timeoutRef = useRef<any>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const currentFileIndex = useRef(0)
-
   const audioRef = useRef<HTMLAudioElement>(null)
 
-  const playNextFile = useCallback(() => {
+  const playNextFile = () => {
     const audioElement = audioRef.current
 
     if (audioElement && currentFileIndex.current < files.length) {
@@ -32,24 +32,31 @@ const AudioPlayer = ({
       stopListen()
 
       timeoutRef.current = null
+    } else {
+      currentFileIndex.current = 0
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }
 
-  const pausePlayback = () => {
+  const resetAudio = () => {
     const audioElement = audioRef.current
-
-    if (audioElement && isPlaying) {
+    if (audioElement) {
       audioElement.pause()
-      setIsPlaying(false)
+      audioElement.currentTime = 0
+      currentFileIndex.current = 0
     }
   }
 
-  const resumePlayback = () => {
+  const togglePlayback = () => {
     const audioElement = audioRef.current
-
-    if (audioElement && !isPlaying) {
-      audioElement.play()
-      setIsPlaying(true)
+    if (audioElement) {
+      if (isPlaying) {
+        audioElement.pause()
+        setIsPlaying(false)
+      } else {
+        audioElement.play()
+        setIsPlaying(true)
+      }
     }
   }
 
@@ -60,21 +67,14 @@ const AudioPlayer = ({
         playNextFile()
       }, 1500)
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playNextFile, transcript])
+  }, [transcript])
 
   return (
-    <div className="flex gap-2">
-      {isPlaying ? (
-        <div className="absolute flex justify-center items-center inset-0 h">
-          <label> Modal</label>
-        </div>
-      ) : (
-        <div className="flex items-center">
-          <label>listening...</label>
-          <Spinner show />
-        </div>
-      )}
+    <div className="flex gap-2 items-center">
+      <label>{currentFileIndex.current}</label>
+      <Spinner show={listening} />
       <audio
         ref={audioRef}
         onEnded={() => {
@@ -83,22 +83,12 @@ const AudioPlayer = ({
         }}
       />
       <button type="button" onClick={playNextFile}>
-        Play
+        {currentFileIndex.current === 0 ? 'Play' : 'Next'}
       </button>
-      <button type="button" onClick={pausePlayback}>
-        Pause
+      <button type="button" onClick={togglePlayback}>
+        {isPlaying ? 'Pause' : 'Resume'}
       </button>
-      <button type="button" onClick={resumePlayback}>
-        Resume
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          currentFileIndex.current = 0
-        }}
-      >
-        Reset
-      </button>
+      <button onClick={resetAudio}>reset</button>
     </div>
   )
 }

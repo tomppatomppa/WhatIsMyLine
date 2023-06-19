@@ -1,7 +1,5 @@
-import useVerifyAudio from '../../hooks/useVerifyAudio'
 import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
-import { useAccessToken } from 'src/store/userStore'
 import { Line, Scene } from '../../reader.types'
 import AudioPlayer from './AudioPlayer'
 import { useReaderContext } from '../../contexts/ReaderContext'
@@ -9,16 +7,18 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
 
+import { useState } from 'react'
+
 interface Audio extends HTMLAudioElement {
   key: string
 }
+
 const SceneRehearsalPanel = () => {
-  const access_token = useAccessToken()
+  const [start, setStart] = useState(false)
   const { options } = useReaderContext()
   const { values } = useFormikContext<Scene>()
-  const { isValid, data } = useVerifyAudio(values as Scene)
+  const { audioFiles, isError, isValid } = useAudio(values)
   const { transcript, listening } = useSpeechRecognition({})
-  const { download, audioFiles } = useAudio()
 
   const filteredLines: Line[] = values.data.filter(
     ({ name }) =>
@@ -32,9 +32,13 @@ const SceneRehearsalPanel = () => {
     return audio
   })
 
-  return isValid ? (
+  if (isError || !isValid) {
+    return <div>Something went wrong</div>
+  }
+
+  return (
     <div className="flex gap-4 mr-12 justify-start">
-      {audioFiles ? (
+      {start ? (
         <div className="flex flex-row gap-6 justify-start items-center">
           <AudioPlayer
             files={filteredAudio}
@@ -44,32 +48,22 @@ const SceneRehearsalPanel = () => {
               SpeechRecognition.startListening({
                 language: 'sv-SE',
                 continuous: true,
-              }) as any
+              })
             }
             stopListen={SpeechRecognition.stopListening}
           />
-          <div>
-            <p>Microphone: {listening ? 'on' : 'off'}</p>
-            <p>{transcript}</p>
-          </div>
         </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => {
-            if (access_token) {
-              download({
-                docs: data,
-                access_token,
-              })
-            }
-          }}
-        >
-          Download Audio
-        </button>
-      )}
+      ) : null}
+      <button
+        onClick={() => {
+          setStart(!start)
+          SpeechRecognition.stopListening()
+        }}
+      >
+        {start ? 'stop' : 'start'}
+      </button>
     </div>
-  ) : null
+  )
 }
 
 export default SceneRehearsalPanel
