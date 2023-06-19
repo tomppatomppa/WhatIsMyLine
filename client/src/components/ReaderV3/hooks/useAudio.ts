@@ -7,6 +7,7 @@ import { Scene } from '../reader.types'
 import { arrayAttributeMatch, arrayBufferIntoHTMLAudioElement } from '../utils'
 
 const useAudio = (scene: Scene) => {
+  const [sync, setSync] = useState(true)
   const [audioFiles, setAudioFiles] = useState<HTMLAudioElement[]>()
   const [isValid, setIsValid] = useState(false)
   const access_token = useAccessToken()
@@ -22,11 +23,14 @@ const useAudio = (scene: Scene) => {
           setAudioFiles(audioFileArray)
         }
       },
-      enabled: !!access_token,
+      onSettled: () => {
+        setSync(false)
+      },
+      enabled: sync,
     }
   )
 
-  return { isValid, audioFiles, isError, isLoading }
+  return { isValid, audioFiles, isError, isLoading, setSync, sync }
 }
 
 export default useAudio

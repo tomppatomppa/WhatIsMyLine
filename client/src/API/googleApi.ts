@@ -40,8 +40,6 @@ export const downloadFiles = async (
   access_token: string,
   sceneId: string
 ): Promise<arrayBufferResponse[]> => {
-  console.log(sceneId)
-
   const response = await axios.get(
     'https://www.googleapis.com/drive/v3/files',
     {

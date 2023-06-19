@@ -32,7 +32,7 @@ const SceneEditorPanel = (props: any) => {
         <SceneRehearsalPanel />
       )}
       <button type="button" onClick={() => setIsEditing(!isEditing)}>
-        Edit
+        {isEditing ? 'Cancel' : 'Edit'}
       </button>
     </div>
   )

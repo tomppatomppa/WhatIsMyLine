@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
 import { Scene } from '../../reader.types'
@@ -6,23 +7,30 @@ import { useReaderContext } from '../../contexts/ReaderContext'
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
+import { AiOutlineSync } from 'react-icons/ai'
 
-import { useState } from 'react'
 import { filterAudioFiles } from '../../utils'
-import Spinner from 'src/components/common/Spinner'
+
+import { FaStop } from 'react-icons/fa'
 
 const SceneRehearsalPanel = () => {
   const [start, setStart] = useState(false)
   const { values } = useFormikContext<Scene>()
   const { options } = useReaderContext()
-  const { audioFiles, isLoading, isValid } = useAudio(values)
+  const { audioFiles, isValid, setSync, sync } = useAudio(values)
   const { transcript, listening, resetTranscript } = useSpeechRecognition({})
 
   const filteredAudio = filterAudioFiles(values, audioFiles, options)
 
   return (
-    <div className="flex gap-4 mr-12 justify-start">
-      <Spinner show={isLoading} />
+    <div className="flex gap-4 mr-12 w-full">
+      <button
+        onClick={() => setSync(true)}
+        className={`${sync ? 'text-gray-400 animate-spin' : ''} `}
+      >
+        <AiOutlineSync size={24} />
+      </button>
+      <span className="w-full"></span>
       {start ? (
         <div className="flex flex-row gap-6 justify-start items-center">
           <AudioPlayer
@@ -42,15 +50,16 @@ const SceneRehearsalPanel = () => {
           />
         </div>
       ) : null}
-      <button
-        disabled={!isValid}
-        onClick={() => {
-          setStart(!start)
-          SpeechRecognition.stopListening()
-        }}
-      >
-        {start ? 'stop' : 'start'}
-      </button>
+      {isValid && !sync ? (
+        <button
+          onClick={() => {
+            setStart(!start)
+            SpeechRecognition.stopListening()
+          }}
+        >
+          {start ? <FaStop color="red" /> : 'Rehearse'}
+        </button>
+      ) : null}
     </div>
   )
 }

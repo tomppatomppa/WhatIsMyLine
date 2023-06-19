@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import Spinner from 'src/components/common/Spinner'
+import { PlayIcon } from '../icons'
 
 interface AudioPlayerProps {
   setListen: () => void
@@ -77,7 +78,7 @@ const AudioPlayer = ({
         className={`${
           transcript ? 'text-green-600' : 'text-red-600'
         } fixed inset-0 top-1/2`}
-        show={listening}
+        show={listening && currentFileIndex.current !== 0}
       />
       <audio
         ref={audioRef}
@@ -87,7 +88,7 @@ const AudioPlayer = ({
         }}
       />
       <button type="button" onClick={playNextFile}>
-        {currentFileIndex.current === 0 ? 'Play' : 'Next'}
+        {currentFileIndex.current === 0 ? <PlayIcon /> : 'Next'}
       </button>
       <button type="button" onClick={togglePlayback}>
         {isPlaying ? 'Pause' : 'Resume'}

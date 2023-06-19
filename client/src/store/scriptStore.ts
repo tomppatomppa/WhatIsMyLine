@@ -6,16 +6,12 @@ import { devtools, persist } from 'zustand/middleware'
 interface ScriptState {
   scripts: Script[]
   activeScriptId: string
-
-  googleDriveRootId: string
-  googleDriveSubfolders: string[]
 }
 
 interface ScriptActions {
   setScripts: (scripts: Script[]) => void
   addScript: (script: Script) => void
   setActiveScriptId: (id: string) => void
-  setGoogleDriveRootId: (id: string) => void
   deleteScriptByUuid: (id: string) => void
 
   reorderScenes: (sourceId: number, destinationId: number) => void
@@ -31,12 +27,7 @@ interface ScriptActions {
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   scripts: [],
   activeScriptId: '',
-  googleDriveRootId: '',
-  googleDriveSubfolders: [],
 
-  setGoogleDrivSubfolders: (ids: string[]) =>
-    set(() => ({ googleDriveSubfolders: ids })),
-  setGoogleDriveRootId: (id: string) => set(() => ({ googleDriveRootId: id })),
   setActiveScriptId: (id: string) => set(() => ({ activeScriptId: id })),
   setScripts: (scripts: Script[]) => set(() => ({ scripts: scripts })),
   addScript: (script: Script) =>
@@ -111,8 +102,6 @@ export const useScriptStore = create<ScriptState & ScriptActions>()(
 export const useScripts = () => useScriptStore((state) => state.scripts)
 export const useSetScripts = () => useScriptStore((state) => state.setScripts)
 export const useAddScript = () => useScriptStore((state) => state.addScript)
-export const useSetGoogleDriveRootId = () =>
-  useScriptStore((state) => state.setGoogleDriveRootId)
 
 export const useSetActiveScriptId = () =>
   useScriptStore((state) => state.setActiveScriptId)
