@@ -23,12 +23,14 @@ export const useGoogleAccessToken = () => {
   const getAccessToken = () => {
     const client = google.accounts.oauth2.initTokenClient({
       client_id: config.clientId,
+
       scope: (config.customScopes
         ? [...defaultScopes, ...config.customScopes]
         : defaultScopes
       ).join(' '),
       callback: (tokenResponse: authResult) => {
         setAuthRes(tokenResponse)
+        console.log(tokenResponse)
       },
     })
 

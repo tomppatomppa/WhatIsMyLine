@@ -1,4 +1,5 @@
 //@ts-nocheck
+import { arrayBufferResponse } from 'src/API/googleApi'
 import { Actor, ReaderConfiguration, Scene } from './reader.types'
 
 export function generateUniqueColor(highlight: Actor[]) {
@@ -34,7 +35,7 @@ export function arrayAttributeMatch(arr1: any[], arr2: any[]): boolean {
     return false
   }
 
-  const attributes = arr1.map((item) => item.name?.replaceAll?.('.mp3', ''))
+  const attributes = arr1.map((item) => item.id)
 
   for (let i = 0; i < arr2.length; i++) {
     if (!attributes.includes(arr2[i].id)) {
@@ -45,12 +46,8 @@ export function arrayAttributeMatch(arr1: any[], arr2: any[]): boolean {
   return true
 }
 
-type AudioData = {
-  id: string
-  data: Blob
-}
 export function arrayBufferIntoHTMLAudioElement(
-  audioArray: AudioData[]
+  audioArray: arrayBufferResponse[]
 ): HTMLAudioElement[] {
   const result = audioArray.map((file) => {
     const fileUrl = URL.createObjectURL(

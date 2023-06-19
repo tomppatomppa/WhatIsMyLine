@@ -9,22 +9,20 @@ import SpeechRecognition, {
 
 import { useState } from 'react'
 import { filterAudioFiles } from '../../utils'
+import Spinner from 'src/components/common/Spinner'
 
 const SceneRehearsalPanel = () => {
   const [start, setStart] = useState(false)
   const { values } = useFormikContext<Scene>()
   const { options } = useReaderContext()
-  const { audioFiles, isValid } = useAudio(values)
+  const { audioFiles, isLoading, isValid } = useAudio(values)
   const { transcript, listening, resetTranscript } = useSpeechRecognition({})
 
   const filteredAudio = filterAudioFiles(values, audioFiles, options)
 
-  if (!isValid) {
-    return <div>Download</div>
-  }
-
   return (
     <div className="flex gap-4 mr-12 justify-start">
+      <Spinner show={isLoading} />
       {start ? (
         <div className="flex flex-row gap-6 justify-start items-center">
           <AudioPlayer
@@ -45,6 +43,7 @@ const SceneRehearsalPanel = () => {
         </div>
       ) : null}
       <button
+        disabled={!isValid}
         onClick={() => {
           setStart(!start)
           SpeechRecognition.stopListening()

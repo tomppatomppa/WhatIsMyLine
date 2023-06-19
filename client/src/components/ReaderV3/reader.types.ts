@@ -12,7 +12,7 @@ export type Line = {
   lines: string
 }
 export type Scene = {
-  id: string | 'SCRIPT DETAILS'
+  id: string
   data: Line[]
 }
 
