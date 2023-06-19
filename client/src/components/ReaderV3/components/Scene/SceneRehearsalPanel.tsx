@@ -1,6 +1,6 @@
 import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
-import { Line, Scene } from '../../reader.types'
+import { Scene } from '../../reader.types'
 import AudioPlayer from './AudioPlayer'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import SpeechRecognition, {
@@ -8,32 +8,19 @@ import SpeechRecognition, {
 } from 'react-speech-recognition'
 
 import { useState } from 'react'
-
-interface Audio extends HTMLAudioElement {
-  key: string
-}
+import { filterAudioFiles } from '../../utils'
 
 const SceneRehearsalPanel = () => {
   const [start, setStart] = useState(false)
-  const { options } = useReaderContext()
   const { values } = useFormikContext<Scene>()
-  const { audioFiles, isError, isValid } = useAudio(values)
-  const { transcript, listening } = useSpeechRecognition({})
+  const { options } = useReaderContext()
+  const { audioFiles, isValid } = useAudio(values)
+  const { transcript, listening, resetTranscript } = useSpeechRecognition({})
 
-  const filteredLines: Line[] = values.data.filter(
-    ({ name }) =>
-      !options.highlight.some((highlight: Line) => highlight.id === name)
-  )
+  const filteredAudio = filterAudioFiles(values, audioFiles, options)
 
-  const filteredAudio = filteredLines.map((line) => {
-    const audio = audioFiles?.find(
-      (item) => (item as Audio).key === line.id
-    ) as Audio
-    return audio
-  })
-
-  if (isError || !isValid) {
-    return <div>Something went wrong</div>
+  if (!isValid) {
+    return <div>Download</div>
   }
 
   return (
@@ -50,7 +37,10 @@ const SceneRehearsalPanel = () => {
                 continuous: true,
               })
             }
-            stopListen={SpeechRecognition.stopListening}
+            stopListen={() => {
+              SpeechRecognition.stopListening()
+              resetTranscript()
+            }}
           />
         </div>
       ) : null}

@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { Actor } from './reader.types'
+import { Actor, ReaderConfiguration, Scene } from './reader.types'
 
 export function generateUniqueColor(highlight: Actor[]) {
   const colors = [
@@ -62,4 +62,28 @@ export function arrayBufferIntoHTMLAudioElement(
     return audio
   })
   return result
+}
+
+interface Audio extends HTMLAudioElement {
+  key: string
+}
+export function filterAudioFiles(
+  values: Scene,
+  audioFiles: HTMLAudioElement[] | undefined,
+  options: ReaderConfiguration
+): HTMLAudioElement[] {
+  if (!audioFiles) return []
+
+  const filteredLines: Line[] = values.data.filter(
+    ({ name }) =>
+      !options.highlight.some((highlight: Line) => highlight.id === name)
+  )
+
+  const filteredAudio = filteredLines.map((line) => {
+    const audio = audioFiles?.find(
+      (item) => (item as Audio).key === line.id
+    ) as Audio
+    return audio
+  })
+  return filteredAudio
 }

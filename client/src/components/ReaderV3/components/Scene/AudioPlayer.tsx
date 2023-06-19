@@ -33,7 +33,7 @@ const AudioPlayer = ({
 
       timeoutRef.current = null
     } else {
-      currentFileIndex.current = 0
+      resetAudio()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }
@@ -73,8 +73,12 @@ const AudioPlayer = ({
 
   return (
     <div className="flex gap-2 items-center">
-      <label>{currentFileIndex.current}</label>
-      <Spinner show={listening} />
+      <Spinner
+        className={`${
+          transcript ? 'text-green-600' : 'text-red-600'
+        } fixed inset-0 top-1/2`}
+        show={listening}
+      />
       <audio
         ref={audioRef}
         onEnded={() => {

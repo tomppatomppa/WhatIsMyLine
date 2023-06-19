@@ -6,7 +6,7 @@ const SceneEditorPanel = (props: any) => {
   const { isEditing, setIsEditing, addLine } = props
 
   return (
-    <div className="flex justify-end gap-2 bg-blue-200 p-2">
+    <div className="sticky top-0 flex justify-end gap-2 bg-blue-200 p-2">
       {isEditing ? (
         <>
           <button
