@@ -1,6 +1,6 @@
 import axios, { ResponseType } from 'axios'
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
-import { Script } from 'src/components/ReaderV3/reader.types'
+import { Scene, Script } from 'src/components/ReaderV3/reader.types'
 import { BASE_URI } from 'src/config'
 
 interface getFileGoogleDriveProps {
@@ -145,4 +145,15 @@ export const createTextToSpeech = async (script: Script) => {
     script,
   })
   return data
+}
+
+interface CreateTextToSpeechSceneProps {
+  scriptId: string
+  scene: Scene
+}
+export const createTextToSpeechFromScene = async ({
+  scriptId,
+  scene,
+}: CreateTextToSpeechSceneProps) => {
+  console.log(scriptId, scene)
 }

@@ -4,12 +4,7 @@ import { Drop } from '../drag-and-drop'
 import ReaderContext from './contexts/ReaderContext'
 import reducer from './reducer'
 import SceneItem from './components/Scene/SceneItem'
-import { ReaderConfiguration, Scene } from './reader.types'
-
-interface ReaderProps {
-  data: Scene[]
-  handleDragEnd: (values: DropResult) => void
-}
+import { ReaderConfiguration, Script } from './reader.types'
 
 const initialState = {
   mode: 'idle',
@@ -35,14 +30,19 @@ const initialState = {
   },
 } as ReaderConfiguration
 
-export const Reader = ({ data, handleDragEnd }: ReaderProps) => {
-  const [options, dispatch] = useReducer(reducer, initialState)
+interface ReaderProps {
+  script: Script
+  handleDragEnd: (values: DropResult) => void
+}
 
+export const Reader = ({ script, handleDragEnd }: ReaderProps) => {
+  const [options, dispatch] = useReducer(reducer, initialState)
+  const scriptId = script.id
   return (
-    <ReaderContext.Provider value={{ options, dispatch }}>
+    <ReaderContext.Provider value={{ options, dispatch, scriptId }}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <Drop id="droppable" type="droppable-category">
-          {data.map((scene, index) => (
+          {script?.scenes?.map((scene, index) => (
             <SceneItem
               key={index}
               scene={scene}

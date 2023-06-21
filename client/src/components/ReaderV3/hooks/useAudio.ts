@@ -8,7 +8,7 @@ import { arrayAttributeMatch, arrayBufferIntoHTMLAudioElement } from '../utils'
 
 const useAudio = (scene: Scene) => {
   const logout = useLogout()
-  const [sync, setSync] = useState(true)
+  const [isSyncing, setIsSyncing] = useState(true)
   const [audioFiles, setAudioFiles] = useState<HTMLAudioElement[]>()
   const [isValid, setIsValid] = useState(false)
   const access_token = useAccessToken()
@@ -31,13 +31,13 @@ const useAudio = (scene: Scene) => {
         }
       },
       onSettled: () => {
-        setSync(false)
+        setIsSyncing(false)
       },
-      enabled: sync,
+      enabled: isSyncing,
     }
   )
 
-  return { isValid, audioFiles, isError, isLoading, setSync, sync }
+  return { isValid, audioFiles, isError, isLoading, setIsSyncing, isSyncing }
 }
 
 export default useAudio

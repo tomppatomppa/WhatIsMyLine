@@ -53,7 +53,7 @@ const ReaderPage = () => {
           Undo
         </button>
       ) : null}
-      {script && <Reader data={script.scenes} handleDragEnd={handleDragEnd} />}
+      {script && <Reader script={script} handleDragEnd={handleDragEnd} />}
     </div>
   )
 }

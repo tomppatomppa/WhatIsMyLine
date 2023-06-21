@@ -8,25 +8,36 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
 import { AiOutlineSync } from 'react-icons/ai'
-
 import { filterAudioFiles } from '../../utils'
-
 import { FaStop } from 'react-icons/fa'
 
+import Modal from 'src/components/Modal'
+import useTextToSpeech from '../../hooks/useTextToSpeech'
+
 const SceneRehearsalPanel = () => {
+  const [showModal, setShowModal] = useState(false)
   const [start, setStart] = useState(false)
   const { values } = useFormikContext<Scene>()
-  const { options } = useReaderContext()
-  const { audioFiles, isValid, setSync, sync } = useAudio(values)
+  const { options, scriptId } = useReaderContext()
+  const { audioFiles, isValid, setIsSyncing, isSyncing } = useAudio(values)
+  const { upload } = useTextToSpeech()
   const { transcript, listening, resetTranscript } = useSpeechRecognition({})
 
   const filteredAudio = filterAudioFiles(values, audioFiles, options)
 
   return (
     <div className="flex gap-4 mr-12 w-full">
+      <Modal
+        title="Create audio files for the scene?"
+        content="This process will only take a couple
+         seconds to send and process the scene text content to audio"
+        show={showModal}
+        close={() => setShowModal(false)}
+        onAccept={() => upload({ scriptId, scene: values })}
+      />
       <button
-        onClick={() => setSync(true)}
-        className={`${sync ? 'text-gray-400 animate-spin' : ''} `}
+        onClick={() => setIsSyncing(true)}
+        className={`${isSyncing ? 'text-gray-400 animate-spin' : ''} `}
       >
         <AiOutlineSync size={24} />
       </button>
@@ -50,7 +61,7 @@ const SceneRehearsalPanel = () => {
           />
         </div>
       ) : null}
-      {isValid && !sync ? (
+      {isValid ? (
         <button
           onClick={() => {
             setStart(!start)
@@ -59,7 +70,11 @@ const SceneRehearsalPanel = () => {
         >
           {start ? <FaStop color="red" /> : 'Rehearse'}
         </button>
-      ) : null}
+      ) : (
+        <button className="text-red-900" onClick={() => setShowModal(true)}>
+          Create
+        </button>
+      )}
     </div>
   )
 }
