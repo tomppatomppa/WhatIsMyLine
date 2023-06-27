@@ -13,12 +13,11 @@ export const Drag = ({
   index,
   children,
   isDragDisabled,
-
   ...props
 }: DragProps) => {
   return (
     <Draggable isDragDisabled={isDragDisabled} draggableId={id} index={index}>
-      {(provided, snapshot) => {
+      {(provided) => {
         return (
           <div
             ref={provided.innerRef}

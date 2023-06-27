@@ -18,7 +18,7 @@ const GooglePicker = ({
   access_token,
 }: GooglePickerProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [openPicker, authResponse] = useDrivePicker()
+  const [openPicker] = useDrivePicker()
   const { mutate, isLoading } = useMutation(getGoogleDriveFileById, {
     onSuccess: (pdfFile, variables) => {
       const file = new File([pdfFile], variables.docs.name, {
@@ -39,6 +39,7 @@ const GooglePicker = ({
       supportDrives: true,
       multiselect: false,
       callbackFunction: async (data: PickerCallback) => {
+        console.log(data)
         if (data.action === 'picked' && access_token) {
           mutate({ docs: data.docs[0], access_token: access_token })
         }

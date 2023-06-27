@@ -30,7 +30,6 @@ export const useGoogleAccessToken = () => {
       ).join(' '),
       callback: (tokenResponse: authResult) => {
         setAuthRes(tokenResponse)
-        console.log(tokenResponse)
       },
     })
 
