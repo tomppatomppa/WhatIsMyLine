@@ -28,6 +28,7 @@ def text_to_mp3(folder_id, scene_id, line_id, text):
         # Write the response to the output file.
         out.write(response.audio_content)
 
+
 '''
 Root folder === script["id"]
 Scene folder(s) === scene["id"]
@@ -38,7 +39,6 @@ Should create the following folder strucure
         sub_folder-
            
 '''
-
 def create_folders(data):
     folder_id = data["id"]
     scene_ids = [scene["id"] for scene in data["scenes"]]
@@ -58,3 +58,7 @@ def create_audio(data):
 def create_data(data):
     create_folders(data)
     create_audio(data)
+
+
+
+

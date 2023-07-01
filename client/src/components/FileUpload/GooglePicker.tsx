@@ -5,6 +5,7 @@ import { useMutation } from 'react-query'
 import { PickerCallback } from 'react-google-drive-picker/dist/typeDefs'
 import Spinner from '../common/Spinner'
 import { API_KEY, CLIENT_ID } from 'src/config'
+import Tooltip from '../common/Tooltip'
 
 interface GooglePickerProps {
   className?: string
@@ -17,7 +18,6 @@ const GooglePicker = ({
   onFileSelect,
   access_token,
 }: GooglePickerProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [openPicker] = useDrivePicker()
   const { mutate, isLoading } = useMutation(getGoogleDriveFileById, {
     onSuccess: (pdfFile, variables) => {
@@ -50,9 +50,11 @@ const GooglePicker = ({
   return isLoading ? (
     <Spinner show={isLoading} delay={400} />
   ) : (
-    <button className={className} onClick={() => handleOpenPicker()}>
-      <FaGoogleDrive size={22} />
-    </button>
+    <Tooltip text="Google Drive">
+      <button className={className} onClick={() => handleOpenPicker()}>
+        <FaGoogleDrive size={22} />
+      </button>
+    </Tooltip>
   )
 }
 

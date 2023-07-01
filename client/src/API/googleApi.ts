@@ -3,7 +3,7 @@ import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 import { Scene, Script } from 'src/components/ReaderV3/reader.types'
 import { BASE_URI } from 'src/config'
 
-interface getFileGoogleDriveProps {
+interface getGoogleDriveFileByIdProps {
   docs: CallbackDoc
   access_token: string
   responseType?: ResponseType
@@ -13,7 +13,7 @@ export const getGoogleDriveFileById = async ({
   docs,
   access_token,
   responseType = 'arraybuffer',
-}: getFileGoogleDriveProps) => {
+}: getGoogleDriveFileByIdProps) => {
   const { data } = await axios.get(
     `https://www.googleapis.com/drive/v3/files/${docs.id}`,
     {
@@ -121,7 +121,10 @@ export const getGoogleDriveFilesByIds = async ({
   return dataArray
 }
 
-export const createFolder = async (access_token: string) => {
+export const createFolder = async (
+  access_token: string,
+  folderName = 'dramatify-pdf-reader'
+) => {
   let createFolderOptions = {
     method: 'POST',
     headers: {
@@ -130,7 +133,7 @@ export const createFolder = async (access_token: string) => {
     },
     body: JSON.stringify({
       mimeType: 'application/vnd.google-apps.folder',
-      name: 'dramatify-pdf-reader',
+      name: folderName,
     }),
   }
   const { data } = await axios.post(
@@ -138,6 +141,35 @@ export const createFolder = async (access_token: string) => {
     createFolderOptions
   )
   return data
+}
+
+export const createNestedFolders = async (access_token: string) => {
+  const rootFolderName = 'testfolder'
+  const nestedFolderNames = ['folder1', 'folder2']
+  const mp3FileNames = ['file1.mp3', 'file2.mp3']
+  let parentId = 'root'
+  for (const folderName of nestedFolderNames) {
+    const createFolderOptions = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+      data: {
+        mimeType: 'application/vnd.google-apps.folder',
+        name: folderName,
+        parents: [parentId], // Set the parent ID to create a nested folder
+      },
+    }
+
+    const response = await axios.post(
+      'https://www.googleapis.com/drive/v3/files',
+      createFolderOptions
+    )
+
+    parentId = response.data.id // Use the newly created folder's ID as the next parent ID
+  }
+  return parentId
 }
 
 export const createTextToSpeech = async (script: Script) => {
@@ -151,9 +183,19 @@ interface CreateTextToSpeechSceneProps {
   scriptId: string
   scene: Scene
 }
+
 export const createTextToSpeechFromScene = async ({
   scriptId,
   scene,
 }: CreateTextToSpeechSceneProps) => {
-  console.log(scriptId, scene)
+  const { data } = await axios.post(
+    `${BASE_URI}/api/v3/scene-to-speech`,
+    {
+      scriptId,
+      scene,
+    },
+    { responseType: 'blob' }
+  )
+
+  return data
 }

@@ -14,11 +14,14 @@ export const defaultConfiguration: PickerConfiguration = {
   callbackFunction: () => null,
 }
 export const useGoogleAccessToken = () => {
-  const defaultScopes = ['https://www.googleapis.com/auth/drive.readonly']
+  const defaultScopes = [
+    'https://www.googleapis.com/auth/drive.readonly',
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive',
+  ]
 
   const [authRes, setAuthRes] = useState<authResult>()
-  const [config, setConfig] =
-    useState<PickerConfiguration>(defaultConfiguration)
+  const [config] = useState<PickerConfiguration>(defaultConfiguration)
 
   const getAccessToken = () => {
     const client = google.accounts.oauth2.initTokenClient({

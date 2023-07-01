@@ -6,7 +6,7 @@ interface TooltipProps {
 }
 
 const Tooltip = ({ text, children }: TooltipProps) => {
-  const [showTooltip, setShowTooltip] = useState(true)
+  const [showTooltip, setShowTooltip] = useState(false)
 
   return (
     <div
@@ -16,7 +16,7 @@ const Tooltip = ({ text, children }: TooltipProps) => {
     >
       <div>{children}</div>
       {showTooltip && (
-        <label className="absolute mt-1 shadow-md text-black border rounded-md bg-white p-1">
+        <label className="absolute whitespace-nowrap mt-1 shadow-md text-black border rounded-md bg-white p-1">
           {text}
         </label>
       )}

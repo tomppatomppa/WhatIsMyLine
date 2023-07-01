@@ -23,7 +23,7 @@ def create_upload_folder(app):
         os.makedirs(upload_folder, exist_ok=True)
         os.makedirs(processed_audio, exist_ok=True)
         app.config['uploaded_files_folder'] = upload_folder
-        app.config['processed_audio'] = upload_folder
+        app.config['processed_audio'] = processed_audio
     except Exception as e:
         app.logger.info('An error occurred while creating folder')
         app.logger.error('Exception occurred : {}'.format(e))
