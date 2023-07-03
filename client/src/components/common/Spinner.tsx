@@ -27,7 +27,9 @@ const Spinner = (props: Props) => {
   }, [show, delay])
 
   return showSpinner ? (
-    <div className={`text-white items-center flex flex-col ${props.className}`}>
+    <div
+      className={`text-gray-300 items-center flex flex-col ${props.className}`}
+    >
       <svg
         className="animate-spin -ml-1 mr-3 h-10 w-10"
         xmlns="http://www.w3.org/2000/svg"

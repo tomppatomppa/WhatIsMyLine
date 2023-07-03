@@ -20,18 +20,15 @@ const useAudio = (scene: Scene) => {
     ['scene_audio', access_token],
     () => downloadFiles(access_token as string, scene.id),
     {
-      onSuccess: (googleDriveFileIdArray) => {
-        console.log(googleDriveFileIdArray)
-        if (hasRequiredAudioFiles(scene.data, googleDriveFileIdArray)) {
-          const audioFileArray = arrayBufferIntoHTMLAudioElement(
-            googleDriveFileIdArray
-          )
+      onSuccess: (googleDriveFileArray) => {
+        if (hasRequiredAudioFiles(scene.data, googleDriveFileArray)) {
+          const audioFileArray =
+            arrayBufferIntoHTMLAudioElement(googleDriveFileArray)
           setIsValid(true)
           setAudioFiles(audioFileArray)
         }
       },
       onError: (error) => {
-        console.log(error)
         const { response } = error as any
         if (response?.data?.error.status === 'UNAUTHENTICATED') {
           logout()

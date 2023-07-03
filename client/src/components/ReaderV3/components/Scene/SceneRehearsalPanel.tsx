@@ -11,21 +11,37 @@ import { AiOutlineSync } from 'react-icons/ai'
 import { filterAudioFiles } from '../../utils'
 import { FaStop } from 'react-icons/fa'
 import Modal from 'src/components/Modal'
-import useTextToSpeech from '../../hooks/useTextToSpeech'
 import { useAccessToken } from 'src/store/userStore'
 import { RootFolder, useRootFolder } from 'src/store/scriptStore'
+import Spinner from 'src/components/common/Spinner'
+import Message from 'src/components/common/Message'
+import { useMutation } from 'react-query'
+import { createTextToSpeechFromScene } from 'src/API/googleApi'
 
 const SceneRehearsalPanel = () => {
+  const [message, setMessage] = useState('')
   const [showModal, setShowModal] = useState(false)
-  const [start, setStart] = useState(false)
+  const [startRehearse, setStartRehearse] = useState(false)
   const { values } = useFormikContext<Scene>()
   const { options, scriptId } = useReaderContext()
   const { audioFiles, isValid, setIsSyncing, isSyncing } = useAudio(values)
-  const { upload } = useTextToSpeech()
+
+  const { mutate, isError, isLoading } = useMutation(
+    createTextToSpeechFromScene,
+    {
+      onSuccess: (data) => {
+        setMessage(`Successfully added audio for ${data.name}`)
+        setIsSyncing(true)
+      },
+      onError: () => {
+        setMessage('Something went wrong')
+      },
+    }
+  )
+
   const access_token = useAccessToken() as string
   const rootFolder = useRootFolder() as RootFolder
   const { transcript, listening, resetTranscript } = useSpeechRecognition({})
-
   const filteredAudio = filterAudioFiles(values, audioFiles, options)
 
   return (
@@ -37,14 +53,17 @@ const SceneRehearsalPanel = () => {
         show={showModal}
         close={() => setShowModal(false)}
         onAccept={() =>
-          upload({
+          mutate({
             scriptId,
             scene: values,
             access_token,
             rootFolderId: rootFolder.id,
           })
         }
-      />
+      >
+        <Spinner show={isLoading} />
+        <Message type={isError ? 'alert' : 'success'} message={message} />
+      </Modal>
       <button
         onClick={() => setIsSyncing(true)}
         className={`${isSyncing ? 'text-gray-400 animate-spin' : ''} `}
@@ -52,7 +71,7 @@ const SceneRehearsalPanel = () => {
         <AiOutlineSync size={24} />
       </button>
       <span className="w-full"></span>
-      {start ? (
+      {startRehearse ? (
         <div className="flex flex-row gap-6 justify-start items-center">
           <AudioPlayer
             files={filteredAudio}
@@ -74,14 +93,18 @@ const SceneRehearsalPanel = () => {
       {isValid ? (
         <button
           onClick={() => {
-            setStart(!start)
+            setStartRehearse(!startRehearse)
             SpeechRecognition.stopListening()
           }}
         >
-          {start ? <FaStop color="red" /> : 'Rehearse'}
+          {startRehearse ? <FaStop color="red" /> : 'Rehearse'}
         </button>
       ) : (
-        <button className="text-red-900" onClick={() => setShowModal(true)}>
+        <button
+          disabled={isSyncing}
+          className="text-red-900"
+          onClick={() => setShowModal(true)}
+        >
           Create
         </button>
       )}
