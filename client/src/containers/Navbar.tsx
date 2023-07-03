@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import GoogleLoginButton from '../components/auth/GoogleLoginButton'
 import { Sidebar } from './Sidebar'
+import Profile from 'src/components/profile/Profile'
+import Dropdown from 'src/components/common/Dropdown'
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
@@ -14,7 +15,10 @@ const Navbar = () => {
         SCRIPTS
       </button>
       <span className="flex-1"></span>
-      <GoogleLoginButton />
+      <Dropdown title="Profile">
+        <Profile />
+      </Dropdown>
+
       <Sidebar show={showMenu} setShowMenu={() => setShowMenu(false)} />
     </>
   )

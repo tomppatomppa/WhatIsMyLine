@@ -14,7 +14,7 @@ import { FaStop } from 'react-icons/fa'
 import Modal from 'src/components/Modal'
 import useTextToSpeech from '../../hooks/useTextToSpeech'
 import { useMutation } from 'react-query'
-import { createFolder, createNestedFolders } from 'src/API/googleApi'
+import { createFolder } from 'src/API/googleApi'
 import { useAccessToken } from 'src/store/userStore'
 
 const SceneRehearsalPanel = () => {
@@ -27,6 +27,7 @@ const SceneRehearsalPanel = () => {
   const { transcript, listening, resetTranscript } = useSpeechRecognition({})
   const access_token = useAccessToken()
   const filteredAudio = filterAudioFiles(values, audioFiles, options)
+
   const { mutate } = useMutation(createFolder, {
     onSuccess: (data) => {
       console.log(data)

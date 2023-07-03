@@ -58,8 +58,6 @@ def login():
 @app.route("/refresh_token",  methods=["POST"])
 def refresh_token():
     user_id = request.json.get("user_id")
-  
-    token_endpoint = 'https://oauth2.googleapis.com/token'
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
@@ -67,8 +65,8 @@ def refresh_token():
         'grant_type': 'refresh_token'
     }
     try:
-        response = requests.post(token_endpoint, data=payload)
-        response.raise_for_status()  # Raise an exception if the request was unsuccessful
+        response = requests.post('https://oauth2.googleapis.com/token', data=payload)
+        response.raise_for_status()
         token_data = response.json()
         new_access_token = token_data.get('access_token')
 
