@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 
 const PublicLayout = () => {
   const navigate = useNavigate()
+
   return (
     <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center  h-screen justify-center text-center">
       <div className="flex items-center justify-center flex-col">

@@ -44,6 +44,7 @@ const SceneRehearsalPanel = () => {
   const { transcript, listening, resetTranscript } = useSpeechRecognition({})
   const filteredAudio = filterAudioFiles(values, audioFiles, options)
 
+  if (!rootFolder) return
   return (
     <div className="flex gap-4 mr-12 w-full">
       <Modal

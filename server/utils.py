@@ -21,7 +21,7 @@ def get_user(token, refresh_token):
     try:
         idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
         user_id = idinfo['sub']
-
+       
         if any(user.get('user_id') == user_id for user in users):
             print("Has logged before")
         else:

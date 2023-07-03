@@ -44,10 +44,12 @@ def login():
     })
 
     token_data = response.json()
+  
     if response.status_code == 200 and token_data:
         expires_in = token_data.get("expires_in")
         #dummy db for saving user
         user = get_user(token_data.get("id_token"), token_data.get("refresh_token"))
+        
         user["access_token"] = token_data.get("access_token")
         user["expiry"] = create_timestamp(expires_in)
 
@@ -96,7 +98,7 @@ def upload_v3():
 
 @app.route("/api/v3/scene-to-speech", methods=["POST"])
 def scene_to_speech():
-    
+
     script_id = request.json.get("id")
     scene_id = request.json.get("scenes")[0].get("id")
     access_token = request.json.get("access_token")

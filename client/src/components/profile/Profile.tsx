@@ -1,9 +1,9 @@
 import { useLogout, useUserStore } from 'src/store/userStore'
-import ProfileInfo from './ProfileInfo'
 import { useMutation } from 'react-query'
 import { syncGoogleDrive } from 'src/API/googleApi'
 import { useRootFolder, useSetRootFolder } from 'src/store/scriptStore'
-import ProfileDriveInfo from './ProfileDriveInfo'
+import DriveInfo from './DriveInfo'
+import Avatar from './Avatar'
 
 const links = [
   {
@@ -34,21 +34,20 @@ const Profile = () => {
   if (!user) return
   return (
     <div className="items-center p-2">
-      <ul className="flex flex-col">
-        <ProfileInfo user={user} />
+      <Avatar user={user} />
+      <ul className="flex flex-col mt-2 text-gray-700">
         {links.map((link) => (
           <a href={link.href}>{link.label}</a>
         ))}
-        {rootFolder ? (
-          <ProfileDriveInfo rootFolder={rootFolder} />
-        ) : (
-          <button
-            className="hover:bg-blue-200"
-            onClick={() => mutate(user.access_token)}
-          >
-            Sync Drive
-          </button>
-        )}
+        <button
+          className={`${
+            rootFolder ? 'bg-green-200' : 'bg-red-200'
+          } hover:bg-blue-200`}
+          onClick={() => mutate(user.access_token)}
+        >
+          Sync Drive
+        </button>
+        {rootFolder ? <DriveInfo rootFolder={rootFolder} /> : null}
         <button onClick={logout}>logout</button>
       </ul>
     </div>
