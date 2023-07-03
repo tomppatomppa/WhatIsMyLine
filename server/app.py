@@ -45,11 +45,13 @@ def login():
 
     token_data = response.json()
     if response.status_code == 200 and token_data:
-        #dummy db for saving user
-        get_user(token_data.get("id_token"))
         expires_in = token_data.get("expires_in")
-        token_data["expiry"] = create_timestamp(expires_in)
-        return token_data
+        #dummy db for saving user
+        user = get_user(token_data.get("id_token"))
+        user["access_token"] = token_data.get("access_token")
+        user["expiry"] = create_timestamp(expires_in)
+
+        return user
     else:
         return 'Failed to login', 401
 

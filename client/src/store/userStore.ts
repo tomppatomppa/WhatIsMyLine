@@ -6,6 +6,7 @@ export type User = {
   name: string
   picture: string
   access_token: string
+  expiry: string
 }
 
 interface UserStore {

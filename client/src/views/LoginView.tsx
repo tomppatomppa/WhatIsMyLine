@@ -1,26 +1,31 @@
 import { useGoogleLogin } from '@react-oauth/google'
-import React, { useState } from 'react'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 import { googleLogin } from 'src/API/loginApi'
-import GoogleLoginButton from 'src/components/auth/GoogleLoginButton'
+import { useLogin } from 'src/store/userStore'
 
 const LoginView = () => {
-  const [loggedIn, setLoggedIn] = useState(false)
+  const navigate = useNavigate()
+  const loginToApp = useLogin()
+
   const { mutate } = useMutation(googleLogin, {
-    onSuccess: (data) => {
-      console.log(data)
+    onSuccess: (user) => {
+      loginToApp(user)
+      navigate('/')
     },
   })
-  const ogin = useGoogleLogin({
+
+  const loginGoogle = useGoogleLogin({
     flow: 'auth-code',
     scope: 'https://www.googleapis.com/auth/drive',
     onSuccess: (credentials) => {
       mutate(credentials.code)
     },
   })
+
   return (
     <div>
-      <button onClick={() => ogin()}>Login Google</button>
+      <button onClick={() => loginGoogle()}>Login Google</button>
     </div>
   )
 }

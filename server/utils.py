@@ -17,7 +17,7 @@ def create_timestamp(expires_in = 0):
 
 
 def get_user(token):
-   
+    
     ids = None
     with open('dummyDb.txt', 'r') as db:
         ids = db.read().splitlines()
@@ -31,6 +31,8 @@ def get_user(token):
             with open('dummyDb.txt', 'w') as db:
                 db.write('\n'.join(ids))
         
-        return idinfo
+        user = {"email": idinfo.get("email"),"name": idinfo.get("name"),"picture": idinfo.get("picture")}
+        return user
     except ValueError:
-        pass
+        return None
+    
