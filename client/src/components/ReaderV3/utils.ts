@@ -30,15 +30,15 @@ export function generateUniqueColor(highlight: Actor[]) {
   return '#86efac'
 }
 
-export function arrayAttributeMatch(arr1: any[], arr2: any[]): boolean {
-  if (arr1?.length !== arr2?.length) {
-    return false
-  }
-
-  const attributes = arr1.map((item) => item.id)
-
-  for (let i = 0; i < arr2.length; i++) {
-    if (!attributes.includes(arr2[i].id)) {
+/* 
+Used to check if google drive folder has
+ all required audio files for a scene
+*/
+export function hasRequiredAudioFiles(arr1: any[], arr2: any[]): boolean {
+  const requiredFileIds = arr1.map((item) => item.id)
+  const allFolderFileIds = arr2.map((item) => item.id)
+  for (let i = 0; i < arr1.length; i++) {
+    if (!allFolderFileIds.includes(requiredFileIds[i])) {
       return false
     }
   }

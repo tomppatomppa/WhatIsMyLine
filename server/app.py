@@ -92,13 +92,6 @@ def upload_v3():
     return 'Invalid filetype', 403
 
 
-@app.route("/api/v3/text-to-speech", methods=["POST"])
-def text_to_speech():
-   
-    data = request.json["script"]
-    
-    #create_data(data)
-    return "text-to-speech endpoint", 200
 
 
 @app.route("/api/v3/scene-to-speech", methods=["POST"])
@@ -127,14 +120,8 @@ def scene_to_speech():
     finally:
         remove_dir(f"./processed_audio/{script_id}")
 
-def extract_access_token(request):
-    authorization_header = request.headers.get('Authorization')
-    print(request)
-    if authorization_header:
-        bearer_token = authorization_header.split(' ')[-1]
-        return bearer_token
-    else:
-        return None
+
+
 
 @app.route("/create_root_folder",  methods=["POST"])
 def create_root_folder():

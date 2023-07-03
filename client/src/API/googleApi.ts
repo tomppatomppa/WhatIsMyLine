@@ -1,6 +1,6 @@
 import axios, { ResponseType } from 'axios'
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
-import { Scene, Script } from 'src/components/ReaderV3/reader.types'
+import { Scene } from 'src/components/ReaderV3/reader.types'
 import { BASE_URI } from 'src/config'
 
 interface getGoogleDriveFileByIdProps {
@@ -54,6 +54,7 @@ export const downloadFiles = async (
       },
     }
   )
+
   //Expect only one folder with the sceneId
   if (response.data.files.length !== 1) {
     throw new Error('Duplicate folder names!')
@@ -119,42 +120,6 @@ export const getGoogleDriveFilesByIds = async ({
   }))
 
   return dataArray
-}
-
-export const createNestedFolders = async (access_token: string) => {
-  const rootFolderName = 'testfolder'
-  const nestedFolderNames = ['folder1', 'folder2']
-  const mp3FileNames = ['file1.mp3', 'file2.mp3']
-  let parentId = 'root'
-  for (const folderName of nestedFolderNames) {
-    const createFolderOptions = {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
-      },
-      data: {
-        mimeType: 'application/vnd.google-apps.folder',
-        name: folderName,
-        parents: [parentId], // Set the parent ID to create a nested folder
-      },
-    }
-
-    const response = await axios.post(
-      'https://www.googleapis.com/drive/v3/files',
-      createFolderOptions
-    )
-
-    parentId = response.data.id // Use the newly created folder's ID as the next parent ID
-  }
-  return parentId
-}
-
-export const createTextToSpeech = async (script: Script) => {
-  const { data } = await axios.post(`${BASE_URI}/api/v3/text-to-speech`, {
-    script,
-  })
-  return data
 }
 
 interface CreateTextToSpeechSceneProps {
