@@ -3,9 +3,6 @@ from PyMuReaderV3 import ReaderV3
 from flask_cors import CORS
 from config import allowed_file, create_upload_folder,process_uploaded_file_v3
 from TextToSpeech import text_to_mp3, create_data
-from zipfile import ZipFile
-import os
-import io
 import json
 import requests
 
