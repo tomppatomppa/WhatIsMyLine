@@ -26,7 +26,7 @@ const useAudio = (scene: Scene) => {
       },
       onError: (error) => {
         const { response } = error as any
-        if (response.data.error.status === 'UNAUTHENTICATED') {
+        if (response?.data?.error.status === 'UNAUTHENTICATED') {
           logout()
         }
       },

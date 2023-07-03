@@ -3,7 +3,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 import os
 import json
-
+import shutil
 CLIENT_ID = os.getenv("CLIENT_ID")
 
 def create_timestamp(expires_in = 0):
@@ -48,3 +48,12 @@ def get_refresh_token(user_id):
         users = json.load(db)
     
     return next((user.get("refresh_token") for user in users if user.get('user_id') == user_id), None)
+
+
+def remove_dir(directory_path):
+    try:
+        shutil.rmtree(directory_path)
+        return 'Directory deleted successfully'
+    except OSError as e:
+        return f'Error deleting directory: {e}'
+    

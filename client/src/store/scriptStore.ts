@@ -3,14 +3,22 @@ import { StateCreator, create } from 'zustand'
 import { swapLines, swapScenes } from './helpers'
 import { devtools, persist } from 'zustand/middleware'
 
+export type RootFolder = {
+  id: string
+  name: string
+}
+
 interface ScriptState {
   scripts: Script[]
   activeScriptId: string
+
+  rootFolder: RootFolder | null
 }
 
 interface ScriptActions {
   setScripts: (scripts: Script[]) => void
   addScript: (script: Script) => void
+  setRootFolder: (rootFolder: RootFolder) => void
   setActiveScriptId: (id: string) => void
   deleteScriptByUuid: (id: string) => void
 
@@ -27,9 +35,12 @@ interface ScriptActions {
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   scripts: [],
   activeScriptId: '',
+  rootFolder: null,
 
   setActiveScriptId: (id: string) => set(() => ({ activeScriptId: id })),
   setScripts: (scripts: Script[]) => set(() => ({ scripts: scripts })),
+  setRootFolder: (rootFolder: RootFolder) => set(() => ({ rootFolder })),
+
   addScript: (script: Script) =>
     set((state: { scripts: Script[] }) => ({
       scripts: state.scripts.concat(script),
@@ -102,6 +113,11 @@ export const useScriptStore = create<ScriptState & ScriptActions>()(
 export const useScripts = () => useScriptStore((state) => state.scripts)
 export const useSetScripts = () => useScriptStore((state) => state.setScripts)
 export const useAddScript = () => useScriptStore((state) => state.addScript)
+
+export const useSetRootFolder = () =>
+  useScriptStore((state) => state.setRootFolder)
+
+export const useRootFolder = () => useScriptStore((state) => state.rootFolder)
 
 export const useSetActiveScriptId = () =>
   useScriptStore((state) => state.setActiveScriptId)

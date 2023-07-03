@@ -121,28 +121,6 @@ export const getGoogleDriveFilesByIds = async ({
   return dataArray
 }
 
-export const createFolder = async (
-  access_token: string,
-  folderName = 'dramatify-pdf-reader'
-) => {
-  let createFolderOptions = {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      mimeType: 'application/vnd.google-apps.folder',
-      name: folderName,
-    }),
-  }
-  const { data } = await axios.post(
-    'https://www.googleapis.com/drive/v3/files',
-    createFolderOptions
-  )
-  return data
-}
-
 export const createNestedFolders = async (access_token: string) => {
   const rootFolderName = 'testfolder'
   const nestedFolderNames = ['folder1', 'folder2']
@@ -182,20 +160,29 @@ export const createTextToSpeech = async (script: Script) => {
 interface CreateTextToSpeechSceneProps {
   scriptId: string
   scene: Scene
+  access_token: string
+  rootFolderId: string
 }
 
 export const createTextToSpeechFromScene = async ({
   scriptId,
   scene,
+  access_token,
+  rootFolderId,
 }: CreateTextToSpeechSceneProps) => {
-  const { data } = await axios.post(
-    `${BASE_URI}/api/v3/scene-to-speech`,
-    {
-      scriptId,
-      scene,
-    },
-    { responseType: 'blob' }
-  )
+  const { data } = await axios.post(`${BASE_URI}/api/v3/scene-to-speech`, {
+    id: scriptId,
+    scenes: [scene],
+    access_token,
+    rootFolderId,
+  })
 
+  return data
+}
+
+export const syncGoogleDrive = async (access_token: string) => {
+  const { data } = await axios.post(`${BASE_URI}/create_root_folder`, {
+    access_token,
+  })
   return data
 }

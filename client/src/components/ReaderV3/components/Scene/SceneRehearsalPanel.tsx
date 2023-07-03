@@ -10,12 +10,10 @@ import SpeechRecognition, {
 import { AiOutlineSync } from 'react-icons/ai'
 import { filterAudioFiles } from '../../utils'
 import { FaStop } from 'react-icons/fa'
-
 import Modal from 'src/components/Modal'
 import useTextToSpeech from '../../hooks/useTextToSpeech'
-import { useMutation } from 'react-query'
-import { createFolder } from 'src/API/googleApi'
 import { useAccessToken } from 'src/store/userStore'
+import { RootFolder, useRootFolder } from 'src/store/scriptStore'
 
 const SceneRehearsalPanel = () => {
   const [showModal, setShowModal] = useState(false)
@@ -24,31 +22,28 @@ const SceneRehearsalPanel = () => {
   const { options, scriptId } = useReaderContext()
   const { audioFiles, isValid, setIsSyncing, isSyncing } = useAudio(values)
   const { upload } = useTextToSpeech()
+  const access_token = useAccessToken() as string
+  const rootFolder = useRootFolder() as RootFolder
   const { transcript, listening, resetTranscript } = useSpeechRecognition({})
-  const access_token = useAccessToken()
+
   const filteredAudio = filterAudioFiles(values, audioFiles, options)
 
-  const { mutate } = useMutation(createFolder, {
-    onSuccess: (data) => {
-      console.log(data)
-    },
-    onError: (err) => {
-      console.log(err)
-    },
-    onMutate: (variables) => {
-      console.log('here')
-    },
-  })
   return (
     <div className="flex gap-4 mr-12 w-full">
-      <button onClick={() => mutate(access_token as string)}>test</button>
       <Modal
         title="Create audio files for the scene?"
         content="This process will only take a couple
          seconds"
         show={showModal}
         close={() => setShowModal(false)}
-        onAccept={() => upload({ scriptId, scene: values })}
+        onAccept={() =>
+          upload({
+            scriptId,
+            scene: values,
+            access_token,
+            rootFolderId: rootFolder.id,
+          })
+        }
       />
       <button
         onClick={() => setIsSyncing(true)}

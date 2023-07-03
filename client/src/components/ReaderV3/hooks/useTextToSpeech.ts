@@ -5,8 +5,11 @@ import { createTextToSpeechFromScene } from 'src/API/googleApi'
 const useTextToSpeech = () => {
   const { mutate: upload } = useMutation(createTextToSpeechFromScene, {
     onSuccess: async (data) => {
-      const files = await extractFolderContent(data)
-      console.log(files)
+      // const files = await extractFolderContent(data)
+      console.log(data)
+    },
+    onError: (error) => {
+      console.log(error)
     },
   })
   return { upload }
