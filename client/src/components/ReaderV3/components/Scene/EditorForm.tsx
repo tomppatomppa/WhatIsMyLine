@@ -54,7 +54,7 @@ const EditorForm = ({
       >
         {({ values, dirty }) => (
           <Drop key={scene.id} id={scene.id} type="droppable-item">
-            <Form className="relative" autoComplete="off">
+            <Form autoComplete="off">
               <SceneEditorPanel
                 isEditing={isEditing}
                 sceneIndex={sceneIndex}
@@ -69,7 +69,7 @@ const EditorForm = ({
                   index={lineIndex}
                   isDragDisabled={false}
                 >
-                  <div className="w-full flex flex-col" key={lineIndex}>
+                  <div className="w-full flex flex-col " key={lineIndex}>
                     <ConditionalField
                       key={lineIndex}
                       show={isEditing}

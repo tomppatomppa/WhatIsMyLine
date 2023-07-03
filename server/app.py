@@ -96,7 +96,6 @@ def upload_v3():
 
 @app.route("/api/v3/scene-to-speech", methods=["POST"])
 def scene_to_speech():
-
     
     script_id = request.json.get("id")
     scene_id = request.json.get("scenes")[0].get("id")
@@ -112,7 +111,6 @@ def scene_to_speech():
         #Upload audio files to google drive
         for filename in os.listdir(filepath):
             GoogleDrive.upload_mp3_to_drive(access_token, scene_folder.get("id"), f"{filepath}/{filename}")
-        print("DONE")
         return scene_folder, 200
     
     except requests.exceptions.HTTPError as error:

@@ -22,10 +22,10 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
   const setActiveScript = useSetActiveScriptId()
 
   return (
-    <div
+    <aside
       className={`${
         show ? 'translate-x-0' : '-translate-x-[40rem]'
-      } fixed top-14 z-50 w-full sm:w-72 shadow-lg divide-y-4 h-full translate-all duration-200 bg-white`}
+      } fixed  z-50 w-full sm:w-72 shadow-lg divide-y-4 h-full translate-all duration-200 bg-white`}
     >
       <div className="flex flex-col items-center border-black">
         <div className="flex flex-row w-full justify-end bg-primary p-2">
@@ -45,6 +45,6 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
           <EmptyScriptList />
         )}
       </div>
-    </div>
+    </aside>
   )
 }

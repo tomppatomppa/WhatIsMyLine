@@ -39,7 +39,6 @@ const GooglePicker = ({
       supportDrives: true,
       multiselect: false,
       callbackFunction: async (data: PickerCallback) => {
-        console.log(data)
         if (data.action === 'picked' && access_token) {
           mutate({ docs: data.docs[0], access_token: access_token })
         }

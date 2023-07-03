@@ -7,20 +7,18 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
 
   return (
-    <>
+    <nav className="z-50 flex justify-netween w-full">
       <button
-        className="flex self-center m-4 text-black font-bold tracking-widest"
+        className="flex self-center m-4 flex-1 text-black font-bold tracking-widest"
         onClick={() => setShowMenu(!showMenu)}
       >
         SCRIPTS
       </button>
-      <span className="flex-1"></span>
       <Dropdown title="Profile">
         <Profile />
       </Dropdown>
-
       <Sidebar show={showMenu} setShowMenu={() => setShowMenu(false)} />
-    </>
+    </nav>
   )
 }
 

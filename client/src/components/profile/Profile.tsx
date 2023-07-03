@@ -2,11 +2,7 @@ import { useLogout, useUserStore } from 'src/store/userStore'
 import ProfileInfo from './ProfileInfo'
 import { useMutation } from 'react-query'
 import { syncGoogleDrive } from 'src/API/googleApi'
-import {
-  useRootFolder,
-  useScriptStore,
-  useSetRootFolder,
-} from 'src/store/scriptStore'
+import { useRootFolder, useSetRootFolder } from 'src/store/scriptStore'
 import ProfileDriveInfo from './ProfileDriveInfo'
 
 const links = [
@@ -37,7 +33,7 @@ const Profile = () => {
 
   if (!user) return
   return (
-    <div className="items-center p-2 ">
+    <div className="items-center p-2">
       <ul className="flex flex-col">
         <ProfileInfo user={user} />
         {links.map((link) => (
