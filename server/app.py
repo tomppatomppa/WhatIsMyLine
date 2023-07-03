@@ -6,7 +6,7 @@ from TextToSpeech import text_to_mp3, create_data
 import json
 import os
 import requests
-from utils import create_timestamp, get_user
+from utils import create_timestamp, get_user, get_refresh_token
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -47,13 +47,36 @@ def login():
     if response.status_code == 200 and token_data:
         expires_in = token_data.get("expires_in")
         #dummy db for saving user
-        user = get_user(token_data.get("id_token"))
+        user = get_user(token_data.get("id_token"), token_data.get("refresh_token"))
         user["access_token"] = token_data.get("access_token")
         user["expiry"] = create_timestamp(expires_in)
 
         return user
     else:
         return 'Failed to login', 401
+
+@app.route("/refresh_token",  methods=["POST"])
+def refresh_token():
+    user_id = request.json.get("user_id")
+  
+    token_endpoint = 'https://oauth2.googleapis.com/token'
+    payload = {
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'refresh_token': get_refresh_token(user_id),
+        'grant_type': 'refresh_token'
+    }
+    try:
+        response = requests.post(token_endpoint, data=payload)
+        response.raise_for_status()  # Raise an exception if the request was unsuccessful
+        token_data = response.json()
+        new_access_token = token_data.get('access_token')
+
+        return new_access_token, 200
+    except requests.exceptions.RequestException as e:
+        error_message = str(e)
+        return {'error': error_message}, 400
+
 
 @app.route("/api/v3/upload", methods=['POST'])
 def upload_v3():

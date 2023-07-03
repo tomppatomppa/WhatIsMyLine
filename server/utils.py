@@ -1,12 +1,9 @@
 from datetime import datetime, timedelta
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from jwt import (
-    JWT,
-    jwk_from_dict,
-    jwk_from_pem,
-)
 import os
+import json
+
 CLIENT_ID = os.getenv("CLIENT_ID")
 
 def create_timestamp(expires_in = 0):
@@ -16,23 +13,38 @@ def create_timestamp(expires_in = 0):
     return str(formatted_timestamp)
 
 
-def get_user(token):
+def get_user(token, refresh_token):
+    users = []
+    with open('dummyDb.json', 'r') as db:
+        users = json.load(db)
     
-    ids = None
-    with open('dummyDb.txt', 'r') as db:
-        ids = db.read().splitlines()
     try:
         idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
         user_id = idinfo['sub']
-        if user_id in ids:
+
+        if any(user.get('user_id') == user_id for user in users):
             print("Has logged before")
         else:
-            ids.append(user_id)
-            with open('dummyDb.txt', 'w') as db:
-                db.write('\n'.join(ids))
-        
-        user = {"email": idinfo.get("email"),"name": idinfo.get("name"),"picture": idinfo.get("picture")}
+            new_user = {
+                'user_id': user_id,
+                'email': idinfo.get('email'),
+                'name': idinfo.get('name'),
+                'picture': idinfo.get('picture'),
+                'refresh_token': refresh_token
+            }
+            users.append(new_user)
+            with open('dummyDb.json', 'w') as db:
+                json.dump(users, db)
+
+        user = next((user for user in users if user.get('user_id') == user_id), None)
         return user
+
     except ValueError:
         return None
     
+def get_refresh_token(user_id):
+    users = []
+    with open('dummyDb.json', 'r') as db:
+        users = json.load(db)
+    
+    return next((user.get("refresh_token") for user in users if user.get('user_id') == user_id), None)
