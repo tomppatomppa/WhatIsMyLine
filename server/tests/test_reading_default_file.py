@@ -1,7 +1,7 @@
 from PyMuReaderV3 import ReaderV3
 from ReaderSettings import ReaderSettings
 import os
-import json
+
 scene = {'12102 INT. LOTUS RUM': [{'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'Lotus och en Beundrarmus sitter och fnissar i Lotus rum,', 'origin': (96.15774536132812, 181.76541137695312), 'bbox': (96.15774536132812, 171.93505859375, 492.9061584472656, 185.31126403808594)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'de spionerar på Tika. (kannellinen lasipurkki jossa', 'origin': (96.15774536132812, 193.5733642578125), 'bbox': (96.15774536132812, 
 183.74301147460938, 457.48236083984375, 197.1192169189453)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'lappuja, lapuissa on eläinkuvia, lasipurkin päällä lappu', 'origin': (96.15774536132812, 205.38131713867188), 'bbox': (96.15774536132812, 195.55096435546875, 492.9061584472656, 208.9271697998047)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'jossa teksti “djur-pantomim”, tyhjiä / epäonnistuneita', 'origin': (96.15774536132812, 217.1892852783203), 'bbox': (96.15774536132812, 207.3589324951172, 478.73663330078125, 220.73513793945312)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'kuvia lattialla, sakset, paperia, Beundrarmus =', 'origin': (96.15774536132812, 228.9972381591797), 'bbox': (96.15774536132812, 219.16688537597656, 429.1433410644531, 232.5430908203125)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'tavallinen oranssi hiiri).', 'origin': (96.15774536132812, 240.80519104003906), 'bbox': (96.15774536132812, 230.97483825683594, 280.36309814453125, 244.35104370117188)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'LOTUS', 'origin': (252.01351928710938, 267.3730773925781), 'bbox': (252.01351928710938, 257.542724609375, 287.4385681152344, 270.9189147949219)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'De va den sista bilden! Kasta burken', 'origin': (202.42933654785156, 286.5610046386719), 'bbox': (202.42933654785156, 276.73065185546875, 457.4823303222656, 290.1068420410156)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'till Tika!', 'origin': (202.42933654785156, 298.36895751953125), 'bbox': (202.42933654785156, 288.5386047363281, 273.27825927734375, 301.914794921875)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'De kastar ner en burk i ett rör.', 'origin': (96.15774536132812, 317.556884765625), 'bbox': (96.15774536132812, 307.7265319824219, 322.87176513671875, 321.10272216796875)}, {'size': 11.807954788208008, 'flags': 28, 'font': 'CourierNewPS-BoldMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': '12104', 'origin': (51.87791061401367, 354.4567565917969), 'bbox': (51.87791061401367, 344.62640380859375, 84.35554504394531, 358.0025939941406)}]}
 
@@ -13,6 +13,9 @@ testfile_scenes = ["SCRIPT DETAILS","12102 INT. LOTUS RUM", "12104 INT. LOTUS RU
 testfile = "testfile.pdf"
 folder_path = os.path.abspath("uploaded_files")
 
+'''
+helper functions
+'''
 def reader_to_json():
     reader = ReaderV3()
     reader.read_file(testfile)
@@ -24,7 +27,9 @@ def reader_to_json_with_settings():
     reader.read_file(testfile)
     return reader.to_json()
        
-
+'''
+Tests
+'''
 def test_uploaded_files_folder_exists() -> None:
     folder_exists = os.path.exists(folder_path)
     assert folder_exists

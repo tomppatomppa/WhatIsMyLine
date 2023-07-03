@@ -1,12 +1,22 @@
-from flask import Flask, request, render_template, send_file, send_from_directory
+from flask import Flask, request, render_template, send_file, send_from_directory, session
 from PyMuReaderV3 import ReaderV3
 from flask_cors import CORS
 from config import allowed_file, create_upload_folder,process_uploaded_file_v3
 from TextToSpeech import text_to_mp3, create_data
 import json
+import os
 import requests
+from utils import create_timestamp, get_user
+
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 app = Flask(__name__, static_folder="build/static", template_folder="build")
+app.secret_key = SECRET_KEY
+
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
 CORS(app)
 
 create_upload_folder(app)
@@ -19,6 +29,29 @@ def index():
 def catch_all(path):
     return render_template('index.html')
 
+
+@app.route("/login", methods=["POST"])
+def login():
+    code = request.json.get('code')
+    
+    response = requests.post('https://oauth2.googleapis.com/token', data={
+        'code': code,
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'redirect_uri': "postmessage",
+        'grant_type': 'authorization_code',
+        'scope': ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/drive.file"]
+    })
+
+    token_data = response.json()
+    if response.status_code == 200 and token_data:
+        #dummy db for saving user
+        get_user(token_data.get("id_token"))
+        expires_in = token_data.get("expires_in")
+        token_data["expiry"] = create_timestamp(expires_in)
+        return token_data
+    else:
+        return 'Failed to login', 401
 
 @app.route("/api/v3/upload", methods=['POST'])
 def upload_v3():
