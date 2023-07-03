@@ -81,3 +81,6 @@ def create_folder():
                           headers=headers, files=files)
     print(result.text)
     return result.text, 200
+
+if __name__ == '__main__':
+  app.run(debug=True)

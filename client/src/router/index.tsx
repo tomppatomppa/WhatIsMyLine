@@ -4,6 +4,7 @@ import LandingPage from './PublicLayout'
 import MainLayout from './MainLayout'
 import { ProtectedRoute } from './ProtectedRoute'
 import PublicLayout from './PublicLayout'
+import LoginView from 'src/views/LoginView'
 
 export const router = createBrowserRouter([
   {
@@ -21,4 +22,5 @@ export const router = createBrowserRouter([
     ],
   },
   { path: '/landing', element: <PublicLayout /> },
+  { path: '/login', element: <LoginView /> },
 ])
