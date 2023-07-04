@@ -7,12 +7,13 @@ import os
 import requests
 from utils import create_timestamp, get_user, get_refresh_token, remove_dir
 import GoogleDrive
+from project import create_app
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-app = Flask(__name__, static_folder="build/static", template_folder="build")
+app = create_app()
 app.secret_key = SECRET_KEY
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
@@ -20,15 +21,6 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 CORS(app)
 
 create_upload_folder(app)
-
-@app.route("/")
-def index():
-    return render_template('index.html')
-
-@app.route('/<path:path>')
-def catch_all(path):
-    return render_template('index.html')
-
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -92,8 +84,6 @@ def upload_v3():
         return result
 
     return 'Invalid filetype', 403
-
-
 
 
 @app.route("/api/v3/scene-to-speech", methods=["POST"])

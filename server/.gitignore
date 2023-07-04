@@ -3,4 +3,5 @@ venv
 dummyDb.txt
 dummyDb.json
 key.json
+/project/build
 .pytest_cache
