@@ -4,7 +4,6 @@ import requests
 import json
 
 base_url = "https://www.googleapis.com/drive/v3/files"
-SCOPES = ["https://www.googleapis.com/auth/drive"]
 
 def search_folder(request):
     """Search root folder in drive location

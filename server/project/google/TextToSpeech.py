@@ -31,9 +31,9 @@ def text_to_mp3(folder_id, scene_id, line_id, text):
 
 '''
 Root folder === script["id"]
-Scene folder(s) === scene["id"]
+sub folder(s) === scene["id"]
 
-Should create the following folder strucure
+Creates the following folder strucure
     Root -
         sub_folder-
         sub_folder-
@@ -50,11 +50,16 @@ def create_folders(data):
     except OSError as error:
         print("Directory '%s' can not be created")
   
+'''
+Populates folders with audio files received from google text-to-speech api
+
+'''
 def create_audio(data):
     for scene in data["scenes"]:
         for line in scene["data"]:
             text_to_mp3(data["id"], scene["id"], line["id"], line["lines"])
-           
+
+
 def create_data(data):
     create_folders(data)
     create_audio(data)
