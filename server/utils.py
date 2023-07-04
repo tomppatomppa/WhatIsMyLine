@@ -4,6 +4,7 @@ from google.auth.transport import requests
 import os
 import json
 import shutil
+
 CLIENT_ID = os.getenv("CLIENT_ID")
 
 def create_timestamp(expires_in = 0):
@@ -19,7 +20,9 @@ def get_user(token, refresh_token):
         users = json.load(db)
     
     try:
+        
         idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+        
         user_id = idinfo['sub']
        
         if any(user.get('user_id') == user_id for user in users):
@@ -37,6 +40,7 @@ def get_user(token, refresh_token):
                 json.dump(users, db)
 
         user = next((user for user in users if user.get('user_id') == user_id), None)
+        
         return user
 
     except ValueError:
@@ -57,3 +61,9 @@ def remove_dir(directory_path):
     except OSError as e:
         return f'Error deleting directory: {e}'
     
+def verify_google_id_token(token):
+    try:
+       user = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+       return user
+    except Exception as error:
+        return error
