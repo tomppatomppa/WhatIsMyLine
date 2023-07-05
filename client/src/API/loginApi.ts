@@ -26,16 +26,17 @@ export const logout = async () => {
 }
 
 export async function makeRequestWithJWT() {
-  const options = {
-    method: 'post',
-    credentials: 'same-origin',
-    headers: {
-      'X-CSRF-TOKEN': getCookie('csrf_access_token'),
-    },
-  }
-  const response = await fetch('/user', options as any)
-  const result = await response.json()
-  return result
+  const { data } = await axios.post(
+    `${BASE_URI}/user`,
+    {},
+    {
+      withCredentials: true,
+      headers: {
+        'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+      },
+    }
+  )
+  return data
 }
 
 export function getCookie(name: string) {

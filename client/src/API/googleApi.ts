@@ -126,22 +126,28 @@ export const getGoogleDriveFilesByIds = async ({
 interface CreateTextToSpeechSceneProps {
   scriptId: string
   scene: Scene
-  access_token: string
   rootFolderId: string
 }
 
 export const createTextToSpeechFromScene = async ({
   scriptId,
   scene,
-  access_token,
   rootFolderId,
 }: CreateTextToSpeechSceneProps) => {
-  const { data } = await axios.post(`${BASE_URI}/api/v3/scene-to-speech`, {
-    id: scriptId,
-    scenes: [scene],
-    access_token,
-    rootFolderId,
-  })
+  const { data } = await axios.post(
+    `${BASE_URI}/api/v3/scene-to-speech`,
+    {
+      id: scriptId,
+      scenes: [scene],
+      rootFolderId,
+    },
+    {
+      withCredentials: true,
+      headers: {
+        'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+      },
+    }
+  )
 
   return data
 }

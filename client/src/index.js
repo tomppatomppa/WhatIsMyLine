@@ -11,7 +11,7 @@ const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error) => {
       const { msg } = error.response.data
-      if (error.response?.status === 401 && msg === 'Token has expired') {
+      if (error.response?.status === 401 && msg) {
         localStorage.removeItem('user')
         removeCookie('csrf_access_token')
         removeCookie('access_token_cookie')

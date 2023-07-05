@@ -5,13 +5,13 @@ import json
 
 base_url = "https://www.googleapis.com/drive/v3/files"
 
-def search_folder(request):
+def search_folder(access_token):
     """Search root folder in drive location
 
     :param access_token: Access token for authentication
     """
     headers = {
-        'Authorization': f'Bearer {request.json.get("access_token")}',
+        'Authorization': f'Bearer {access_token}',
         'Accept': 'application/json'
     }
     try:
@@ -42,9 +42,9 @@ def search_folder(request):
         return files[0]
     return files
      
-def create_root_folder(request):
+def create_root_folder(access_token):
     headers = {
-        'Authorization': f'Bearer {request.json.get("access_token")}',
+        'Authorization': f'Bearer {access_token}',
         'Content-Type': 'application/json'
     }
     data = {

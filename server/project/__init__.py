@@ -20,12 +20,12 @@ def create_app():
     app = Flask(__name__, static_folder="build/static", template_folder="build")
 
     jwt = JWTManager(app)
+    
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config.from_object(config_type)
     app.config["JWT_COOKIE_SECURE"] = False
-
-    app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies", "json", "query_string"]
-    CORS(app, supports_credentials=True)
+    app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+    # CORS(app, supports_credentials=True)
     
     initialize_extensions(app)
     create_upload_folder(app)
@@ -47,15 +47,7 @@ def create_app():
 def initialize_extensions(app):
    
     db.init_app(app)
-    #csrf_protection.init_app(app)
-    #login.init_app(app)
-    
-    # Flask-Login configuration
-    from project.models import User
 
-    # @login.user_loader
-    # def load_user(id):
-    #     return User.query.filter(User.user_id == int(id)).first()
 
 
 def create_upload_folder(app):
@@ -90,7 +82,7 @@ def register_blueprints(app):
     from .users import users_blueprint
     from .google import google_blueprint
     from .upload import upload_blueprint
-
+    
     app.register_blueprint(users_blueprint)
     app.register_blueprint(google_blueprint)
     app.register_blueprint(upload_blueprint)

@@ -7,7 +7,7 @@ from flask_login import  current_user, login_required, login_user, logout_user
 from utils import create_timestamp, verify_google_id_token, get_refresh_token
 from project.models import User
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
-
+from functools import wraps
 
 from project import db
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -66,28 +66,28 @@ def login():
 
 
 
-@users_blueprint.route("/refresh_token",  methods=["POST"])
-@jwt_required()
-def refresh_token():
-    user_id = get_jwt_identity()
-    refresh_token = get_user(user_id).refresh_token
+# @users_blueprint.route("/refresh_token",  methods=["POST"])
+# @jwt_required()
+# def refresh_token():
+#     user_id = get_jwt_identity()
+#     refresh_token = get_user(user_id).refresh_token
 
-    payload = {
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET,
-        'refresh_token': refresh_token,
-        'grant_type': 'refresh_token'
-    }
-    try:
-        response = requests.post('https://oauth2.googleapis.com/token', data=payload)
-        response.raise_for_status()
-        token_data = response.json()
-        new_access_token = token_data.get('access_token')
+#     payload = {
+#         'client_id': CLIENT_ID,
+#         'client_secret': CLIENT_SECRET,
+#         'refresh_token': refresh_token,
+#         'grant_type': 'refresh_token'
+#     }
+#     try:
+#         response = requests.post('https://oauth2.googleapis.com/token', data=payload)
+#         response.raise_for_status()
+#         token_data = response.json()
+#         new_access_token = token_data.get('access_token')
 
-        return new_access_token, 200
-    except requests.exceptions.RequestException as e:
-        error_message = str(e)
-        return {'error': error_message}, 400
+#         return new_access_token, 200
+#     except requests.exceptions.RequestException as e:
+#         error_message = str(e)
+#         return {'error': error_message}, 400
     
 
 @users_blueprint.route("/logout", methods=["POST"])
@@ -100,11 +100,48 @@ def logout_with_cookies():
 @jwt_required()
 def users():
     user_id = get_jwt_identity()
-    user = get_user(user_id)
+    user = User.get_user_by_user_id(user_id)
     if user:
         return jsonify(user.email)
     return jsonify("Invalid request")
 
 
-def get_user(user_id):
-    return User.query.filter_by(user_id=user_id).first()
+
+def refresh_access_token(token):
+    payload = {
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'refresh_token': token,
+        'grant_type': 'refresh_token'
+    }
+    try:
+        response = requests.post('https://oauth2.googleapis.com/token', data=payload)
+        response.raise_for_status()
+        token_data = response.json()
+        
+        return token_data
+    except requests.exceptions.RequestException as e:
+        error_message = str(e)
+        return {'error': error_message}, 400
+    
+
+def check_refresh_token(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        user_id = get_jwt_identity()
+        #Dummy implementation, compare expiry to current date
+        if 1 > 2 :
+            return func(*args, **kwargs)
+        else:
+            try:
+                # Token has expired, refresh the token
+                refresh_token = User.get_refresh_token_by_user_id(user_id)
+                access_token = refresh_access_token(refresh_token)
+                expiry = create_timestamp(access_token.get("expires_in"))
+                user= User.update_access_token_and_expiry(user_id, access_token.get("access_token"), expiry)
+                print(user)
+            except:
+                return jsonify({"msg": "Unable to refresh token"}), 401
+        return func(*args, **kwargs)
+        
+    return wrapper

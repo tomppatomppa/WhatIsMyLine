@@ -11,7 +11,6 @@ import { AiOutlineSync } from 'react-icons/ai'
 import { filterAudioFiles } from '../../utils'
 import { FaStop } from 'react-icons/fa'
 import Modal from 'src/components/Modal'
-import { useAccessToken } from 'src/store/userStore'
 import { RootFolder, useRootFolder } from 'src/store/scriptStore'
 import Spinner from 'src/components/common/Spinner'
 import Message from 'src/components/common/Message'
@@ -39,7 +38,6 @@ const SceneRehearsalPanel = () => {
     }
   )
 
-  const access_token = useAccessToken() as string
   const rootFolder = useRootFolder() as RootFolder
   const { transcript, listening, resetTranscript } = useSpeechRecognition({})
   const filteredAudio = filterAudioFiles(values, audioFiles, options)
@@ -57,7 +55,6 @@ const SceneRehearsalPanel = () => {
           mutate({
             scriptId,
             scene: values,
-            access_token,
             rootFolderId: rootFolder.id,
           })
         }
