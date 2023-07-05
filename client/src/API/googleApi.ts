@@ -2,6 +2,7 @@ import axios, { ResponseType } from 'axios'
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 import { Scene } from 'src/components/ReaderV3/reader.types'
 import { BASE_URI } from 'src/config'
+import { getCookie } from './loginApi'
 
 interface getGoogleDriveFileByIdProps {
   docs: CallbackDoc
@@ -146,8 +147,17 @@ export const createTextToSpeechFromScene = async ({
 }
 
 export const syncGoogleDrive = async (access_token: string) => {
-  const { data } = await axios.post(`${BASE_URI}/create_root_folder`, {
-    access_token,
-  })
+  const { data } = await axios.post(
+    `${BASE_URI}/create_root_folder`,
+    {
+      access_token,
+    },
+    {
+      withCredentials: true,
+      headers: {
+        'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+      },
+    }
+  )
   return data
 }

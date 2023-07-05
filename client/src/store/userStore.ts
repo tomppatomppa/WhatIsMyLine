@@ -1,3 +1,4 @@
+import { logout } from 'src/API/loginApi'
 import { StateCreator, create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
@@ -20,7 +21,11 @@ interface UserStore {
 const settingsStore: StateCreator<UserStore> = (set: any) => ({
   user: null,
   login: (user: User) => set(() => ({ user })),
-  logout: () => set(() => ({ user: null })),
+  // logout: () => set(() => ({ user: null })),
+  logout: async () => {
+    await logout()
+    set(() => ({ user: null }))
+  },
   setAccessToken: (access_token: string) =>
     set((state: UserStore) => ({ user: { ...state.user, access_token } })),
 })

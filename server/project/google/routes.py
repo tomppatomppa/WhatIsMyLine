@@ -6,7 +6,13 @@ import jsonify
 import os
 from project.google.TextToSpeech import  create_data
 from utils import remove_dir
+from flask_jwt_extended import jwt_required
 
+
+@google_blueprint.before_request
+@jwt_required()
+def require_jwt():
+    pass
 
 @google_blueprint.route("/create_root_folder",  methods=["POST"])
 def create_root_folder():

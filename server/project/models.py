@@ -1,50 +1,47 @@
 from datetime import datetime
-
-from flask_login import UserMixin, LoginManager
-from sqlalchemy import DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import mapped_column, relationship
+from sqlalchemy import DateTime, Integer, String
+from sqlalchemy.orm import mapped_column
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
-
 from project import db
 
 
-class User(UserMixin, db.Model):
+class User(db.Model):
     """
     Class that represents a user of the application
     The following attributes of a user are stored in this table:
         * user_id = id provided by the social login provider e.g Google
+        * picture = profile picture from social login
+        * provider = social login provider
         * email - email address of the user
-        * hashed password - hashed password (using werkzeug.security)
         * registered_on - date & time that the user registered
+        * refresh_token = refresh token from google
+        * access_token = access token to call google api
+        * expiry = expiry date for access_token
     REMEMBER: Never store the plaintext password in a database!
     """
     __tablename__ = 'users'
     id = mapped_column(Integer(), primary_key=True, autoincrement=True)
     user_id = mapped_column(String(), unique=True, nullable=False)
+    picture = mapped_column(String(), unique=True, nullable=True, default="")
     provider = mapped_column(String(), nullable=False)
     email = mapped_column(String(), unique=True, nullable=False)
-    password_hashed = mapped_column(String(128), nullable=False)
     registered_on = mapped_column(DateTime(), nullable=False)
+    refresh_token = mapped_column(String(), nullable=False)
+    access_token = mapped_column(String(), nullable=True)
+    expiry = mapped_column(String(), nullable=True)
     
-    def __init__(self, user_id: str, email: str, password_plaintext: str, provider: str):
+    def __init__(self, user_id: str, picture:str, email: str, provider: str, refresh_token: str, access_token: str, expiry: str):
         """Create a new User object using the email address and hashing the
         plaintext password using Werkzeug.Security.
         """
         self.user_id = user_id
+        self.picture = picture
         self.email = email
-        self.password_hashed = self._generate_password_hash(password_plaintext)
         self.provider = provider
         self.registered_on = datetime.now()
+        self.refresh_token = refresh_token
+        self.access_token = access_token
+        self.expiry = expiry
 
-    def is_password_correct(self, password_plaintext: str):
-        return check_password_hash(self.password_hashed, password_plaintext)
-    def set_password(self, password_plaintext: str):
-        self.password_hashed = self._generate_password_hash(password_plaintext)
-        
-    @staticmethod
-    def _generate_password_hash(password_plaintext):
-        return generate_password_hash(password_plaintext)
-    
     def __repr__(self):
         return f'<User: {self.email}>'
