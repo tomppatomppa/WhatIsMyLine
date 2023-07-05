@@ -1,17 +1,61 @@
-import pathlib
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template, url_for,make_response,request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from requests import Response
+
+import sqlalchemy as sa
+from click import echo
+from flask import Flask
+from flask.logging import default_handler
+from flask_login import LoginManager, login_required
+from flask_sqlalchemy import SQLAlchemy
+
 
 import os
+
+db = SQLAlchemy()
+
+login = LoginManager()
+login.login_view = "users.login"
+
 def create_app():
     app = Flask(__name__, static_folder="build/static", template_folder="build")
-
+    
+    config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
+    app.config.from_object(config_type)
+    
     CORS(app)
+    
+    initialize_extensions(app)
     create_upload_folder(app)
     register_blueprints(app)
     
+    engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+    inspector = sa.inspect(engine)
+    if not inspector.has_table("users"):
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+            app.logger.info('Initialized the database!')
+    else:
+        app.logger.info('Database already contains the users table.')
+    
     return app
+   
+
+def initialize_extensions(app):
+   
+    db.init_app(app)
+    
+    login.init_app(app)
+
+    # Flask-Login configuration
+    from project.models import User
+
+    @login.user_loader
+    def load_user(id):
+        return User.query.filter(User.user_id == int(id)).first()
+
 
 def create_upload_folder(app):
     try:
@@ -35,7 +79,7 @@ def register_blueprints(app):
     @app.route('/<path:path>')
     def catch_all(path):
         return render_template('index.html')
-    
+
     from .users import users_blueprint
     from .google import google_blueprint
     from .upload import upload_blueprint
@@ -43,3 +87,5 @@ def register_blueprints(app):
     app.register_blueprint(users_blueprint)
     app.register_blueprint(google_blueprint)
     app.register_blueprint(upload_blueprint)
+
+    
