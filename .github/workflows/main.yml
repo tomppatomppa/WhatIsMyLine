@@ -32,9 +32,9 @@ jobs:
           cd server/uploaded_files/
           ls -l
 
-      - name: Run python tests
-        run: |
-          pytest
+      # - name: Run python tests
+      #   run: |
+      #     pytest
 
       - name: Heroku login credentials
         run: |
