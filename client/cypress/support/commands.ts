@@ -1,4 +1,5 @@
 import '@testing-library/cypress/add-commands'
+import { script } from './script'
 /// <reference types="cypress" />
 // ***********************************************
 // This example commands.ts shows you how to
@@ -37,6 +38,16 @@ import '@testing-library/cypress/add-commands'
 //   }
 // }
 
+Cypress.Commands.add('loginWithGoogle', () => {
+  const email = Cypress.env('google_email') // Replace with your Google account email
+  const password = Cypress.env('google_password') // Replace with your Google account password
+
+  cy.visit('https://accounts.google.com/')
+  cy.get('input[type="email"]').type(email).should('have.value', email)
+  cy.get('#identifierNext').click()
+  cy.get('input[type="password"]').type(password).should('have.value', password)
+  cy.get('#passwordNext').click()
+})
 // cypress/support/commands.js
 Cypress.Commands.add('loginByGoogleApi', () => {
   cy.log('Logging in to Google')

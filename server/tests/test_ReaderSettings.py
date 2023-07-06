@@ -1,5 +1,5 @@
 
-from ReaderSettings import ReaderSettings, Line
+from ReaderSettings import ReaderSettings
 
 import pytest
 

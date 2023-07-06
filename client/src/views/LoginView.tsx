@@ -2,13 +2,15 @@ import { useGoogleLogin } from '@react-oauth/google'
 import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { googleLogin } from 'src/API/loginApi'
+import { useSetScripts } from 'src/store/scriptStore'
 import { useLogin } from 'src/store/userStore'
+import { testcript } from 'src/utils/visitor'
 const logo = require('../assets/images/whats-my-line-logo.png')
 
 const LoginView = () => {
   const navigate = useNavigate()
   const loginToApp = useLogin()
-
+  const set = useSetScripts()
   const { mutate } = useMutation(googleLogin, {
     onSuccess: (user) => {
       loginToApp(user)
@@ -68,6 +70,23 @@ const LoginView = () => {
             </defs>
           </svg>
           Continue with Google
+        </button>
+        <button
+          onClick={() => {
+            loginToApp({
+              name: 'visitor',
+              email: 'visitor@testmail.com',
+              picture: '',
+              access_token: '',
+              expiry: '',
+              user_id: '',
+            })
+
+            navigate('/')
+          }}
+          className="w-full flex items-center justify-center gap-x-3 py-2.5 mt-5 border rounded-lg text-sm font-medium hover:bg-gray-50 duration-150 active:bg-gray-100"
+        >
+          Visitor
         </button>
       </div>
     </main>

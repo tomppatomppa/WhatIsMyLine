@@ -38,13 +38,12 @@ def login():
             user = user_for_client(user_info)
             response = jsonify(user)
             set_access_cookies(response, jwt_token) 
-            
+
             return response
       
         return response.json(), response.status_code
  
-    except Exception as error:
-        print(error)
+    except:
         return "Failed to login", 401
 
 
@@ -133,7 +132,6 @@ def refresh_access_token(token):
         error_message = str(e)
         return {'error': error_message}, 400
     
-
 def check_refresh_token(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
