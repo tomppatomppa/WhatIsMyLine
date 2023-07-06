@@ -32,6 +32,7 @@ jobs:
           cd server/uploaded_files/
           ls -l
           cd ..
+          cd project
           ls -l
 
       # - name: Run python tests
