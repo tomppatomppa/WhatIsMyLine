@@ -12,7 +12,7 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
 def create_app():
-    app = Flask(__name__, static_folder=os.path.join(BASEDIR, "build/static"), template_folder=os.path.join(BASEDIR, "build"))
+    app = Flask(__name__)
 
     jwt = JWTManager(app)
     
@@ -40,10 +40,7 @@ def create_app():
    
 
 def initialize_extensions(app):
-   
     db.init_app(app)
-
-
 
 def create_upload_folder(app):
     try:
@@ -63,9 +60,9 @@ def register_blueprints(app):
     @app.route('/')
     def index(): 
         return render_template('index.html')
+    
     @app.route('/<path:path>')
-    def catch_all(path):
-        print(BASEDIR)
+    def catch_all(path):   
         return render_template('index.html')
     
     from .users import users_blueprint
