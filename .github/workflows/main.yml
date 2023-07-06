@@ -15,12 +15,12 @@ jobs:
         run: |
           cd client
           npm install
-          npm run build
+          npm run build-dev
 
       - name: Copy React build to Flask server folder
         run: |
-          mkdir server/build
-          cp -r client/build/* server/build/
+          mkdir server/project/build
+          cp -r client/build/* server/project/build/
 
       - name: Install Python dependencies
         run: |
