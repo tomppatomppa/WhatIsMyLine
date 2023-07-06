@@ -31,6 +31,8 @@ jobs:
         run: |
           cd server/uploaded_files/
           ls -l
+          cd ..
+          ls -l
 
       # - name: Run python tests
       #   run: |
