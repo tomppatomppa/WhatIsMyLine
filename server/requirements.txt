@@ -5,6 +5,7 @@ Werkzeug==2.3.6
 pathlib==1.0.1
 pytest==7.2.2
 google-cloud-texttospeech==2.14.1
+google-api-python-client==2.92.0
 python-dotenv==1.0.0
 Flask-SQLAlchemy==3.0.5
 SQLAlchemy==2.0.18
