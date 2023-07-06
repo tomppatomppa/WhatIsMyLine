@@ -15,7 +15,9 @@ jobs:
         run: |
           cd client
           npm install --legacy-peer-deps
-          npm run build-client
+          REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID npm run build-client
+        env:
+          REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
 
       # - name: Copy React build to Flask server folder
       #   run: |
@@ -26,7 +28,9 @@ jobs:
         run: |
           cd server
           pip install -r requirements.txt
-
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
       - name: List Directory Content
         run: |
           cd server/uploaded_files/
