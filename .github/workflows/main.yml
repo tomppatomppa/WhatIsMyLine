@@ -15,7 +15,7 @@ jobs:
         run: |
           cd client
           npm install --legacy-peer-deps
-          npm run build-dev
+          npm run build
 
       - name: Copy React build to Flask server folder
         run: |
