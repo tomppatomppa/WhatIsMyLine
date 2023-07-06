@@ -1,20 +1,12 @@
-from flask import Flask, render_template, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template
 from flask_cors import CORS
 import sqlalchemy as sa
-from flask import Flask
-from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import CSRFProtect, csrf
 from flask_jwt_extended import JWTManager
+
 import os
 
 db = SQLAlchemy()
-
-login = LoginManager()
-login.login_view = "users.login"
-csrf_protection = CSRFProtect()
-
 
 def create_app():
     app = Flask(__name__, static_folder="build/static", template_folder="build")
@@ -72,12 +64,6 @@ def register_blueprints(app):
     @app.route('/<path:path>')
     def catch_all(path):
         return render_template('index.html')
-    
-    @app.route("/csrf")
-    def get_csrf():
-        response = jsonify(detail="success")
-        response.headers.set("X-CSRFToken", csrf.generate_csrf())
-        return response
     
     from .users import users_blueprint
     from .google import google_blueprint
