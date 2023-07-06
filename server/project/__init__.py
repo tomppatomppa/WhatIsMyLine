@@ -12,7 +12,7 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
 def create_app():
-    app = Flask(__name__, static_folder="build/static", template_folder="build")
+    app = Flask(__name__, static_folder=os.path.join(BASEDIR, "build/static"), template_folder=os.path.join(BASEDIR, "build"))
 
     jwt = JWTManager(app)
     
