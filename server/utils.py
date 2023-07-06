@@ -7,7 +7,6 @@ import os
 import json
 import shutil
 from google.auth.exceptions import GoogleAuthError, InvalidValue
-from jwt import InvalidTokenError
 import re
 
 CLIENT_ID = os.getenv("CLIENT_ID")

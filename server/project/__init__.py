@@ -1,12 +1,12 @@
-from flask import Flask, redirect, render_template, url_for,make_response,request, jsonify
+from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import sqlalchemy as sa
 from flask import Flask
-from flask_login import LoginManager, login_required
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect, csrf
-from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager
 import os
 
 db = SQLAlchemy()

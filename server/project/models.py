@@ -47,6 +47,7 @@ class User(db.Model):
     @classmethod
     def get_user_by_user_id(cls, user_id):
         return cls.query.filter_by(user_id=user_id).first()
+    
     @classmethod
     def get_access_token_by_user_id(cls, user_id):
         user = cls.query.filter_by(user_id=user_id).first()
