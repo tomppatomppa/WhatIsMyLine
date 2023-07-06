@@ -39,6 +39,7 @@
     "build": "set \"REACT_APP_ENVIROMENT=production\" && react-scripts build",
     "build-dev": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts build && xcopy /s /y /i build ..\\server\\project\\build && rd /s /q build",
     "test": "react-scripts test",
+    "build-client": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts build && xcopy /s /y /i build\\static ..\\server\\project\\static && mkdir ..\\server\\project\\templates && copy /y build\\index.html ..\\server\\project\\templates && rd /s /q build",
     "cy:open-e2e": "cypress open --e2e --browser chrome",
     "eject": "react-scripts eject"
   },

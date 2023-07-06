@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.265ecd8b.css",
+    "main.js": "/static/js/main.ef8fc108.js",
+    "static/media/whats-my-line-logo.png": "/static/media/whats-my-line-logo.9f13911b88e319470b71.png",
+    "static/media/blob-scene-haikei.png": "/static/media/blob-scene-haikei.ef602e3125a671d08d75.png",
+    "index.html": "/index.html",
+    "main.265ecd8b.css.map": "/static/css/main.265ecd8b.css.map",
+    "main.ef8fc108.js.map": "/static/js/main.ef8fc108.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.265ecd8b.css",
+    "static/js/main.ef8fc108.js"
+  ]
+}
