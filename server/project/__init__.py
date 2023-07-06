@@ -8,8 +8,11 @@ import os
 
 db = SQLAlchemy()
 
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+
+
 def create_app():
-    app = Flask(__name__, static_folder="../build/static", template_folder="../build")
+    app = Flask(__name__, static_folder="build/static", template_folder="build")
 
     jwt = JWTManager(app)
     
@@ -58,11 +61,11 @@ def create_upload_folder(app):
 
 def register_blueprints(app):
     @app.route('/')
-    def index():
+    def index(): 
         return render_template('index.html')
-
     @app.route('/<path:path>')
     def catch_all(path):
+        print(BASEDIR)
         return render_template('index.html')
     
     from .users import users_blueprint
