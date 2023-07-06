@@ -13,10 +13,10 @@ const queryClient = new QueryClient({
       const { msg } = error.response.data
       console.log(msg)
       if (error.response?.status === 401 && msg) {
-        // localStorage.removeItem('user')
-        // removeCookie('csrf_access_token')
-        // removeCookie('access_token_cookie')
-        // window.location.href = '/login'
+        localStorage.removeItem('user')
+        removeCookie('csrf_access_token')
+        removeCookie('access_token_cookie')
+        window.location.href = '/login'
       }
     },
   }),
