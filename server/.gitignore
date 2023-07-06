@@ -5,5 +5,6 @@ server/.env
 dummyDb.txt
 dummyDb.json
 key.json
+/build
 /project/build
 .pytest_cache

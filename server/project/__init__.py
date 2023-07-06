@@ -9,7 +9,7 @@ import os
 db = SQLAlchemy()
 
 def create_app():
-    app = Flask(__name__, static_folder="build/static", template_folder="build")
+    app = Flask(__name__, static_folder="../build/static", template_folder="../build")
 
     jwt = JWTManager(app)
     
