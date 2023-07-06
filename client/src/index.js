@@ -11,7 +11,7 @@ const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error) => {
       const { msg } = error.response.data
-      console.log(msg)
+
       if (error.response?.status === 401 && msg) {
         localStorage.removeItem('user')
         removeCookie('csrf_access_token')
