@@ -25,7 +25,7 @@ def create_app():
     app.config.from_object(config_type)
     app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-    # CORS(app, supports_credentials=True)
+    CORS(app, supports_credentials=True)
     
     initialize_extensions(app)
     create_upload_folder(app)

@@ -1,4 +1,5 @@
 
+from http.client import HTTPException
 import requests
 from . import users_blueprint
 from flask import redirect, request, url_for, jsonify
@@ -30,8 +31,9 @@ def login():
         })
         
         token_data = response.json()
-
+        
         if response.status_code == 200 and token_data:
+            #TODO: FIX Token used too early error
             user = verify_google_id_token(token_data.get("id_token"))
             user_id = user.get("sub")
             refresh_token = token_data.get("refresh_token")
@@ -48,7 +50,7 @@ def login():
                                    refresh_token,
                                    access_token,
                                    expiry)
-                
+               
             db.session.add(user_exists)
             db.session.commit()
             user["access_token"] = access_token
@@ -61,38 +63,17 @@ def login():
             return response
         
         return response.json(), response.status_code
-    except:
+    except Exception as error:
+        print(error)
         return 'Failed to login', 401
 
 
 
-# @users_blueprint.route("/refresh_token",  methods=["POST"])
-# @jwt_required()
-# def refresh_token():
-#     user_id = get_jwt_identity()
-#     refresh_token = get_user(user_id).refresh_token
 
-#     payload = {
-#         'client_id': CLIENT_ID,
-#         'client_secret': CLIENT_SECRET,
-#         'refresh_token': refresh_token,
-#         'grant_type': 'refresh_token'
-#     }
-#     try:
-#         response = requests.post('https://oauth2.googleapis.com/token', data=payload)
-#         response.raise_for_status()
-#         token_data = response.json()
-#         new_access_token = token_data.get('access_token')
-
-#         return new_access_token, 200
-#     except requests.exceptions.RequestException as e:
-#         error_message = str(e)
-#         return {'error': error_message}, 400
-    
 
 @users_blueprint.route("/logout", methods=["POST"])
 def logout_with_cookies():
-    response = jsonify("logout successful")
+    response = jsonify("Logout successful")
     unset_jwt_cookies(response)
     return response
 
