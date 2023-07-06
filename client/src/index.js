@@ -5,7 +5,7 @@ import App from './App'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { MutationCache, QueryClient, QueryClientProvider } from 'react-query'
 
-import { removeCookie } from './utils/tokenIsExpired'
+import { removeCookie } from './utils/helpers'
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({

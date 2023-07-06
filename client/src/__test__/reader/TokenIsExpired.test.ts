@@ -1,4 +1,4 @@
-import { tokenIsExpired } from 'src/utils/tokenIsExpired'
+import { tokenIsExpired } from 'src/utils/helpers'
 
 describe('tokenIsExpires', () => {
   test('Should return true when date is less than current date', () => {
