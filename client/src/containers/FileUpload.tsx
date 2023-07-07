@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { uploadfile } from 'src/API/uploadApi'
 import { useAddScript } from 'src/store/scriptStore'
 import { useMutation } from 'react-query'
-import GooglePicker from 'src/components/fileUpload/GooglePicker'
-import UploadButton from 'src/components/fileUpload/UploadButton'
-import LocalFilePicker from 'src/components/fileUpload/LocalFilePicker'
+import GooglePicker from 'src/components/FileUpload/GooglePicker'
+import UploadButton from 'src/components/FileUpload/UploadButton'
+import LocalFilePicker from 'src/components/FileUpload/LocalFilePicker'
 import { useAccessToken } from 'src/store/userStore'
 
 const FileUpload = () => {
