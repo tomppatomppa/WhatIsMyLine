@@ -5,6 +5,7 @@ server/.env
 instance
 dummyDb.txt
 dummyDb.json
+google-credentials.json
 key.json
 /static
 /templates
