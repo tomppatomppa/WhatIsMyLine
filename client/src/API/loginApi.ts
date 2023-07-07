@@ -12,8 +12,3 @@ export const logout = async () => {
   const { data } = await httpClient.post(`${BASE_URI}/logout`, null)
   return data
 }
-
-export async function makeRequestWithJWT() {
-  const { data } = await httpClient.post(`${BASE_URI}/user`, null)
-  return data
-}

@@ -2,8 +2,8 @@ import { createBrowserRouter } from 'react-router-dom'
 import ReaderPage from '../containers/ReaderPage'
 import MainLayout from './MainLayout'
 import { ProtectedRoute } from './ProtectedRoute'
-import PublicLayout from './PublicLayout'
 import LoginView from 'src/views/LoginView'
+import LandingView from '../views/LandingView'
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +20,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  { path: '/landing', element: <PublicLayout /> },
+  { path: '/landing', element: <LandingView /> },
   { path: '/login', element: <LoginView /> },
 ])

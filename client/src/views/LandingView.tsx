@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
-const PublicLayout = () => {
+const LandingView = () => {
   const navigate = useNavigate()
 
   return (
@@ -13,4 +13,4 @@ const PublicLayout = () => {
   )
 }
 
-export default PublicLayout
+export default LandingView

@@ -1,4 +1,3 @@
-import React from 'react'
 import { User } from 'src/store/userStore'
 
 interface AvatarProps {
