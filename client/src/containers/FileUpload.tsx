@@ -9,7 +9,7 @@ import LocalFilePicker from 'src/components/fileUpload/LocalFilePicker'
 import { useAccessToken } from 'src/store/userStore'
 
 const FileUpload = () => {
-  const access_token = useAccessToken()
+  const access_token = useAccessToken() as string
   const [file, setFile] = useState<File | null>(null)
   const addScript = useAddScript()
 
@@ -31,7 +31,7 @@ const FileUpload = () => {
               onFileSelect={async (file: File) => {
                 if (file) setFile(file)
               }}
-              access_token={access_token || ''}
+              access_token={access_token}
             />
             <LocalFilePicker
               className="hover:bg-gray-600 p-2 rounded-md"
