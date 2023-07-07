@@ -1,8 +1,17 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import { useEffect } from 'react'
 
-export const ConditionalField = ({ show, onCollapse, onShow, children }) => {
+interface ConditionalFieldProps {
+  show: boolean
+  onCollapse: () => void
+  onShow: () => void
+  children: React.ReactNode
+}
+export const ConditionalField = ({
+  show,
+  onCollapse,
+  onShow,
+  children,
+}: ConditionalFieldProps) => {
   useEffect(() => {
     if (show) {
       onShow()
