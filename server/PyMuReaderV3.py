@@ -1,7 +1,6 @@
 import fitz
 import re
 from ReaderSettings import ReaderSettings
-import json
 from uuid import uuid4
 MIN_PAGE_WIDTH=100.0
 
