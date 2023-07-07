@@ -22,7 +22,6 @@
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
-    "react-google-drive-picker": "^1.2.2",
     "react-icons": "^4.8.0",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.9.0",
@@ -35,11 +34,11 @@
     "zustand": "^4.3.8"
   },
   "scripts": {
-    "start": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts start --silent",
+    "start": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts start",
     "build": "set \"REACT_APP_ENVIROMENT=production\" && react-scripts build",
     "build:dev": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts build && xcopy /S /I build\\static ..\\server\\project\\static && mkdir ..\\server\\project\\templates && copy build\\index.html ..\\server\\project\\templates && rmdir /S /Q build",
     "test": "react-scripts test",
-    "build-client": "REACT_APP_ENVIROMENT=production react-scripts build && cp -r build/static ../server/project/static && mkdir -p ../server/project/templates && cp build/index.html ../server/project/templates && rm -rf build --silent",
+    "build-client": "REACT_APP_ENVIROMENT=production react-scripts build && cp -r build/static ../server/project/static && mkdir -p ../server/project/templates && cp build/index.html ../server/project/templates && rm -rf build",
     "cy:open-e2e": "cypress open --e2e --browser chrome",
     "eject": "react-scripts eject"
   },
