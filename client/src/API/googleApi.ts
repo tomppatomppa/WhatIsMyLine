@@ -9,7 +9,6 @@ interface getGoogleDriveFileByIdProps {
   access_token: string
   responseType?: ResponseType
 }
-
 export const getGoogleDriveFileById = async ({
   docs,
   access_token,
@@ -32,70 +31,98 @@ export const getGoogleDriveFileById = async ({
   return data
 }
 
-export type arrayBufferResponse = {
-  id: string
-  data: ArrayBuffer
+interface findFolderWithAudioProps {
+  access_token: string
+  folderId: string
 }
-
-export const downloadFiles = async (
-  access_token: string,
-  sceneId: string
-): Promise<arrayBufferResponse[]> => {
-  const response = await axios.get(
+const findFolderWithAudio = async ({
+  access_token,
+  folderId,
+}: findFolderWithAudioProps) => {
+  const { data } = await axios.get(
     'https://www.googleapis.com/drive/v3/files',
     {
       headers: {
         Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
       params: {
-        q: `mimeType='application/vnd.google-apps.folder' and fullText contains '${sceneId}' and trashed=false`,
+        q: `'${folderId}' in parents and mimeType='audio/mpeg' and trashed=false`,
+        fields: 'files(id, name)',
+      },
+    }
+  )
+  return data
+}
+
+interface findFolderInParentProps {
+  access_token: string
+  rootId: string
+  scriptId: string
+}
+const findFolderInParent = async ({
+  access_token,
+  rootId,
+  scriptId,
+}: findFolderInParentProps) => {
+  const { data } = await axios.get(
+    'https://www.googleapis.com/drive/v3/files',
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        Accept: 'application/json',
+      },
+      params: {
+        q: `'${rootId}' in parents and fullText contains '${scriptId}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
         fields: 'nextPageToken, files(id, name)',
         spaces: 'drive',
       },
     }
   )
 
-  //Expect only one folder with the sceneId
-  if (response.data.files.length !== 1) {
-    throw new Error('Duplicate folder names!')
+  if (data.files.length < 1) {
+    throw new Error('No folder found')
   }
+  return data
+}
 
-  const folderId = response.data.files[0].id
-  const docs: CallbackDoc[] = await downloadFolderWithMP3({
+interface FindAudioFileIdsInSceneFolderProps {
+  rootId: string
+  access_token: string
+  scriptId: string
+  sceneId: string
+}
+export const findAudioFileIdsInSceneFolder = async ({
+  rootId,
+  access_token,
+  scriptId,
+  sceneId,
+}: FindAudioFileIdsInSceneFolderProps) => {
+  const scriptFolder = await findFolderInParent({
     access_token,
-    folderId,
+    rootId,
+    scriptId,
   })
 
-  const files = await getGoogleDriveFilesByIds({ access_token, docs })
+  const sceneFolder = await findFolderInParent({
+    access_token,
+    rootId: scriptFolder.files[0].id,
+    scriptId: sceneId,
+  })
 
-  return files
-}
+  const folderWithAudio = await findFolderWithAudio({
+    access_token,
+    folderId: sceneFolder.files[0].id,
+  })
 
-interface downloadFolderWithMP3Props {
-  scriptId?: string
-  folderId: string
-  access_token: string
-}
-
-export const downloadFolderWithMP3 = async ({
-  access_token,
-  folderId,
-}: downloadFolderWithMP3Props) => {
-  const filesUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+mimeType='audio/mpeg'&access_token=${access_token}`
-  const filesResponse = await fetch(filesUrl)
-  const filesData = await filesResponse.json()
-  const mp3Files = filesData.files
-
-  return mp3Files
+  return folderWithAudio.files
 }
 
 interface getGoogleDriveFilesByIdsProps {
   docs: CallbackDoc[]
-  access_token: string
+  access_token: string | undefined
   responseType?: ResponseType
 }
-
 export const getGoogleDriveFilesByIds = async ({
   docs = [],
   access_token,
@@ -129,7 +156,6 @@ interface CreateTextToSpeechSceneProps {
   scene: Scene
   rootFolderId: string
 }
-
 export const createTextToSpeechFromScene = async ({
   scriptId,
   scene,

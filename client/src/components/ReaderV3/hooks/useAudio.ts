@@ -1,4 +1,7 @@
-import { downloadFiles } from 'src/API/googleApi'
+import {
+  findAudioFileIdsInSceneFolder,
+  getGoogleDriveFilesByIds,
+} from 'src/API/googleApi'
 
 import { useQuery } from 'react-query'
 import { useAccessToken, useLogout } from 'src/store/userStore'
@@ -7,40 +10,51 @@ import { Scene } from '../reader.types'
 import {
   hasRequiredAudioFiles,
   arrayBufferIntoHTMLAudioElement,
+  extractAudioFileIds,
 } from '../utils'
 
-const useAudio = (scene: Scene) => {
+const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
   const logout = useLogout()
   const [isSyncing, setIsSyncing] = useState(true)
   const [audioFiles, setAudioFiles] = useState<HTMLAudioElement[]>()
   const [isValid, setIsValid] = useState(false)
-  const access_token = useAccessToken()
+  const access_token = useAccessToken() as string
 
   const { isError, isLoading } = useQuery(
     ['scene_audio', access_token],
-    () => downloadFiles(access_token as string, scene.id),
+    () =>
+      findAudioFileIdsInSceneFolder({
+        rootId,
+        access_token,
+        scriptId,
+        sceneId: scene.id,
+      }),
     {
-      onSuccess: (googleDriveFileArray) => {
-        if (hasRequiredAudioFiles(scene.data, googleDriveFileArray)) {
-          const audioFileArray =
-            arrayBufferIntoHTMLAudioElement(googleDriveFileArray)
+      onSuccess: async (data) => {
+        const driveFolderIds = extractAudioFileIds(data)
+        if (hasRequiredAudioFiles(scene.data, driveFolderIds)) {
+          const audioFileArray = await getGoogleDriveFilesByIds({
+            docs: data,
+            access_token,
+          })
+          const audioFiles = arrayBufferIntoHTMLAudioElement(audioFileArray)
           setIsValid(true)
-          setAudioFiles(audioFileArray)
+          setAudioFiles(audioFiles)
         }
       },
-      onError: (error) => {
-        const { response } = error as any
-        if (response?.data?.error.status === 'UNAUTHENTICATED') {
+      onError: (error: any) => {
+        if (error?.response?.data?.error.status === 'UNAUTHENTICATED') {
           logout()
         }
+        console.log(error)
       },
       onSettled: () => {
         setIsSyncing(false)
       },
       enabled: isSyncing,
+      retry: false,
     }
   )
-
   return { isValid, audioFiles, isError, isLoading, setIsSyncing, isSyncing }
 }
 

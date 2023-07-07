@@ -37,6 +37,7 @@ Used to check if google drive folder has
 export function hasRequiredAudioFiles(arr1: any[], arr2: any[]): boolean {
   const requiredFileIds = arr1.map((item) => item.id)
   const allFolderFileIds = arr2.map((item) => item.id)
+
   for (let i = 0; i < arr1.length; i++) {
     if (!allFolderFileIds.includes(requiredFileIds[i])) {
       return false
@@ -44,6 +45,15 @@ export function hasRequiredAudioFiles(arr1: any[], arr2: any[]): boolean {
   }
 
   return true
+}
+
+export const extractAudioFileIds = (data) => {
+  const audioFiles = data.map((item) => {
+    return {
+      id: item.name.replace('.mp3', ''),
+    }
+  })
+  return audioFiles
 }
 
 export function arrayBufferIntoHTMLAudioElement(

@@ -18,12 +18,17 @@ import { useMutation } from 'react-query'
 import { createTextToSpeechFromScene } from 'src/API/googleApi'
 
 const SceneRehearsalPanel = () => {
+  const rootFolder = useRootFolder() as RootFolder
   const [message, setMessage] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [startRehearse, setStartRehearse] = useState(false)
   const { values } = useFormikContext<Scene>()
   const { options, scriptId } = useReaderContext()
-  const { audioFiles, isValid, setIsSyncing, isSyncing } = useAudio(values)
+  const { audioFiles, isValid, setIsSyncing, isSyncing } = useAudio(
+    values,
+    scriptId,
+    rootFolder.id
+  )
 
   const { mutate, isError, isLoading } = useMutation(
     createTextToSpeechFromScene,
@@ -38,7 +43,6 @@ const SceneRehearsalPanel = () => {
     }
   )
 
-  const rootFolder = useRootFolder() as RootFolder
   const { transcript, listening, resetTranscript } = useSpeechRecognition({})
   const filteredAudio = filterAudioFiles(values, audioFiles, options)
 
@@ -90,6 +94,7 @@ const SceneRehearsalPanel = () => {
       ) : null}
       {isValid ? (
         <button
+          type="button"
           onClick={() => {
             setStartRehearse(!startRehearse)
             SpeechRecognition.stopListening()
@@ -99,6 +104,7 @@ const SceneRehearsalPanel = () => {
         </button>
       ) : (
         <button
+          type="button"
           disabled={isSyncing}
           className="text-red-900"
           onClick={() => setShowModal(true)}
