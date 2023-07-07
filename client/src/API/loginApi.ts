@@ -5,7 +5,6 @@ import axios from 'axios'
 
 export const googleLogin = async (code: string) => {
   const { data } = await axios.post(`${BASE_URI}/login`, { code })
-
   return data
 }
 

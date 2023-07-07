@@ -35,6 +35,7 @@ const SceneRehearsalPanel = () => {
     {
       onSuccess: (data) => {
         setMessage(`Successfully added audio for ${data.name}`)
+        //Toggle query for downloading files
         setIsSyncing(true)
       },
       onError: () => {
