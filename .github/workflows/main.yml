@@ -15,7 +15,7 @@ jobs:
         run: |
           cd client
           npm install --legacy-peer-deps --silent
-          REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID npm run build-client
+          REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID npm run build-client --silent
         env:
           REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
 
