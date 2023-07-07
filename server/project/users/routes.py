@@ -17,7 +17,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 @users_blueprint.route("/login", methods=["POST"])
 def login():
-    print("HERE")
     code = request.json.get('code')
     if not code:
         return "Missing 'code' parameter in the request.", 403 

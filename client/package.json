@@ -35,7 +35,7 @@
     "zustand": "^4.3.8"
   },
   "scripts": {
-    "start": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts start",
+    "start": "set \"GENERATE_SOURCEMAP=false\" && set \"REACT_APP_ENVIROMENT=development\" && react-scripts start",
     "build": "set \"REACT_APP_ENVIROMENT=production\" && react-scripts build",
     "build:dev": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts build && xcopy /S /I build\\static ..\\server\\project\\static && mkdir ..\\server\\project\\templates && copy build\\index.html ..\\server\\project\\templates && rmdir /S /Q build",
     "test": "react-scripts test",
