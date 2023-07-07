@@ -2,7 +2,7 @@ import axios, { ResponseType } from 'axios'
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 import { Scene } from 'src/components/ReaderV3/reader.types'
 import { BASE_URI } from 'src/config'
-import { getCookie } from './loginApi'
+import { getCookie } from 'src/utils/helpers'
 
 interface getGoogleDriveFileByIdProps {
   docs: CallbackDoc
