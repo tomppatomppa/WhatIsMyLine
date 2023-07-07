@@ -11,13 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build React client
-        run: |
-          cd client
-          npm install --legacy-peer-deps --silent
-          REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID npm run build-client --silent
-        env:
-          REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
+      # - name: Build React client
+      #   run: |
+      #     cd client
+      #     npm install --legacy-peer-deps
+      #     REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID npm run build-client
+      #   env:
+      #     REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
 
       # - name: Copy React build to Flask server folder
       #   run: |
