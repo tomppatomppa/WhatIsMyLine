@@ -1,9 +1,11 @@
 import { httpClient } from 'src/utils/axiosClient'
 
 import { BASE_URI } from 'src/config'
+import axios from 'axios'
 
 export const googleLogin = async (code: string) => {
-  const { data } = await httpClient.post(`${BASE_URI}/login`, { code })
+  const { data } = await axios.post(`${BASE_URI}/login`, { code })
+
   return data
 }
 

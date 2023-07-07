@@ -10,7 +10,7 @@ import SpeechRecognition, {
 import { AiOutlineSync } from 'react-icons/ai'
 import { filterAudioFiles } from '../../utils'
 import { FaStop } from 'react-icons/fa'
-import Modal from 'src/components/Modal'
+import Modal from 'src/components/common/Modal'
 import { RootFolder, useRootFolder } from 'src/store/scriptStore'
 import Spinner from 'src/components/common/Spinner'
 import Message from 'src/components/common/Message'

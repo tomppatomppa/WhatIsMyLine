@@ -10,7 +10,7 @@ const LoginView = () => {
   const navigate = useNavigate()
   const loginToApp = useLogin()
 
-  const { mutate } = useMutation(googleLogin, {
+  const { mutate: login } = useMutation(googleLogin, {
     onSuccess: (user) => {
       loginToApp(user)
       navigate('/')
@@ -21,7 +21,7 @@ const LoginView = () => {
     flow: 'auth-code',
     scope: 'https://www.googleapis.com/auth/drive',
     onSuccess: (credentials) => {
-      mutate(credentials.code)
+      login(credentials.code)
     },
   })
 
