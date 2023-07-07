@@ -6,7 +6,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import { MutationCache, QueryClient, QueryClientProvider } from 'react-query'
 
 import { removeCookie } from './utils/helpers'
-import { BASE_URI } from './config'
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -26,7 +25,6 @@ const queryClient = new QueryClient({
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
-console.log(process.env.NODE_ENV, BASE_URI)
 
 root.render(
   <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>

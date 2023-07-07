@@ -3,7 +3,6 @@ import requests
 from . import users_blueprint
 from flask import request, jsonify
 import os
-
 from utils import create_timestamp, verify_google_id_token
 from project.models import User
 from flask_jwt_extended import create_access_token, jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
@@ -25,11 +24,12 @@ def login():
   
     try:
         response = get_token_data(code)
-      
+        
         token_data = response.json()
         if response.status_code == 200:
+           
             user = verify_google_id_token(token_data.get("id_token"))
-         
+            
             user_info = extract_user_info(user, token_data)
 
             store_user_info(user_info)
@@ -114,6 +114,7 @@ def store_user_info(user_info):
                         user_info["expiry"])
         db.session.add(new_user)
         db.session.commit()
+    
 
 def refresh_access_token(token):
     payload = {

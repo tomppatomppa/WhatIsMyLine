@@ -2,6 +2,7 @@ __pycache__
 venv
 .env
 server/.env
+instance
 dummyDb.txt
 dummyDb.json
 key.json
