@@ -52,7 +52,7 @@ const Profile = () => {
           className={`${
             rootFolder ? 'bg-green-200' : 'bg-red-200'
           } hover:bg-blue-200`}
-          onClick={() => mutate(user.access_token)}
+          onClick={() => mutate()}
         >
           Sync Drive
         </button>

@@ -14,7 +14,7 @@ export const getGoogleDriveFileById = async ({
   access_token,
   responseType = 'arraybuffer',
 }: getGoogleDriveFileByIdProps) => {
-  const { data } = await axios.get(
+  const { data } = await httpClient.get(
     `https://www.googleapis.com/drive/v3/files/${docs.id}`,
     {
       headers: {
@@ -170,9 +170,8 @@ export const createTextToSpeechFromScene = async ({
   return data
 }
 
-export const syncGoogleDrive = async (access_token: string) => {
-  const { data } = await httpClient.post(`${BASE_URI}/create_root_folder`, {
-    access_token,
-  })
+export const syncGoogleDrive = async () => {
+  const { data } = await httpClient.post(`${BASE_URI}/create_root_folder`)
+
   return data
 }
