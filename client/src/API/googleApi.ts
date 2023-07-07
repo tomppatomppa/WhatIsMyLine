@@ -2,7 +2,7 @@ import axios, { ResponseType } from 'axios'
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 import { Scene } from 'src/components/ReaderV3/reader.types'
 import { BASE_URI } from 'src/config'
-import { getCookie } from 'src/utils/helpers'
+import { httpClient } from 'src/utils/axiosClient'
 
 interface getGoogleDriveFileByIdProps {
   docs: CallbackDoc
@@ -134,36 +134,18 @@ export const createTextToSpeechFromScene = async ({
   scene,
   rootFolderId,
 }: CreateTextToSpeechSceneProps) => {
-  const { data } = await axios.post(
-    `${BASE_URI}/api/v3/scene-to-speech`,
-    {
-      id: scriptId,
-      scenes: [scene],
-      rootFolderId,
-    },
-    {
-      withCredentials: true,
-      headers: {
-        'X-CSRF-TOKEN': getCookie('csrf_access_token'),
-      },
-    }
-  )
+  const { data } = await httpClient.post(`${BASE_URI}/api/v3/scene-to-speech`, {
+    id: scriptId,
+    scenes: [scene],
+    rootFolderId,
+  })
 
   return data
 }
 
 export const syncGoogleDrive = async (access_token: string) => {
-  const { data } = await axios.post(
-    `${BASE_URI}/create_root_folder`,
-    {
-      access_token,
-    },
-    {
-      withCredentials: true,
-      headers: {
-        'X-CSRF-TOKEN': getCookie('csrf_access_token'),
-      },
-    }
-  )
+  const { data } = await httpClient.post(`${BASE_URI}/create_root_folder`, {
+    access_token,
+  })
   return data
 }
