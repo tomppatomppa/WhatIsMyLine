@@ -7,8 +7,7 @@ dummyDb.txt
 dummyDb.json
 google-credentials.json
 key.json
-static
-templates
+
 /server/project/static
 /server/project/templates
 /build
