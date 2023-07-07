@@ -37,7 +37,7 @@
   "scripts": {
     "start": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts start",
     "build": "set \"REACT_APP_ENVIROMENT=production\" && react-scripts build",
-    "build-dev": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts build && xcopy /s /y /i build ..\\server\\project\\build && rd /s /q build",
+    "build:dev": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts build && xcopy /S /I build\\static ..\\server\\project\\static && mkdir ..\\server\\project\\templates && copy build\\index.html ..\\server\\project\\templates && rmdir /S /Q build",
     "test": "react-scripts test",
     "build-client": "REACT_APP_ENVIROMENT=production react-scripts build && cp -r build/static ../server/project/static && mkdir -p ../server/project/templates && cp build/index.html ../server/project/templates && rm -rf build",
     "cy:open-e2e": "cypress open --e2e --browser chrome",
