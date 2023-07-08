@@ -7,9 +7,4 @@ dummyDb.txt
 dummyDb.json
 google-credentials.json
 key.json
-
-/server/project/static
-/server/project/templates
-/build
-/project/build
 .pytest_cache
