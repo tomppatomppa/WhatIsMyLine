@@ -1,6 +1,7 @@
 export type ReaderMode = 'read' | 'edit' | 'idle'
 export type MenuPosition = 'top' | 'bottom'
 
+export type PanelView = 'edit' | 'rehearse'
 //Scene types
 export type LineIndex = [number, number]
 export type SceneLine = 'ACTOR' | 'INFO'
