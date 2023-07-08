@@ -1,8 +1,10 @@
 import React, { useContext } from 'react'
 
 import { ScenePanelContext } from './contexts/ScenePanelContext'
-const ScenePanelControls = () => {
+
+const PanelControls = () => {
   const { panelView, handleChangePanelView } = useContext(ScenePanelContext)
+
   return (
     <div>
       <select value={panelView} onChange={handleChangePanelView}>
@@ -13,4 +15,4 @@ const ScenePanelControls = () => {
   )
 }
 
-export default ScenePanelControls
+export default PanelControls

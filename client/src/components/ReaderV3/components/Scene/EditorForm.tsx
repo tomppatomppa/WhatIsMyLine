@@ -9,6 +9,8 @@ import { Drag } from 'src/components/drag-and-drop'
 import { DeleteIcon } from '../icons'
 import { ConditionalField } from '../forms/ConditionalField'
 import { FormikTextArea } from '../forms/FormikTextArea'
+import PanelWidget from '../ScenePanel/PanelWidget'
+import PanelComponent from '../ScenePanel/PanelComponent'
 
 interface EditorFormProps {
   scene: Scene
@@ -55,11 +57,14 @@ const EditorForm = ({
         {({ values, dirty }) => (
           <Drop key={scene.id} id={scene.id} type="droppable-item">
             <Form autoComplete="off">
-              <SceneEditorPanel
+              {/* <SceneEditorPanel
                 isEditing={isEditing}
                 setIsEditing={setIsEditing}
                 addLine={addLine}
-              />
+              /> */}
+              <PanelWidget>
+                <PanelComponent />
+              </PanelWidget>
               {values.data.map((line: any, lineIndex: number) => (
                 <Drag
                   className="mt-3"
