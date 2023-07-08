@@ -28,7 +28,7 @@ const EditPanel = () => {
     return () => {
       dispatch({ type: 'SET_IS_EDITING', payload: { sceneId: values.id } })
     }
-  }, [])
+  }, [dispatch, values.id])
 
   return (
     <div className="flex gap-4">
