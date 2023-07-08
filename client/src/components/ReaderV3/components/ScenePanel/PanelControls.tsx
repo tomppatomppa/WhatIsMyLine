@@ -8,8 +8,8 @@ const PanelControls = () => {
   return (
     <div>
       <select value={panelView} onChange={handleChangePanelView}>
-        <option value="edit">edit</option>
         <option value="rehearse">rehearse</option>
+        <option value="edit">edit</option>
       </select>
     </div>
   )

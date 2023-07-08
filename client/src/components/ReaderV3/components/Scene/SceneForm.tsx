@@ -1,8 +1,6 @@
 import { Form, Formik } from 'formik'
 import { Drop } from 'src/components/drag-and-drop'
-import { useState } from 'react'
 import { Actor, LineType, Scene } from '../../reader.types'
-import SceneEditorPanel from './SceneEditorPanel'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import { Field } from 'formik'
 import { Drag } from 'src/components/drag-and-drop'
@@ -14,13 +12,11 @@ import PanelComponent from '../ScenePanel/PanelComponent'
 
 interface EditorFormProps {
   scene: Scene
-  sceneIndex: number
   onSubmit: (scene: Scene) => void
-  addLine: () => void
   deleteLine: (lineIndex: number) => void
 }
 
-const EditorForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
+const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
   const { options, dispatch } = useReaderContext()
   const isEditing = options.isEditing.includes(scene.id)
 
@@ -50,11 +46,6 @@ const EditorForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
         {({ values, dirty }) => (
           <Drop key={scene.id} id={scene.id} type="droppable-item">
             <Form autoComplete="off">
-              {/* <SceneEditorPanel
-                isEditing={isEditing}
-                setIsEditing={setIsEditing}
-                addLine={addLine}
-              /> */}
               <PanelWidget>
                 <PanelComponent />
               </PanelWidget>
@@ -133,4 +124,4 @@ const EditorForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
   )
 }
 
-export default EditorForm
+export default SceneForm

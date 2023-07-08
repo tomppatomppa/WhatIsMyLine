@@ -113,6 +113,7 @@ def store_user_info(user_info):
                         user_info["expiry"])
         db.session.add(new_user)
         db.session.commit()
+    #TODO: revoke and update refresh_token
     
 
 def refresh_access_token(token):
@@ -123,7 +124,9 @@ def refresh_access_token(token):
         'grant_type': 'refresh_token'
     }
     try:
+        
         response = requests.post('https://oauth2.googleapis.com/token', data=payload)
+        
         response.raise_for_status()
         token_data = response.json()
         
@@ -135,7 +138,9 @@ def refresh_access_token(token):
 def check_refresh_token(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        
         user_id = get_jwt_identity()
+       
         #Dummy implementation, compare expiry to current date
         if 1 > 2 :
             return func(*args, **kwargs)
@@ -143,6 +148,7 @@ def check_refresh_token(func):
             try:
                 # Token has expired, refresh the token
                 refresh_token = User.get_refresh_token_by_user_id(user_id)
+               
                 access_token = refresh_access_token(refresh_token)
                 expiry = create_timestamp(access_token.get("expires_in"))
                 user= User.update_access_token_and_expiry(user_id, access_token.get("access_token"), expiry)

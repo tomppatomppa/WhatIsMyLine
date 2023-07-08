@@ -8,7 +8,7 @@ interface ScenePanelProviderProps {
 }
 
 export const ScenePanelProvider = ({ children }: ScenePanelProviderProps) => {
-  const [panelView, setPanelView] = useState<PanelView>('edit')
+  const [panelView, setPanelView] = useState<PanelView>('rehearse')
 
   const handleChangePanelView = (
     event: React.ChangeEvent<HTMLSelectElement>

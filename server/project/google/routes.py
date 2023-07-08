@@ -13,6 +13,7 @@ from project.models import User
 @jwt_required()
 @check_refresh_token
 def create_root_folder():
+    
     user_id = get_jwt_identity()
     token = User.get_access_token_by_user_id(user_id)
     
@@ -33,6 +34,7 @@ def create_root_folder():
 @check_refresh_token
 def scene_to_speech():
     user_id = get_jwt_identity()
+   
     access_token = User.get_access_token_by_user_id(user_id)
 
     script_id = request.json.get("id")
@@ -55,9 +57,11 @@ def scene_to_speech():
             handle_unauthorized(error)
         return jsonify({'error': 'An error occurred'}), error.response.status_code
     finally:
+       
         remove_dir(f"./processed_audio/{script_id}")
 
 
 @google_blueprint.errorhandler(401)
 def handle_unauthorized(error):
+    
     return jsonify({'error': str(error)}), 401

@@ -21,7 +21,6 @@ interface UserStore {
 const settingsStore: StateCreator<UserStore> = (set: any) => ({
   user: null,
   login: (user: User) => set(() => ({ user })),
-  // logout: () => set(() => ({ user: null })),
   logout: async () => {
     await logout()
     set(() => ({ user: null }))
@@ -48,3 +47,4 @@ export const useAccessToken = () =>
 
 export const useAuth = () =>
   useUserStore((state) => (state.user ? true : false))
+export const useCurrentUser = () => useUserStore((state) => state.user)

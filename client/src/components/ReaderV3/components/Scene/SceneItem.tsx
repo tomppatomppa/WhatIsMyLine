@@ -1,8 +1,7 @@
-import { Scene, SceneLine } from '../../reader.types'
+import { Scene } from '../../reader.types'
 import { Drag } from 'src/components/drag-and-drop'
-import EditorForm from './EditorForm'
 import { useUpdateScript } from 'src/store/scriptStore'
-import uuid from 'react-uuid'
+import SceneForm from './SceneForm'
 
 interface SceneItemProps {
   scene: Scene
@@ -20,18 +19,6 @@ const SceneItem = ({
 
   const onSubmit = (updatedScene: Scene) => {
     updateScript(updatedScene)
-  }
-
-  const handleAddLine = () => {
-    const newLine = {
-      id: uuid(),
-      name: 'Select Name',
-      type: 'ACTOR' as SceneLine,
-      lines: 'New Line\n',
-    }
-    const updatedLines = [...scene.data]
-    updatedLines.unshift(newLine)
-    updateScript({ ...scene, data: updatedLines })
   }
 
   const handleDeleteLine = (lineIndex: number) => {
@@ -55,15 +42,13 @@ const SceneItem = ({
         >
           {scene.id}
         </h2>
-        {show && (
-          <EditorForm
+        {show ? (
+          <SceneForm
             scene={scene}
-            sceneIndex={sceneIndex}
             onSubmit={onSubmit}
-            addLine={handleAddLine}
             deleteLine={handleDeleteLine}
           />
-        )}
+        ) : null}
       </div>
     </Drag>
   )
