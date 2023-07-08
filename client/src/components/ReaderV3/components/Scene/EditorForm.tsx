@@ -20,15 +20,9 @@ interface EditorFormProps {
   deleteLine: (lineIndex: number) => void
 }
 
-const EditorForm = ({
-  scene,
-  sceneIndex,
-  onSubmit,
-  addLine,
-  deleteLine,
-}: EditorFormProps) => {
+const EditorForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
   const { options, dispatch } = useReaderContext()
-  const [isEditing, setIsEditing] = useState(false)
+  const isEditing = options.isEditing.includes(scene.id)
 
   const getLineStyle = (type: LineType) => {
     const style = options.settings[type.toLowerCase()].style
@@ -50,7 +44,6 @@ const EditorForm = ({
         enableReinitialize={true}
         initialValues={scene as Scene}
         onSubmit={(values) => {
-          setIsEditing(false)
           onSubmit(values)
         }}
       >

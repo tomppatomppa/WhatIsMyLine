@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 import { ScenePanelContext } from './contexts/ScenePanelContext'
 
@@ -9,7 +9,7 @@ const PanelControls = () => {
     <div>
       <select value={panelView} onChange={handleChangePanelView}>
         <option value="edit">edit</option>
-        <option value="rehearse">Line Chart</option>
+        <option value="rehearse">rehearse</option>
       </select>
     </div>
   )

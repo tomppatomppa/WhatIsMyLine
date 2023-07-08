@@ -1,13 +1,16 @@
 import { useContext } from 'react'
 import { ScenePanelContext } from './contexts/ScenePanelContext'
+
+import EditPanel from './EditPanel'
+import RehearsePanel from './RehearsePanel'
 const PanelComponent = () => {
   const { panelView } = useContext(ScenePanelContext)
 
   switch (panelView) {
     case 'edit':
-      return <div>edit panel</div>
+      return <EditPanel />
     case 'rehearse':
-      return <div>Rehearsal panel</div>
+      return <RehearsePanel />
   }
 }
 

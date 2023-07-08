@@ -83,6 +83,22 @@ export const reducer = (
         mode: setMode,
       }
     }
+    case 'SET_IS_EDITING': {
+      const { isEditing } = state
+      let updatedIsEditing
+
+      if (isEditing.includes(action.payload.sceneId)) {
+        updatedIsEditing = isEditing.filter(
+          (id) => id !== action.payload.sceneId
+        )
+      } else {
+        updatedIsEditing = [...isEditing, action.payload.sceneId]
+      }
+      return {
+        ...state,
+        isEditing: updatedIsEditing,
+      }
+    }
 
     default:
       throw Error('Unknown action.')

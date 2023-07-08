@@ -10,6 +10,7 @@ const initialState = {
   mode: 'idle',
   highlight: [],
   expanded: [],
+  isEditing: [], //array for scenes being edited
   settings: {
     info: {
       style: {
