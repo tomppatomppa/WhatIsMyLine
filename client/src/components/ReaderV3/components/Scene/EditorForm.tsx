@@ -57,7 +57,6 @@ const EditorForm = ({
             <Form autoComplete="off">
               <SceneEditorPanel
                 isEditing={isEditing}
-                sceneIndex={sceneIndex}
                 setIsEditing={setIsEditing}
                 addLine={addLine}
               />
