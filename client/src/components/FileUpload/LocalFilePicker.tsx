@@ -18,19 +18,17 @@ const LocalFilePicker = ({
   }
 
   return (
-    <>
+    <Tooltip text="Upload File">
       <input
         className="hidden"
         ref={inputRef}
         type="file"
         onChange={handleFileChange}
       />
-      <Tooltip text="Upload File">
-        <button className={className} onClick={handleClick}>
-          <AiOutlineUpload size={24} />
-        </button>
-      </Tooltip>
-    </>
+      <button className={className} onClick={handleClick}>
+        <AiOutlineUpload size={24} />
+      </button>
+    </Tooltip>
   )
 }
 

@@ -30,7 +30,7 @@ const FileUpload = () => {
           <>
             <TestfilePicker
               className="hover:bg-gray-600 p-2 rounded-md"
-              handleFileChange={() => console.log('uöpad')}
+              handleFileChange={(file: File) => setFile(file)}
             />
             <GooglePicker
               className="hover:bg-gray-600 p-2 rounded-md"
