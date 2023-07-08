@@ -1,1 +1,1 @@
-${GOOGLE_CREDENTIALS} > /app/google-credentials.json
+chmod +x startup.sh
