@@ -1,14 +1,14 @@
 import os
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
-
+GOOGLE_CREDENTIALS_PATH = os.path.join(BASEDIR, "google-credentials.json")
 
 class Config(object):
     FLASK_ENV = 'development'
     DEBUG = False
     TESTING = False
     SECRET_KEY = os.getenv("SECRET_KEY")
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "google-credentials.json"
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_CREDENTIALS_PATH
 
     if os.getenv('DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL').replace("postgres://", "postgresql://", 1)
