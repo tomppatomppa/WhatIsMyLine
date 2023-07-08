@@ -15,14 +15,14 @@ jobs:
         run: |
           cd client
           npm install --legacy-peer-deps
-          REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID npm run build-client
+          REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID npm run build
         env:
           REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
 
-      # - name: Copy React build to Flask server folder
-      #   run: |
-      #     mkdir server/project/build
-      #     cp -r client/build/* server/project/build/
+      - name: Copy React build to Flask server folder
+        run: |
+          mkdir server/project/build
+          cp -r client/build/* server/project/build/
 
       - name: Install Python dependencies
         run: |
