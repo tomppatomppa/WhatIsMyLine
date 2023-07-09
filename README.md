@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  Dramatify-pdf-reader
+  What Is My Line
   <br>
 </h1>
 
@@ -24,13 +24,12 @@
 
 - Supports PDF files
 - Upload your own scripts
--
 - Google Drive integration
   - Upload from Google Drive
   - Create files and folders
 - Google Cloud text-to-speech
 - Practice with audio converted from text
-- Drag and Drop Scenes and Lines
+- Drag and Drop support for Scenes and Lines
 - Highlight selected actor lines
   - unique colors for easy actor identification
 - Saves scripts to localstorage
@@ -48,6 +47,11 @@ To clone and run this application, you'll need [Git](https://git-scm.com), [Pyth
 > For Windows only
 
 ```bash
+#To use all the features available you need the following:
+- Google Account
+- Create a project in Google Cloud
+- Create Oauth 2.0 client ID
+- Enable Google Drive & Google Text-To-Speech API
 
 # Clone this repository
 $ git clone https://github.com/tomppatomppa/dramatify-pdf-reader.git
@@ -65,6 +69,30 @@ $ cd ../server
 
 # Create a virtual env and activate
 $ python -m venv venv && .\venv\Scripts\activate
+
+
+# create a .env file in the server root folder with the following contents
+CLIENT_ID = "your google client id"
+CLIENT_SECRET = "your google client secret"
+SECRET_KEY = "your secret key"
+DATABASE_URL = "postgres database url"
+
+# Download google service account credentials,
+# Rename it to google-credentials.json and place it in the root of /server folder
+# contents of the file should look like this
+{
+  "type": "",
+  "project_id": "",
+  "private_key_id": "",
+  "private_key": "",
+  "client_email": "",
+  "client_id": "",
+  "auth_uri": "",
+  "token_uri": "",
+  "auth_provider_x509_cert_url": "",
+  "client_x509_cert_url": "",
+  "universe_domain": ""
+}
 
 # Install Python dependecies
 $ pip install -r requirements.txt
