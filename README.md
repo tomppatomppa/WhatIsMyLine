@@ -70,7 +70,6 @@ $ cd ../server
 # Create a virtual env and activate
 $ python -m venv venv && .\venv\Scripts\activate
 
-
 # create a .env file in the server root folder with the following contents
 CLIENT_ID = "your google client id"
 CLIENT_SECRET = "your google client secret"
@@ -109,9 +108,17 @@ With Google Cloud Text-to-Speech integration, you can turn your scripts into hig
 
 To keep things secure, the app lets you log in using your Google credentials through Google Auth login. It adds an extra layer of protection for your personal info and script content.
 
+# Try it
+
+To quickly test the app visit [dramatify-web](https://dramatify.herokuapp.com/) and login as visitor. No google login required. After login in, click the SCRIPTS logo in the top left corner. Click on the <strong>orange</strong> upload button and press upload. This will load and example file that can be viewed. Visitor mode is restricted to only being able to read and edit the script.
+
+Rehearse mode is only available for logged in users as it requires Google drive integration and extended access to the users Google Drive.
+
 ## Features to be implemented
 
 - Change the order of scripts in the sidemenu
+- Save scripts to database
+- Seperate offline mode
 - Customizable text colors
 - Auto scroll when Rehearsal mode is activated
 - Filtering based on actor names or scenes ids
