@@ -9,7 +9,7 @@ load_dotenv()
 
 @pytest.fixture(scope='module')
 def new_user():
-    user = User("1234", "picture_url", 'kalle@gmail.com', "google", "12345", "access_token", create_timestamp())
+    user = User("1234","picture_url", 'kalle@gmail.com', "google", "12345")
     
     return user
 

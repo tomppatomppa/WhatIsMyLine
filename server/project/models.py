@@ -30,7 +30,7 @@ class User(db.Model):
     access_token = mapped_column(String(), nullable=True)
     expiry = mapped_column(String(), nullable=True)
     
-    def __init__(self, user_id: str, picture:str, email: str, provider: str, refresh_token: str, access_token: str, expiry: str):
+    def __init__(self, user_id: str, picture:str, email: str, provider: str, refresh_token: str):
         """Create a new User object using the email address and hashing the
         plaintext password using Werkzeug.Security.
         """
@@ -40,23 +40,13 @@ class User(db.Model):
         self.provider = provider
         self.registered_on = datetime.now()
         self.refresh_token = refresh_token
-        self.access_token = access_token
-        self.expiry = expiry
+      
 
     @classmethod
     def get_user_by_user_id(cls, user_id):
         return cls.query.filter_by(user_id=user_id).first()
     
-    @classmethod
-    def get_access_token_by_user_id(cls, user_id):
-        user = cls.query.filter_by(user_id=user_id).first()
-     
-        return user.access_token
-    @classmethod
-    def get_access_token_expiry(cls, user_id):
-        user = cls.query.filter_by(user_id=user_id).first()
-     
-        return user.expiry
+ 
     @classmethod
     def get_refresh_token_by_user_id(cls, user_id):
         user = cls.query.filter_by(user_id=user_id).first()
@@ -71,17 +61,7 @@ class User(db.Model):
         db.session.commit()
         return user.refresh_token
     
-    @classmethod
-    def update_access_token_and_expiry(cls, user_id, access_token, expiry):
-        user = cls.query.filter_by(user_id=user_id).first()
-        user.access_token = access_token
-        user.expiry = expiry
 
-        db.session.commit()
-     
-        return user.expiry
-    
-  
     
 
     def __repr__(self):

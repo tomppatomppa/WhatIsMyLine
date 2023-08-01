@@ -14,8 +14,7 @@ def test_new_user(new_user):
     assert new_user.provider == 'google'
     assert new_user.__repr__() == '<User: kalle@gmail.com>'
     assert new_user.refresh_token == "12345"
-    assert new_user.access_token == "access_token"
-    assert new_user.expiry # assert it exists
+ 
     
 
     
