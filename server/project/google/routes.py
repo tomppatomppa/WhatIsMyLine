@@ -12,13 +12,13 @@ from project.models import User
 @google_blueprint.route("/create_root_folder",  methods=["POST"])
 @jwt_required()
 def create_root_folder():
-    token = extract_token(request)
+    access_token = extract_token(request)
     
     try:
-        folderExists = driveUtils.search_folder(token)
+        folderExists = driveUtils.search_folder(access_token)
         if folderExists:
             return folderExists, 200
-        created_root_folder = driveUtils.create_root_folder(token)
+        created_root_folder = driveUtils.create_root_folder(access_token)
         return created_root_folder, 200
     except requests.exceptions.HTTPError as error:
        if error.response.status_code == 401:
@@ -28,11 +28,9 @@ def create_root_folder():
 
 @google_blueprint.route("/api/v3/scene-to-speech", methods=["POST"])
 @jwt_required()
-@check_refresh_token
 def scene_to_speech():
-    user_id = get_jwt_identity()
-   
-    access_token = User.get_access_token_by_user_id(user_id)
+
+    access_token = extract_token(request)
 
     script_id = request.json.get("id")
     scene_id = request.json.get("scenes")[0].get("id")
