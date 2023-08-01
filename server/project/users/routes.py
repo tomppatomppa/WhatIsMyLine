@@ -118,8 +118,7 @@ def store_user_info(user_info):
                         user_info["email"],
                         user_info["provider"],
                         user_info["refresh_token"],
-                        user_info["access_token"],
-                        user_info["expiry"])
+                        )
         db.session.add(new_user)
         db.session.commit()
     else:      

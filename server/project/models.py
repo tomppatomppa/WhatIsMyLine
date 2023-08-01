@@ -15,9 +15,6 @@ class User(db.Model):
         * email - email address of the user
         * registered_on - date & time that the user registered
         * refresh_token = refresh token from google
-        * access_token = access token to call google api
-        * expiry = expiry date for access_token
-    REMEMBER: Never store the plaintext password in a database!
     """
     __tablename__ = 'users'
     id = mapped_column(Integer(), primary_key=True, autoincrement=True)
@@ -27,8 +24,6 @@ class User(db.Model):
     email = mapped_column(String(), unique=True, nullable=False)
     registered_on = mapped_column(DateTime(), nullable=False)
     refresh_token = mapped_column(String(), nullable=False)
-    access_token = mapped_column(String(), nullable=True)
-    expiry = mapped_column(String(), nullable=True)
     
     def __init__(self, user_id: str, picture:str, email: str, provider: str, refresh_token: str):
         """Create a new User object using the email address and hashing the
