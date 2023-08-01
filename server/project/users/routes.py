@@ -23,15 +23,16 @@ def login():
   
     try:
         response = get_token_data(code)
-        
+      
         token_data = response.json()
         if response.status_code == 200:
-           
+            
             user = verify_google_id_token(token_data.get("id_token"))
             
             user_info = extract_user_info(user, token_data)
-
+             
             store_user_info(user_info)
+            print("HERE")   
             jwt_token = create_access_token(identity=user_info.get("user_id"))
 
             user = user_for_client(user_info)
@@ -113,7 +114,10 @@ def store_user_info(user_info):
                         user_info["expiry"])
         db.session.add(new_user)
         db.session.commit()
-    #TODO: revoke and update refresh_token
+    else:      
+        User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
+    
+    #TODO: revoke refresh_token
     
 
 def refresh_access_token(token):

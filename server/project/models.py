@@ -64,6 +64,14 @@ class User(db.Model):
         return user.refresh_token
     
     @classmethod
+    def update_refresh_token_by_user_id(cls, user_id, refresh_token):
+        user = cls.query.filter_by(user_id=user_id).first()
+        user.refresh_token = refresh_token
+
+        db.session.commit()
+        return user.refresh_token
+    
+    @classmethod
     def update_access_token_and_expiry(cls, user_id, access_token, expiry):
         user = cls.query.filter_by(user_id=user_id).first()
         user.access_token = access_token

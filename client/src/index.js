@@ -12,10 +12,11 @@ const queryClient = new QueryClient({
     onError: (error) => {
       const { msg } = error.response.data
       if (error.response?.status === 401 && msg) {
-        localStorage.removeItem('user')
-        removeCookie('csrf_access_token')
-        removeCookie('access_token_cookie')
-        window.location.href = '/login'
+        console.log('Unauthorized, logging out user')
+        // localStorage.removeItem('user')
+        // removeCookie('csrf_access_token')
+        // removeCookie('access_token_cookie')
+        // window.location.href = '/login'
       }
     },
   }),
