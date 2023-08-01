@@ -31,12 +31,13 @@ def login():
             store_user_info(user_info)
 
             user = user_for_client(user_info)
+            
             response = jsonify(user)
 
             #Set cookies
-            access_token = create_tokens_for_user(user_info.get("user_id"))
+            access_token = create_access_token(identity=user_info.get("user_id"))
             set_access_cookies(response, access_token) 
-
+           
             return response
       
         return response.json(), response.status_code
@@ -170,7 +171,3 @@ def check_refresh_token(func):
         
     return wrapper
 
-def create_tokens_for_user(user_id):
-    access_token = create_access_token(identity=user_id, fresh=True)
-    refresh_token = create_refresh_token(identity=user_id)
-    return access_token, refresh_token
