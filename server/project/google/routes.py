@@ -1,4 +1,3 @@
-from project.users.routes import check_refresh_token
 from . import google_blueprint
 from flask import request, jsonify
 import project.google.driveUtils as driveUtils
@@ -6,8 +5,7 @@ import requests
 import os
 from project.google.TextToSpeech import  create_data
 from utils import  remove_dir
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from project.models import User
+from flask_jwt_extended import jwt_required
 
 @google_blueprint.route("/create_root_folder",  methods=["POST"])
 @jwt_required()
@@ -67,5 +65,4 @@ def extract_token(request):
 
 @google_blueprint.errorhandler(401)
 def handle_unauthorized(error):
-    
     return jsonify({'error': str(error)}), 401

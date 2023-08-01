@@ -3,7 +3,7 @@ from flask_cors import CORS
 import sqlalchemy as sa
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
-
+from datetime import timedelta
 import os
 
 db = SQLAlchemy()
@@ -19,6 +19,8 @@ def create_app():
     app.config.from_object(config_type)
     app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)
+  
     CORS(app, supports_credentials=True)
     
     initialize_extensions(app)

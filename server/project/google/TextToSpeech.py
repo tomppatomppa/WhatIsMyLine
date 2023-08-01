@@ -5,7 +5,7 @@ from google.cloud import texttospeech
 credentials_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
 
 def text_to_mp3(folder_id, scene_id, line_id, text):
-    print(credentials_path)
+   
     client = texttospeech.TextToSpeechClient()
 
     synthesis_input = texttospeech.SynthesisInput(text=text)

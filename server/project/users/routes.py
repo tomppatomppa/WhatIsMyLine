@@ -4,7 +4,7 @@ from flask import request, jsonify
 import os
 from utils import create_timestamp, verify_google_id_token
 from project.models import User
-from flask_jwt_extended import create_access_token, jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
+from flask_jwt_extended import create_access_token,create_refresh_token, jwt_required,set_access_cookies, get_jwt_identity,set_refresh_cookies, unset_jwt_cookies
 from functools import wraps
 
 from project import db
@@ -25,17 +25,17 @@ def login():
       
         token_data = response.json()
         if response.status_code == 200:
-            
+
             user = verify_google_id_token(token_data.get("id_token"))
-            
             user_info = extract_user_info(user, token_data)    
             store_user_info(user_info)
-       
-            jwt_token = create_access_token(identity=user_info.get("user_id"))
 
             user = user_for_client(user_info)
             response = jsonify(user)
-            set_access_cookies(response, jwt_token) 
+
+            #Set cookies
+            access_token = create_tokens_for_user(user_info.get("user_id"))
+            set_access_cookies(response, access_token) 
 
             return response
       
@@ -43,8 +43,6 @@ def login():
  
     except:
         return "Failed to login", 401
-
-
 
 @users_blueprint.route("/refresh-token", methods=["POST"])
 @jwt_required()
@@ -129,7 +127,6 @@ def store_user_info(user_info):
     
     #TODO: revoke refresh_token
     
-
 def refresh_access_token(refresh_token):
     payload = {
         'client_id': CLIENT_ID,
@@ -173,3 +170,8 @@ def check_refresh_token(func):
         return func(*args, **kwargs)
         
     return wrapper
+
+def create_tokens_for_user(user_id):
+    access_token = create_access_token(identity=user_id, fresh=True)
+    refresh_token = create_refresh_token(identity=user_id)
+    return access_token, refresh_token
