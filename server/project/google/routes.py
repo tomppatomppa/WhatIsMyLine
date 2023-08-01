@@ -11,11 +11,8 @@ from project.models import User
 
 @google_blueprint.route("/create_root_folder",  methods=["POST"])
 @jwt_required()
-@check_refresh_token
 def create_root_folder():
-    
-    user_id = get_jwt_identity()
-    token = User.get_access_token_by_user_id(user_id)
+    token = extract_token(request)
     
     try:
         folderExists = driveUtils.search_folder(token)
@@ -59,6 +56,15 @@ def scene_to_speech():
     finally:
        
         remove_dir(f"./processed_audio/{script_id}")
+
+
+
+
+def extract_token(request):
+    headers = request.headers
+    bearer = headers.get('Authorization')
+    token = bearer.split()[1]
+    return token
 
 
 @google_blueprint.errorhandler(401)

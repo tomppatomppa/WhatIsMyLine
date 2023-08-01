@@ -12,7 +12,7 @@ from ReaderSettings import ReaderSettings
 def upload_file():
     if "file" not in request.files:
        return 'No file', 500
-    print(request.files)
+   
     file = request.files['file']
     if file.filename == '':
         return 'Invalid filename', 403

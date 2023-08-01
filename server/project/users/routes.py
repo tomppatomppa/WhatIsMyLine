@@ -1,4 +1,3 @@
-
 import requests
 from . import users_blueprint
 from flask import request, jsonify
@@ -29,10 +28,9 @@ def login():
             
             user = verify_google_id_token(token_data.get("id_token"))
             
-            user_info = extract_user_info(user, token_data)
-             
+            user_info = extract_user_info(user, token_data)    
             store_user_info(user_info)
-            print("HERE")   
+       
             jwt_token = create_access_token(identity=user_info.get("user_id"))
 
             user = user_for_client(user_info)
@@ -48,7 +46,19 @@ def login():
 
 
 
-
+@users_blueprint.route("/refresh-token", methods=["POST"])
+@jwt_required()
+def refresh():
+    user_id = get_jwt_identity()
+    refresh_token = User.get_refresh_token_by_user_id(user_id)
+    if not refresh_token:
+        return "Missing 'refresh_token' login again.", 401 
+    try:
+        access_token = refresh_access_token(refresh_token)
+        expiry = create_timestamp(access_token.get("expires_in"))
+        return jsonify({"access_token": access_token.get("access_token"), "expiry": expiry}), 200
+    except:
+        return "Failed to refresh token", 401
 
 @users_blueprint.route("/logout", methods=["POST"])
 def logout_with_cookies():
@@ -120,11 +130,11 @@ def store_user_info(user_info):
     #TODO: revoke refresh_token
     
 
-def refresh_access_token(token):
+def refresh_access_token(refresh_token):
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
-        'refresh_token': token,
+        'refresh_token': refresh_token,
         'grant_type': 'refresh_token'
     }
     try:
@@ -155,6 +165,7 @@ def check_refresh_token(func):
                
                 access_token = refresh_access_token(refresh_token)
                 expiry = create_timestamp(access_token.get("expires_in"))
+
                 user= User.update_access_token_and_expiry(user_id, access_token.get("access_token"), expiry)
                 print(user)
             except:
