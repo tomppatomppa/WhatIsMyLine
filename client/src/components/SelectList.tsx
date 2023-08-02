@@ -1,10 +1,10 @@
-import React from 'react'
 import Checkbox from './common/Checkbox'
 
 interface SelectListProps {
   labels: string[]
   checkbox?: boolean
 }
+
 const SelectList = ({ labels, checkbox = true }: SelectListProps) => {
   return (
     <ul className="text-gray-700 flex flex-col mt-2">
