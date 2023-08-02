@@ -2,6 +2,8 @@
 import { arrayBufferResponse } from 'src/API/googleApi'
 import { Actor, ReaderConfiguration, Scene } from './reader.types'
 
+const DEFAULT_HIGHLIGHT_COLOR = '#86efac'
+
 export function generateUniqueColor(highlight: Actor[]) {
   const colors = [
     '#86efac',
@@ -27,7 +29,7 @@ export function generateUniqueColor(highlight: Actor[]) {
       return element
     }
   }
-  return '#86efac'
+  return DEFAULT_HIGHLIGHT_COLOR
 }
 
 /* 
@@ -74,6 +76,16 @@ export function arrayBufferIntoHTMLAudioElement(
 interface Audio extends HTMLAudioElement {
   key: string
 }
+
+export function filterLines(
+  values: Scene,
+  options: ReaderConfiguration
+): Line[] {
+  return values.data.filter(
+    ({ name }) =>
+      !options.highlight.some((highlight: Line) => highlight.id === name)
+  )
+}
 export function filterAudioFiles(
   values: Scene,
   audioFiles: HTMLAudioElement[] | undefined,
@@ -81,10 +93,7 @@ export function filterAudioFiles(
 ): HTMLAudioElement[] {
   if (!audioFiles) return []
 
-  const filteredLines: Line[] = values.data.filter(
-    ({ name }) =>
-      !options.highlight.some((highlight: Line) => highlight.id === name)
-  )
+  const filteredLines: Line[] = filterLines(values, options)
 
   const filteredAudio = filteredLines.map((line) => {
     const audio = audioFiles?.find(

@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
-import { Scene } from '../../reader.types'
+import { Line, Scene } from '../../reader.types'
 
 import { useReaderContext } from '../../contexts/ReaderContext'
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
 import { AiOutlineSync } from 'react-icons/ai'
-import { filterAudioFiles } from '../../utils'
+import { filterAudioFiles, filterLines } from '../../utils'
 import { FaStop } from 'react-icons/fa'
 import Modal from 'src/components/common/Modal'
 import { RootFolder, useRootFolder } from 'src/store/scriptStore'
@@ -18,12 +18,13 @@ import { useMutation } from 'react-query'
 import { createTextToSpeechFromScene } from 'src/API/googleApi'
 import AudioPlayer from './AudioPlayer'
 import { useCurrentUser } from 'src/store/userStore'
+import Checkbox from 'src/components/common/Checkbox'
 
 function commandBuilder(
-  scene: Scene,
+  lines: Line[],
   action: (lineIndex: number, command: string) => void
 ) {
-  return scene.data.map((line, index) => ({
+  return lines.map((line, index) => ({
     command: line.lines,
     callback: (command: any, spokenPhrase: any, similarityRatio: number) =>
       action(index, command),
@@ -47,8 +48,10 @@ const RehearsePanel = () => {
     rootFolder?.id
   )
 
-  const commands = commandBuilder(values, (lineIndex, command) => {
-    const nextLine = values.data[lineIndex + 1]
+  const filteredLines = filterLines(values, options)
+
+  const commands = commandBuilder(filteredLines, (lineIndex, command) => {
+    const nextLine = filteredLines[lineIndex + 1]
     if (nextLine) {
       console.log(`SPOKEN LINE ${command} -> NEXT LINE ${nextLine.lines}}`)
     }
@@ -102,6 +105,11 @@ const RehearsePanel = () => {
         <Spinner show={isLoading} />
         <Message type={isError ? 'alert' : 'success'} message={message} />
       </Modal>
+      <Checkbox
+        label="Enable info"
+        onChange={(value: boolean) => console.log(value)}
+      />
+
       <button
         onClick={() => setIsSyncing(true)}
         className={`${isSyncing ? 'text-gray-400 animate-spin' : ''} `}

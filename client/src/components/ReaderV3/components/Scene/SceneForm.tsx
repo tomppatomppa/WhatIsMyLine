@@ -9,6 +9,7 @@ import { ConditionalField } from '../forms/ConditionalField'
 import { FormikTextArea } from '../forms/FormikTextArea'
 import PanelWidget from '../ScenePanel/PanelWidget'
 import PanelComponent from '../ScenePanel/PanelComponent'
+import Tooltip from 'src/components/common/Tooltip'
 
 interface EditorFormProps {
   scene: Scene
