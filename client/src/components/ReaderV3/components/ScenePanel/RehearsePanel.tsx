@@ -19,6 +19,20 @@ import { createTextToSpeechFromScene } from 'src/API/googleApi'
 import AudioPlayer from './AudioPlayer'
 import { useCurrentUser } from 'src/store/userStore'
 
+function commandBuilder(
+  scene: Scene,
+  action: (lineIndex: number, command: string) => void
+) {
+  return scene.data.map((line, index) => ({
+    command: line.lines,
+    callback: (command: any, spokenPhrase: any, similarityRatio: number) =>
+      action(index, command),
+    isFuzzyMatch: true,
+    fuzzyMatchingThreshold: 0.5,
+    bestMatchOnly: true,
+  }))
+}
+
 const RehearsePanel = () => {
   const user = useCurrentUser()
   const rootFolder = useRootFolder() as RootFolder
@@ -33,7 +47,17 @@ const RehearsePanel = () => {
     rootFolder?.id
   )
 
-  const { transcript, listening, resetTranscript } = useSpeechRecognition({})
+  const commands = commandBuilder(values, (lineIndex, command) => {
+    const nextLine = values.data[lineIndex + 1]
+    if (nextLine) {
+      console.log(`SPOKEN LINE ${command} -> NEXT LINE ${nextLine.lines}}`)
+    }
+  })
+
+  const { transcript, listening, resetTranscript } = useSpeechRecognition({
+    commands,
+  })
+
   const filteredAudio = filterAudioFiles(values, audioFiles, options)
 
   const { mutate, isError, isLoading } = useMutation(
@@ -55,7 +79,10 @@ const RehearsePanel = () => {
   if (user?.name === 'visitor') {
     return <div className="text-red-900">Not available in visitor mode</div>
   }
-
+  SpeechRecognition.startListening({
+    language: 'sv-SE',
+    continuous: true,
+  })
   return (
     <div className="flex gap-4 mr-12 w-full">
       <Modal
@@ -82,7 +109,7 @@ const RehearsePanel = () => {
         <AiOutlineSync size={24} />
       </button>
       <span className="w-full"></span>
-      {startRehearse ? (
+      {/* {startRehearse ? (
         <div className="flex flex-row gap-6 justify-start items-center">
           <AudioPlayer
             files={filteredAudio}
@@ -100,7 +127,7 @@ const RehearsePanel = () => {
             }}
           />
         </div>
-      ) : null}
+      ) : null} */}
       {isValid ? (
         <button
           type="button"
