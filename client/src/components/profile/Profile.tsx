@@ -21,6 +21,7 @@ const Profile = () => {
   })
 
   if (!user) return
+
   return (
     <div className="items-center p-2">
       <Avatar user={user} />

@@ -5,6 +5,7 @@ interface DropdownProps {
   className?: string
   children: React.ReactNode
 }
+
 const Dropdown = ({ title, children, className }: DropdownProps) => {
   const [open, isOpen] = useState(false)
 
@@ -21,7 +22,7 @@ const Dropdown = ({ title, children, className }: DropdownProps) => {
         </button>
       </div>
       {open ? (
-        <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 cursor-pointer focus:outline-none">
+        <div className="absolute text-black right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 cursor-pointer focus:outline-none">
           {children}
         </div>
       ) : null}

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
-import { Line, Scene } from '../../reader.types'
+import { Actor, Line, Scene } from '../../reader.types'
 
 import { useReaderContext } from '../../contexts/ReaderContext'
 import SpeechRecognition, {
@@ -19,6 +19,11 @@ import { createTextToSpeechFromScene } from 'src/API/googleApi'
 import AudioPlayer from './AudioPlayer'
 import { useCurrentUser } from 'src/store/userStore'
 import Checkbox from 'src/components/common/Checkbox'
+import Tooltip from 'src/components/common/Tooltip'
+import Dropdown from 'src/components/common/Dropdown'
+import Profile from 'src/components/profile/Profile'
+import Wrapper from 'src/layout/Wrapper'
+import SelectList from 'src/components/SelectList'
 
 function commandBuilder(
   lines: Line[],
@@ -49,6 +54,10 @@ const RehearsePanel = () => {
   )
 
   const filteredLines = filterLines(values, options)
+
+  const uniqueActors = [
+    ...new Set(values.data.map((line) => line.name || line.type)),
+  ]
 
   const commands = commandBuilder(filteredLines, (lineIndex, command) => {
     const nextLine = filteredLines[lineIndex + 1]
@@ -87,7 +96,7 @@ const RehearsePanel = () => {
     continuous: true,
   })
   return (
-    <div className="flex gap-4 mr-12 w-full">
+    <div className="flex gap-4 mr-12 w-full flex-col sm:flex-row">
       <Modal
         title="Create audio files for the scene?"
         content="This process will only take a couple
@@ -105,10 +114,6 @@ const RehearsePanel = () => {
         <Spinner show={isLoading} />
         <Message type={isError ? 'alert' : 'success'} message={message} />
       </Modal>
-      <Checkbox
-        label="Enable info"
-        onChange={(value: boolean) => console.log(value)}
-      />
 
       <button
         onClick={() => setIsSyncing(true)}
@@ -117,6 +122,11 @@ const RehearsePanel = () => {
         <AiOutlineSync size={24} />
       </button>
       <span className="w-full"></span>
+      <Dropdown title="Filter">
+        <Wrapper>
+          <SelectList labels={uniqueActors} />
+        </Wrapper>
+      </Dropdown>
       {/* {startRehearse ? (
         <div className="flex flex-row gap-6 justify-start items-center">
           <AudioPlayer
