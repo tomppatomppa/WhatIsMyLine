@@ -18,12 +18,12 @@ import { useMutation } from 'react-query'
 import { createTextToSpeechFromScene } from 'src/API/googleApi'
 import AudioPlayer from './AudioPlayer'
 import { useCurrentUser } from 'src/store/userStore'
-import Checkbox from 'src/components/common/Checkbox'
-import Tooltip from 'src/components/common/Tooltip'
+
 import Dropdown from 'src/components/common/Dropdown'
-import Profile from 'src/components/profile/Profile'
+
 import Wrapper from 'src/layout/Wrapper'
 import SelectList from 'src/components/SelectList'
+import Tooltip from 'src/components/common/Tooltip'
 
 function commandBuilder(
   lines: Line[],
@@ -46,7 +46,7 @@ const RehearsePanel = () => {
   const [showModal, setShowModal] = useState(false)
   const [startRehearse, setStartRehearse] = useState(false)
   const { values } = useFormikContext<Scene>()
-  const { options, scriptId } = useReaderContext()
+  const { options, scriptId, dispatch } = useReaderContext()
   const { audioFiles, isValid, setIsSyncing, isSyncing } = useAudio(
     values,
     scriptId,
@@ -122,11 +122,27 @@ const RehearsePanel = () => {
         <AiOutlineSync size={24} />
       </button>
       <span className="w-full"></span>
-      <Dropdown title="Filter">
+
+      <Dropdown title="Actors">
         <Wrapper>
-          <SelectList labels={uniqueActors} />
+          <SelectList
+            labels={uniqueActors.map((actor) => ({
+              label: actor,
+              value: actor === 'INFO' ? '' : actor,
+            }))}
+            initialValues={options.highlight.map(
+              (actor: Actor) => actor.id || ''
+            )}
+            onCheck={(label) =>
+              dispatch({
+                type: 'HIGHLIGHT_TARGET',
+                payload: { target: label },
+              })
+            }
+          />
         </Wrapper>
       </Dropdown>
+
       {/* {startRehearse ? (
         <div className="flex flex-row gap-6 justify-start items-center">
           <AudioPlayer

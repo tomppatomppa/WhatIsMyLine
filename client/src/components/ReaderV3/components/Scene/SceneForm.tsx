@@ -9,7 +9,6 @@ import { ConditionalField } from '../forms/ConditionalField'
 import { FormikTextArea } from '../forms/FormikTextArea'
 import PanelWidget from '../ScenePanel/PanelWidget'
 import PanelComponent from '../ScenePanel/PanelComponent'
-import Tooltip from 'src/components/common/Tooltip'
 
 interface EditorFormProps {
   scene: Scene
@@ -18,7 +17,7 @@ interface EditorFormProps {
 }
 
 const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
-  const { options, dispatch } = useReaderContext()
+  const { options } = useReaderContext()
   const isEditing = options.isEditing.includes(scene.id)
 
   const getLineStyle = (type: LineType) => {
@@ -58,7 +57,7 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
                   index={lineIndex}
                   isDragDisabled={false}
                 >
-                  <div className="w-full flex flex-col " key={lineIndex}>
+                  <div className="w-full flex flex-col" key={lineIndex}>
                     <ConditionalField
                       key={lineIndex}
                       show={isEditing}
@@ -88,22 +87,11 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
                         </button>
                       </div>
                     </ConditionalField>
-                    <strong
-                      onClick={() => {
-                        if (!isEditing) {
-                          dispatch({
-                            type: 'HIGHLIGHT_TARGET',
-                            payload: { target: line.name },
-                          })
-                        }
-                      }}
-                    >
-                      <Field
-                        style={getLineStyle(line.type)}
-                        disabled={!isEditing || line.type === 'INFO'}
-                        name={`data[${lineIndex}].name`}
-                      />
-                    </strong>
+                    <Field
+                      style={getLineStyle(line.type)}
+                      disabled={!isEditing || line.type === 'INFO'}
+                      name={`data[${lineIndex}].name`}
+                    />
                     <FormikTextArea
                       style={{
                         ...getLineStyle(line.type),

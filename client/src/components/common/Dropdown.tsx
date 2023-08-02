@@ -16,13 +16,14 @@ const Dropdown = ({ title, children, className }: DropdownProps) => {
       <div>
         <button
           onClick={() => isOpen(!open)}
+          type="button"
           className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
         >
           {title}
         </button>
       </div>
       {open ? (
-        <div className="absolute text-black right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 cursor-pointer focus:outline-none">
+        <div className="absolute text-black right-0 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 cursor-pointer focus:outline-none">
           {children}
         </div>
       ) : null}

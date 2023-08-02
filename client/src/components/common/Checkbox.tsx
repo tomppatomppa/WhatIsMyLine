@@ -1,23 +1,12 @@
 import React from 'react'
 
 interface CheckboxProps {
+  checked: boolean
   label?: string
-  defaultChecked?: boolean
-  onChange: (checked: boolean) => void
+  onChange: () => void
 }
 
-const Checkbox = ({
-  label,
-  onChange,
-  defaultChecked = false,
-}: CheckboxProps) => {
-  const [checked, setChecked] = React.useState(defaultChecked)
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked)
-    onChange(event.target.checked)
-  }
-
+const Checkbox = ({ checked, label, onChange }: CheckboxProps) => {
   return (
     <label className="flex text-xs" htmlFor="filter">
       {label}
@@ -25,7 +14,7 @@ const Checkbox = ({
         name="filter"
         type="checkbox"
         checked={checked}
-        onChange={handleChange}
+        onChange={onChange}
       />
     </label>
   )

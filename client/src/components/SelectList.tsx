@@ -1,24 +1,36 @@
 import Checkbox from './common/Checkbox'
+import Tooltip from './common/Tooltip'
 
-interface SelectListProps {
-  labels: string[]
-  checkbox?: boolean
+export type SelectLabel = {
+  label: string
+  value: string
 }
 
-const SelectList = ({ labels, checkbox = true }: SelectListProps) => {
+interface SelectListProps {
+  labels: SelectLabel[]
+  initialValues: string[]
+  checkbox?: boolean
+  onCheck: (value: string) => void
+}
+
+const SelectList = ({
+  labels,
+  initialValues,
+  onCheck,
+  checkbox = true,
+}: SelectListProps) => {
   return (
-    <ul className="text-gray-700 flex flex-col mt-2">
-      {labels.map((label: string, index: number) => {
+    <ul className="text-gray-700 flex flex-col mt-2 overflow-clip ">
+      {labels.map((value: SelectLabel, index: number) => {
         return (
           <li key={index} className="text-black flex justify-end">
-            <label className="flex-1">{label}</label>
-            {checkbox && (
+            <label className="flex-1 mr-2">{value.label}</label>
+            {checkbox ? (
               <Checkbox
-                onChange={(value) => {
-                  console.log(value)
-                }}
+                checked={initialValues.includes(value.value)}
+                onChange={() => onCheck(value.value)}
               />
-            )}
+            ) : null}
           </li>
         )
       })}
