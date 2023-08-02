@@ -11,6 +11,7 @@ import {
   hasRequiredAudioFiles,
   arrayBufferIntoHTMLAudioElement,
   extractAudioFileIds,
+  Audio,
 } from '../utils'
 
 const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
@@ -39,7 +40,7 @@ const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
           })
           const audioFiles = arrayBufferIntoHTMLAudioElement(audioFileArray)
           setIsValid(true)
-          setAudioFiles(audioFiles)
+          setAudioFiles(audioFiles as Audio[])
         }
       },
       onError: (error: any) => {

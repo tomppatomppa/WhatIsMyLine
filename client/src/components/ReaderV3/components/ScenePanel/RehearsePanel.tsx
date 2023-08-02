@@ -8,7 +8,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
 import { AiOutlineSync } from 'react-icons/ai'
-import { filterAudioFiles, filterLines } from '../../utils'
+import { Audio, filterAudioFiles, filterLines } from '../../utils'
 import { FaStop } from 'react-icons/fa'
 import Modal from 'src/components/common/Modal'
 import { RootFolder, useRootFolder } from 'src/store/scriptStore'
@@ -24,15 +24,20 @@ import Dropdown from 'src/components/common/Dropdown'
 import Wrapper from 'src/layout/Wrapper'
 import SelectList from 'src/components/SelectList'
 import Tooltip from 'src/components/common/Tooltip'
+import AudioPlayerAlt from 'src/components/common/AudioPlayerAlt'
 
 function commandBuilder(
   lines: Line[],
-  action: (lineIndex: number, command: string) => void
+  action: (lineIndex: number, command: string, stopListening: any) => void
 ) {
   return lines.map((line, index) => ({
     command: line.lines,
-    callback: (command: any, spokenPhrase: any, similarityRatio: number) =>
-      action(index, command),
+    callback: (
+      command: any,
+      spokenPhrase: any,
+      similarityRatio: number,
+      stopListening: any
+    ) => action(index, command, stopListening),
     isFuzzyMatch: true,
     fuzzyMatchingThreshold: 0.5,
     bestMatchOnly: true,
@@ -52,6 +57,9 @@ const RehearsePanel = () => {
     scriptId,
     rootFolder?.id
   )
+  const [currentAudioIndex, setCurrentAudioIndex] = useState<number | null>(
+    null
+  )
 
   const filteredLines = filterLines(values, options)
 
@@ -59,12 +67,23 @@ const RehearsePanel = () => {
     ...new Set(values.data.map((line) => line.name || line.type)),
   ]
 
-  const commands = commandBuilder(filteredLines, (lineIndex, command) => {
-    const nextLine = filteredLines[lineIndex + 1]
-    if (nextLine) {
-      console.log(`SPOKEN LINE ${command} -> NEXT LINE ${nextLine.lines}}`)
+  const commands = commandBuilder(
+    values.data,
+    (lineIndex, command, stopListening) => {
+      if (!values.data[lineIndex + 1] || !audioFiles) {
+        setStartRehearse(false)
+        return
+      }
+
+      const nextLine = values.data[lineIndex + 1]
+
+      if (filteredLines.some((line) => line.lines === nextLine.lines)) {
+        setCurrentAudioIndex(() =>
+          audioFiles.findIndex((audio) => (audio as Audio).key === nextLine.id)
+        )
+      }
     }
-  })
+  )
 
   const { transcript, listening, resetTranscript } = useSpeechRecognition({
     commands,
@@ -86,8 +105,6 @@ const RehearsePanel = () => {
     }
   )
 
-  //Disable controls for visitors
-  //Google auth required
   if (user?.name === 'visitor') {
     return <div className="text-red-900">Not available in visitor mode</div>
   }
@@ -114,7 +131,6 @@ const RehearsePanel = () => {
         <Spinner show={isLoading} />
         <Message type={isError ? 'alert' : 'success'} message={message} />
       </Modal>
-
       <button
         onClick={() => setIsSyncing(true)}
         className={`${isSyncing ? 'text-gray-400 animate-spin' : ''} `}
@@ -122,7 +138,6 @@ const RehearsePanel = () => {
         <AiOutlineSync size={24} />
       </button>
       <span className="w-full"></span>
-
       <Dropdown title="Actors">
         <Wrapper>
           <SelectList
@@ -142,6 +157,25 @@ const RehearsePanel = () => {
           />
         </Wrapper>
       </Dropdown>
+      {audioFiles && currentAudioIndex !== null ? (
+        <AudioPlayerAlt
+          active={startRehearse}
+          setListen={() => {
+            SpeechRecognition.startListening({
+              language: 'sv-SE',
+              continuous: true,
+            })
+            setCurrentAudioIndex(null)
+          }}
+          stopListen={() => {
+            SpeechRecognition.stopListening()
+            resetTranscript()
+          }}
+          files={audioFiles[currentAudioIndex]}
+          transcript={undefined}
+          listening={listening}
+        />
+      ) : null}
 
       {/* {startRehearse ? (
         <div className="flex flex-row gap-6 justify-start items-center">

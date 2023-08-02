@@ -73,8 +73,8 @@ export function arrayBufferIntoHTMLAudioElement(
   return result
 }
 
-interface Audio extends HTMLAudioElement {
-  key: string
+export interface Audio extends HTMLAudioElement {
+  key: any
 }
 
 export function filterLines(
