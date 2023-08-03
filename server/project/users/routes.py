@@ -27,15 +27,13 @@ def login():
         if response.status_code == 200:
 
             user = verify_google_id_token(token_data.get("id_token"))
-            user_info = extract_user_info(user, token_data)    
-            store_user_info(user_info)
+            user_for_database, user_for_client = extract_user_info(user, token_data)    
+            store_user(user_for_database)
 
-            user = user_for_client(user_info)
+            response = jsonify(user_for_client)
             
-            response = jsonify(user)
-
             #Set cookies
-            access_token = create_access_token(identity=user_info.get("user_id"))
+            access_token = create_access_token(identity=user_for_client.get("user_id"))
             set_access_cookies(response, access_token) 
            
             return response
@@ -75,13 +73,6 @@ def users():
     return jsonify("Invalid request")
 
 
-def user_for_client(user_info):
-    return {
-        "email": user_info.get("email"),
-        "picture": user_info.get("picture")  ,
-        "access_token": user_info.get("access_token"),
-        "expiry": user_info.get("expiry")
-    }
 
 def extract_user_info(user, token_data):
     user_id = user.get("sub")
@@ -89,15 +80,22 @@ def extract_user_info(user, token_data):
     access_token = token_data.get("access_token")
     expiry = create_timestamp(token_data.get("expires_in"))
 
-    return {
+    user_for_database = {
         "user_id": user_id,
         "refresh_token": refresh_token,
-        "access_token": access_token,
-        "expiry": expiry,        
         "picture": user.get("picture"),
         "email": user.get("email"),
-        "provider": "google"    
+        "provider": "google" # No Plans for other providers    
     }
+
+    user_for_client = {
+         "email": user.get("email"),
+        "picture": user.get("picture"),
+        "access_token": access_token,
+        "expiry": expiry
+    }
+
+    return user_for_database, user_for_client
 
 def get_token_data(code):
     response = requests.post('https://oauth2.googleapis.com/token', data={
@@ -111,7 +109,7 @@ def get_token_data(code):
         
     return response
 
-def store_user_info(user_info):
+def store_user(user_info):
     user_exists = User.query.filter_by(user_id=user_info["user_id"]).first()
     if not user_exists:
         new_user = User(user_info["user_id"],
