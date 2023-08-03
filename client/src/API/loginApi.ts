@@ -14,6 +14,6 @@ export const refreshToken = async () => {
 }
 
 export const logout = async () => {
-  const { data } = await httpClient.post(`${BASE_URI}/logout`, null)
+  const { data } = await axios.post(`${BASE_URI}/logout`, null)
   return data
 }

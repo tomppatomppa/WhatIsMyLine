@@ -74,7 +74,6 @@ const RehearsePanel = () => {
         setStartRehearse(false)
         return
       }
-
       const nextLine = values.data[lineIndex + 1]
 
       if (filteredLines.some((line) => line.lines === nextLine.lines)) {

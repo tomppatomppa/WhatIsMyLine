@@ -122,7 +122,7 @@ def store_user_info(user_info):
                         )
         db.session.add(new_user)
         db.session.commit()
-    else:      
+    else:
         User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
     
     #TODO: revoke refresh_token
