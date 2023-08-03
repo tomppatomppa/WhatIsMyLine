@@ -4,7 +4,7 @@ import {
 } from 'src/API/googleApi'
 
 import { useQuery } from 'react-query'
-import { useAccessToken, useLogout } from 'src/store/userStore'
+import { useAccessToken } from 'src/store/userStore'
 import { useState } from 'react'
 import { Scene } from '../reader.types'
 import {
@@ -15,7 +15,6 @@ import {
 } from '../utils'
 
 const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
-  const logout = useLogout()
   const [isSyncing, setIsSyncing] = useState(true)
   const [audioFiles, setAudioFiles] = useState<HTMLAudioElement[]>()
   const [isValid, setIsValid] = useState(false)
@@ -42,12 +41,6 @@ const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
           setIsValid(true)
           setAudioFiles(audioFiles as Audio[])
         }
-      },
-      onError: (error: any) => {
-        if (error?.response?.data?.error.status === 'UNAUTHENTICATED') {
-          logout()
-        }
-        console.log(error)
       },
       onSettled: () => {
         setIsSyncing(false)

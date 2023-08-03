@@ -31,7 +31,7 @@ def login():
             store_user(user_for_database)
 
             response = jsonify(user_for_client)
-            
+
             #Set cookies
             access_token = create_access_token(identity=user_for_client.get("user_id"))
             set_access_cookies(response, access_token) 
@@ -89,7 +89,7 @@ def extract_user_info(user, token_data):
     }
 
     user_for_client = {
-         "email": user.get("email"),
+        "email": user.get("email"),
         "picture": user.get("picture"),
         "access_token": access_token,
         "expiry": expiry
@@ -122,8 +122,7 @@ def store_user(user_info):
         db.session.commit()
     else:
         User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
-    
-    #TODO: revoke refresh_token
+  
     
 def refresh_access_token(refresh_token):
     payload = {

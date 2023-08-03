@@ -1,5 +1,4 @@
 import Checkbox from './common/Checkbox'
-import Tooltip from './common/Tooltip'
 
 export type SelectLabel = {
   label: string
@@ -20,7 +19,7 @@ const SelectList = ({
   checkbox = true,
 }: SelectListProps) => {
   return (
-    <ul className="text-gray-700 flex flex-col mt-2 overflow-clip ">
+    <ul className="text-gray-700 flex flex-col mt-2">
       {labels.map((value: SelectLabel, index: number) => {
         return (
           <li key={index} className="text-black flex justify-end">

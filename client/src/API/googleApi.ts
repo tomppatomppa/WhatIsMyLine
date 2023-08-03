@@ -170,6 +170,10 @@ export const createTextToSpeechFromScene = async ({
   return data
 }
 
+/**
+ * Creates a root folder for the user if it doesn't exist
+ * @returns The id of the root folder
+ */
 export const syncGoogleDrive = async () => {
   const { data } = await httpClient.post(`${BASE_URI}/create_root_folder`)
 
