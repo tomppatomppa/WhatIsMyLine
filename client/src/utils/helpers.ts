@@ -1,7 +1,7 @@
 export function tokenIsExpired(date: number) {
   const currentDate = Date.now()
   const unixTime = Math.floor(currentDate / 1000)
-  console.log(date, unixTime)
+
   return date < unixTime
 }
 

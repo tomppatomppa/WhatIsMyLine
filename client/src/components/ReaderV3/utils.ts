@@ -86,6 +86,25 @@ export function filterLines(
       !options.highlight.some((highlight: Line) => highlight.id === name)
   )
 }
+
+export function labelLines(
+  values: Scene,
+  options: ReaderConfiguration,
+  audioFiles: HTMLAudioElement[] | undefined
+) {
+  return values.data.map((line) => {
+    return {
+      ...line,
+      shouldPlay: !options.highlight.some(
+        (highlight: Line) => highlight.id === line.name
+      ),
+      audioIndex: audioFiles
+        ? audioFiles.findIndex((audio) => (audio as Audio).key === line.id)
+        : null,
+      src: audioFiles?.find((audio) => (audio as Audio).key === line.id),
+    }
+  })
+}
 export function filterAudioFiles(
   values: Scene,
   audioFiles: HTMLAudioElement[] | undefined,

@@ -2,7 +2,7 @@ import axios, { ResponseType } from 'axios'
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 import { Scene } from 'src/components/ReaderV3/reader.types'
 import { BASE_URI } from 'src/config'
-import { httpClient } from 'src/utils/axiosClient'
+import { httpClient, updateAccessToken } from 'src/utils/axiosClient'
 
 interface getGoogleDriveFileByIdProps {
   docs: CallbackDoc
@@ -73,6 +73,7 @@ const findFolderInParent = async ({
         Authorization: `Bearer ${access_token}`,
         Accept: 'application/json',
       },
+
       params: {
         q: `'${rootId}' in parents and fullText contains '${scriptId}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
         fields: 'nextPageToken, files(id, name)',
@@ -99,20 +100,21 @@ export const findAudioFileIdsInSceneFolder = async ({
   scriptId,
   sceneId,
 }: FindAudioFileIdsInSceneFolderProps) => {
+  const token = await updateAccessToken()
   const scriptFolder = await findFolderInParent({
-    access_token,
+    access_token: token,
     rootId,
     scriptId,
   })
 
   const sceneFolder = await findFolderInParent({
-    access_token,
+    access_token: token,
     rootId: scriptFolder.files[0].id,
     scriptId: sceneId,
   })
 
   const folderWithAudio = await findFolderWithAudio({
-    access_token,
+    access_token: token,
     folderId: sceneFolder.files[0].id,
   })
 

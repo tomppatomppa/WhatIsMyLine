@@ -1,7 +1,8 @@
-import { httpClient } from 'src/utils/axiosClient'
-
-import { BASE_URI } from 'src/config'
 import axios from 'axios'
+
+import { httpClient } from 'src/utils/axiosClient'
+import { BASE_URI } from 'src/config'
+import { get } from 'http'
 import { getCookie } from 'src/utils/helpers'
 
 export const googleLogin = async (code: string) => {
@@ -23,6 +24,7 @@ export const getUser = async () => {
   })
   return data
 }
+
 export const logout = async () => {
   const { data } = await axios.post(`${BASE_URI}/logout`, null)
   return data

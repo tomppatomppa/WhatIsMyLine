@@ -1,43 +1,46 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { PlayIcon } from '../ReaderV3/components/icons'
-import { Audio } from '../ReaderV3/utils'
+import { useRef, useEffect } from 'react'
 
 interface AudioPlayerProps {
-  active: boolean
   setListen: () => void
   stopListen: () => void
-  files: HTMLAudioElement
+  files?: HTMLAudioElement | undefined | null
   transcript: any
-  listening: boolean
+  active: boolean
 }
 
-const AudioPlayerAlt = ({ files, setListen, active }: AudioPlayerProps) => {
+const AudioPlayerAlt = ({
+  files,
+  setListen,
+  stopListen,
+  active,
+}: AudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
     const audioElement = audioRef.current
-    if (audioElement) {
-      // Pause any existing audio and clear the src before loading the new source
+
+    if (audioElement && active) {
+      audioElement.pause()
+      audioElement.src = ''
+    }
+
+    if (audioElement && files) {
       audioElement.pause()
       audioElement.src = ''
 
       // Set the new audio source
       audioElement.src = files.src
       audioElement.load()
-      // Add an event listener for the canplaythrough event
     }
-  }, [files])
+  }, [files, active])
 
   return files ? (
     <div className="flex gap-2 items-center">
       <audio
-        controls
         autoPlay
         ref={audioRef}
-        onEnded={() => {
-          setListen()
-          console.log('ended')
-        }}
+        onEnded={setListen}
+        onPlay={() => stopListen()}
       />
     </div>
   ) : null

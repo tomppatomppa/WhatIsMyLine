@@ -7,8 +7,9 @@ import { useReaderContext } from '../../contexts/ReaderContext'
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
+
 import { AiOutlineSync } from 'react-icons/ai'
-import { Audio, filterAudioFiles, filterLines } from '../../utils'
+import { labelLines } from '../../utils'
 import { FaStop } from 'react-icons/fa'
 import Modal from 'src/components/common/Modal'
 import { RootFolder, useRootFolder } from 'src/store/scriptStore'
@@ -16,7 +17,6 @@ import Spinner from 'src/components/common/Spinner'
 import Message from 'src/components/common/Message'
 import { useMutation } from 'react-query'
 import { createTextToSpeechFromScene } from 'src/API/googleApi'
-import AudioPlayer from './AudioPlayer'
 import { useCurrentUser } from 'src/store/userStore'
 
 import Dropdown from 'src/components/common/Dropdown'
@@ -24,20 +24,12 @@ import Dropdown from 'src/components/common/Dropdown'
 import Wrapper from 'src/layout/Wrapper'
 import SelectList from 'src/components/SelectList'
 import AudioPlayerAlt from 'src/components/common/AudioPlayerAlt'
-import { getUser } from 'src/API/loginApi'
+import { ChatIcon } from '../icons'
 
-function commandBuilder(
-  lines: Line[],
-  action: (lineIndex: number, command: string, stopListening: any) => void
-) {
+function commandBuilder(lines: Line[], action: (lineIndex: number) => void) {
   return lines.map((line, index) => ({
     command: line.lines,
-    callback: (
-      command: any,
-      spokenPhrase: any,
-      similarityRatio: number,
-      stopListening: any
-    ) => action(index, command, stopListening),
+    callback: () => action(index),
     isFuzzyMatch: true,
     fuzzyMatchingThreshold: 0.5,
     bestMatchOnly: true,
@@ -47,9 +39,10 @@ function commandBuilder(
 const RehearsePanel = () => {
   const user = useCurrentUser()
   const rootFolder = useRootFolder() as RootFolder
+
   const [message, setMessage] = useState('')
   const [showModal, setShowModal] = useState(false)
-  const [startRehearse, setStartRehearse] = useState(false)
+
   const { values } = useFormikContext<Scene>()
   const { options, scriptId, dispatch } = useReaderContext()
   const { audioFiles, isValid, setIsSyncing, isSyncing } = useAudio(
@@ -57,43 +50,6 @@ const RehearsePanel = () => {
     scriptId,
     rootFolder?.id
   )
-  const [currentAudioIndex, setCurrentAudioIndex] = useState<number | null>(
-    null
-  )
-
-  const filteredLines = filterLines(values, options)
-
-  const uniqueActors = [
-    ...new Set(values.data.map((line) => line.name || line.type)),
-  ]
-  const { mutate: getUserData } = useMutation(getUser, {
-    onSuccess: (data) => {
-      console.log(data)
-    },
-  })
-  const commands = commandBuilder(
-    values.data,
-    (lineIndex, command, stopListening) => {
-      if (!values.data[lineIndex + 1] || !audioFiles) {
-        setStartRehearse(false)
-        return
-      }
-      const nextLine = values.data[lineIndex + 1]
-
-      if (filteredLines.some((line) => line.lines === nextLine.lines)) {
-        setCurrentAudioIndex(() =>
-          audioFiles.findIndex((audio) => (audio as Audio).key === nextLine.id)
-        )
-      }
-    }
-  )
-
-  const { listening, resetTranscript } = useSpeechRecognition({
-    commands,
-  })
-
-  // const filteredAudio = filterAudioFiles(values, audioFiles, options)
-
   const { mutate, isError, isLoading } = useMutation(
     createTextToSpeechFromScene,
     {
@@ -108,14 +64,55 @@ const RehearsePanel = () => {
     }
   )
 
+  const [index, setIndex] = useState(0)
+  const [startRehearse, setStartRehearse] = useState(false)
+  const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(
+    null
+  )
+
+  const labeled = labelLines(values, options, audioFiles)
+  const uniqueActors = [
+    ...new Set(values.data.map((line) => line.name || line.type)),
+  ]
+
+  const commands = commandBuilder(values.data, (lineIndex) => {
+    const nextLine = labeled[lineIndex + 1]
+    if (nextLine && nextLine.shouldPlay) {
+      setCurrentAudio(() => nextLine.src as HTMLAudioElement)
+    }
+  })
+
+  useSpeechRecognition({
+    commands,
+  })
+
+  const setNextLine = () => {
+    const nextLine = labeled[index + 1]
+
+    if (nextLine && nextLine.shouldPlay) {
+      setCurrentAudio(() => nextLine.src as HTMLAudioElement) //TODO: Does not trigger next audio
+      setIndex((prev) => prev + 1)
+    }
+  }
+
+  const reset = () => {
+    setIndex(0)
+    setCurrentAudio(null)
+    setStartRehearse(false)
+  }
+
   useEffect(() => {
+    if (labeled[0] && labeled[0].shouldPlay && labeled[0].src) {
+      setCurrentAudio(labeled[0].src)
+    }
+
     if (startRehearse) {
       SpeechRecognition.startListening({
         language: 'sv-SE',
         continuous: true,
       })
-      setCurrentAudioIndex(0)
     }
+
     return () => {
       SpeechRecognition.stopListening()
     }
@@ -123,6 +120,18 @@ const RehearsePanel = () => {
 
   if (user?.name === 'visitor') {
     return <div className="text-red-900">Not available in visitor mode</div>
+  }
+
+  if (!isValid) {
+    return (
+      <button
+        type="button"
+        className="text-red-900 h-12"
+        onClick={() => setShowModal(true)}
+      >
+        Create
+      </button>
+    )
   }
 
   return (
@@ -170,68 +179,33 @@ const RehearsePanel = () => {
           />
         </Wrapper>
       </Dropdown>
-      {audioFiles && currentAudioIndex !== null ? (
-        <AudioPlayerAlt
-          active={startRehearse}
-          setListen={() => {
-            SpeechRecognition.startListening({
-              language: 'sv-SE',
-              continuous: true,
-            })
-            setCurrentAudioIndex(null)
-          }}
-          stopListen={() => {
-            SpeechRecognition.stopListening()
-            resetTranscript()
-          }}
-          files={audioFiles[currentAudioIndex]}
-          transcript={undefined}
-          listening={listening}
-        />
-      ) : null}
-      <button onClick={() => getUserData()}>sdsd</button>
-      {/* {startRehearse ? (
-        <div className="flex flex-row gap-6 justify-start items-center">
-          <AudioPlayer
-            files={filteredAudio}
-            listening={listening}
-            transcript={transcript}
-            setListen={() =>
-              SpeechRecognition.startListening({
-                language: 'sv-SE',
-                continuous: true,
-              })
-            }
-            stopListen={() => {
-              SpeechRecognition.stopListening()
-              resetTranscript()
-            }}
-          />
-        </div>
-      ) : null} */}
-      {isValid ? (
-        <button
-          type="button"
-          onClick={() => {
-            if (listening) {
-              setStartRehearse(false)
-              SpeechRecognition.stopListening()
-              resetTranscript()
-            } else {
-              setStartRehearse(true)
-            }
-          }}
-        >
-          {startRehearse ? <FaStop color="red" /> : 'Rehearse'}
+      <AudioPlayerAlt
+        active={startRehearse}
+        setListen={() => {
+          setNextLine()
+          SpeechRecognition.startListening({
+            language: 'sv-SE',
+            continuous: true,
+          })
+        }}
+        stopListen={() => {
+          SpeechRecognition.stopListening()
+        }}
+        files={currentAudio}
+        transcript={undefined}
+      />
+      {startRehearse ? (
+        <button onClick={() => reset()}>
+          <FaStop color="red" />
         </button>
       ) : (
         <button
           type="button"
-          disabled={isSyncing}
-          className="text-red-900"
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setStartRehearse(() => true)
+          }}
         >
-          Create
+          <ChatIcon />
         </button>
       )}
     </div>

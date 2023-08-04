@@ -62,10 +62,7 @@ def logout_with_cookies():
 @users_blueprint.route("/user", methods=["GET", "POST"])
 @jwt_required()
 def users():
-    
-    user_id = get_jwt_identity()
-   
-    user = User.get_user_by_user_id(user_id)
+    user = User.get_user_by_user_id(get_jwt_identity())
     if user:
         return jsonify(user.email)
     return jsonify("Invalid request")
