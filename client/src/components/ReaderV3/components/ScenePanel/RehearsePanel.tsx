@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
 import { Actor, Line, Scene } from '../../reader.types'
@@ -23,8 +23,8 @@ import Dropdown from 'src/components/common/Dropdown'
 
 import Wrapper from 'src/layout/Wrapper'
 import SelectList from 'src/components/SelectList'
-import Tooltip from 'src/components/common/Tooltip'
 import AudioPlayerAlt from 'src/components/common/AudioPlayerAlt'
+import { getUser } from 'src/API/loginApi'
 
 function commandBuilder(
   lines: Line[],
@@ -66,7 +66,11 @@ const RehearsePanel = () => {
   const uniqueActors = [
     ...new Set(values.data.map((line) => line.name || line.type)),
   ]
-
+  const { mutate: getUserData } = useMutation(getUser, {
+    onSuccess: (data) => {
+      console.log(data)
+    },
+  })
   const commands = commandBuilder(
     values.data,
     (lineIndex, command, stopListening) => {
@@ -84,11 +88,11 @@ const RehearsePanel = () => {
     }
   )
 
-  const { transcript, listening, resetTranscript } = useSpeechRecognition({
+  const { listening, resetTranscript } = useSpeechRecognition({
     commands,
   })
 
-  const filteredAudio = filterAudioFiles(values, audioFiles, options)
+  // const filteredAudio = filterAudioFiles(values, audioFiles, options)
 
   const { mutate, isError, isLoading } = useMutation(
     createTextToSpeechFromScene,
@@ -104,13 +108,23 @@ const RehearsePanel = () => {
     }
   )
 
+  useEffect(() => {
+    if (startRehearse) {
+      SpeechRecognition.startListening({
+        language: 'sv-SE',
+        continuous: true,
+      })
+      setCurrentAudioIndex(0)
+    }
+    return () => {
+      SpeechRecognition.stopListening()
+    }
+  }, [startRehearse])
+
   if (user?.name === 'visitor') {
     return <div className="text-red-900">Not available in visitor mode</div>
   }
-  SpeechRecognition.startListening({
-    language: 'sv-SE',
-    continuous: true,
-  })
+
   return (
     <div className="flex gap-4 mr-12 w-full flex-col sm:flex-row">
       <Modal
@@ -175,7 +189,7 @@ const RehearsePanel = () => {
           listening={listening}
         />
       ) : null}
-
+      <button onClick={() => getUserData()}>sdsd</button>
       {/* {startRehearse ? (
         <div className="flex flex-row gap-6 justify-start items-center">
           <AudioPlayer
@@ -199,8 +213,13 @@ const RehearsePanel = () => {
         <button
           type="button"
           onClick={() => {
-            setStartRehearse(!startRehearse)
-            SpeechRecognition.stopListening()
+            if (listening) {
+              setStartRehearse(false)
+              SpeechRecognition.stopListening()
+              resetTranscript()
+            } else {
+              setStartRehearse(true)
+            }
           }}
         >
           {startRehearse ? <FaStop color="red" /> : 'Rehearse'}

@@ -1,18 +1,19 @@
+import { useState } from 'react'
+import { useQuery } from 'react-query'
+
 import {
   findAudioFileIdsInSceneFolder,
   getGoogleDriveFilesByIds,
 } from 'src/API/googleApi'
-
-import { useQuery } from 'react-query'
 import { useAccessToken } from 'src/store/userStore'
-import { useState } from 'react'
-import { Scene } from '../reader.types'
 import {
   hasRequiredAudioFiles,
   arrayBufferIntoHTMLAudioElement,
   extractAudioFileIds,
   Audio,
 } from '../utils'
+
+import { Scene } from '../reader.types'
 
 const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
   const [isSyncing, setIsSyncing] = useState(true)
@@ -30,6 +31,7 @@ const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
         sceneId: scene.id,
       }),
     {
+      //TODO: typescript
       onSuccess: async (data) => {
         const driveFolderIds = extractAudioFileIds(data)
         if (hasRequiredAudioFiles(scene.data, driveFolderIds)) {
@@ -37,6 +39,7 @@ const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
             docs: data,
             access_token,
           })
+
           const audioFiles = arrayBufferIntoHTMLAudioElement(audioFileArray)
           setIsValid(true)
           setAudioFiles(audioFiles as Audio[])

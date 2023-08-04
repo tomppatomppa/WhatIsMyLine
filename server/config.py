@@ -25,7 +25,7 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     DEBUG = True
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-
+    
 
 class TestingConfig(Config):
     TESTING = True

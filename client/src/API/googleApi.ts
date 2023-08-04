@@ -67,6 +67,7 @@ const findFolderInParent = async ({
 }: findFolderInParentProps) => {
   const { data } = await axios.get(
     'https://www.googleapis.com/drive/v3/files',
+
     {
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -156,6 +157,10 @@ interface CreateTextToSpeechSceneProps {
   scene: Scene
   rootFolderId: string
 }
+/**
+ * Creates a text to speech audio file from a scene
+ * @returns The ids of the audio files uploaded to google drive
+ */
 export const createTextToSpeechFromScene = async ({
   scriptId,
   scene,
@@ -172,7 +177,7 @@ export const createTextToSpeechFromScene = async ({
 
 /**
  * Creates a root folder for the user if it doesn't exist
- * @returns The id of the root folder
+ * @returns The id and name of the root folder
  */
 export const syncGoogleDrive = async () => {
   const { data } = await httpClient.post(`${BASE_URI}/create_root_folder`)

@@ -1,11 +1,11 @@
 import requests
+import os
+from functools import wraps
 from . import users_blueprint
 from flask import request, jsonify
-import os
 from utils import create_timestamp, verify_google_id_token
 from project.models import User
-from flask_jwt_extended import create_access_token,create_refresh_token, jwt_required,set_access_cookies, get_jwt_identity,set_refresh_cookies, unset_jwt_cookies
-from functools import wraps
+from flask_jwt_extended import create_access_token,  jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
 
 from project import db
 
@@ -25,15 +25,14 @@ def login():
       
         token_data = response.json()
         if response.status_code == 200:
-
             user = verify_google_id_token(token_data.get("id_token"))
-            user_for_database, user_for_client = extract_user_info(user, token_data)    
+            
+            user_for_database, user_for_client = extract_user_info(user, token_data)
             store_user(user_for_database)
 
             response = jsonify(user_for_client)
-
             #Set cookies
-            access_token = create_access_token(identity=user_for_client.get("user_id"))
+            access_token = create_access_token(identity=user_for_database.get("user_id"))
             set_access_cookies(response, access_token) 
            
             return response
@@ -46,11 +45,13 @@ def login():
 @users_blueprint.route("/refresh-token", methods=["POST"])
 @jwt_required()
 def refresh():
-    user_id = get_jwt_identity()
-    refresh_token = User.get_refresh_token_by_user_id(user_id)
-    if not refresh_token:
-        return "Missing 'refresh_token' login again.", 401 
     try:
+        user_id = get_jwt_identity()
+       
+        refresh_token = User.get_refresh_token_by_user_id(user_id)
+        if not refresh_token:
+            return "Missing 'refresh_token' login again.", 401 
+    
         access_token = refresh_access_token(refresh_token)
         expiry = create_timestamp(access_token.get("expires_in"))
         return jsonify({"access_token": access_token.get("access_token"), "expiry": expiry}), 200
@@ -66,20 +67,27 @@ def logout_with_cookies():
 @users_blueprint.route("/user", methods=["GET", "POST"])
 @jwt_required()
 def users():
+    
     user_id = get_jwt_identity()
+   
     user = User.get_user_by_user_id(user_id)
     if user:
         return jsonify(user.email)
     return jsonify("Invalid request")
 
-
+def user_for_client(user_info):
+    return {
+        "email": user_info.get("email"),
+        "picture": user_info.get("picture")  ,
+        "access_token": user_info.get("access_token"),
+        "expiry": user_info.get("expiry")
+    }
 
 def extract_user_info(user, token_data):
     user_id = user.get("sub")
     refresh_token = token_data.get("refresh_token")
     access_token = token_data.get("access_token")
     expiry = create_timestamp(token_data.get("expires_in"))
-
     user_for_database = {
         "user_id": user_id,
         "refresh_token": refresh_token,
@@ -87,14 +95,12 @@ def extract_user_info(user, token_data):
         "email": user.get("email"),
         "provider": "google" # No Plans for other providers    
     }
-
     user_for_client = {
         "email": user.get("email"),
         "picture": user.get("picture"),
         "access_token": access_token,
         "expiry": expiry
     }
-
     return user_for_database, user_for_client
 
 def get_token_data(code):

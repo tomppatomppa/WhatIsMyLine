@@ -19,8 +19,7 @@ def create_app():
     app.config.from_object(config_type)
     app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)
-  
+
     CORS(app, supports_credentials=True)
     
     initialize_extensions(app)
@@ -48,7 +47,7 @@ def create_upload_folder(app):
         path = os.path.dirname('current path')
         upload_folder = os.path.join(path.replace("/file_folder",""), "uploaded_files")
         processed_audio = os.path.join(path.replace("/file_folder",""), "processed_audio")
-        
+
         os.makedirs(upload_folder, exist_ok=True)
         os.makedirs(processed_audio, exist_ok=True)
 

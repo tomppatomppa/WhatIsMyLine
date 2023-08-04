@@ -5,13 +5,13 @@ import requests
 import os
 from project.google.TextToSpeech import  create_data
 from utils import  remove_dir
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 @google_blueprint.route("/create_root_folder",  methods=["POST"])
 @jwt_required()
 def create_root_folder():
     access_token = extract_token(request)
-    
+
     try:
         folderExists = driveUtils.search_folder(access_token)
         if folderExists:
