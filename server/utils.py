@@ -13,8 +13,7 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 def create_timestamp(expires_in = 0):
     timestamp = datetime.now()
     new_timestamp = timestamp + timedelta(seconds=expires_in)
-    formatted_timestamp = new_timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-    return str(formatted_timestamp)
+    return int(new_timestamp.timestamp())
 
 def remove_dir(directory_path):
     try:

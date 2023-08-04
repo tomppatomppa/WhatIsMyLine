@@ -36,9 +36,6 @@ def login():
             set_access_cookies(response, access_token) 
            
             return response
-      
-        return response.json(), response.status_code
- 
     except:
         return "Failed to login", 401
 
@@ -75,19 +72,13 @@ def users():
         return jsonify(user.email)
     return jsonify("Invalid request")
 
-def user_for_client(user_info):
-    return {
-        "email": user_info.get("email"),
-        "picture": user_info.get("picture")  ,
-        "access_token": user_info.get("access_token"),
-        "expiry": user_info.get("expiry")
-    }
 
 def extract_user_info(user, token_data):
     user_id = user.get("sub")
     refresh_token = token_data.get("refresh_token")
     access_token = token_data.get("access_token")
     expiry = create_timestamp(token_data.get("expires_in"))
+    
     user_for_database = {
         "user_id": user_id,
         "refresh_token": refresh_token,
