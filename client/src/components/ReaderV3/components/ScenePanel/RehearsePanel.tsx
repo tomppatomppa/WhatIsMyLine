@@ -116,6 +116,7 @@ const RehearsePanel = () => {
     return () => {
       SpeechRecognition.stopListening()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startRehearse])
 
   if (user?.name === 'visitor') {
