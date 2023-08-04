@@ -1,7 +1,8 @@
-export function tokenIsExpired(date: string) {
+export function tokenIsExpired(date: number) {
   const currentDate = Date.now()
-  const compareDate = new Date(date).getTime()
-  return compareDate < currentDate
+  const unixTime = Math.floor(currentDate / 1000)
+  console.log(date, unixTime)
+  return date < unixTime
 }
 
 export function removeCookie(cookieName: string) {

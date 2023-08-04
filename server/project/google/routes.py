@@ -5,7 +5,7 @@ import requests
 import os
 from project.google.TextToSpeech import  create_data
 from utils import  remove_dir
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 @google_blueprint.route("/create_root_folder",  methods=["POST"])
 @jwt_required()
@@ -53,15 +53,11 @@ def scene_to_speech():
        
         remove_dir(f"./processed_audio/{script_id}")
 
-
-
-
 def extract_token(request):
     headers = request.headers
     bearer = headers.get('Authorization')
     token = bearer.split()[1]
     return token
-
 
 @google_blueprint.errorhandler(401)
 def handle_unauthorized(error):

@@ -5,7 +5,7 @@ from . import users_blueprint
 from flask import request, jsonify
 from utils import create_timestamp, verify_google_id_token
 from project.models import User
-from flask_jwt_extended import create_access_token,  jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
+from flask_jwt_extended import create_access_token,get_jwt, jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
 
 from project import db
 
@@ -13,13 +13,11 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-
 @users_blueprint.route("/login", methods=["POST"])
 def login():
     code = request.json.get('code')
     if not code:
         return "Missing 'code' parameter in the request.", 403 
-  
     try:
         response = get_token_data(code)
       
@@ -72,13 +70,12 @@ def users():
         return jsonify(user.email)
     return jsonify("Invalid request")
 
-
 def extract_user_info(user, token_data):
     user_id = user.get("sub")
     refresh_token = token_data.get("refresh_token")
     access_token = token_data.get("access_token")
     expiry = create_timestamp(token_data.get("expires_in"))
-    
+
     user_for_database = {
         "user_id": user_id,
         "refresh_token": refresh_token,
@@ -119,7 +116,6 @@ def store_user(user_info):
         db.session.commit()
     else:
         User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
-  
     
 def refresh_access_token(refresh_token):
     payload = {

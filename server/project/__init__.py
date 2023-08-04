@@ -1,9 +1,13 @@
+from datetime import datetime
+from datetime import timedelta
+from datetime import timezone
+
 from flask import Flask, render_template
 from flask_cors import CORS
 import sqlalchemy as sa
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
-from datetime import timedelta
+from flask_jwt_extended import JWTManager, get_jwt, set_access_cookies,create_access_token, get_jwt_identity
+
 import os
 
 db = SQLAlchemy()
@@ -19,11 +23,13 @@ def create_app():
     app.config.from_object(config_type)
     app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
 
     CORS(app, supports_credentials=True)
     
     initialize_extensions(app)
     create_upload_folder(app)
+    register_request_handlers(app)
     register_blueprints(app)
     
     engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
@@ -59,6 +65,23 @@ def create_upload_folder(app):
         app.logger.error('Exception occurred : {}'.format(e))
 
 
+def register_request_handlers(app):
+    @app.after_request
+    def refresh_expiring_jwts(response):
+        try:
+            exp_timestamp = get_jwt()["exp"]
+            now = datetime.now(timezone.utc)
+            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+
+            if target_timestamp > exp_timestamp:
+                print("SHOULD REFRESH")
+                access_token = create_access_token(identity=get_jwt_identity())
+                set_access_cookies(response, access_token)
+            return response
+        except (RuntimeError, KeyError):
+            return response
+
+
 def register_blueprints(app):
     @app.route('/')
     def index(): 
@@ -71,7 +94,7 @@ def register_blueprints(app):
     from .users import users_blueprint
     from .google import google_blueprint
     from .upload import upload_blueprint
-    
+   
     app.register_blueprint(users_blueprint)
     app.register_blueprint(google_blueprint)
     app.register_blueprint(upload_blueprint)
