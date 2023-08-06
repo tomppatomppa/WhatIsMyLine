@@ -98,9 +98,6 @@ export function labelLines(
       shouldPlay: !options.highlight.some(
         (highlight: Line) => highlight.id === line.name
       ),
-      audioIndex: audioFiles
-        ? audioFiles.findIndex((audio) => (audio as Audio).key === line.id)
-        : null,
       src: audioFiles?.find((audio) => (audio as Audio).key === line.id),
     }
   })

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
-import { Actor, Line, Scene } from '../../reader.types'
-
+import { Actor, Line, Scene, SceneLine } from '../../reader.types'
+import useSound from 'use-sound'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import SpeechRecognition, {
   useSpeechRecognition,
@@ -10,7 +10,7 @@ import SpeechRecognition, {
 
 import { AiOutlineSync } from 'react-icons/ai'
 import { labelLines } from '../../utils'
-import { FaStop } from 'react-icons/fa'
+
 import Modal from 'src/components/common/Modal'
 import { RootFolder, useRootFolder } from 'src/store/scriptStore'
 import Spinner from 'src/components/common/Spinner'
@@ -23,24 +23,13 @@ import Dropdown from 'src/components/common/Dropdown'
 
 import Wrapper from 'src/layout/Wrapper'
 import SelectList from 'src/components/SelectList'
-import AudioPlayerAlt from 'src/components/common/AudioPlayerAlt'
-import { ChatIcon } from '../icons'
-
-function commandBuilder(lines: Line[], action: (lineIndex: number) => void) {
-  return lines.map((line, index) => ({
-    command: line.lines,
-    callback: () => action(index),
-    isFuzzyMatch: true,
-    fuzzyMatchingThreshold: 0.5,
-    bestMatchOnly: true,
-  }))
-}
+import { AudioButton } from 'src/components/common/AudioButton'
+import usePlayAudio from '../../hooks/usePlayAudio'
 
 const RehearsePanel = () => {
   //TODO: Move to context, or somewhere else
   const user = useCurrentUser()
   const rootFolder = useRootFolder() as RootFolder //Can be moved to useAudio?
-  const [message, setMessage] = useState('')
   const [showModal, setShowModal] = useState(false)
 
   const { values } = useFormikContext<Scene>()
@@ -53,72 +42,18 @@ const RehearsePanel = () => {
   const { mutate, isError, isSuccess, isLoading } = useMutation(
     createTextToSpeechFromScene,
     {
-      onSuccess: (data) => {
-        setMessage(`Successfully added audio for ${data.name}`)
-        //Toggle query for downloading files
+      onSuccess: () => {
         refetch()
-      },
-      onError: () => {
-        setMessage('Something went wrong')
       },
     }
   )
 
-  // const [index, setIndex] = useState(0)
-  // const [startRehearse, setStartRehearse] = useState(false)
-  // const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(
-  //   null
-  // )
+  const uniqueActors = [
+    ...new Set(values.data.map((line) => line.name || line.type)),
+  ]
 
-  // const labeled = labelLines(values, options, audioFiles)
-  // const uniqueActors = [
-  //   ...new Set(values.data.map((line) => line.name || line.type)),
-  // ]
-
-  // const commands = commandBuilder(values.data, (lineIndex) => {
-  //   const nextLine = labeled[lineIndex + 1]
-  //   if (nextLine && nextLine.shouldPlay) {
-  //     setCurrentAudio(() => nextLine.src as HTMLAudioElement)
-  //   }
-  // })
-
-  // useSpeechRecognition({
-  //   commands,
-  // })
-
-  // const setNextLine = () => {
-  //   const nextLine = labeled[index + 1]
-
-  //   if (nextLine && nextLine.shouldPlay) {
-  //     setCurrentAudio(() => nextLine.src as HTMLAudioElement) //TODO: Does not trigger next audio
-  //     setIndex((prev) => prev + 1)
-  //   }
-  // }
-
-  // const reset = () => {
-  //   setIndex(0)
-  //   setCurrentAudio(null)
-  //   setStartRehearse(false)
-  // }
-
-  // useEffect(() => {
-  //   if (labeled[0] && labeled[0].shouldPlay && labeled[0].src) {
-  //     setCurrentAudio(labeled[0].src)
-  //   }
-
-  //   if (startRehearse) {
-  //     SpeechRecognition.startListening({
-  //       language: 'sv-SE',
-  //       continuous: true,
-  //     })
-  //   }
-
-  //   return () => {
-  //     SpeechRecognition.stopListening()
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [startRehearse])
-
+  //Add audio to lines
+  const labeled = labelLines(values, options, audioFiles)
   //TODO: Move to context, or somewhere else
   if (user?.name === 'visitor') {
     return <div className="text-red-900">Not available in visitor mode</div>
@@ -141,7 +76,10 @@ const RehearsePanel = () => {
         }
       >
         <Spinner show={isLoading} />
-        <Message type={isError ? 'alert' : 'success'} message={message} />
+        <Message
+          type={isError ? 'alert' : 'success'}
+          message={isSuccess ? `Successfully added audio for ${scriptId}` : ``}
+        />
       </Modal>
       <div className="flex flex-1">
         <button
@@ -170,8 +108,9 @@ const RehearsePanel = () => {
           />
         </Wrapper>
       </Dropdown>
+
       {audioFiles ? (
-        <ComponentWhenValid audioFiles={audioFiles} />
+        <ComponentWhenValid values={values} labeled={labeled} />
       ) : (
         <button
           type="button"
@@ -181,44 +120,95 @@ const RehearsePanel = () => {
           Create
         </button>
       )}
-      {/* <AudioPlayerAlt
-        active={startRehearse}
-        setListen={() => {
-          setNextLine()
-          SpeechRecognition.startListening({
-            language: 'sv-SE',
-            continuous: true,
-          })
-        }}
-        stopListen={() => {
-          SpeechRecognition.stopListening()
-        }}
-        files={currentAudio}
-        transcript={undefined}
-      /> */}
-      {/* {startRehearse ? (
-        <button onClick={() => reset()}>
-          <FaStop color="red" />
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={() => {
-            setStartRehearse(() => true)
-          }}
-        >
-          <ChatIcon />
-        </button>
-      )} */}
     </div>
   )
 }
 
-interface ComponentWhenValidProps {
-  audioFiles: HTMLAudioElement[]
+interface LabeledLine {
+  type: SceneLine
+  name: string
+  id: string
+  lines: string
+  src: HTMLAudioElement
+  shouldPlay: boolean
 }
-const ComponentWhenValid = ({ audioFiles }: ComponentWhenValidProps) => {
-  console.log(audioFiles)
-  return <div className="flex items-center">Valid</div>
+
+function commandBuilder(
+  lines: LabeledLine[],
+  action: (line: LabeledLine, nextLine: LabeledLine | undefined) => void
+) {
+  function handleNextAction(labeled: LabeledLine) {
+    if (!labeled || !labeled.shouldPlay) return undefined
+
+    return labeled
+  }
+
+  return lines.map((line, index) => ({
+    command: line.lines,
+    callback: () => action(line, handleNextAction(lines[index + 1])),
+    isFuzzyMatch: true,
+    fuzzyMatchingThreshold: 0.5,
+    bestMatchOnly: true,
+  }))
+}
+
+interface ComponentWhenValidProps {
+  values: Scene
+  labeled: any[]
+}
+
+const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
+  const [start, setStart] = useState(false)
+  const { controls, setCurrentAudio } = usePlayAudio()
+
+  const commands = commandBuilder(labeled, (line, nextLine) => {
+    if (nextLine) setCurrentAudio(nextLine.src)
+  })
+
+  useSpeechRecognition({
+    commands,
+  })
+
+  const handleStart = () => {
+    setStart(true)
+    SpeechRecognition.startListening({
+      language: 'sv-SE',
+      continuous: true,
+    })
+  }
+
+  const handleStop = () => {
+    setStart(false)
+    controls.reset()
+    setCurrentAudio(null)
+    SpeechRecognition.stopListening()
+  }
+
+  if (!start) {
+    return (
+      <button type="button" onClick={handleStart}>
+        Play
+      </button>
+    )
+  }
+
+  return (
+    <div className="flex items-center gap-4">
+      {/*Controls */}
+      <div className="bg-gray-200 flex gap-4 border p-2">
+        <AudioButton text="Play" onClick={() => controls.play()} />
+        <AudioButton text="Reset" onClick={() => controls.reset()} />
+        <AudioButton text="Pause" onClick={() => controls.pause()} />
+        <AudioButton
+          text="Load"
+          onClick={() => setCurrentAudio(labeled[0].src)}
+        />
+      </div>
+
+      <button type="button" onClick={handleStop}>
+        Stop
+      </button>
+    </div>
+  )
 }
 export default RehearsePanel
