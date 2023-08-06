@@ -90,13 +90,13 @@ const findFolderInParent = async ({
 
 interface FindAudioFileIdsInSceneFolderProps {
   rootId: string
-  access_token: string
+
   scriptId: string
   sceneId: string
 }
 export const findAudioFileIdsInSceneFolder = async ({
   rootId,
-  access_token,
+
   scriptId,
   sceneId,
 }: FindAudioFileIdsInSceneFolderProps) => {
@@ -123,19 +123,20 @@ export const findAudioFileIdsInSceneFolder = async ({
 
 interface getGoogleDriveFilesByIdsProps {
   docs: CallbackDoc[]
-  access_token: string | undefined
+
   responseType?: ResponseType
 }
 export const getGoogleDriveFilesByIds = async ({
   docs = [],
-  access_token,
+
   responseType = 'arraybuffer',
 }: getGoogleDriveFilesByIdsProps) => {
+  const token = await updateAccessToken()
   const results = await Promise.all(
     docs.map((doc) =>
       axios.get(`https://www.googleapis.com/drive/v3/files/${doc.id}`, {
         headers: {
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${token}`,
           Accept: 'application/json',
         },
         responseType: responseType,

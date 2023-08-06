@@ -37,26 +37,26 @@ function commandBuilder(lines: Line[], action: (lineIndex: number) => void) {
 }
 
 const RehearsePanel = () => {
+  //TODO: Move to context, or somewhere else
   const user = useCurrentUser()
-  const rootFolder = useRootFolder() as RootFolder
-
+  const rootFolder = useRootFolder() as RootFolder //Can be moved to useAudio?
   const [message, setMessage] = useState('')
   const [showModal, setShowModal] = useState(false)
 
   const { values } = useFormikContext<Scene>()
   const { options, scriptId, dispatch } = useReaderContext()
-  const { audioFiles, isValid, setIsSyncing, isSyncing } = useAudio(
+  const { audioFiles, refetch, isFetching } = useAudio(
     values,
     scriptId,
     rootFolder?.id
   )
-  const { mutate, isError, isLoading } = useMutation(
+  const { mutate, isError, isSuccess, isLoading } = useMutation(
     createTextToSpeechFromScene,
     {
       onSuccess: (data) => {
         setMessage(`Successfully added audio for ${data.name}`)
         //Toggle query for downloading files
-        setIsSyncing(true)
+        refetch()
       },
       onError: () => {
         setMessage('Something went wrong')
@@ -64,75 +64,64 @@ const RehearsePanel = () => {
     }
   )
 
-  const [index, setIndex] = useState(0)
-  const [startRehearse, setStartRehearse] = useState(false)
-  const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(
-    null
-  )
+  // const [index, setIndex] = useState(0)
+  // const [startRehearse, setStartRehearse] = useState(false)
+  // const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(
+  //   null
+  // )
 
-  const labeled = labelLines(values, options, audioFiles)
-  const uniqueActors = [
-    ...new Set(values.data.map((line) => line.name || line.type)),
-  ]
+  // const labeled = labelLines(values, options, audioFiles)
+  // const uniqueActors = [
+  //   ...new Set(values.data.map((line) => line.name || line.type)),
+  // ]
 
-  const commands = commandBuilder(values.data, (lineIndex) => {
-    const nextLine = labeled[lineIndex + 1]
-    if (nextLine && nextLine.shouldPlay) {
-      setCurrentAudio(() => nextLine.src as HTMLAudioElement)
-    }
-  })
+  // const commands = commandBuilder(values.data, (lineIndex) => {
+  //   const nextLine = labeled[lineIndex + 1]
+  //   if (nextLine && nextLine.shouldPlay) {
+  //     setCurrentAudio(() => nextLine.src as HTMLAudioElement)
+  //   }
+  // })
 
-  useSpeechRecognition({
-    commands,
-  })
+  // useSpeechRecognition({
+  //   commands,
+  // })
 
-  const setNextLine = () => {
-    const nextLine = labeled[index + 1]
+  // const setNextLine = () => {
+  //   const nextLine = labeled[index + 1]
 
-    if (nextLine && nextLine.shouldPlay) {
-      setCurrentAudio(() => nextLine.src as HTMLAudioElement) //TODO: Does not trigger next audio
-      setIndex((prev) => prev + 1)
-    }
-  }
+  //   if (nextLine && nextLine.shouldPlay) {
+  //     setCurrentAudio(() => nextLine.src as HTMLAudioElement) //TODO: Does not trigger next audio
+  //     setIndex((prev) => prev + 1)
+  //   }
+  // }
 
-  const reset = () => {
-    setIndex(0)
-    setCurrentAudio(null)
-    setStartRehearse(false)
-  }
+  // const reset = () => {
+  //   setIndex(0)
+  //   setCurrentAudio(null)
+  //   setStartRehearse(false)
+  // }
 
-  useEffect(() => {
-    if (labeled[0] && labeled[0].shouldPlay && labeled[0].src) {
-      setCurrentAudio(labeled[0].src)
-    }
+  // useEffect(() => {
+  //   if (labeled[0] && labeled[0].shouldPlay && labeled[0].src) {
+  //     setCurrentAudio(labeled[0].src)
+  //   }
 
-    if (startRehearse) {
-      SpeechRecognition.startListening({
-        language: 'sv-SE',
-        continuous: true,
-      })
-    }
+  //   if (startRehearse) {
+  //     SpeechRecognition.startListening({
+  //       language: 'sv-SE',
+  //       continuous: true,
+  //     })
+  //   }
 
-    return () => {
-      SpeechRecognition.stopListening()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startRehearse])
+  //   return () => {
+  //     SpeechRecognition.stopListening()
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [startRehearse])
 
+  //TODO: Move to context, or somewhere else
   if (user?.name === 'visitor') {
     return <div className="text-red-900">Not available in visitor mode</div>
-  }
-
-  if (!isValid) {
-    return (
-      <button
-        type="button"
-        className="text-red-900 h-12"
-        onClick={() => setShowModal(true)}
-      >
-        Create
-      </button>
-    )
   }
 
   return (
@@ -154,13 +143,14 @@ const RehearsePanel = () => {
         <Spinner show={isLoading} />
         <Message type={isError ? 'alert' : 'success'} message={message} />
       </Modal>
-      <button
-        onClick={() => setIsSyncing(true)}
-        className={`${isSyncing ? 'text-gray-400 animate-spin' : ''} `}
-      >
-        <AiOutlineSync size={24} />
-      </button>
-      <span className="w-full"></span>
+      <div className="flex flex-1">
+        <button
+          onClick={() => refetch()}
+          className={`${isFetching ? 'text-gray-400 animate-spin' : ''} `}
+        >
+          <AiOutlineSync size={24} />
+        </button>
+      </div>
       <Dropdown title="Actors">
         <Wrapper>
           <SelectList
@@ -180,7 +170,18 @@ const RehearsePanel = () => {
           />
         </Wrapper>
       </Dropdown>
-      <AudioPlayerAlt
+      {audioFiles ? (
+        <ComponentWhenValid audioFiles={audioFiles} />
+      ) : (
+        <button
+          type="button"
+          className="text-red-900 h-12"
+          onClick={() => setShowModal(true)}
+        >
+          Create
+        </button>
+      )}
+      {/* <AudioPlayerAlt
         active={startRehearse}
         setListen={() => {
           setNextLine()
@@ -194,8 +195,8 @@ const RehearsePanel = () => {
         }}
         files={currentAudio}
         transcript={undefined}
-      />
-      {startRehearse ? (
+      /> */}
+      {/* {startRehearse ? (
         <button onClick={() => reset()}>
           <FaStop color="red" />
         </button>
@@ -208,9 +209,16 @@ const RehearsePanel = () => {
         >
           <ChatIcon />
         </button>
-      )}
+      )} */}
     </div>
   )
 }
 
+interface ComponentWhenValidProps {
+  audioFiles: HTMLAudioElement[]
+}
+const ComponentWhenValid = ({ audioFiles }: ComponentWhenValidProps) => {
+  console.log(audioFiles)
+  return <div className="flex items-center">Valid</div>
+}
 export default RehearsePanel
