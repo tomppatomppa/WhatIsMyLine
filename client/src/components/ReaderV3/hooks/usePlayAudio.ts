@@ -1,4 +1,5 @@
 import { MutableRefObject, useState, useRef } from 'react'
+
 interface UsePlayAudioReturn {
   controls: {
     play: () => void
@@ -9,13 +10,17 @@ interface UsePlayAudioReturn {
   audioRef: MutableRefObject<HTMLAudioElement | null>
 }
 
-const usePlayAudio = (): UsePlayAudioReturn => {
-  const [autoPlay, setAutoPlay] = useState(true)
+const usePlayAudio = (onEnded: () => void): UsePlayAudioReturn => {
+  const [autoPlay] = useState(true)
+
   const audioRef: MutableRefObject<HTMLAudioElement | null> =
     useRef<HTMLAudioElement | null>(null)
 
   const play = () => {
     if (audioRef.current) {
+      audioRef.current?.addEventListener('ended', () => {
+        onEnded()
+      })
       audioRef.current.play()
     }
   }
@@ -35,6 +40,7 @@ const usePlayAudio = (): UsePlayAudioReturn => {
 
   const setCurrentAudio = (audio: HTMLAudioElement | null) => {
     audioRef.current = audio?.src ? audio : null
+
     if (autoPlay) play()
   }
 

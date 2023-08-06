@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, MutableRefObject } from 'react'
+import { useState, useEffect } from 'react'
 import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
-import { Actor, Line, Scene, SceneLine } from '../../reader.types'
-import useSound from 'use-sound'
+import { Actor, Scene, SceneLine } from '../../reader.types'
+
 import { useReaderContext } from '../../contexts/ReaderContext'
 import SpeechRecognition, {
   useSpeechRecognition,
@@ -133,19 +133,17 @@ interface LabeledLine {
   shouldPlay: boolean
 }
 
+function handleNextAction(labeled: LabeledLine) {
+  if (!labeled || !labeled.shouldPlay) return undefined
+  return labeled
+}
 function commandBuilder(
   lines: LabeledLine[],
-  action: (line: LabeledLine, nextLine: LabeledLine | undefined) => void
+  action: (nextLine: LabeledLine | undefined) => void
 ) {
-  function handleNextAction(labeled: LabeledLine) {
-    if (!labeled || !labeled.shouldPlay) return undefined
-
-    return labeled
-  }
-
   return lines.map((line, index) => ({
     command: line.lines,
-    callback: () => action(line, handleNextAction(lines[index + 1])),
+    callback: () => action(handleNextAction(lines[index + 1])),
     isFuzzyMatch: true,
     fuzzyMatchingThreshold: 0.5,
     bestMatchOnly: true,
@@ -159,9 +157,11 @@ interface ComponentWhenValidProps {
 
 const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
   const [start, setStart] = useState(false)
-  const { controls, setCurrentAudio } = usePlayAudio()
+  const { controls, setCurrentAudio } = usePlayAudio(() => {
+    console.log('next')
+  })
 
-  const commands = commandBuilder(labeled, (line, nextLine) => {
+  const commands = commandBuilder(labeled, (nextLine) => {
     if (nextLine) setCurrentAudio(nextLine.src)
   })
 
@@ -201,7 +201,11 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
         <AudioButton text="Pause" onClick={() => controls.pause()} />
         <AudioButton
           text="Load"
-          onClick={() => setCurrentAudio(labeled[0].src)}
+          onClick={() => {
+            if (labeled[0].shouldPlay) {
+              setCurrentAudio(labeled[0].src)
+            }
+          }}
         />
       </div>
 
