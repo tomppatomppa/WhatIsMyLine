@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
 import { Actor, Scene, SceneLine } from '../../reader.types'

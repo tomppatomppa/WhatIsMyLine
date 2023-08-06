@@ -5,7 +5,7 @@ import {
   findAudioFileIdsInSceneFolder,
   getGoogleDriveFilesByIds,
 } from 'src/API/googleApi'
-import { useAccessToken } from 'src/store/userStore'
+
 import {
   hasRequiredAudioFiles,
   arrayBufferIntoHTMLAudioElement,
