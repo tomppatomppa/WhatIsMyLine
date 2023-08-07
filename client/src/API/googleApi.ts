@@ -1,6 +1,11 @@
 import axios, { ResponseType } from 'axios'
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
-import { Scene } from 'src/components/ReaderV3/reader.types'
+import { Line, Scene } from 'src/components/ReaderV3/reader.types'
+import {
+  arrayBufferIntoHTMLAudioElement,
+  extractAudioFileIds,
+  hasRequiredAudioFiles,
+} from 'src/components/ReaderV3/utils'
 import { BASE_URI } from 'src/config'
 import { httpClient, updateAccessToken } from 'src/utils/axiosClient'
 
@@ -88,18 +93,19 @@ const findFolderInParent = async ({
   return data
 }
 
-interface FindAudioFileIdsInSceneFolderProps {
+interface downloadAudioFilesInSceneProps {
   rootId: string
-
   scriptId: string
   sceneId: string
+  lines: Line[]
 }
-export const findAudioFileIdsInSceneFolder = async ({
+//TODO: move to backend
+export const downloadAudioFilesInScene = async ({
   rootId,
-
   scriptId,
   sceneId,
-}: FindAudioFileIdsInSceneFolderProps) => {
+  lines,
+}: downloadAudioFilesInSceneProps) => {
   const token = await updateAccessToken()
   const scriptFolder = await findFolderInParent({
     access_token: token,
@@ -118,7 +124,16 @@ export const findAudioFileIdsInSceneFolder = async ({
     folderId: sceneFolder.files[0].id,
   })
 
-  return folderWithAudio.files
+  const driveFolderIds = extractAudioFileIds(folderWithAudio.files)
+
+  if (hasRequiredAudioFiles(lines, driveFolderIds)) {
+    const audioFileArray = await getGoogleDriveFilesByIds({
+      docs: driveFolderIds.files,
+    })
+    const audioFiles = arrayBufferIntoHTMLAudioElement(audioFileArray)
+    return audioFiles
+  }
+  throw new Error('Missing audio files')
 }
 
 interface getGoogleDriveFilesByIdsProps {
