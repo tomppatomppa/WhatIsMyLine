@@ -23,8 +23,9 @@ import Dropdown from 'src/components/common/Dropdown'
 
 import Wrapper from 'src/layout/Wrapper'
 import SelectList from 'src/components/SelectList'
-import { AudioButton } from 'src/components/common/AudioButton'
 import usePlayAudio from '../../hooks/usePlayAudio'
+import { PlayIcon } from '../icons'
+import { FaCircle } from 'react-icons/fa'
 
 const RehearsePanel = () => {
   //TODO: Move to context, or somewhere else
@@ -59,7 +60,7 @@ const RehearsePanel = () => {
   }
 
   return (
-    <div className="flex gap-4 mr-12 w-full flex-col sm:flex-row">
+    <div className="flex md:gap-4 sm:mr-12 w-full">
       <Modal
         title="Create audio files for the scene?"
         content="This process will only take a couple
@@ -80,7 +81,7 @@ const RehearsePanel = () => {
           message={isSuccess ? `Successfully added audio for ${scriptId}` : ``}
         />
       </Modal>
-      <div className="flex flex-1">
+      <div className="flex flex-1 ">
         <button
           onClick={() => refetch()}
           className={`${isFetching ? 'text-gray-400 animate-spin' : ''} `}
@@ -202,20 +203,15 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
   if (!start) {
     return (
       <button type="button" onClick={handleStart}>
-        Play
+        <PlayIcon />
       </button>
     )
   }
 
   return (
-    <div className="flex items-center gap-4">
-      {/*Controls */}
-      <div className="bg-gray-200 flex gap-4 border p-2">
-        <AudioButton text="Play" onClick={() => controls.play()} />
-        <AudioButton text="Pause" onClick={() => controls.pause()} />
-      </div>
+    <div className="flex items-center">
       <button type="button" onClick={handleStop}>
-        Stop
+        <FaCircle color="red" />
       </button>
     </div>
   )

@@ -3,8 +3,6 @@ import { MutableRefObject, useState, useRef } from 'react'
 interface UsePlayAudioReturn {
   controls: {
     play: () => void
-    pause: () => void
-    reset: () => void
     stopAll: () => void
   }
   setCurrentAudio: (audio: HTMLAudioElement | null) => void
@@ -31,26 +29,15 @@ const usePlayAudio = (
     }
   }
 
-  const pause = () => {
-    if (audioRef.current) {
-      audioRef.current.pause()
-    }
-  }
-
-  const reset = () => {
-    if (audioRef.current) {
-      pause()
-      audioRef.current.currentTime = 0
-    }
-  }
-
   const stopAll = () => {
     if (audioRef.current) {
-      reset()
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
       audioRef.current.removeEventListener('ended', () => {})
       audioRef.current = null
     }
   }
+
   const setCurrentAudio = (audio: HTMLAudioElement | null) => {
     stopAll()
     audioRef.current = audio?.src ? audio : null
@@ -60,8 +47,6 @@ const usePlayAudio = (
 
   const controls = {
     play,
-    pause,
-    reset,
     stopAll,
   }
 
