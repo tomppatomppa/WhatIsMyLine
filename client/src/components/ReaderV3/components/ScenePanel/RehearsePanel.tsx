@@ -77,8 +77,14 @@ const RehearsePanel = () => {
       >
         <Spinner show={isLoading} />
         <Message
-          type={isError ? 'alert' : 'success'}
-          message={isSuccess ? `Successfully added audio for ${scriptId}` : ``}
+          show={isSuccess}
+          type="success"
+          message={`Successfully added audio for ${values.id}`}
+        />
+        <Message
+          show={isError}
+          type="error"
+          message={`Something went wrong while creating audio for ${values.id}`}
         />
       </Modal>
       <div className="flex flex-1 ">
