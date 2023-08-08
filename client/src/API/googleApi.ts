@@ -3,7 +3,7 @@ import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 import { Line, Scene } from 'src/components/ReaderV3/reader.types'
 import {
   arrayBufferIntoHTMLAudioElement,
-  extractAudioFileIds,
+  extractAudioFileNames,
   hasRequiredAudioFiles,
 } from 'src/components/ReaderV3/utils'
 import { BASE_URI } from 'src/config'
@@ -124,12 +124,12 @@ export const downloadAudioFilesInScene = async ({
     folderId: sceneFolder.files[0].id,
   })
 
-  const driveFolderIds = extractAudioFileIds(folderWithAudio.files)
-
-  if (hasRequiredAudioFiles(lines, driveFolderIds)) {
+  const filenames = extractAudioFileNames(folderWithAudio.files)
+  if (hasRequiredAudioFiles(lines, filenames)) {
     const audioFileArray = await getGoogleDriveFilesByIds({
-      docs: driveFolderIds.files,
+      docs: folderWithAudio.files,
     })
+
     const audioFiles = arrayBufferIntoHTMLAudioElement(audioFileArray)
     return audioFiles
   }
@@ -143,7 +143,6 @@ interface getGoogleDriveFilesByIdsProps {
 }
 export const getGoogleDriveFilesByIds = async ({
   docs = [],
-
   responseType = 'arraybuffer',
 }: getGoogleDriveFilesByIdsProps) => {
   const token = await updateAccessToken()

@@ -15,7 +15,7 @@ const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
         lines: scene.data,
       }),
     {
-      staleTime: 60 * 1000,
+      // staleTime: 60 * 1000,
       keepPreviousData: true,
       retry: false,
     }

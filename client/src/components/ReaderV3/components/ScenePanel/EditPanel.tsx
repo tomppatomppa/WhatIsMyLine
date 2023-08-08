@@ -5,6 +5,7 @@ import { Scene, SceneLine } from '../../reader.types'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import { useEffect } from 'react'
 
+//TODO: Any edit should invalidate reactQuery cache for this scene
 const EditPanel = () => {
   const updateScript = useUpdateScript()
   const { dirty, resetForm, values } = useFormikContext<Scene>()

@@ -49,7 +49,7 @@ export function hasRequiredAudioFiles(arr1: any[], arr2: any[]): boolean {
   return true
 }
 
-export const extractAudioFileIds = (data) => {
+export const extractAudioFileNames = (data) => {
   const audioFiles = data.map((item) => {
     return {
       id: item.name.replace('.mp3', ''),

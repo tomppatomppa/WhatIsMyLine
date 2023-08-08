@@ -52,7 +52,6 @@ const RehearsePanel = () => {
     ...new Set(values.data.map((line) => line.name || line.type)),
   ]
 
-  //Add audio to lines
   const labeled = labelLines(values, options, audioFiles)
   //TODO: Move to context, or somewhere else
   if (user?.name === 'visitor') {
