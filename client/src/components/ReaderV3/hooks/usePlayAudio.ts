@@ -5,12 +5,15 @@ interface UsePlayAudioReturn {
     play: () => void
     pause: () => void
     reset: () => void
+    stopAll: () => void
   }
   setCurrentAudio: (audio: HTMLAudioElement | null) => void
   audioRef: MutableRefObject<HTMLAudioElement | null>
 }
 
-const usePlayAudio = (onEnded: () => void): UsePlayAudioReturn => {
+const usePlayAudio = (
+  onEnded: (audio: HTMLAudioElement | null) => void
+): UsePlayAudioReturn => {
   const [autoPlay] = useState(true)
 
   const audioRef: MutableRefObject<HTMLAudioElement | null> =
@@ -18,9 +21,12 @@ const usePlayAudio = (onEnded: () => void): UsePlayAudioReturn => {
 
   const play = () => {
     if (audioRef.current) {
-      audioRef.current?.addEventListener('ended', () => {
-        onEnded()
-      })
+      const endedListener = () => {
+        audioRef.current?.pause()
+        audioRef.current?.removeEventListener('ended', endedListener)
+        onEnded(audioRef.current)
+      }
+      audioRef.current.addEventListener('ended', endedListener)
       audioRef.current.play()
     }
   }
@@ -33,12 +39,20 @@ const usePlayAudio = (onEnded: () => void): UsePlayAudioReturn => {
 
   const reset = () => {
     if (audioRef.current) {
-      audioRef.current.pause()
+      pause()
       audioRef.current.currentTime = 0
     }
   }
 
+  const stopAll = () => {
+    if (audioRef.current) {
+      reset()
+      audioRef.current.removeEventListener('ended', () => {})
+      audioRef.current = null
+    }
+  }
   const setCurrentAudio = (audio: HTMLAudioElement | null) => {
+    stopAll()
     audioRef.current = audio?.src ? audio : null
 
     if (autoPlay) play()
@@ -48,6 +62,7 @@ const usePlayAudio = (onEnded: () => void): UsePlayAudioReturn => {
     play,
     pause,
     reset,
+    stopAll,
   }
 
   return { controls, setCurrentAudio, audioRef }

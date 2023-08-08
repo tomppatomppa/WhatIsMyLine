@@ -107,8 +107,7 @@ const RehearsePanel = () => {
           />
         </Wrapper>
       </Dropdown>
-
-      {audioFiles ? (
+      {audioFiles && !isFetching ? (
         <ComponentWhenValid values={values} labeled={labeled} />
       ) : (
         <button
@@ -156,8 +155,15 @@ interface ComponentWhenValidProps {
 
 const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
   const [start, setStart] = useState(false)
-  const { controls, setCurrentAudio } = usePlayAudio(() => {
-    console.log('next')
+  //TODO: fix bugs || rethink the use of usePlayAudio
+  const { controls, setCurrentAudio } = usePlayAudio((audio) => {
+    const currentIndex = labeled.findIndex((l) => l.src === audio)
+    const nextLine = handleNextAction(labeled[currentIndex + 1])
+    if (nextLine && currentIndex !== -1) {
+      setCurrentAudio(nextLine?.src)
+    } else {
+      controls.stopAll()
+    }
   })
 
   const commands = commandBuilder(labeled, (nextLine) => {
@@ -168,28 +174,34 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
     commands,
   })
 
+  const handleStart = () => {
+    setStart(true)
+    if (labeled[0].shouldPlay) {
+      setCurrentAudio(labeled[0].src)
+    }
+  }
   const handleStop = () => {
     setStart(false)
-    controls.reset()
+    controls.stopAll()
     setCurrentAudio(null)
   }
 
   useEffect(() => {
     if (!start) return
-    console.log('start listening')
     SpeechRecognition.startListening({
       language: 'sv-SE',
       continuous: true,
     })
     return () => {
-      console.log('stop listening')
+      controls.stopAll()
       SpeechRecognition.stopListening()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start])
 
   if (!start) {
     return (
-      <button type="button" onClick={() => setStart(true)}>
+      <button type="button" onClick={handleStart}>
         Play
       </button>
     )
@@ -200,18 +212,8 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
       {/*Controls */}
       <div className="bg-gray-200 flex gap-4 border p-2">
         <AudioButton text="Play" onClick={() => controls.play()} />
-        <AudioButton text="Reset" onClick={() => controls.reset()} />
         <AudioButton text="Pause" onClick={() => controls.pause()} />
-        <AudioButton
-          text="Load"
-          onClick={() => {
-            if (labeled[0].shouldPlay) {
-              setCurrentAudio(labeled[0].src)
-            }
-          }}
-        />
       </div>
-
       <button type="button" onClick={handleStop}>
         Stop
       </button>
