@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
 import { Actor, Scene, SceneLine } from '../../reader.types'
@@ -168,24 +168,28 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
     commands,
   })
 
-  const handleStart = () => {
-    setStart(true)
-    SpeechRecognition.startListening({
-      language: 'sv-SE',
-      continuous: true,
-    })
-  }
-
   const handleStop = () => {
     setStart(false)
     controls.reset()
     setCurrentAudio(null)
-    SpeechRecognition.stopListening()
   }
+
+  useEffect(() => {
+    if (!start) return
+    console.log('start listening')
+    SpeechRecognition.startListening({
+      language: 'sv-SE',
+      continuous: true,
+    })
+    return () => {
+      console.log('stop listening')
+      SpeechRecognition.stopListening()
+    }
+  }, [start])
 
   if (!start) {
     return (
-      <button type="button" onClick={handleStart}>
+      <button type="button" onClick={() => setStart(true)}>
         Play
       </button>
     )
