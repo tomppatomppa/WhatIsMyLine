@@ -205,6 +205,19 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
     setCurrentAudio(null)
   }
 
+  const toggleMicrophone = () => {
+    //Do not allow to start listening if audio is playing
+    if (audioRef.current) return
+    if (!listening) {
+      SpeechRecognition.startListening({
+        language: 'sv-SE',
+        continuous: true,
+      })
+      return
+    }
+    SpeechRecognition.stopListening()
+  }
+
   useEffect(() => {
     if (!start) return
     return () => {
@@ -226,13 +239,7 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
     <div className="flex items-center gap-4">
       <button
         className={`${listening ? 'animate-pulse scale-125' : ''}`}
-        onClick={() => {
-          if (audioRef.current) return
-          SpeechRecognition.startListening({
-            language: 'sv-SE',
-            continuous: true,
-          })
-        }}
+        onClick={toggleMicrophone}
       >
         <FaMicrophone color={`${listening ? 'green' : 'gray'}`} />
       </button>
