@@ -25,7 +25,7 @@ import Wrapper from 'src/layout/Wrapper'
 import SelectList from 'src/components/SelectList'
 import usePlayAudio from '../../hooks/usePlayAudio'
 import { PlayIcon } from '../icons'
-import { FaCircle } from 'react-icons/fa'
+import { FaCircle, FaMicrophone } from 'react-icons/fa'
 
 const RehearsePanel = () => {
   //TODO: Move to context, or somewhere else
@@ -162,14 +162,20 @@ interface ComponentWhenValidProps {
 
 const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
   const [start, setStart] = useState(false)
+
   //TODO: fix bugs || rethink the use of usePlayAudio
-  const { controls, setCurrentAudio } = usePlayAudio((audio) => {
+  const { audioRef, controls, setCurrentAudio } = usePlayAudio((audio) => {
     const currentIndex = labeled.findIndex((l) => l.src === audio)
     const nextLine = handleNextAction(labeled[currentIndex + 1])
     if (nextLine && currentIndex !== -1) {
       setCurrentAudio(nextLine?.src)
+      SpeechRecognition.stopListening()
     } else {
       controls.stopAll()
+      SpeechRecognition.startListening({
+        language: 'sv-SE',
+        continuous: true,
+      })
     }
   })
 
@@ -177,7 +183,7 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
     if (nextLine) setCurrentAudio(nextLine.src)
   })
 
-  useSpeechRecognition({
+  const { listening } = useSpeechRecognition({
     commands,
   })
 
@@ -185,8 +191,14 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
     setStart(true)
     if (labeled[0].shouldPlay) {
       setCurrentAudio(labeled[0].src)
+    } else {
+      SpeechRecognition.startListening({
+        language: 'sv-SE',
+        continuous: true,
+      })
     }
   }
+
   const handleStop = () => {
     setStart(false)
     controls.stopAll()
@@ -195,10 +207,6 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
 
   useEffect(() => {
     if (!start) return
-    SpeechRecognition.startListening({
-      language: 'sv-SE',
-      continuous: true,
-    })
     return () => {
       controls.stopAll()
       SpeechRecognition.stopListening()
@@ -215,7 +223,19 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
   }
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-4">
+      <button
+        className={`${listening ? 'animate-pulse scale-125' : ''}`}
+        onClick={() => {
+          if (audioRef.current) return
+          SpeechRecognition.startListening({
+            language: 'sv-SE',
+            continuous: true,
+          })
+        }}
+      >
+        <FaMicrophone color={`${listening ? 'green' : 'gray'}`} />
+      </button>
       <button type="button" onClick={handleStop}>
         <FaCircle color="red" />
       </button>
