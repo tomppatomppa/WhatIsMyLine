@@ -20,7 +20,7 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
 
   const deleteScript = useDeleteScript()
   const setActiveScript = useSetActiveScriptId()
-
+  console.log(scripts)
   return (
     <aside
       className={`${

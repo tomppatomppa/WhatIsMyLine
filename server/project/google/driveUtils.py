@@ -1,7 +1,8 @@
-from __future__ import print_function
-from googleapiclient.errors import HttpError
 import requests
 import json
+
+from googleapiclient.errors import HttpError
+
 
 base_url = "https://www.googleapis.com/drive/v3/files"
 
@@ -59,7 +60,6 @@ def create_root_folder(access_token):
     except requests.exceptions.RequestException as error:
         return None
 
-
 def create_folder(access_token, parent_id, folder_name):
     headers = {
         'Authorization': f'Bearer {access_token}',
@@ -88,7 +88,6 @@ def create_folder(access_token, parent_id, folder_name):
     except requests.exceptions.RequestException as error:
         print(f'An error occurred: {error}')
         return None
-
 
 def upload_mp3_to_drive(access_token, parent_folder_id, filepath):
     filename = filepath.split('/')[-1]

@@ -2,10 +2,12 @@ import { ChangeEvent, useRef } from 'react'
 
 import { AiOutlineUpload } from 'react-icons/ai'
 import Tooltip from '../common/Tooltip'
+
 interface LocalFilePickerProps {
   className?: string
   handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void
 }
+
 const LocalFilePicker = ({
   className,
   handleFileChange,
@@ -22,6 +24,7 @@ const LocalFilePicker = ({
       <input
         className="hidden"
         ref={inputRef}
+        accept=".pdf"
         type="file"
         onChange={handleFileChange}
       />

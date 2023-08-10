@@ -11,7 +11,6 @@ export type RootFolder = {
 interface ScriptState {
   scripts: Script[]
   activeScriptId: string
-
   rootFolder: RootFolder | null
 }
 
@@ -54,7 +53,6 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   /**
    * Active Script mutations
    */
-
   updateScene: (updatedScene: Scene) =>
     set(({ scripts, activeScriptId }) => ({
       scripts: scripts.map((script) =>
