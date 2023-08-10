@@ -91,7 +91,11 @@ class Script(db.Model):
         self.scenes = scenes
         self.created_on = datetime.now()
         self.modified_on = datetime.now()
-      
+    
+    @classmethod
+    def get_all(cls):
+        return cls.query.all()
+    
     @classmethod
     def get_script_by_name(cls, name):
         return cls.query.filter_by(name=name).first()

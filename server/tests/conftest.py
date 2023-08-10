@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from project import create_app
 from utils import create_timestamp
 from project.models import  User, Script
+from project import db
 
 load_dotenv()
 
@@ -29,6 +30,18 @@ def new_script(new_user):
     } 
 
 
+
+
+@pytest.fixture(scope='module')
+def add_user_and_script_to_db(new_user, new_script):
+    # Add user and script to the database
+    with db.session.begin_nested():
+        db.session.add(new_user)
+        db.session.add(new_script["script"])
+        db.session.commit()
+
+    return new_user, new_script
+
 @pytest.fixture(scope='module')
 def test_client():
     os.environ['CONFIG_TYPE'] = 'config.TestingConfig'
@@ -37,3 +50,4 @@ def test_client():
     with flask_app.test_client() as testing_client:
         with flask_app.app_context():
             yield testing_client
+
