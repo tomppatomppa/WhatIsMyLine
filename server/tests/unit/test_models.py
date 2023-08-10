@@ -18,3 +18,17 @@ def test_new_user(new_user):
     
 
     
+def test_new_script(new_script, new_user):
+    script = new_script["script"]
+    scenes = new_script["scenes"]  
+    # """
+    # GIVEN a Script model
+    # WHEN a new Script is created
+    # THEN check the script_id, filename, user_id, scenes, created_on
+    # """
+    assert script.script_id == "e2e78d9c-4e3b-4665-8932-bf8efb385bf6"
+    assert script.filename == 'filename.pdf'
+    assert script.user_id == new_user.user_id
+    assert script.scenes == scenes
+    assert script.__repr__() == '<Script: filename.pdf>'
+    

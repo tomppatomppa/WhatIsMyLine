@@ -7,10 +7,9 @@ def test_login_page_with_no_auth_code(test_client):
     """
     response = test_client.post('/login', json={})
 
-    # Update the following assertions based on your expected response
     assert response.status_code == 403
     assert  b"Missing 'code' parameter in the request." in response.data
-  
+    
 
 def test_login_page_with_invalid_auth_code(test_client):
     """
@@ -20,11 +19,11 @@ def test_login_page_with_invalid_auth_code(test_client):
     """
     response = test_client.post('/login', json={"code": "1234"}, content_type='application/json')
 
-    # Update the following assertions based on your expected response
+  
     assert response.status_code == 400
     assert response.get_json() == {
         "error": "invalid_grant",
         "error_description": "Malformed auth code."
         }
-    # Add more assertions as needed
+  
 

@@ -34,7 +34,9 @@ def create_app():
     
     engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
     inspector = sa.inspect(engine)
-    if not inspector.has_table("users"):
+    
+   
+    if not inspector.has_table("users", "scripts"):
         with app.app_context():
             db.drop_all()
             db.create_all()
@@ -91,10 +93,12 @@ def register_blueprints(app):
         return render_template('index.html')
     
     from .users import users_blueprint
+    from .scripts import scripts_blueprint
     from .google import google_blueprint
     from .upload import upload_blueprint
    
     app.register_blueprint(users_blueprint)
+    app.register_blueprint(scripts_blueprint, url_prefix="/script")
     app.register_blueprint(google_blueprint)
     app.register_blueprint(upload_blueprint)
 

@@ -3,7 +3,7 @@ import pytest
 from dotenv import load_dotenv
 from project import create_app
 from utils import create_timestamp
-from project.models import  User
+from project.models import  User, Script
 
 load_dotenv()
 
@@ -13,6 +13,21 @@ def new_user():
     
     return user
 
+@pytest.fixture(scope='module')
+def new_script(new_user):
+    scenes = [{"id": "1", "data": [{"id": "2", "type": "INFO", "name": "", "lines": "testline"}]} ]
+   
+    script = Script(
+                   "e2e78d9c-4e3b-4665-8932-bf8efb385bf6",
+                   'filename.pdf',
+                   new_user.user_id,
+                   scenes
+                   )
+    return {
+        "script": script,
+        "scenes": scenes
+    } 
+
 
 @pytest.fixture(scope='module')
 def test_client():
@@ -20,6 +35,5 @@ def test_client():
     flask_app = create_app()
 
     with flask_app.test_client() as testing_client:
-      
         with flask_app.app_context():
             yield testing_client

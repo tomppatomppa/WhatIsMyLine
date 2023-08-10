@@ -1,6 +1,5 @@
 from datetime import datetime
 from sqlalchemy import DateTime, Integer, String, PickleType
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import mapped_column
 from project import db
 from datetime import datetime
@@ -83,12 +82,13 @@ class Script(db.Model):
     created_on = mapped_column(DateTime(), nullable=False)
     modified_on = mapped_column(DateTime(), nullable=False)
     
-    def __init__(self,script_id: str, filename: str, user_id: str):
+    def __init__(self,script_id: str, filename: str, user_id: str, scenes: list = []):
         """Create a new Script object using the name of the script and the user_id
         """
         self.script_id = script_id
         self.filename = filename
         self.user_id = user_id
+        self.scenes = scenes
         self.created_on = datetime.now()
         self.modified_on = datetime.now()
       
@@ -120,4 +120,4 @@ class Script(db.Model):
         return script
     
     def __repr__(self):
-        return f'<Script: {self.name}>'
+        return f'<Script: {self.filename}>'
