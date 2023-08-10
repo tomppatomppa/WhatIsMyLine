@@ -11,7 +11,7 @@ from flask_jwt_extended import jwt_required
 @jwt_required()
 def create_root_folder():
     access_token = extract_token(request)
-
+   
     try:
         folderExists = driveUtils.search_folder(access_token)
         if folderExists:

@@ -35,7 +35,6 @@ def create_app():
     engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
     inspector = sa.inspect(engine)
     
-   
     if not inspector.has_table("users", "scripts"):
         with app.app_context():
             db.drop_all()
@@ -82,7 +81,6 @@ def register_request_handlers(app):
         except (RuntimeError, KeyError):
             return response
 
-
 def register_blueprints(app):
     @app.route('/')
     def index(): 
@@ -98,7 +96,7 @@ def register_blueprints(app):
     from .upload import upload_blueprint
    
     app.register_blueprint(users_blueprint)
-    app.register_blueprint(scripts_blueprint, url_prefix="/script")
+    app.register_blueprint(scripts_blueprint, url_prefix='/api')
     app.register_blueprint(google_blueprint)
     app.register_blueprint(upload_blueprint)
 

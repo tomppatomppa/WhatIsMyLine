@@ -75,7 +75,7 @@ class Script(db.Model):
     """
     __tablename__ = 'scripts'
     id = mapped_column(Integer(), primary_key=True, autoincrement=True)
-    script_id = mapped_column(Integer(), unique=True, nullable=False)
+    script_id = mapped_column(String(), unique=True, nullable=False)
     filename = mapped_column(String(), nullable=False)
     user_id = mapped_column(String(), nullable=False)
     scenes = mapped_column(PickleType(), nullable=True)
@@ -91,6 +91,15 @@ class Script(db.Model):
         self.scenes = scenes
         self.created_on = datetime.now()
         self.modified_on = datetime.now()
+
+    def to_dict(self):
+      return {
+          "id": self.id,
+          "script_id": self.script_id,
+          "filename": self.filename,
+          "user_id": self.user_id,
+          "scenes": self.scenes
+      }
     
     @classmethod
     def get_all(cls):
