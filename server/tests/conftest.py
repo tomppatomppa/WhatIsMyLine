@@ -69,10 +69,3 @@ def test_client():
         with flask_app.app_context():
             yield testing_client
 
-@pytest.fixture(scope='module')
-def authenticated_client(testing_client):
-    # Simulate dummy login and set cookies
-    with testing_client.session_transaction() as session:
-        session['user_id'] = 'user123'  # Simulate authenticated user
-
-    return testing_client
