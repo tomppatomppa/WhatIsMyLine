@@ -4,7 +4,7 @@ from . import users_blueprint
 from flask import request, jsonify
 from utils import create_timestamp, verify_google_id_token
 from project.models import User
-from flask_jwt_extended import create_access_token,get_jwt, jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
+from flask_jwt_extended import create_access_token, jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
 
 from project import db
 
@@ -15,12 +15,14 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 @users_blueprint.route("/login", methods=["POST"])
 def login():
     code = request.json.get('code')
+   
     if not code:
         return "Missing 'code' parameter in the request.", 403 
     try:
         response = get_token_data(code)
-      
+        
         token_data = response.json()
+        
         if response.status_code == 200:
             user = verify_google_id_token(token_data.get("id_token"))
             
@@ -33,7 +35,9 @@ def login():
             set_access_cookies(response, access_token) 
            
             return response
+        return response.json(), response.status_code
     except:
+        
         return "Failed to login", 401
 
 @users_blueprint.route("/refresh-token", methods=["POST"])
