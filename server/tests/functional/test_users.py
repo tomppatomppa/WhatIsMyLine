@@ -18,7 +18,7 @@ def test_login_page_with_invalid_auth_code(test_client):
     THEN check the response is 400 and reason is auth code
     """
     response = test_client.post('/login', json={"code": "1234"}, content_type='application/json')
-    print(response)
+
     assert response.status_code == 400
     assert response.get_json() == {
         "error": "invalid_grant",

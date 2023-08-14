@@ -19,8 +19,8 @@ def test_new_user(new_user):
 
     
 def test_new_script(new_script, new_user):
-    script = new_script["script"]
-    scenes = new_script["scenes"]  
+    script = new_script
+    scenes = new_script.scenes
     # """
     # GIVEN a Script model
     # WHEN a new Script is created
