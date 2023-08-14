@@ -1,6 +1,5 @@
 import requests
 import os
-from functools import wraps
 from . import users_blueprint
 from flask import request, jsonify
 from utils import create_timestamp, verify_google_id_token
@@ -134,28 +133,3 @@ def refresh_access_token(refresh_token):
         error_message = str(e)
         return {'error': error_message}, 400
     
-def check_refresh_token(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        
-        user_id = get_jwt_identity()
-       
-        #Dummy implementation, compare expiry to current date
-        if 1 > 2 :
-            return func(*args, **kwargs)
-        else:
-            try:
-                # Token has expired, refresh the token
-                refresh_token = User.get_refresh_token_by_user_id(user_id)
-               
-                access_token = refresh_access_token(refresh_token)
-                expiry = create_timestamp(access_token.get("expires_in"))
-
-                user= User.update_access_token_and_expiry(user_id, access_token.get("access_token"), expiry)
-                print(user)
-            except:
-                return jsonify({"msg": "Unable to refresh token"}), 401
-        return func(*args, **kwargs)
-        
-    return wrapper
-
