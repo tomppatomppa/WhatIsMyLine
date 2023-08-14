@@ -28,38 +28,20 @@ def new_script(new_user):
     return script
 
 
-
-
 @pytest.fixture(scope='module')
-def init_database(test_client, new_user):
+def init_database(test_client, new_user, new_script):
     # Create the database and the database table
     db.create_all()
 
-    # Insert user data
-    default_user = User(USER_ID,"picture_url", 'kalle@gmail.com', "google", "12345")
-  
-    db.session.add(default_user)
-    # Commit the changes for the users
+    db.session.add(new_user)
     db.session.commit()
 
-    # Insert script data
-    scenes = [{"id": "1", "data": [{"id": "2", "type": "INFO", "name": "", "lines": "testline"}]} ]
-    script1 = Script(
-                   "e2e78d9c-4e3b-4665-8932-bf8efb385bf6",
-                   'filename.pdf',
-                   default_user.user_id,
-                   scenes
-                   )
-    
-    db.session.add(script1)
-
+    db.session.add(new_script)
     db.session.commit()
     
     yield
-
+    
     db.drop_all()
-
-
 
 
 @pytest.fixture(scope='module')

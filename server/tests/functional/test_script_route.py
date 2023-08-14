@@ -34,9 +34,9 @@ def test_retrieve_script_by_id(logged_in_test_client, new_script, new_user):
     assert response_json["user_id"] == new_user.user_id
   
 
-def test_adding_new_script(logged_in_test_client, new_script, new_user, csrf_headers):
+def test_adding_new_script(logged_in_test_client,new_script, new_user, csrf_headers):
     script_to_add = {
-        "script_id": "testscriptid",
+       "script_id": "testscriptid",
         "filename": "filename.pdf",
         "scenes": [{"id": 1}]
     }
@@ -50,3 +50,32 @@ def test_adding_new_script(logged_in_test_client, new_script, new_user, csrf_hea
     assert response_json["filename"] == script_to_add["filename"]
     assert response_json["scenes"] == script_to_add["scenes"]
 
+def test_deleting_script_by_id(logged_in_test_client, new_script, csrf_headers):
+
+    response = logged_in_test_client.delete(f'{url}/{new_script.script_id}', headers=csrf_headers) 
+    
+    assert response.status_code == 200
+
+def test_deleting_script_that_doesnt_exist(logged_in_test_client, csrf_headers):
+
+    response = logged_in_test_client.delete(f'{url}/1234', headers=csrf_headers) 
+    assert response.status_code == 404
+
+
+def test_updating_existing_script(logged_in_test_client, csrf_headers):
+    script_to_update = {
+        "script_id": "not_allowed",
+        "filename": "updatedfilename.pdf",
+        "scenes": [{"id": 2}]
+    }
+
+    response = logged_in_test_client.put(f'{url}/testscriptid', json=script_to_update, headers=csrf_headers)
+    
+    assert response.status_code == 200
+
+    response_json = json.loads(response.data)
+   
+    assert response_json["filename"] ==  script_to_update["filename"]  
+    assert response_json["scenes"] ==  script_to_update["scenes"]
+    #Should not be able to update script_id
+    assert response_json["script_id"] !=  script_to_update["script_id"]  

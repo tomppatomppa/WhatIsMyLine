@@ -46,3 +46,34 @@ def create():
         return str(error), 400
    
 
+@scripts_blueprint.route("/script/<id>", methods=["DELETE"])
+@jwt_required()
+def delete(id):
+    script_to_delete = db.session.query(Script).where(Script.user_id==get_jwt_identity()).filter_by(script_id=id).first()
+    
+    if script_to_delete:
+        db.session.delete(script_to_delete)
+        db.session.commit()
+        return "Script Deleted Succesfully", 200
+    else:
+        return "Error deleting script", 404
+   
+
+@scripts_blueprint.route("/script/<id>", methods=["PUT"])
+@jwt_required()
+def update(id):
+    script_to_update = db.session.query(Script).where(Script.user_id==get_jwt_identity()).filter_by(script_id=id).first()
+
+    allowed_keys = ["filename", "scenes"]
+
+    if script_to_update:
+        updated_data = request.get_json()
+        for key, value in updated_data.items():
+            if key in allowed_keys:
+                setattr(script_to_update, key, value)
+
+        db.session.commit()
+        return json.dumps(script_to_update.to_dict()), 200
+    else:
+        return "Error updating script", 404
+   
