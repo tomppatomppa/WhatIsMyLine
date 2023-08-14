@@ -8,3 +8,6 @@ dummyDb.json
 google-credentials.json
 key.json
 .pytest_cache
+
+/uploaded_files/*
+!/uploaded_files/testfile.pdf

@@ -1,3 +1,4 @@
+import pytest
 from PyMuReaderV3 import ReaderV3
 from ReaderSettings import ReaderSettings
 import os
@@ -112,3 +113,46 @@ def test_reader_to_json_with_settings_outputs_correct_number_of_scenes() -> None
     result = reader.to_json()
  
     assert len(result["scenes"]) == len(testfile_scenes)
+
+
+'''
+New script tests
+'''
+filenames = [
+             {"filename": "1.9.pdf", "number_of_scenes": 12},
+             {"filename": "4.9.pdf", "number_of_scenes": 36},
+             {"filename": "5.9.pdf", "number_of_scenes": 29},
+             {"filename": "6.9.pdf", "number_of_scenes": 27},
+             {"filename": "7.9.pdf", "number_of_scenes": 7},
+             {"filename": "12.9.pdf", "number_of_scenes": 7},
+             {"filename": "15.9.pdf", "number_of_scenes": 17},
+             {"filename": "18.9.pdf", "number_of_scenes": 16},
+             {"filename": "19.9.pdf", "number_of_scenes": 19},
+             {"filename": "20.9.pdf", "number_of_scenes": 12},
+             {"filename": "21.9.pdf", "number_of_scenes": 20},
+             {"filename": "25.9.pdf", "number_of_scenes": 20},
+             {"filename": "29.8.pdf", "number_of_scenes": 27},
+             {"filename": "30.8.pdf", "number_of_scenes": 6},
+             {"filename": "31.8.pdf", "number_of_scenes": 13},
+             {"filename": "1508_BUU_SCRIPT.pdf", "number_of_scenes": 8},
+             {"filename": "1608_BUU_SCRIPT.pdf", "number_of_scenes": 5},
+            ]
+  
+def test_scene_detection():
+    settings = ReaderSettings()
+    reader = ReaderV3(settings, line_id=True, lines_as_string=True)
+    for file in filenames:
+        reader.read_file(file["filename"])
+        scenes = reader.make_scenes(reader.file)
+        assert len(scenes) == file["number_of_scenes"]
+    
+    
+    
+
+# def test_new_script_has_correct_number_of_scenes():
+#     settings = ReaderSettings()
+#     reader = ReaderV3(settings, line_id=True, lines_as_string=True)
+#     reader.read_file(testfile2)
+#     result = reader.to_json()
+
+#     assert len(result["scenes"]) == 12

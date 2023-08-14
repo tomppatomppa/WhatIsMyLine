@@ -53,7 +53,8 @@ class ReaderV3():
             'blocks': [span for line in lines for span in line["spans"]]
         }
         return merged_dict
-        
+    
+ 
     def make_scenes(self, file):
         '''
         Tries to divide file into different scenes if they exists
@@ -75,6 +76,7 @@ class ReaderV3():
                    scenes.append(current_scene)
                    current_scene = None
                 scene_title = " ".join([previous_line["text"], current_line["text"]])
+               
                 current_scene = {scene_title: []}
             else:
                 current_scene[scene_title].append(current_line)
@@ -82,7 +84,8 @@ class ReaderV3():
         scenes.append(current_scene)
         
         return scenes
-
+    
+    #TODO: FIX is_scene
     def is_scene(self, current_line, previous_line):
         '''
         Hardcoded scene detection
@@ -96,6 +99,13 @@ class ReaderV3():
         '''
         if not previous_line:
             return False
+       
+        #if text is not on the same line (x axis)
+        if(current_line["origin"][1] != previous_line["origin"][1]):
+            return False
+        
+        #print(previous_line["text"], current_line["text"])
+
         if(current_line["text"]).isdigit():
             return False
         if self.is_actor(current_line["origin"][0], current_line["text"]):
@@ -105,9 +115,12 @@ class ReaderV3():
             return False
         #Quick fix to handle /
         text = current_line["text"].replace("/", "")
+        split_text = text.split(" ")
+        if len(split_text) < 2:
+            return False
         section_pattern = r'^(?!.*\b[A-Z\dÄÅÖ]+\s\d)[A-Z\dÄÅÖ.-]+(?: [A-Z\dÄÅÖ-]+)*$'
        
-        return re.match(r"^\d+$", previous_line["text"]) and re.match(section_pattern, text)
+        return re.match(r"^\d+$", previous_line["text"]) and re.match(section_pattern, " ".join(split_text[:2]))
 
     def clean_lines(self, file):
         cleaned_file = []
