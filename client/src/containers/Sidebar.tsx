@@ -36,9 +36,14 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
       //If scripts exist on local storage, update changes in database
       if (scripts.length) {
         const remoteScriptIds = data.map((script) => script.script_id)
+        const localScriptIds = scripts.map((script) => script.script_id)
 
         const scriptsToUpdate = scripts.filter((script) =>
           remoteScriptIds.includes(script.script_id)
+        )
+
+        const scriptsToAdd = data.filter(
+          (script) => !localScriptIds.includes(script.script_id)
         )
         //Some might fail, update failed manually
         await Promise.allSettled(
@@ -46,6 +51,8 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
             return await updateScript(script)
           })
         )
+        setScripts([...scripts, ...scriptsToAdd])
+
         //console.log(result, 'updated')
       } else {
         //console.log('No local files')
