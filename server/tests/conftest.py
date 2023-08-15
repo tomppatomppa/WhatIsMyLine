@@ -44,6 +44,7 @@ def init_database(test_client, new_user, new_script):
     db.drop_all()
 
 
+
 @pytest.fixture(scope='module')
 def test_client():
     os.environ['CONFIG_TYPE'] = 'config.TestingConfig'
