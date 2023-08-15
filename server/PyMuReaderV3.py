@@ -244,6 +244,7 @@ class ReaderV3():
             result = self.lines_into_string(result)
         
         result["id"] = result["filename"].replace(".pdf", "")
+        result["script_id"] = result["filename"].replace(".pdf", "")
         
         return result
     

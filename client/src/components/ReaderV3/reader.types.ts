@@ -21,7 +21,8 @@ export type Script = {
   filename: string
   scenes: Scene[]
   trash?: boolean
-  id: string
+  id: string //Remove and replace with script_id
+  script_id: string
 }
 // Line types
 export interface Style {

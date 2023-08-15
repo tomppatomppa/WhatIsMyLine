@@ -9,6 +9,7 @@ import json
 @scripts_blueprint.route("/script", methods=["GET"])
 @jwt_required()
 def get_all():
+    print("JERE")
     query = db.select(Script).where(Script.user_id == get_jwt_identity())
     scripts = db.session.execute(query).scalars().all()
     if not scripts:
