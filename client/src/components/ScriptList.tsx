@@ -20,10 +20,10 @@ const ScriptList = ({
         <ScriptListItem
           key={index}
           id={`script-list-item-${index}`}
-          selected={activeScriptId === script.id}
+          selected={activeScriptId === script.script_id}
           script={script}
-          onClick={() => setActiveScript(script.id)}
-          onDelete={() => deleteScript(script.id)}
+          onClick={() => setActiveScript(script.script_id)}
+          onDelete={() => deleteScript(script.script_id)}
         />
       ))}
     </div>

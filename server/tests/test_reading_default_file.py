@@ -46,7 +46,6 @@ def test_reader_reads_file() -> None:
 
 def test_reader_to_json_outputs_has_uuid() -> None:
     result = reader_to_json()
-    assert result["id"]
     assert result["script_id"]
    
 

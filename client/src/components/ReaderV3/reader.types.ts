@@ -17,11 +17,12 @@ export type Scene = {
   data: Line[]
 }
 
+export type ScriptWithoutId = Omit<Script, 'id'>
+
 export type Script = {
   filename: string
   scenes: Scene[]
-  trash?: boolean
-  id: string //Remove and replace with script_id
+  trash?: boolean //TODO: add to database model
   script_id: string
 }
 // Line types

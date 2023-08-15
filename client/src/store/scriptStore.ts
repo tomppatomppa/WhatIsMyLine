@@ -47,7 +47,7 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
 
   getActiveScript: () =>
     get().scripts.find(
-      ({ id, trash }) => id === get().activeScriptId && !trash
+      ({ script_id, trash }) => script_id === get().activeScriptId && !trash
     ),
 
   /**
@@ -56,7 +56,7 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   updateScene: (updatedScene: Scene) =>
     set(({ scripts, activeScriptId }) => ({
       scripts: scripts.map((script) =>
-        script.id !== activeScriptId
+        script.script_id !== activeScriptId
           ? script
           : {
               ...script,
@@ -69,7 +69,7 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   reorderScenes: (sourceId: number, destinationId: number) =>
     set((state) => ({
       scripts: state.scripts.map((script) =>
-        script.id !== state.activeScriptId
+        script.script_id !== state.activeScriptId
           ? script
           : {
               ...script,
@@ -81,7 +81,7 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   reorderLines: (sceneId: string, sourceId: number, destinationId: number) =>
     set(({ scripts, activeScriptId }) => ({
       scripts: scripts.map((script) =>
-        script.id !== activeScriptId
+        script.script_id !== activeScriptId
           ? script
           : {
               ...script,
@@ -96,7 +96,7 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
 
   deleteScriptByUuid: (id: string) =>
     set((state) => ({
-      scripts: state.scripts.filter((script) => script.id !== id),
+      scripts: state.scripts.filter((script) => script.script_id !== id),
     })),
 })
 

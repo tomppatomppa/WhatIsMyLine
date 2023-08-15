@@ -221,6 +221,7 @@ class ReaderV3():
         '''
         Converts text content to a script item with the following structure   
         {
+           script_id: string
            filename: string
            scenes: [
              {
@@ -243,7 +244,7 @@ class ReaderV3():
         if(self.lines_as_string):
             result = self.lines_into_string(result)
         
-        result["id"] = result["filename"].replace(".pdf", "")
+        #result["id"] = result["filename"].replace(".pdf", "")
         result["script_id"] = result["filename"].replace(".pdf", "")
         
         return result

@@ -38,7 +38,7 @@ interface ReaderProps {
 
 export const Reader = ({ script, handleDragEnd }: ReaderProps) => {
   const [options, dispatch] = useReducer(reducer, initialState)
-  const scriptId = script.id
+  const scriptId = script.script_id
   return (
     <ReaderContext.Provider value={{ options, dispatch, scriptId }}>
       <DragDropContext onDragEnd={handleDragEnd}>
