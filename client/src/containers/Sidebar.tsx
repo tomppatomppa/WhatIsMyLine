@@ -1,5 +1,13 @@
+import { Online } from 'react-detect-offline'
 import { AiOutlineClose } from 'react-icons/ai'
+import { useMutation, useQuery } from 'react-query'
+import {
+  deleteScriptById,
+  fetchAllUserScripts,
+  updateScript,
+} from 'src/API/scriptApi'
 import EmptyScriptList from 'src/components/EmptyScriptList'
+import { Script } from 'src/components/ReaderV3/reader.types'
 import ScriptList from 'src/components/ScriptList'
 import FileUpload from 'src/containers/FileUpload'
 import {
@@ -7,6 +15,7 @@ import {
   useScriptStore,
   useScripts,
   useSetActiveScriptId,
+  useSetScripts,
 } from 'src/store/scriptStore'
 
 interface SidebarProps {
@@ -15,10 +24,43 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
+  const deleteScript = useDeleteScript()
+  const setScripts = useSetScripts()
   const scripts = useScripts()
+
+  const { mutate } = useMutation(deleteScriptById)
+
+  //TODO: proper syncing
+  const { refetch } = useQuery(['scripts'], () => fetchAllUserScripts(), {
+    onSuccess: async (data: Script[]) => {
+      //If scripts exist on local storage, update changes in database
+      if (scripts.length) {
+        const remoteScriptIds = data.map((script) => script.script_id)
+
+        const scriptsToUpdate = scripts.filter((script) =>
+          remoteScriptIds.includes(script.script_id)
+        )
+        //Some might fail, update failed manually
+        await Promise.allSettled(
+          scriptsToUpdate.map(async (script) => {
+            return await updateScript(script)
+          })
+        )
+        //console.log(result, 'updated')
+      } else {
+        //console.log('No local files')
+        setScripts(data)
+      }
+    },
+  })
+
   const activeScriptId = useScriptStore((state) => state.activeScriptId)
 
-  const deleteScript = useDeleteScript()
+  const handleDeleteScript = (script_id: string) => {
+    deleteScript(script_id)
+    mutate(script_id)
+  }
+
   const setActiveScript = useSetActiveScriptId()
 
   return (
@@ -37,7 +79,7 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
         {scripts.length ? (
           <ScriptList
             scripts={scripts}
-            deleteScript={deleteScript}
+            deleteScript={handleDeleteScript}
             setActiveScript={setActiveScript}
             activeScriptId={activeScriptId}
           />
@@ -45,6 +87,11 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
           <EmptyScriptList />
         )}
       </div>
+      <Online
+        onChange={(online) => {
+          if (online) refetch()
+        }}
+      />
     </aside>
   )
 }

@@ -16,6 +16,16 @@ export const addScript = async (script: Script) => {
   return data
 }
 
+export const updateScript = async (script: Script) => {
+  const { data } = await httpClient.put(
+    `${BASE_URI}/api/script/${script.script_id}`,
+    {
+      ...script,
+    }
+  )
+
+  return data
+}
 export const deleteScriptById = async (id: string) => {
   const { data } = await httpClient.delete(`${BASE_URI}/api/script/${id}`)
 

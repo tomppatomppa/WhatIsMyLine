@@ -14,3 +14,17 @@ export function getCookie(name: string) {
   const parts = value.split(`; ${name}=`) as any
   if (parts.length === 2) return parts.pop().split(';').shift()
 }
+
+export async function showUserPrompt() {
+  return new Promise((resolve) => {
+    const userChoice = window.confirm(
+      'Do you want to load the script from the local file?'
+    )
+
+    if (userChoice) {
+      resolve('local')
+    } else {
+      resolve('database')
+    }
+  })
+}

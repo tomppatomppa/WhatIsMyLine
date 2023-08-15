@@ -9,12 +9,9 @@ import json
 @scripts_blueprint.route("/script", methods=["GET"])
 @jwt_required()
 def get_all():
-    print("JERE")
     query = db.select(Script).where(Script.user_id == get_jwt_identity())
     scripts = db.session.execute(query).scalars().all()
-    if not scripts:
-        return "No scripts found", 404
-    
+
     response = make_response(json.dumps([script.to_dict() for script in scripts]), 200)
     return response
 
@@ -72,9 +69,9 @@ def update(id):
         for key, value in updated_data.items():
             if key in allowed_keys:
                 setattr(script_to_update, key, value)
-
         db.session.commit()
         return json.dumps(script_to_update.to_dict()), 200
     else:
         return "Error updating script", 404
    
+

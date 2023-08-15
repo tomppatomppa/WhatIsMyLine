@@ -8,6 +8,7 @@ interface ScriptListItemProps {
   onClick: () => void
   onDelete: () => void
 }
+
 const ScriptListItem = ({
   id,
   selected,
@@ -25,6 +26,7 @@ const ScriptListItem = ({
       key={script.script_id}
     >
       <span className="flex-1">{script.filename}</span>
+
       <button
         onClick={onDelete}
         className="w-6 flex-0 mx-auto flex items-center justify-center"

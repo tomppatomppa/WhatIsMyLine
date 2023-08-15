@@ -9,14 +9,15 @@ def test_retrieving_all_logged_in_user_scripts_when_none_exists(logged_in_test_c
 
     GIVEN a Flask application configured for testing,
     WHEN a logged-in user requests the list of scripts,
-    THEN the response status code should indicate not found (404),
-    AND the response data should be 'No scripts found'.
+    THEN the response status code should indicate 200,
+    AND the response data should be empty array [].
     """
 
     response = logged_in_test_client.get(url)
+    scripts = json.loads(response.data)
 
-    assert response.status_code == 404
-    assert response.data == b'No scripts found'
+    assert response.status_code == 200
+    assert scripts == []
 
 
 def test_retrieving_all_scripts(logged_in_test_client, init_database, new_script, new_user):

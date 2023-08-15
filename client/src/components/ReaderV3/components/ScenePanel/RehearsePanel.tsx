@@ -30,6 +30,7 @@ import { FaCircle, FaMicrophone } from 'react-icons/fa'
 const RehearsePanel = () => {
   //TODO: Move to context, or somewhere else
   const user = useCurrentUser()
+  //TODO: if user removes manually localstorage, when
   const rootFolder = useRootFolder() as RootFolder //Can be moved to useAudio?
   const [showModal, setShowModal] = useState(false)
 
@@ -38,7 +39,7 @@ const RehearsePanel = () => {
   const { audioFiles, refetch, isFetching } = useAudio(
     values,
     scriptId,
-    rootFolder?.id
+    rootFolder.id
   )
   const { mutate, isError, isSuccess, isLoading } = useMutation(
     createTextToSpeechFromScene,
@@ -55,6 +56,7 @@ const RehearsePanel = () => {
 
   const labeled = labelLines(values, options, audioFiles)
   //TODO: Move to context, or somewhere else
+
   if (user?.name === 'visitor') {
     return <div className="text-red-900">Not available in visitor mode</div>
   }

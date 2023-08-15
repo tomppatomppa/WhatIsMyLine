@@ -2,6 +2,7 @@ import { Scene, Script } from 'src/components/ReaderV3/reader.types'
 import { StateCreator, create } from 'zustand'
 import { swapLines, swapScenes } from './helpers'
 import { devtools, persist } from 'zustand/middleware'
+import { addScript } from 'src/API/scriptApi'
 
 export type RootFolder = {
   id: string
@@ -15,6 +16,11 @@ interface ScriptState {
 }
 
 interface ScriptActions {
+  loadScriptFromLocal: () => Promise<void>
+  loadScriptFromDatabase: () => Promise<void>
+
+  saveScriptsToDatabase: () => Promise<void>
+
   setScripts: (scripts: Script[]) => void
   addScript: (script: Script) => void
   setRootFolder: (rootFolder: RootFolder) => void
@@ -32,6 +38,21 @@ interface ScriptActions {
 }
 
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
+  loadScriptFromLocal: async () => {
+    console.log('local')
+  },
+  loadScriptFromDatabase: async () => {
+    console.log('database')
+  },
+  saveScriptsToDatabase: async () => {
+    const result = await Promise.allSettled(
+      get().scripts.map(async (script) => {
+        return await addScript(script)
+      })
+    )
+    console.log(result)
+  },
+
   scripts: [],
   activeScriptId: '',
   rootFolder: null,
@@ -40,10 +61,12 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   setScripts: (scripts: Script[]) => set(() => ({ scripts: scripts })),
   setRootFolder: (rootFolder: RootFolder) => set(() => ({ rootFolder })),
 
-  addScript: (script: Script) =>
+  addScript: async (script: Script) => {
+    await addScript(script)
     set((state: { scripts: Script[] }) => ({
       scripts: state.scripts.concat(script),
-    })),
+    }))
+  },
 
   getActiveScript: () =>
     get().scripts.find(
