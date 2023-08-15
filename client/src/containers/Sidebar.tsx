@@ -51,6 +51,7 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
             return await updateScript(script)
           })
         )
+        //If localstate doesnt have all scripts found in database
         setScripts([...scripts, ...scriptsToAdd])
 
         //console.log(result, 'updated')
@@ -74,7 +75,7 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
     <aside
       className={`${
         show ? 'translate-x-0' : '-translate-x-[40rem]'
-      } fixed  z-50 w-full sm:w-72 shadow-lg divide-y-4 h-full translate-all duration-200 bg-white`}
+      } fixed  z-50 w-full sm:w-72 shadow-lg divide-y-4 h-full translate-all duration-200 bg-white overflow-y-auto overflow-x-hidden`}
     >
       <div className="flex flex-col items-center border-black">
         <div className="flex flex-row w-full justify-end bg-primary p-2">

@@ -21,8 +21,8 @@ const ScriptListItem = ({
       id={id}
       onClick={onClick}
       className={`${
-        selected ? 'text-black border-green-300' : 'text-gray-500'
-      } cursor-pointer border-l-4 flex h-24 hover:bg-gray-200 items-center`}
+        selected ? 'text-black border-green-300 bg-green-200' : 'text-gray-500'
+      } cursor-pointer border-l-4 flex h-8 hover:bg-gray-200 items-center`}
       key={script.script_id}
     >
       <span className="flex-1">{script.filename}</span>
