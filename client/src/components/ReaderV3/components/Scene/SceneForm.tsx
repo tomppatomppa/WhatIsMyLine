@@ -7,6 +7,7 @@ import { Drag } from 'src/components/drag-and-drop'
 import { DeleteIcon } from '../icons'
 import { ConditionalField } from '../forms/ConditionalField'
 import { FormikTextArea } from '../forms/FormikTextArea'
+
 import PanelWidget from '../ScenePanel/PanelWidget'
 import PanelComponent from '../ScenePanel/PanelComponent'
 

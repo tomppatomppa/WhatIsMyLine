@@ -1,4 +1,3 @@
-import { Online } from 'react-detect-offline'
 import { AiOutlineClose } from 'react-icons/ai'
 import { useMutation, useQuery } from 'react-query'
 import {
@@ -33,7 +32,7 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
   //TODO: proper syncing
   const { refetch } = useQuery(['scripts'], () => fetchAllUserScripts(), {
     onSuccess: async (data: Script[]) => {
-      //If scripts exist on local storage, update changes in database
+      //If scripts exist in local storage, update changes in database
       if (scripts.length) {
         const remoteScriptIds = data.map((script) => script.script_id)
         const localScriptIds = scripts.map((script) => script.script_id)
@@ -45,7 +44,7 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
         const scriptsToAdd = data.filter(
           (script) => !localScriptIds.includes(script.script_id)
         )
-        //Some might fail, update failed manually
+        //Some might fail
         await Promise.allSettled(
           scriptsToUpdate.map(async (script) => {
             return await updateScript(script)
@@ -60,6 +59,8 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
         setScripts(data)
       }
     },
+    retry: false,
+    refetchOnWindowFocus: false,
   })
 
   const activeScriptId = useScriptStore((state) => state.activeScriptId)
@@ -94,12 +95,10 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
         ) : (
           <EmptyScriptList />
         )}
+        <button className="p-2 border mt-6" onClick={() => refetch()}>
+          Save Local Changes
+        </button>
       </div>
-      <Online
-        onChange={(online) => {
-          if (online) refetch()
-        }}
-      />
     </aside>
   )
 }
