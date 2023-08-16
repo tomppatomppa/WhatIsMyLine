@@ -23,7 +23,7 @@ const PreviousScene = ({ sceneId }: PreviousSceneProps) => {
         onAccept={() => setShowModal(false)}
       >
         {previousScene?.data.map((line) => (
-          <LineItem line={line} />
+          <LineItem key={line.id} line={line} />
         ))}
       </Modal>
       <button
