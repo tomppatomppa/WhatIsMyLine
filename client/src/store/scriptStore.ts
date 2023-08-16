@@ -3,6 +3,7 @@ import { StateCreator, create } from 'zustand'
 import { swapLines, swapScenes } from './helpers'
 import { devtools, persist } from 'zustand/middleware'
 import { addScript, updateScript } from 'src/API/scriptApi'
+import { getSceneNumber } from 'src/utils/helpers'
 
 export type RootFolder = {
   id: string
@@ -16,11 +17,7 @@ interface ScriptState {
 }
 
 interface ScriptActions {
-  loadScriptFromLocal: () => Promise<void>
-  loadScriptFromDatabase: () => Promise<void>
-
   updateDatabaseWithLocalChanges: (scripts: Script[]) => Promise<void>
-  saveScriptsToDatabase: () => Promise<void>
 
   setScripts: (scripts: Script[]) => void
   addScript: (script: Script) => void
@@ -35,31 +32,18 @@ interface ScriptActions {
     destinationId: number
   ) => void
   getActiveScript: () => Script | undefined
+  getPreviousScene: (sceneId: string) => Scene | null
+
   updateScene: (updatedScene: Scene) => void
 }
 
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
-  loadScriptFromLocal: async () => {
-    console.log('local')
-  },
-  loadScriptFromDatabase: async () => {
-    console.log('database')
-  },
   updateDatabaseWithLocalChanges: async (scripts) => {
-    console.log('update local')
     await Promise.allSettled(
       scripts.map(async (script) => {
         return await updateScript(script)
       })
     )
-  },
-  saveScriptsToDatabase: async () => {
-    const result = await Promise.allSettled(
-      get().scripts.map(async (script) => {
-        return await addScript(script)
-      })
-    )
-    console.log(result)
   },
 
   scripts: [],
@@ -81,7 +65,16 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
     get().scripts.find(
       ({ script_id, trash }) => script_id === get().activeScriptId && !trash
     ),
+  getPreviousScene: (sceneId): Scene | null => {
+    const scripts = get().scripts
+    const targetSceneId = getSceneNumber(sceneId) - 1
+    const sceneFromScripts =
+      scripts
+        .flatMap((script) => script.scenes)
+        .find((scene) => getSceneNumber(scene.id) === targetSceneId) || null
 
+    return sceneFromScripts
+  },
   /**
    * Active Script mutations
    */
@@ -158,3 +151,6 @@ export const useActiveScript = () =>
 
 export const useUpdateScript = () =>
   useScriptStore((state) => state.updateScene)
+
+export const usePreviousScene = () =>
+  useScriptStore((state) => state.getPreviousScene)

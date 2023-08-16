@@ -54,3 +54,8 @@ export function identifyScriptsToUpdate(
     scriptsToAddToLocalState,
   }
 }
+
+export function getSceneNumber(string: string, delimiter = ' '): number {
+  const value = string.split(delimiter)[0]
+  return Number(value)
+}

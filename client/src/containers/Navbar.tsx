@@ -9,12 +9,14 @@ const Navbar = () => {
   return (
     <nav className="z-50 flex justify-netween w-full">
       <button
-        className="flex self-center m-4 flex-1 text-black font-bold tracking-widest"
+        className="flex self-center m-4 text-black font-bold tracking-widest"
         onClick={() => setShowMenu(!showMenu)}
       >
         SCRIPTS
       </button>
-      <Dropdown title="Profile">
+
+      <label className="flex-1"></label>
+      <Dropdown className="right-2" title="Profile">
         <Profile />
       </Dropdown>
       <Sidebar show={showMenu} setShowMenu={() => setShowMenu(false)} />

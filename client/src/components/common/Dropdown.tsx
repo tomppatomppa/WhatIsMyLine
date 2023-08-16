@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 
 interface DropdownProps {
   title: string
@@ -9,10 +9,10 @@ interface DropdownProps {
 const Dropdown = ({ title, children, className }: DropdownProps) => {
   const [open, isOpen] = useState(false)
 
+  const targetRef = useRef<HTMLDivElement>(null)
+
   return (
-    <div
-      className={`${className} relative inline-block text-left items-center self-center p-2`}
-    >
+    <div className={` text-left  items-center self-center p-2`}>
       <div>
         <button
           onClick={() => isOpen(!open)}
@@ -23,7 +23,10 @@ const Dropdown = ({ title, children, className }: DropdownProps) => {
         </button>
       </div>
       {open ? (
-        <div className="absolute text-black right-0 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 cursor-pointer focus:outline-none">
+        <div
+          ref={targetRef}
+          className={`${className} absolute text-black mt-2 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 cursor-pointer focus:outline-none `}
+        >
           {children}
         </div>
       ) : null}

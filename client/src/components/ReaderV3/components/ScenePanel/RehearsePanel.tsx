@@ -27,14 +27,16 @@ import usePlayAudio from '../../hooks/usePlayAudio'
 import { PlayIcon } from '../icons'
 import { FaCircle, FaMicrophone } from 'react-icons/fa'
 
+import PreviousScene from 'src/components/PreviousScene'
+
 const RehearsePanel = () => {
-  //TODO: Move to context, or somewhere else
   const user = useCurrentUser()
-  //TODO: if user removes manually localstorage, when
+
   const rootFolder = useRootFolder() as RootFolder //Can be moved to useAudio?
-  const [showModal, setShowModal] = useState(false)
+  const [showCreateModal, setShowCreateModal] = useState(false)
 
   const { values } = useFormikContext<Scene>()
+
   const { options, scriptId, dispatch } = useReaderContext()
   const { audioFiles, refetch, isFetching } = useAudio(
     values,
@@ -53,9 +55,7 @@ const RehearsePanel = () => {
   const uniqueActors = [
     ...new Set(values.data.map((line) => line.name || line.type)),
   ]
-
   const labeled = labelLines(values, options, audioFiles)
-  //TODO: Move to context, or somewhere else
 
   if (user?.name === 'visitor') {
     return <div className="text-red-900">Not available in visitor mode</div>
@@ -67,8 +67,8 @@ const RehearsePanel = () => {
         title="Create audio files for the scene?"
         content="This process will only take a couple
          seconds"
-        show={showModal}
-        close={() => setShowModal(false)}
+        show={showCreateModal}
+        close={() => setShowCreateModal(false)}
         onAccept={() =>
           mutate({
             scriptId,
@@ -97,6 +97,7 @@ const RehearsePanel = () => {
           <AiOutlineSync size={24} />
         </button>
       </div>
+      <PreviousScene sceneId={values.id} />
       <Dropdown title="Actors">
         <Wrapper>
           <SelectList
@@ -122,7 +123,7 @@ const RehearsePanel = () => {
         <button
           type="button"
           className="text-red-900 h-12"
-          onClick={() => setShowModal(true)}
+          onClick={() => setShowCreateModal(true)}
         >
           Create
         </button>

@@ -1,10 +1,6 @@
 import { AiOutlineClose } from 'react-icons/ai'
 import { useMutation, useQuery } from 'react-query'
-import {
-  deleteScriptById,
-  fetchAllUserScripts,
-  updateScript,
-} from 'src/API/scriptApi'
+import { deleteScriptById, fetchAllUserScripts } from 'src/API/scriptApi'
 import EmptyScriptList from 'src/components/EmptyScriptList'
 import { Script } from 'src/components/ReaderV3/reader.types'
 import ScriptList from 'src/components/ScriptList'
@@ -34,7 +30,6 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
   //TODO: proper syncing
   const { refetch } = useQuery(['scripts'], () => fetchAllUserScripts(), {
     onSuccess: async (data: Script[]) => {
-      //If scripts exist in local storage
       if (scripts.length) {
         const { scriptsToUpdateInDatabase, scriptsToAddToLocalState } =
           identifyScriptsToUpdate(data, scripts)
