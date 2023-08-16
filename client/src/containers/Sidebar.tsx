@@ -16,6 +16,7 @@ import {
   useSetActiveScriptId,
   useSetScripts,
 } from 'src/store/scriptStore'
+import { identifyScriptsToUpdate } from 'src/utils/helpers'
 
 interface SidebarProps {
   setShowMenu: () => void
@@ -25,6 +26,7 @@ interface SidebarProps {
 export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
   const deleteScript = useDeleteScript()
   const setScripts = useSetScripts()
+  const { updateDatabaseWithLocalChanges } = useScriptStore()
   const scripts = useScripts()
 
   const { mutate } = useMutation(deleteScriptById)
@@ -32,30 +34,14 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
   //TODO: proper syncing
   const { refetch } = useQuery(['scripts'], () => fetchAllUserScripts(), {
     onSuccess: async (data: Script[]) => {
-      //If scripts exist in local storage, update changes in database
+      //If scripts exist in local storage
       if (scripts.length) {
-        const remoteScriptIds = data.map((script) => script.script_id)
-        const localScriptIds = scripts.map((script) => script.script_id)
+        const { scriptsToUpdateInDatabase, scriptsToAddToLocalState } =
+          identifyScriptsToUpdate(data, scripts)
 
-        const scriptsToUpdate = scripts.filter((script) =>
-          remoteScriptIds.includes(script.script_id)
-        )
-
-        const scriptsToAdd = data.filter(
-          (script) => !localScriptIds.includes(script.script_id)
-        )
-        //Some might fail
-        await Promise.allSettled(
-          scriptsToUpdate.map(async (script) => {
-            return await updateScript(script)
-          })
-        )
-        //If localstate doesnt have all scripts found in database
-        setScripts([...scripts, ...scriptsToAdd])
-
-        //console.log(result, 'updated')
+        updateDatabaseWithLocalChanges(scriptsToUpdateInDatabase)
+        setScripts([...scripts, ...scriptsToAddToLocalState])
       } else {
-        //console.log('No local files')
         setScripts(data)
       }
     },

@@ -1,3 +1,5 @@
+import { Script } from 'src/components/ReaderV3/reader.types'
+
 export function tokenIsExpired(date: number) {
   const currentDate = Date.now()
   const unixTime = Math.floor(currentDate / 1000)
@@ -27,4 +29,28 @@ export async function showUserPrompt() {
       resolve('database')
     }
   })
+}
+
+export function identifyScriptsToUpdate(
+  remoteData: Script[],
+  localScripts: Script[]
+): {
+  scriptsToUpdateInDatabase: Script[]
+  scriptsToAddToLocalState: Script[]
+} {
+  const remoteScriptIds = remoteData.map((script) => script.script_id)
+  const localScriptIds = localScripts.map((script) => script.script_id)
+
+  const scriptsToUpdateInDatabase = localScripts.filter((script) =>
+    remoteScriptIds.includes(script.script_id)
+  )
+
+  const scriptsToAddToLocalState = remoteData.filter(
+    (script) => !localScriptIds.includes(script.script_id)
+  )
+
+  return {
+    scriptsToUpdateInDatabase,
+    scriptsToAddToLocalState,
+  }
 }

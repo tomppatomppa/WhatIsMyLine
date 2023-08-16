@@ -2,7 +2,7 @@ import { Scene, Script } from 'src/components/ReaderV3/reader.types'
 import { StateCreator, create } from 'zustand'
 import { swapLines, swapScenes } from './helpers'
 import { devtools, persist } from 'zustand/middleware'
-import { addScript } from 'src/API/scriptApi'
+import { addScript, updateScript } from 'src/API/scriptApi'
 
 export type RootFolder = {
   id: string
@@ -19,6 +19,7 @@ interface ScriptActions {
   loadScriptFromLocal: () => Promise<void>
   loadScriptFromDatabase: () => Promise<void>
 
+  updateDatabaseWithLocalChanges: (scripts: Script[]) => Promise<void>
   saveScriptsToDatabase: () => Promise<void>
 
   setScripts: (scripts: Script[]) => void
@@ -43,6 +44,14 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   },
   loadScriptFromDatabase: async () => {
     console.log('database')
+  },
+  updateDatabaseWithLocalChanges: async (scripts) => {
+    console.log('update local')
+    await Promise.allSettled(
+      scripts.map(async (script) => {
+        return await updateScript(script)
+      })
+    )
   },
   saveScriptsToDatabase: async () => {
     const result = await Promise.allSettled(
