@@ -34,7 +34,7 @@ interface ScriptActions {
     destinationId: number
   ) => void
   getActiveScript: () => Script | undefined
-  getPreviousScene: (sceneId: string) => Scene | null
+  getPreviousScene: (sceneNumber: number) => Scene | null
 
   updateScene: (updatedScene: Scene) => void
 }
@@ -87,13 +87,13 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
       ({ script_id, trash }) => script_id === get().activeScriptId && !trash
     ),
 
-  getPreviousScene: (sceneId): Scene | null => {
+  getPreviousScene: (sceneNumber): Scene | null => {
     const scripts = get().scripts
-    const targetSceneId = getSceneNumber(sceneId) - 1
+    const targetSceneNumber = sceneNumber - 1
     const sceneFromScripts =
       scripts
         .flatMap((script) => script.scenes)
-        .find((scene) => getSceneNumber(scene.id) === targetSceneId) || null
+        .find((scene) => getSceneNumber(scene.id) === targetSceneNumber) || null
 
     return sceneFromScripts
   },

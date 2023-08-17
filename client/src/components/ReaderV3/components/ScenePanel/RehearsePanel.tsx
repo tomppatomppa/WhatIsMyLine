@@ -28,6 +28,7 @@ import { PlayIcon } from '../icons'
 import { FaCircle, FaMicrophone } from 'react-icons/fa'
 
 import PreviousScene from 'src/components/PreviousScene'
+import { getSceneNumber } from 'src/utils/helpers'
 
 const RehearsePanel = () => {
   const user = useCurrentUser()
@@ -97,7 +98,7 @@ const RehearsePanel = () => {
           <AiOutlineSync size={24} />
         </button>
       </div>
-      <PreviousScene sceneId={values.id} />
+      <PreviousScene sceneId={getSceneNumber(values.id)} />
       <Dropdown title="Actors">
         <Wrapper>
           <SelectList
