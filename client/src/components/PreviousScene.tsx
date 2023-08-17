@@ -16,14 +16,19 @@ const PreviousScene = ({ sceneId }: PreviousSceneProps) => {
 
   const previousScene = getPreviousScene(initialId)
 
+  const handleClose = () => {
+    setInitialId(sceneId)
+    setShowModal(false)
+  }
+
   return (
     <>
       <Modal
         title={previousScene?.id || 'No Scene Found'}
         content={`${initialId}`}
         show={showModal}
-        close={() => setShowModal(false)}
-        onAccept={() => setShowModal(false)}
+        close={handleClose}
+        onAccept={handleClose}
       >
         <button
           className="mr-2"
