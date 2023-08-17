@@ -1,10 +1,11 @@
-import { useReducer } from 'react'
+import { useReducer, useEffect } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { Drop } from '../drag-and-drop'
 import ReaderContext from './contexts/ReaderContext'
 import reducer from './reducer'
 import SceneItem from './components/Scene/SceneItem'
 import { ReaderConfiguration, Script } from './reader.types'
+import { useScriptStore } from 'src/store/scriptStore'
 
 const initialState = {
   mode: 'idle',
@@ -38,9 +39,16 @@ interface ReaderProps {
 
 export const Reader = ({ script, handleDragEnd }: ReaderProps) => {
   const [options, dispatch] = useReducer(reducer, initialState)
-  const scriptId = script.script_id
+  const { fetchAndCompare } = useScriptStore()
+
+  useEffect(() => {
+    fetchAndCompare()
+  }, [fetchAndCompare, options.expanded])
+
   return (
-    <ReaderContext.Provider value={{ options, dispatch, scriptId }}>
+    <ReaderContext.Provider
+      value={{ options, dispatch, scriptId: script.script_id }}
+    >
       <DragDropContext onDragEnd={handleDragEnd}>
         <Drop id="droppable" type="droppable-category">
           {script?.scenes?.map((scene, index) => (

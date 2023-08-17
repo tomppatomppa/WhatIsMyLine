@@ -59,3 +59,29 @@ export function getSceneNumber(string: string, delimiter = ' '): number {
   const value = string.split(delimiter)[0]
   return Number(value)
 }
+
+export function findChangedScripts(
+  oldArray: Script[],
+  newArray: Script[]
+): string[] {
+  const changedScripts = []
+
+  for (let i = 0; i < oldArray.length; i++) {
+    const oldScript = oldArray[i]
+    const newScript = newArray.find(
+      (script) => script.script_id === oldScript.script_id
+    )
+
+    if (newScript) {
+      if (!isEqual(oldScript, newScript)) {
+        changedScripts.push(newScript.script_id)
+      }
+    }
+  }
+
+  return changedScripts
+}
+
+function isEqual(objA: any, objB: any) {
+  return JSON.stringify(objA) === JSON.stringify(objB)
+}

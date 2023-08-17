@@ -2,8 +2,8 @@ import { Scene, Script } from 'src/components/ReaderV3/reader.types'
 import { StateCreator, create } from 'zustand'
 import { swapLines, swapScenes } from './helpers'
 import { devtools, persist } from 'zustand/middleware'
-import { addScript, updateScript } from 'src/API/scriptApi'
-import { getSceneNumber } from 'src/utils/helpers'
+import { addScript, fetchAllUserScripts, updateScript } from 'src/API/scriptApi'
+import { findChangedScripts, getSceneNumber } from 'src/utils/helpers'
 
 export type RootFolder = {
   id: string
@@ -12,12 +12,14 @@ export type RootFolder = {
 
 interface ScriptState {
   scripts: Script[]
+  unsavedChanges: string[]
   activeScriptId: string
   rootFolder: RootFolder | null
 }
 
 interface ScriptActions {
-  updateDatabaseWithLocalChanges: (scripts: Script[]) => Promise<void>
+  updateDatabaseWithLocalChanges: () => Promise<void>
+  fetchAndCompare: () => Promise<void>
 
   setScripts: (scripts: Script[]) => void
   addScript: (script: Script) => void
@@ -38,15 +40,33 @@ interface ScriptActions {
 }
 
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
-  updateDatabaseWithLocalChanges: async (scripts) => {
-    await Promise.allSettled(
-      scripts.map(async (script) => {
-        return await updateScript(script)
-      })
+  updateDatabaseWithLocalChanges: async () => {
+    await get().fetchAndCompare()
+    const toUpdate = get().unsavedChanges
+    const scriptsToUpdate = get().scripts.filter((script) =>
+      toUpdate.includes(script.script_id)
     )
+    if (scriptsToUpdate.length) {
+      await Promise.allSettled(
+        scriptsToUpdate.map(async (script) => {
+          return await updateScript(script)
+        })
+      )
+      set(() => ({ unsavedChanges: [] }))
+    }
+  },
+
+  fetchAndCompare: async () => {
+    const databaseData = await fetchAllUserScripts()
+    const scriptsWithUnsavedChanges = findChangedScripts(
+      databaseData,
+      get().scripts
+    )
+    set(() => ({ unsavedChanges: scriptsWithUnsavedChanges }))
   },
 
   scripts: [],
+  unsavedChanges: [],
   activeScriptId: '',
   rootFolder: null,
 

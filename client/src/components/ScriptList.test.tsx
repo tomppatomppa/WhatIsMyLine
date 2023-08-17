@@ -42,6 +42,7 @@ test('renders correct number of list items', async () => {
       activeScriptId=""
       setActiveScript={() => {}}
       deleteScript={() => {}}
+      unsavedChanges={[]}
     />
   )
 
@@ -56,6 +57,7 @@ test('should call setActiveScript with the correct id', async () => {
       activeScriptId=""
       setActiveScript={setActiveScript}
       deleteScript={() => {}}
+      unsavedChanges={[]}
     />
   )
 
@@ -72,6 +74,7 @@ test('should call deleteScript with the correct id', async () => {
       activeScriptId=""
       setActiveScript={() => {}}
       deleteScript={deleteScript}
+      unsavedChanges={[]}
     />
   )
 

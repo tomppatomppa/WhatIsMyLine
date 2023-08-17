@@ -26,6 +26,7 @@ interface DropProps extends Omit<DroppableProps, 'children' | 'droppableId'> {
   id: string
   children?: React.ReactNode
 }
+
 export const Drop = ({ id, type, ...props }: DropProps) => {
   return (
     <StrictModeDroppable droppableId={id} type={type}>

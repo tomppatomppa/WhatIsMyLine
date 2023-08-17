@@ -62,10 +62,8 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
                     <ConditionalField
                       key={lineIndex}
                       show={isEditing}
-                      onShow={() => {}}
-                      onCollapse={() => {
-                        if (dirty) console.log('unsaved changes')
-                      }}
+                      onShow={() => console.log()}
+                      onCollapse={() => console.log()}
                     >
                       <div className="w-full bg-neutral-200 flex justify-end ">
                         <label htmlFor={`data[${lineIndex}].type`}>

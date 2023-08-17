@@ -1,23 +1,28 @@
+import { useEffect } from 'react'
 import { useFormikContext } from 'formik'
-import { useUpdateScript } from 'src/store/scriptStore'
 import uuid from 'react-uuid'
+
+import { useScriptStore, useUpdateScript } from 'src/store/scriptStore'
 import { Scene, SceneLine } from '../../reader.types'
 import { useReaderContext } from '../../contexts/ReaderContext'
-import { useEffect } from 'react'
 
+function createNewLine() {
+  return {
+    id: uuid(),
+    name: 'Select Name',
+    type: 'ACTOR' as SceneLine,
+    lines: 'New Line\n',
+  }
+}
 //TODO: Any edit should invalidate reactQuery cache for this scene
 const EditPanel = () => {
+  const { updateDatabaseWithLocalChanges } = useScriptStore()
   const updateScript = useUpdateScript()
   const { dirty, resetForm, values } = useFormikContext<Scene>()
   const { dispatch } = useReaderContext()
 
   const handleAddLine = () => {
-    const newLine = {
-      id: uuid(),
-      name: 'Select Name',
-      type: 'ACTOR' as SceneLine,
-      lines: 'New Line\n',
-    }
+    const newLine = createNewLine()
     const updatedLines = [...values.data]
     updatedLines.unshift(newLine)
     updateScript({ ...values, data: updatedLines })
@@ -33,12 +38,13 @@ const EditPanel = () => {
 
   return (
     <div className="flex gap-4">
+      <button onClick={() => updateDatabaseWithLocalChanges()}>Compare</button>
       <button
         type="button"
         className={dirty ? 'text-black' : 'text-gray-400'}
         onClick={() => resetForm()}
       >
-        Undo
+        Reset
       </button>
       <button type="button" onClick={handleAddLine}>
         Add Line

@@ -12,7 +12,6 @@ import {
   useSetActiveScriptId,
   useSetScripts,
 } from 'src/store/scriptStore'
-import { identifyScriptsToUpdate } from 'src/utils/helpers'
 
 interface SidebarProps {
   setShowMenu: () => void
@@ -22,28 +21,20 @@ interface SidebarProps {
 export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
   const deleteScript = useDeleteScript()
   const setScripts = useSetScripts()
-  const { updateDatabaseWithLocalChanges } = useScriptStore()
+  const { updateDatabaseWithLocalChanges, unsavedChanges } = useScriptStore()
   const scripts = useScripts()
 
   const { mutate } = useMutation(deleteScriptById)
 
   //TODO: proper syncing
-  const { refetch } = useQuery(['scripts'], () => fetchAllUserScripts(), {
+  useQuery(['scripts'], () => fetchAllUserScripts(), {
     onSuccess: async (data: Script[]) => {
-      if (scripts.length) {
-        const { scriptsToUpdateInDatabase, scriptsToAddToLocalState } =
-          identifyScriptsToUpdate(data, scripts)
-
-        updateDatabaseWithLocalChanges(scriptsToUpdateInDatabase)
-        setScripts([...scripts, ...scriptsToAddToLocalState])
-      } else {
-        setScripts(data)
-      }
+      setScripts(data)
     },
     retry: false,
     refetchOnWindowFocus: false,
   })
-
+  console.log(unsavedChanges)
   const activeScriptId = useScriptStore((state) => state.activeScriptId)
 
   const handleDeleteScript = (script_id: string) => {
@@ -69,6 +60,7 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
         {scripts.length ? (
           <ScriptList
             scripts={scripts}
+            unsavedChanges={unsavedChanges}
             deleteScript={handleDeleteScript}
             setActiveScript={setActiveScript}
             activeScriptId={activeScriptId}
@@ -76,7 +68,10 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
         ) : (
           <EmptyScriptList />
         )}
-        <button className="p-2 border mt-6" onClick={() => refetch()}>
+        <button
+          className="p-2 border mt-6"
+          onClick={() => updateDatabaseWithLocalChanges()}
+        >
           Save Local Changes
         </button>
       </div>
