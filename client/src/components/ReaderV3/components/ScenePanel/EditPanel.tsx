@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useFormikContext } from 'formik'
 import uuid from 'react-uuid'
 
-import { useScriptStore, useUpdateScript } from 'src/store/scriptStore'
+import { useUpdateScript } from 'src/store/scriptStore'
 import { Scene, SceneLine } from '../../reader.types'
 import { useReaderContext } from '../../contexts/ReaderContext'
 
@@ -14,9 +14,8 @@ function createNewLine() {
     lines: 'New Line\n',
   }
 }
-//TODO: Any edit should invalidate reactQuery cache for this scene
+
 const EditPanel = () => {
-  const { updateDatabaseWithLocalChanges } = useScriptStore()
   const updateScript = useUpdateScript()
   const { dirty, resetForm, values } = useFormikContext<Scene>()
   const { dispatch } = useReaderContext()
@@ -38,7 +37,6 @@ const EditPanel = () => {
 
   return (
     <div className="flex gap-4">
-      <button onClick={() => updateDatabaseWithLocalChanges()}>Compare</button>
       <button
         type="button"
         className={dirty ? 'text-black' : 'text-gray-400'}

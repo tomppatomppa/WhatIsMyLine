@@ -19,7 +19,7 @@ interface ScriptState {
 
 interface ScriptActions {
   updateDatabaseWithLocalChanges: () => Promise<void>
-  fetchAndCompare: () => Promise<void>
+  fetchAndCompare: () => Promise<Script[]>
 
   setScripts: (scripts: Script[]) => void
   addScript: (script: Script) => void
@@ -63,6 +63,7 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
       get().scripts
     )
     set(() => ({ unsavedChanges: scriptsWithUnsavedChanges }))
+    return databaseData
   },
 
   scripts: [],
@@ -75,9 +76,9 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   setRootFolder: (rootFolder: RootFolder) => set(() => ({ rootFolder })),
 
   addScript: async (script: Script) => {
-    await addScript(script)
+    const addedScript = await addScript(script)
     set((state: { scripts: Script[] }) => ({
-      scripts: state.scripts.concat(script),
+      scripts: state.scripts.concat(addedScript),
     }))
   },
 
@@ -85,6 +86,7 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
     get().scripts.find(
       ({ script_id, trash }) => script_id === get().activeScriptId && !trash
     ),
+
   getPreviousScene: (sceneId): Scene | null => {
     const scripts = get().scripts
     const targetSceneId = getSceneNumber(sceneId) - 1

@@ -12,6 +12,7 @@ import {
   useSetActiveScriptId,
   useSetScripts,
 } from 'src/store/scriptStore'
+import { isCurrentUserScripts } from 'src/utils/helpers'
 
 interface SidebarProps {
   setShowMenu: () => void
@@ -29,12 +30,16 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
   //TODO: proper syncing
   useQuery(['scripts'], () => fetchAllUserScripts(), {
     onSuccess: async (data: Script[]) => {
-      setScripts(data)
+      if (unsavedChanges && isCurrentUserScripts(data, scripts)) {
+        setScripts(scripts)
+      } else {
+        setScripts(data)
+      }
     },
     retry: false,
     refetchOnWindowFocus: false,
   })
-  console.log(unsavedChanges)
+
   const activeScriptId = useScriptStore((state) => state.activeScriptId)
 
   const handleDeleteScript = (script_id: string) => {
@@ -69,10 +74,11 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
           <EmptyScriptList />
         )}
         <button
+          disabled={!unsavedChanges.length}
           className="p-2 border mt-6"
           onClick={() => updateDatabaseWithLocalChanges()}
         >
-          Save Local Changes
+          {!unsavedChanges.length ? 'In Sync' : 'Save Local Changes'}
         </button>
       </div>
     </aside>

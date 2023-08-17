@@ -85,3 +85,19 @@ export function findChangedScripts(
 function isEqual(objA: any, objB: any) {
   return JSON.stringify(objA) === JSON.stringify(objB)
 }
+
+export function isCurrentUserScripts(remote: Script[], local: Script[]) {
+  if (remote.length !== local.length) return false
+
+  return remote.every((remoteScript) => {
+    const localScript = local.find(
+      (script) => script.script_id === remoteScript.script_id
+    )
+
+    if (!localScript) {
+      return false // Corresponding local script not found
+    }
+
+    return true
+  })
+}
