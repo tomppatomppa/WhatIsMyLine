@@ -10,17 +10,15 @@ import json
 @jwt_required()
 def get_all():
     user_scripts = Script.get_scripts_by_user_id(get_jwt_identity())
+
     response = make_response(json.dumps([script.to_dict() for script in user_scripts]), 200)
     return response
 
-@scripts_blueprint.route("/script/<id>", methods=["GET"])
+@scripts_blueprint.route("/script/<script_id>", methods=["GET"])
 @jwt_required()
-def get_script_by_id(id):
-    query = db.select(Script).where(
-        Script.user_id == get_jwt_identity(),
-        Script.script_id == id)
-    
-    script = db.session.execute(query).scalars().one()
+def get_by_script_id(script_id):
+   
+    script = Script.get_script_by_script_id(script_id, get_jwt_identity())
     if not script:
         return "Script doesn't exist", 404
     
@@ -31,45 +29,38 @@ def get_script_by_id(id):
 @scripts_blueprint.route("/script", methods=["POST"])
 @jwt_required()
 def create():
-    data = request.get_json()
-    data["user_id"] = get_jwt_identity()
+    script = request.get_json()
     try:
-        new_script = Script(**data)
-        db.session.add(new_script)
-        db.session.commit()    
+        new_script = Script.add_script(script, get_jwt_identity())
+      
         return json.dumps(new_script.to_dict()), 200
     except Exception as error:
         return str(error), 400
    
 
-@scripts_blueprint.route("/script/<id>", methods=["DELETE"])
+@scripts_blueprint.route("/script/<script_id>", methods=["DELETE"])
 @jwt_required()
-def delete(id):
-    script_to_delete = db.session.query(Script).where(Script.user_id==get_jwt_identity()).filter_by(script_id=id).first()
-    
-    if script_to_delete:
-        db.session.delete(script_to_delete)
-        db.session.commit()
-        return "Script Deleted Succesfully", 200
+def delete(script_id):
+    deleted_script = Script.delete_script_by_script_id(script_id, get_jwt_identity())
+
+    if deleted_script:
+        return f"Script {deleted_script.script_id} Deleted Succesfully", 200
     else:
         return "Error deleting script", 404
    
 
-@scripts_blueprint.route("/script/<id>", methods=["PUT"])
+@scripts_blueprint.route("/script/<script_id>", methods=["PUT"])
 @jwt_required()
-def update(id):
-    script_to_update = db.session.query(Script).where(Script.user_id==get_jwt_identity()).filter_by(script_id=id).first()
+def update(script_id):
+    script_to_update = Script.get_script_by_script_id(script_id, get_jwt_identity())
 
-    allowed_keys = ["filename", "scenes"]
-
-    if script_to_update:
-        updated_data = request.get_json()
-        for key, value in updated_data.items():
-            if key in allowed_keys:
-                setattr(script_to_update, key, value)
-        db.session.commit()
-        return json.dumps(script_to_update.to_dict()), 200
-    else:
+    if not script_to_update:
         return "Error updating script", 404
+ 
+    updated_data = request.get_json()
+    updated_script = Script.update(updated_data, script_to_update)
+   
+    return json.dumps(updated_script.to_dict()), 200
+   
    
 

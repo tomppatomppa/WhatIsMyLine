@@ -82,6 +82,8 @@ class Script(db.Model):
     created_on = mapped_column(DateTime(), nullable=False)
     modified_on = mapped_column(DateTime(), nullable=False)
     
+    forbidden_keys = ['id', 'script_id', "created_on", "user_id"]
+
     def __init__(self,script_id: str, filename: str, user_id: str, scenes: list = []):
         """Create a new Script object using the name of the script and the user_id
         """
@@ -91,7 +93,7 @@ class Script(db.Model):
         self.scenes = scenes
         self.created_on = datetime.now()
         self.modified_on = datetime.now()
-
+    
     def to_dict(self):
       return {
           "id": self.id,
@@ -102,34 +104,34 @@ class Script(db.Model):
       }
     
     @classmethod
-    def get_all(cls):
-        return cls.query.all()
+    def add_script(cls, script, user_id):
+        new_script = Script(**script, user_id=user_id)
+        db.session.add(new_script)
+        db.session.commit()
+        return new_script   
     
     @classmethod
-    def get_script_by_name(cls, name):
-        return cls.query.filter_by(name=name).first()
-    
-    @classmethod
-    def get_script_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
+    def get_script_by_script_id(cls, script_id, user_id):
+        return cls.query.filter_by(script_id=script_id, user_id=user_id).first()
     
     @classmethod
     def get_scripts_by_user_id(cls, user_id):
         return cls.query.filter_by(user_id=user_id).all()
     
     @classmethod
-    def update_script_by_id(cls, id, name):
-        script = cls.query.filter_by(id=id).first()
-        script.name = name
-        script.modified_on = datetime.now()
+    def update(cls, updated_data, script):
+        for key, value in updated_data.items():
+            if key not in cls.forbidden_keys:
+                setattr(script, key, value)
         db.session.commit()
         return script
     
     @classmethod
-    def delete_script_by_id(cls, id):
-        script = cls.query.filter_by(id=id).first()
-        db.session.delete(script)
-        db.session.commit()
+    def delete_script_by_script_id(cls, script_id, user_id):
+        script = cls.query.filter_by(script_id=script_id, user_id=user_id).first()
+        if script:
+            db.session.delete(script)
+            db.session.commit()
         return script
     
     def __repr__(self):

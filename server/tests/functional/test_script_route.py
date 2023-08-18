@@ -97,7 +97,7 @@ def test_adding_new_script(logged_in_test_client, new_user, csrf_headers):
     assert response_json["filename"] == script_to_add["filename"]
     assert response_json["scenes"] == script_to_add["scenes"]
 
-def test_deleting_script_by_id(logged_in_test_client, new_script, csrf_headers):
+def test_deleting_script_by_script_id(logged_in_test_client, new_script, csrf_headers):
     """
     Functional api test for deleting a script by its script_id.
 
@@ -109,6 +109,7 @@ def test_deleting_script_by_id(logged_in_test_client, new_script, csrf_headers):
 
     response = logged_in_test_client.delete(f'{url}/{new_script.script_id}', headers=csrf_headers) 
     assert response.status_code == 200
+    assert response.data == f'Script {new_script.script_id} Deleted Succesfully'.encode() 
 
 def test_deleting_script_that_doesnt_exist(logged_in_test_client, csrf_headers):
     """
