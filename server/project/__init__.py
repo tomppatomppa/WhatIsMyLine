@@ -23,12 +23,12 @@ def create_app():
     app.config.from_object(config_type)
     app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 
     CORS(app, supports_credentials=True)
     
     initialize_extensions(app)
-    create_upload_folder(app)
+    create_upload_folders(app)
     register_request_handlers(app)
     register_blueprints(app)
     
@@ -49,7 +49,7 @@ def create_app():
 def initialize_extensions(app):
     db.init_app(app)
 
-def create_upload_folder(app):
+def create_upload_folders(app):
     try:
         path = os.path.dirname('current path')
         upload_folder = os.path.join(path.replace("/file_folder",""), "uploaded_files")
@@ -67,6 +67,9 @@ def create_upload_folder(app):
 
 
 def register_request_handlers(app):
+    '''
+    Refresh original if JWT is about to expire within the next 30 minutes.
+    '''
     @app.after_request
     def refresh_expiring_jwts(response):
         try:
