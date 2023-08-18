@@ -6,12 +6,12 @@ from googleapiclient.errors import HttpError
 base_url = "https://www.googleapis.com/drive/v3/files"
 
 
-def search_folder_in_root(service, folder):
+def search_folder_in_root(service, folder_name):
     try:
         files = []
         page_token = None
         while True:
-            response = service.files().list(q=f"'root' in parents and mimeType = 'application/vnd.google-apps.folder' and fullText contains '{folder}' and trashed=false",
+            response = service.files().list(q=f"'root' in parents and mimeType = 'application/vnd.google-apps.folder' and fullText contains '{folder_name}' and trashed=false",
                                             spaces='drive',
                                              fields='nextPageToken, '
                                                    'files(id, name)',
@@ -27,6 +27,21 @@ def search_folder_in_root(service, folder):
 
     return files
 
+def create_folder_in_root(service, folder_name):
+    try:
+        file_metadata = {
+            'name': f'{folder_name}',
+            'mimeType': 'application/vnd.google-apps.folder'
+        }
+
+        file = service.files().create(body=file_metadata, fields='id'
+                                      ).execute() 
+        return file
+
+    except HttpError as error:
+        print(F'An error occurred: {error}')
+        return None
+    
 def search_folder(access_token):
     """Search root folder in drive location
 

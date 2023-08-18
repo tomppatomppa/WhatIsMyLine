@@ -2,37 +2,51 @@ from . import google_blueprint
 from flask import request, jsonify
 import project.google.driveUtils as driveUtils
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
 import functools
 import requests
 import os
-
+from tests.conftest import credentials_for_testing
 from project.google.TextToSpeech import  create_data
 from utils import  remove_dir
 from flask_jwt_extended import jwt_required
 
 def add_drive_service(func):
+    '''
+    When testing set .env variables
+    In production assume token is refreshed on client side
+    '''
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         access_token = extract_token(request)
-        credentials = Credentials(access_token)
+        credentials = Credentials(
+            token=access_token,
+            **credentials_for_testing()
+            )
         service = build('drive', 'v3', credentials=credentials)
     
         return func(service, *args, **kwargs)
     return wrapper
 
-@google_blueprint.route("/api/create_root_folder",  methods=["POST"])
+@google_blueprint.route("/api/drive/create_root_folder",  methods=["POST"])
 @jwt_required()
 @add_drive_service
-def test(service):
+def check_root_folder(service):
     try:
-        files = driveUtils.search_folder_in_root(service, "dramatify-pdf-reader")
+        folder_name = request.json.get('folder_name')
+        files = driveUtils.search_folder_in_root(service, folder_name)
+        if len(files) == 1:
+            return files[0], 200
         if not files:
-            print("create")
-        return files
-    except Exception:
-        return "Something Went Wrong", 404        
+            folder = driveUtils.create_folder_in_root(service, folder_name)
+            return folder, 200
+
+        return f"Multiple folders with the name '{folder_name}' already exists in this location.", 400
+    
+    except requests.exceptions.HTTPError as error:
+        if error.response.status_code == 401:
+           handle_unauthorized(error)
+        return "Something went wrong", 404     
    
 
 

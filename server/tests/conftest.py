@@ -88,3 +88,13 @@ def _get_cookie_from_response(response, cookie_name):
                 cookie[split[0].strip().lower()] = split[1] if len(split) > 1 else True
             return cookie
     return None
+
+def credentials_for_testing():
+    if os.environ.get('FLASK_ENV') == 'testing':
+        return {
+            "refresh_token": os.environ["TEST_REFRESH_TOKEN"],
+            "client_id": os.environ["CLIENT_ID"],
+            "client_secret": os.environ["CLIENT_SECRET"],
+            "token_uri": "https://oauth2.googleapis.com/token"
+        }
+    return {}

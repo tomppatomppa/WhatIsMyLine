@@ -27,6 +27,7 @@ def login():
             user = verify_google_id_token(token_data.get("id_token"))
             
             user_for_database, user_for_client = extract_user_info(user, token_data)
+            print(user_for_database)
             store_user(user_for_database)
 
             response = jsonify(user_for_client)
