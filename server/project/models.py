@@ -57,8 +57,6 @@ class User(db.Model):
         return user.refresh_token
     
 
-    
-
     def __repr__(self):
         return f'<User: {self.email}>'
 
@@ -72,6 +70,8 @@ class Script(db.Model):
         * user_id = id of the user who owns the script
         * created_on - date & time that the script was created
         * modified_on - date & time that the script was last modified
+
+        *forbidden_keys - columns that cannot be updated
     """
     __tablename__ = 'scripts'
     id = mapped_column(Integer(), primary_key=True, autoincrement=True)

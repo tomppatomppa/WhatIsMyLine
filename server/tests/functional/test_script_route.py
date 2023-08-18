@@ -149,6 +149,5 @@ def test_updating_existing_script(logged_in_test_client, csrf_headers):
    
     assert response_json["filename"] ==  script_to_update["filename"]  
     assert response_json["scenes"] ==  script_to_update["scenes"]
-    #Should not be able to update script_id
-
+   
     assert response_json["script_id"] !=  script_to_update["script_id"]  

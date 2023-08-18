@@ -115,7 +115,6 @@ def store_user(user_info):
         db.session.add(new_user)
         db.session.commit()
     else:
-        print("existing")
         User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
     
 def refresh_access_token(refresh_token):

@@ -1,10 +1,31 @@
 import requests
 import json
-
 from googleapiclient.errors import HttpError
 
 
 base_url = "https://www.googleapis.com/drive/v3/files"
+
+
+def search_folder_in_root(service, folder):
+    try:
+        files = []
+        page_token = None
+        while True:
+            response = service.files().list(q=f"'root' in parents and mimeType = 'application/vnd.google-apps.folder' and fullText contains '{folder}' and trashed=false",
+                                            spaces='drive',
+                                             fields='nextPageToken, '
+                                                   'files(id, name)',
+                                            pageToken=page_token).execute()
+            files.extend(response.get('files', []))
+            page_token = response.get('nextPageToken', None)
+            if page_token is None:
+                break
+
+    except HttpError as error:
+        print(F'An error occurred: {error}')
+        files = None
+
+    return files
 
 def search_folder(access_token):
     """Search root folder in drive location
