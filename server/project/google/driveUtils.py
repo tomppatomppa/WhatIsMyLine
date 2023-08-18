@@ -42,6 +42,14 @@ def create_folder_in_root(service, folder_name):
         print(F'An error occurred: {error}')
         return None
     
+def delete_folder_by_id(service, folder_id):
+    try:
+        service.files().delete(fileId=folder_id).execute()
+        return True
+    except HttpError as error:
+        print(F'An error occurred: {error}')
+        return False
+    
 def search_folder(access_token):
     """Search root folder in drive location
 
@@ -79,22 +87,6 @@ def search_folder(access_token):
         return files[0]
     return files
      
-def create_root_folder(access_token):
-    headers = {
-        'Authorization': f'Bearer {access_token}',
-        'Content-Type': 'application/json'
-    }
-    data = {
-        'name': 'dramatify-pdf-reader',
-        'mimeType': 'application/vnd.google-apps.folder'
-    }
-
-    try:
-        response = requests.post(base_url, headers=headers, json=data)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as error:
-        return None
 
 def create_folder(access_token, parent_id, folder_name):
     headers = {

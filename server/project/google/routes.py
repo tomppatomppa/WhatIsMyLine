@@ -22,7 +22,10 @@ def add_drive_service(func):
         access_token = extract_token(request)
         credentials = Credentials(
             token=access_token,
-            **credentials_for_testing()
+            refresh_token = os.environ["TEST_REFRESH_TOKEN"],
+            client_id = os.environ["CLIENT_ID"],
+            client_secret = os.environ["CLIENT_SECRET"],
+            token_uri = "https://oauth2.googleapis.com/token"
             )
         service = build('drive', 'v3', credentials=credentials)
     
@@ -90,3 +93,17 @@ def handle_unauthorized(error):
     return jsonify({'error': str(error)}), 401
 
 
+@google_blueprint.route("/api/drive/<folder_id>", methods=["DELETE"])
+@jwt_required()
+@add_drive_service
+def delete_folder(service, folder_id):
+    try:
+        driveUtils.delete_folder_by_id(service, folder_id)
+        return f"Folder with the id {folder_id} delete succesfully", 200
+    except requests.exceptions.HTTPError as error:
+        if error.response.status_code == 401:
+            handle_unauthorized(error)
+        return jsonify({'error': 'An error occurred'}), error.response.status_code    
+    
+    
+   

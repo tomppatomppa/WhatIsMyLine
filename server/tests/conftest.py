@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from project import create_app, db
 from project.models import  User, Script
 from flask_jwt_extended import create_access_token, set_access_cookies
+import json
 load_dotenv()
 
 USER_ID = "1234"
@@ -88,6 +89,24 @@ def _get_cookie_from_response(response, cookie_name):
                 cookie[split[0].strip().lower()] = split[1] if len(split) > 1 else True
             return cookie
     return None
+
+
+'''
+Google Drive
+'''
+@pytest.fixture(scope='function')
+def create_test_folder(logged_in_test_client, csrf_headers):
+    access_token = os.environ["TEST_ACCESS_TOKEN"]
+    headers = dict(csrf_headers)
+    headers["Authorization"] = f"Bearer {access_token}"
+    
+    test_folder = logged_in_test_client.post("/api/drive/create_root_folder", json={"folder_name": "test_dramatify-pdf-reader"}, headers=headers)
+    test_folder_data = json.loads(test_folder.data)
+    
+    yield test_folder_data
+    # yield test_folder_data
+    
+    # logged_in_test_client.delete(f"/api/drive/{test_folder_data['id']}", headers=headers)
 
 def credentials_for_testing():
     if os.environ.get('FLASK_ENV') == 'testing':
