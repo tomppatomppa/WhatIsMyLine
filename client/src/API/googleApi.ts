@@ -196,8 +196,13 @@ export const createTextToSpeechFromScene = async ({
  * Creates a root folder for the user if it doesn't exist
  * @returns The id and name of the root folder
  */
+
 export const syncGoogleDrive = async () => {
-  const { data } = await httpClient.post(`${BASE_URI}/create_root_folder`)
+  const folderName = 'dramatify-pdf-reader' //TODO: pass as param
+  const { data } = await httpClient.post(
+    `${BASE_URI}/api/drive/create_root_folder`,
+    { folderName }
+  )
 
   return data
 }

@@ -13,8 +13,9 @@ from flask_jwt_extended import jwt_required
 
 def add_drive_service(func):
     '''
+    TODO: Use get_JWT_identity to refresh token
     When testing set .env variables
-    In production assume token is refreshed on client side
+    In production assume token is refreshed on client side before making the request
     '''
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
