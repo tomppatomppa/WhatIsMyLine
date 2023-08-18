@@ -50,24 +50,6 @@ def check_root_folder(service):
         return "Something went wrong", 404     
    
 
-
-@google_blueprint.route("/create_root_folder",  methods=["POST"])
-@jwt_required()
-def create_root_folder():
-    access_token = extract_token(request)
-   
-    try:
-        folderExists = driveUtils.search_folder(access_token)
-        if folderExists:
-            return folderExists, 200
-        created_root_folder = driveUtils.create_root_folder(access_token)
-        return created_root_folder, 200
-    except requests.exceptions.HTTPError as error:
-       if error.response.status_code == 401:
-           handle_unauthorized(error)
-       return jsonify({'error': 'An error occurred'}), error.response.status_code
-   
-
 @google_blueprint.route("/api/v3/scene-to-speech", methods=["POST"])
 @jwt_required()
 def scene_to_speech():
