@@ -9,10 +9,8 @@ import json
 @scripts_blueprint.route("/script", methods=["GET"])
 @jwt_required()
 def get_all():
-    query = db.select(Script).where(Script.user_id == get_jwt_identity())
-    scripts = db.session.execute(query).scalars().all()
-
-    response = make_response(json.dumps([script.to_dict() for script in scripts]), 200)
+    user_scripts = Script.get_scripts_by_user_id(get_jwt_identity())
+    response = make_response(json.dumps([script.to_dict() for script in user_scripts]), 200)
     return response
 
 @scripts_blueprint.route("/script/<id>", methods=["GET"])
