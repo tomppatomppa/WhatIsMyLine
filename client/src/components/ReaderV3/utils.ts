@@ -1,6 +1,5 @@
-//@ts-nocheck
-
-import { Actor, ReaderConfiguration, Scene } from './reader.types'
+import { CustomHTMLAudioElement } from 'src/utils/helpers'
+import { Actor, Line, ReaderConfiguration, Scene } from './reader.types'
 
 const DEFAULT_HIGHLIGHT_COLOR = '#86efac'
 
@@ -38,7 +37,7 @@ export function filterLines(
 ): Line[] {
   return values.data.filter(
     ({ name }) =>
-      !options.highlight.some((highlight: Line) => highlight.id === name)
+      !options.highlight.some((highlight: Actor) => highlight.id === name)
   )
 }
 
@@ -51,9 +50,11 @@ export function labelLines(
     return {
       ...line,
       shouldPlay: !options.highlight.some(
-        (highlight: Line) => highlight.id === line.name
+        (highlight: Actor) => highlight.id === line.name
       ),
-      src: audioFiles?.find((audio) => (audio as Audio).key === line.id),
+      src: audioFiles?.find(
+        (audio) => (audio as CustomHTMLAudioElement).key === line.id
+      ),
     }
   })
 }
@@ -69,8 +70,8 @@ export function filterAudioFiles(
 
   const filteredAudio = filteredLines.map((line) => {
     const audio = audioFiles?.find(
-      (item) => (item as Audio).key === line.id
-    ) as Audio
+      (item) => (item as CustomHTMLAudioElement).key === line.id
+    ) as CustomHTMLAudioElement
     return audio
   })
   return filteredAudio
