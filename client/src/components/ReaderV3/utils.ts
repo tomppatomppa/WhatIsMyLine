@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { arrayBufferResponse } from 'src/API/googleApi'
+
 import { Actor, ReaderConfiguration, Scene } from './reader.types'
 
 const DEFAULT_HIGHLIGHT_COLOR = '#86efac'
@@ -32,51 +32,6 @@ export function generateUniqueColor(highlight: Actor[]) {
   return DEFAULT_HIGHLIGHT_COLOR
 }
 
-/* 
-Used to check if google drive folder has
- all required audio files for a scene
-*/
-export function hasRequiredAudioFiles(arr1: any[], arr2: any[]): boolean {
-  const requiredFileIds = arr1.map((item) => item.id)
-  const allFolderFileIds = arr2.map((item) => item.id)
-
-  for (let i = 0; i < arr1.length; i++) {
-    if (!allFolderFileIds.includes(requiredFileIds[i])) {
-      return false
-    }
-  }
-
-  return true
-}
-
-export const extractAudioFileNames = (data) => {
-  const audioFiles = data.map((item) => {
-    return {
-      id: item.name.replace('.mp3', ''),
-    }
-  })
-  return audioFiles
-}
-
-export function arrayBufferIntoHTMLAudioElement(
-  audioArray: arrayBufferResponse[]
-): HTMLAudioElement[] {
-  const result = audioArray.map((file) => {
-    const fileUrl = URL.createObjectURL(
-      new Blob([file.data], { type: 'audio/mpeg' })
-    )
-    const audio = new Audio(fileUrl)
-
-    audio.key = file.id
-    return audio
-  })
-  return result
-}
-
-export interface Audio extends HTMLAudioElement {
-  key: any
-}
-
 export function filterLines(
   values: Scene,
   options: ReaderConfiguration
@@ -102,6 +57,7 @@ export function labelLines(
     }
   })
 }
+
 export function filterAudioFiles(
   values: Scene,
   audioFiles: HTMLAudioElement[] | undefined,

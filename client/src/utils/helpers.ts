@@ -102,7 +102,7 @@ export function isCurrentUserScripts(remote: Script[], local: Script[]) {
   })
 }
 
-interface CustomHTMLAudioElement extends HTMLAudioElement {
+export interface CustomHTMLAudioElement extends HTMLAudioElement {
   key: string
 }
 export function createAudioElementsFromFiles(
