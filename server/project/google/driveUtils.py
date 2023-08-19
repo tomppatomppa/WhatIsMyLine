@@ -7,7 +7,7 @@ from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
 base_url = "https://www.googleapis.com/drive/v3/files"
 
-#TODO: use as default search function
+
 def search_folder(service, parent_id, folder_name):
     try:
         files = []
@@ -30,7 +30,6 @@ def search_folder(service, parent_id, folder_name):
 
     return files
 
-#TODO: use as default create folder function
 def create_folder(service, parent_id, folder_name):
     try:
         file_metadata = {
@@ -40,8 +39,8 @@ def create_folder(service, parent_id, folder_name):
         if parent_id:
             file_metadata['parents'] = [parent_id]
 
-        file = service.files().create(body=file_metadata, fields='id'
-                                      ).execute() 
+        file = service.files().create(body=file_metadata, fields='id').execute() 
+                                      
         return file
 
     except HttpError as error:
@@ -69,10 +68,10 @@ def find_or_create_folder(service, parent_id, folder_name):
    
         created_folder = create_folder(service, parent_id, folder_name)
         return created_folder
+    
     except HttpError as error:
         print(f'An error occurred: {error}')
         return None 
-
 
 def upload_audio_to_drive(service, parent_folder_id, filepath):
     filename = filepath.split('/')[-1]

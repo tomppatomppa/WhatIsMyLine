@@ -45,6 +45,10 @@ def process_uploaded_file(file, uploaded_files_folder):
     finally:
         os.remove(save_path)
 
+
+'''
+Helper functions
+'''
 def create_uuid_filename():
     uid = uuid.uuid4()
     uuid_filename = f'{str(uid)}.pdf'

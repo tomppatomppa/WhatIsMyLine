@@ -37,9 +37,6 @@ def test_download_scene_audio(logged_in_test_client, csrf_headers, scene_item):
     # assert isinstance(response_data[0], bytearray)
  
 
-
-
-
 def test_delete_folder(create_test_folder, logged_in_test_client, csrf_headers):
     headers = dict(csrf_headers) 
     headers["Authorization"] = f"Bearer {access_token}"

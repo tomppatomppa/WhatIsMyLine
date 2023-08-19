@@ -71,6 +71,11 @@ def users():
         return jsonify(user.email)
     return jsonify("Invalid request")
 
+
+
+'''
+Helper Functions
+'''
 def extract_user_info(user, token_data):
     user_id = user.get("sub")
     refresh_token = token_data.get("refresh_token")
