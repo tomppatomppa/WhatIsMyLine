@@ -12,8 +12,6 @@ from utils import  remove_dir
 from flask_jwt_extended import jwt_required
 
 
-
-
 def add_drive_service(func):
     '''
     TODO: Use get_JWT_identity to refresh token
@@ -41,14 +39,14 @@ def add_drive_service(func):
 def check_root_folder(service):
     try:
         folder_name = request.json.get('folderName')
-        files = driveUtils.search_folder_in_root(service, "root", folder_name)
+        files = driveUtils.search_folder(service, "root", folder_name)
         
         if len(files) == 1:
             
             return files[0], 200
         if not files:
            
-            folder = driveUtils.create_folder_in_root(service, parent_id=None, folder_name=folder_name)
+            folder = driveUtils.create_folder(service, parent_id=None, folder_name=folder_name)
             return folder, 200
 
         return f"Multiple folders with the name '{folder_name}' already exists in this location.", 400
@@ -91,20 +89,17 @@ def upload_scene(service):
 @add_drive_service
 def download_scene_audio(service):
     try:
-        root_folder_id = request.json.get("rootId")
-        script_id = request.json.get("scriptId")
-        scene_id = request.json.get("sceneId")
-        lines = request.json.get("lines")
+        root_folder_id, script_id, scene_id, lines = extract_request_data(request.json)
         
-        script_folder = driveUtils.search_folder_in_root(service, root_folder_id, script_id)
+        script_folder = driveUtils.search_folder(service, root_folder_id, script_id)
         if not script_folder:
             return "Script Folder Missing", 404
 
-        scene_folder = driveUtils.search_folder_in_root(service, script_folder[0]["id"], scene_id)
+        scene_folder = driveUtils.search_folder(service, script_folder[0]["id"], scene_id)
         if not scene_folder:
             return "Scene Folder Missing", 404
         
-        audio_files = driveUtils.list_files_in_folder(service, scene_folder[0]["id"])
+        audio_files = driveUtils.list_audio_files_in_folder(service, scene_folder[0]["id"])
 
         if not check_line_ids_exist(lines, audio_files):
             return "Not all Line IDs exist in Audio IDs", 400
@@ -131,9 +126,6 @@ def download_scene_audio(service):
            handle_unauthorized(error)
        return jsonify({'error': 'An error occurred'}), error.response.status_code
  
-
-
-
 
 @google_blueprint.route("/api/drive/<folder_id>", methods=["DELETE"])
 @jwt_required()
@@ -171,3 +163,10 @@ def check_line_ids_exist(lines, audio_files):
     line_ids = [line['id'] for line in lines]
     audio_ids = [audio['name'].replace(".mp3", "") for audio in audio_files]
     return all(line_id in audio_ids for line_id in line_ids)
+
+def extract_request_data(request_json):
+    root_folder_id = request_json.get("rootId")
+    script_id = request_json.get("scriptId")
+    scene_id = request_json.get("sceneId")
+    lines = request_json.get("lines")
+    return root_folder_id, script_id, scene_id, lines

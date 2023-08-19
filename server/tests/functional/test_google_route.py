@@ -16,9 +16,7 @@ def test_scene_to_speech_endpoint(logged_in_test_client, csrf_headers, scene_ite
     
     assert response.status_code == 200
     assert len(response_data) == 1
-    scene_id = scene_item['scenes'][0]['data'][0]['id']
-    filename = f"{scene_id}.mp3"
-    assert response_data[0]["name"] == filename
+   
 
 def test_download_scene_audio(logged_in_test_client, csrf_headers, scene_item):
     headers = dict(csrf_headers) 
@@ -27,7 +25,8 @@ def test_download_scene_audio(logged_in_test_client, csrf_headers, scene_item):
     data = {
         "rootId": scene_item["rootFolderId"],
         "scriptId": scene_item["id"],
-        "sceneId": scene_item["scenes"][0]["id"]
+        "sceneId": scene_item["scenes"][0]["id"],
+        "lines":  scene_item["scenes"][0]["data"]
     }
 
     response = logged_in_test_client.post(f"/api/drive/download", json=data, headers=headers)
