@@ -71,6 +71,15 @@ def test_download_scene_audio(logged_in_test_client, csrf_headers, scene_item):
    
 
 def test_delete_folder(create_test_folder, logged_in_test_client, csrf_headers):
+    """
+    Functional API test for deleting a folder.
+
+    GIVEN a Flask application configured for testing,
+    AND a logged-in user with an access token,
+    WHEN the user requests to delete a folder,
+    THEN the response status code should indicate 200,
+    AND the response data should confirm the successful deletion of the folder
+    """
     headers = dict(csrf_headers) 
     headers["Authorization"] = f"Bearer {access_token}"
     response = logged_in_test_client.delete(f"/api/drive/{create_test_folder['id']}", headers=headers)
