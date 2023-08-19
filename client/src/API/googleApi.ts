@@ -1,4 +1,5 @@
 import axios, { ResponseType } from 'axios'
+
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 import { Line, Scene } from 'src/components/ReaderV3/reader.types'
 import {
@@ -93,6 +94,39 @@ const findFolderInParent = async ({
   return data
 }
 
+interface CustomHTMLAudioElement extends HTMLAudioElement {
+  key: string
+}
+export const downloadSceneAudio = async ({
+  rootId,
+  scriptId,
+  sceneId,
+  lines,
+}: downloadAudioFilesInSceneProps) => {
+  const { data } = await httpClient.post(`${BASE_URI}/api/drive/download`, {
+    rootId,
+    scriptId,
+    sceneId,
+    lines,
+  })
+
+  const audio_files = data.files.map(
+    (file: { id: any; filename: any; content: any }) => {
+      const fileName = file.filename
+      const bytes = Uint8Array.from(atob(file.content), (c) => c.charCodeAt(0))
+
+      const fileUrl = URL.createObjectURL(
+        new Blob([bytes], { type: 'audio/mpeg' })
+      )
+      const audio = new Audio(fileUrl) as CustomHTMLAudioElement
+      audio.key = fileName.replace('.mp3', '')
+      return audio
+    }
+  )
+  console.log(audio_files)
+  return audio_files
+}
+
 interface downloadAudioFilesInSceneProps {
   rootId: string
   scriptId: string
@@ -125,11 +159,12 @@ export const downloadAudioFilesInScene = async ({
   })
 
   const filenames = extractAudioFileNames(folderWithAudio.files)
+
   if (hasRequiredAudioFiles(lines, filenames)) {
     const audioFileArray = await getGoogleDriveFilesByIds({
       docs: folderWithAudio.files,
     })
-
+    console.log(audioFileArray)
     const audioFiles = arrayBufferIntoHTMLAudioElement(audioFileArray)
     return audioFiles
   }
@@ -160,7 +195,7 @@ export const getGoogleDriveFilesByIds = async ({
       })
     )
   )
-
+  console.log(results)
   const dataArray = results.map((result, index) => ({
     id: docs[index].name.replace('.mp3', ''),
     data: result.data,

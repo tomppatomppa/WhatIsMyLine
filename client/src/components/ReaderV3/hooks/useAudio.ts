@@ -1,6 +1,9 @@
 import { useQuery } from 'react-query'
 
-import { downloadAudioFilesInScene } from 'src/API/googleApi'
+import {
+  downloadAudioFilesInScene,
+  downloadSceneAudio,
+} from 'src/API/googleApi'
 import { Audio } from '../utils'
 import { Scene } from '../reader.types'
 
@@ -8,7 +11,7 @@ const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
   const { data, isError, isLoading, refetch, isFetching } = useQuery(
     [`scene-${scene.id}-audio`],
     () =>
-      downloadAudioFilesInScene({
+      downloadSceneAudio({
         rootId,
         scriptId,
         sceneId: scene.id,
@@ -21,7 +24,7 @@ const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
       enabled: !!rootId,
     }
   )
-
+  console.log(data)
   return {
     audioFiles: data as Audio[],
     isError,

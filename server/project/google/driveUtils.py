@@ -1,7 +1,8 @@
 import requests
 import json
+import io
 from googleapiclient.errors import HttpError
-from googleapiclient.http import MediaFileUpload
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
 
 base_url = "https://www.googleapis.com/drive/v3/files"
@@ -18,6 +19,7 @@ def search_folder_in_root(service, parent_id, folder_name):
                                                    'files(id, name)',
                                             pageToken=page_token).execute()
             files.extend(response.get('files', []))
+            
             page_token = response.get('nextPageToken', None)
             if page_token is None:
                 break
@@ -169,7 +171,31 @@ def upload_audio_to_drive(service, parent_folder_id, filepath):
         print(f'An error occurred: {error}')
         return None
 
-#OLD
+def download_file(service, file_id):
+    try:
+        request = service.files().get_media(fileId=file_id)
+        downloaded_file = io.BytesIO()
+        downloader = MediaIoBaseDownload(downloaded_file, request)
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()
+        
+        return downloaded_file.getvalue()
+
+    except HttpError as error:
+        print(f'An error occurred: {error}')
+        return None
+
+
+def list_files_in_folder(service, folder_id):
+    try:
+        results = service.files().list(q=f"'{folder_id}' in parents and mimeType='audio/mpeg' and trashed=false", fields='files(id, name)').execute()
+        files = results.get('files', [])
+        return files
+    except HttpError as error:
+        print(f'An error occurred: {error}')
+        return []
+#TODO: Remove
 def upload_mp3_to_drive(access_token, parent_folder_id, filepath):
     filename = filepath.split('/')[-1]
     url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart'
