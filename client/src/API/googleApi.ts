@@ -12,7 +12,6 @@ interface getGoogleDriveFileByIdProps {
   access_token: string
   responseType?: ResponseType
 }
-
 export const getGoogleDriveFileById = async ({
   docs,
   access_token,
@@ -90,7 +89,6 @@ export const createTextToSpeechFromScene = async ({
  * Creates a root folder for the user if it doesn't exist
  * @returns The id and name of the root folder
  */
-
 export const syncGoogleDrive = async () => {
   const folderName = 'dramatify-pdf-reader' //TODO: pass as param
   const { data } = await httpClient.post(
