@@ -1,6 +1,7 @@
 import requests
 import json
 from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaFileUpload
 
 
 base_url = "https://www.googleapis.com/drive/v3/files"
@@ -49,6 +50,25 @@ def delete_folder_by_id(service, folder_id):
     except HttpError as error:
         print(F'An error occurred: {error}')
         return False
+
+def create_subfolder(service, parent_id, folder_name):
+    try:
+        existing_folder = search_folder_new(service, parent_id, folder_name)
+
+        if existing_folder:
+            return existing_folder
+        
+        file_metadata = {
+            'name': folder_name,
+            'mimeType': 'application/vnd.google-apps.folder',
+            'parents': [parent_id]
+        }
+        
+        file = service.files().create(body=file_metadata, fields='id, name').execute()
+        return file
+    except HttpError as error:
+        print(f'An error occurred: {error}')
+        return None 
     
 def search_folder(access_token):
     """Search root folder in drive location
@@ -86,7 +106,20 @@ def search_folder(access_token):
     if len(files) == 1:
         return files[0]
     return files
-     
+
+def search_folder_new(service, parent_id, folder_name):
+    try:
+        query = f"'{parent_id}' in parents and name='{folder_name}' and mimeType='application/vnd.google-apps.folder' and trashed=false"
+        results = service.files().list(q=query, fields='files(id,name)').execute()
+        folders = results.get('files', [])
+        
+        if folders:
+            return {'id': folders[0]['id'], 'name': folders[0]['name']}
+        else:
+            return None
+    except HttpError as error:
+        print(f'An error occurred: {error}')
+        return None
 
 def create_folder(access_token, parent_id, folder_name):
     headers = {
@@ -117,6 +150,37 @@ def create_folder(access_token, parent_id, folder_name):
         print(f'An error occurred: {error}')
         return None
 
+
+def upload_audio_to_drive(service, parent_folder_id, filepath):
+    filename = filepath.split('/')[-1]
+
+    metadata = {
+        'name': f'{filename}',
+        'parents': [parent_folder_id]
+    }
+
+    media = MediaFileUpload(filepath, mimetype='audio/mpeg')
+    
+    try:
+        # Find file in folder
+        query = f"'{parent_folder_id}' in parents and name='{metadata['name']}' and trashed=false"
+        results = service.files().list(q=query, fields='files(id)').execute()
+        existing_files = results.get('files', [])
+
+        if existing_files:
+            existing_file_id = existing_files[0]['id']
+            response = service.files().update(fileId=existing_file_id, body=None, media_body=media).execute()
+        else:
+            # Upload the file if it doesn't exist
+            response = service.files().create(body=metadata, media_body=media).execute()
+
+        return response
+        
+    except HttpError as error:
+        print(f'An error occurred: {error}')
+        return None
+
+#OLD
 def upload_mp3_to_drive(access_token, parent_folder_id, filepath):
     filename = filepath.split('/')[-1]
     url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart'

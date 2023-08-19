@@ -7,9 +7,12 @@ import functools
 import requests
 import os
 from tests.conftest import credentials_for_testing
-from project.google.TextToSpeech import  create_data
+from project.google.TextToSpeech import create_data
 from utils import  remove_dir
 from flask_jwt_extended import jwt_required
+
+
+
 
 def add_drive_service(func):
     '''
@@ -53,6 +56,33 @@ def check_root_folder(service):
         return "Something went wrong", 404     
    
 
+@google_blueprint.route("/api/drive/scene-to-speech", methods=["POST"])
+@jwt_required()
+@add_drive_service
+def upload_scene(service):
+    try:
+        root_folder_id, script_id, scene_id = get_folder_ids(request)
+        script_folder = driveUtils.create_subfolder(service, root_folder_id, script_id)
+        scene_folder = driveUtils.create_subfolder(service, script_folder["id"], scene_id)
+        
+        create_data(request.json)
+        filepath = f"./processed_audio/{script_id}/{scene_id}"
+        #Upload audio files to google drive
+        result = []
+        for filename in os.listdir(filepath):
+            file = driveUtils.upload_audio_to_drive(service, scene_folder.get("id"), f"{filepath}/{filename}")
+            result.append(file)
+        
+        return result, 200
+    except requests.exceptions.HTTPError as error:
+       if error.response.status_code == 401:
+           handle_unauthorized(error)
+       return jsonify({'error': 'An error occurred'}), error.response.status_code
+    finally:
+      
+       remove_dir(f"./processed_audio/{script_id}")
+
+
 @google_blueprint.route("/api/v3/scene-to-speech", methods=["POST"])
 @jwt_required()
 def scene_to_speech():
@@ -82,17 +112,6 @@ def scene_to_speech():
        
         remove_dir(f"./processed_audio/{script_id}")
 
-def extract_token(request):
-    headers = request.headers
-    bearer = headers.get('Authorization')
-    token = bearer.split()[1]
-    return token
-
-@google_blueprint.errorhandler(401)
-def handle_unauthorized(error):
-    return jsonify({'error': str(error)}), 401
-
-
 @google_blueprint.route("/api/drive/<folder_id>", methods=["DELETE"])
 @jwt_required()
 @add_drive_service
@@ -106,4 +125,20 @@ def delete_folder(service, folder_id):
         return jsonify({'error': 'An error occurred'}), error.response.status_code    
     
     
-   
+
+def extract_token(request):
+    headers = request.headers
+    bearer = headers.get('Authorization')
+    token = bearer.split()[1]
+    return token
+
+@google_blueprint.errorhandler(401)
+def handle_unauthorized(error):
+    return jsonify({'error': str(error)}), 401
+
+
+def get_folder_ids(request):
+    script_id = request.json.get("id")
+    scene_id = request.json.get("scenes")[0].get("id")
+    root_folder_id = request.json.get("rootFolderId")
+    return  root_folder_id, script_id, scene_id, 

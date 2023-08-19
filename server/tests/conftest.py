@@ -108,6 +108,14 @@ def create_test_folder(logged_in_test_client, csrf_headers):
     
     # logged_in_test_client.delete(f"/api/drive/{test_folder_data['id']}", headers=headers)
 
+@pytest.fixture(scope='function')
+def scene_item(create_test_folder):
+    return {
+        "rootFolderId": create_test_folder['id'],
+        "scenes": [{"id": "2", "data": [{"id": "4", "lines": "hello world"}]}],
+        "id": "3"
+    }                               
+
 def credentials_for_testing():
     if os.environ.get('FLASK_ENV') == 'testing':
         return {
