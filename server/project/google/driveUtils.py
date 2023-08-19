@@ -61,12 +61,11 @@ def find_or_create_folder(service, parent_id, folder_name):
     '''
     try:
         existing_folder = search_folder_in_root(service, parent_id, folder_name)
-
+        
         if existing_folder:
-            return existing_folder
+            return existing_folder[0] #TODO: if len > 1 ?
    
         created_folder = create_folder_in_root(service, parent_id, folder_name)
-
         return created_folder
     except HttpError as error:
         print(f'An error occurred: {error}')

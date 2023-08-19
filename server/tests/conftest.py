@@ -116,12 +116,3 @@ def scene_item(create_test_folder):
         "id": "3"
     }                               
 
-def credentials_for_testing():
-    if os.environ.get('FLASK_ENV') == 'testing':
-        return {
-            "refresh_token": os.environ["TEST_REFRESH_TOKEN"],
-            "client_id": os.environ["CLIENT_ID"],
-            "client_secret": os.environ["CLIENT_SECRET"],
-            "token_uri": "https://oauth2.googleapis.com/token"
-        }
-    return {}
