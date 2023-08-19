@@ -1,9 +1,6 @@
 import { useQuery } from 'react-query'
 
-import {
-  downloadAudioFilesInScene,
-  downloadSceneAudio,
-} from 'src/API/googleApi'
+import { downloadSceneAudio } from 'src/API/googleApi'
 import { Audio } from '../utils'
 import { Scene } from '../reader.types'
 

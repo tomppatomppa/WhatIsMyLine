@@ -1,6 +1,6 @@
 import base64
 from . import google_blueprint
-from flask import Response, request, jsonify
+from flask import request, jsonify
 import project.google.driveUtils as driveUtils
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
@@ -56,7 +56,6 @@ def check_root_folder(service):
            handle_unauthorized(error)
         return "Something went wrong", 404     
    
-
 @google_blueprint.route("/api/drive/scene-to-speech", methods=["POST"])
 @jwt_required()
 @add_drive_service
@@ -126,7 +125,6 @@ def download_scene_audio(service):
            handle_unauthorized(error)
        return jsonify({'error': 'An error occurred'}), error.response.status_code
  
-
 @google_blueprint.route("/api/drive/<folder_id>", methods=["DELETE"])
 @jwt_required()
 @add_drive_service
