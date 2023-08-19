@@ -41,7 +41,7 @@ def check_root_folder(service):
     try:
         folder_name = request.json.get('folderName')
         files = driveUtils.search_folder_in_root(service, "root", folder_name)
-        print(folder_name)    
+        
         if len(files) == 1:
             
             return files[0], 200
@@ -84,6 +84,24 @@ def upload_scene(service):
     
     finally:
        remove_dir(f"./processed_audio/{script_id}")
+
+@google_blueprint.route("/api/drive/download", methods=["POST"])
+@jwt_required()
+@add_drive_service
+def download_scene_audio(service):
+    try:
+        root_folder_id, script_id, scene_id = get_folder_ids(request)
+        script_folder = driveUtils.search_folder_in_root(service, root_folder_id, script_id)
+        scene_folder = driveUtils.search_folder_in_root(service, script_folder[0]["id"], scene_id)
+
+        return scene_folder, 200
+    except requests.exceptions.HTTPError as error:
+       if error.response.status_code == 401:
+           handle_unauthorized(error)
+       return jsonify({'error': 'An error occurred'}), error.response.status_code
+ 
+
+
 
 
 @google_blueprint.route("/api/drive/<folder_id>", methods=["DELETE"])

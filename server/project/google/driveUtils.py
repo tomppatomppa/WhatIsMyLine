@@ -70,7 +70,8 @@ def find_or_create_folder(service, parent_id, folder_name):
     except HttpError as error:
         print(f'An error occurred: {error}')
         return None 
-    
+
+#TODO: Remove 
 def search_folder(access_token):
     """Search root folder in drive location
 
@@ -108,7 +109,7 @@ def search_folder(access_token):
         return files[0]
     return files
 
-
+#TODO: Remove
 def create_folder(access_token, parent_id, folder_name):
     headers = {
         'Authorization': f'Bearer {access_token}',

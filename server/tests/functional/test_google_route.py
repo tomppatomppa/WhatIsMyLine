@@ -20,6 +20,17 @@ def test_scene_to_speech_endpoint(logged_in_test_client, csrf_headers, scene_ite
     filename = f"{scene_id}.mp3"
     assert response_data[0]["name"] == filename
 
+def test_download_scene_audio(create_test_folder, logged_in_test_client, csrf_headers, scene_item):
+    headers = dict(csrf_headers) 
+    headers["Authorization"] = f"Bearer {access_token}"
+
+    response = logged_in_test_client.post(f"/api/drive/download", json=scene_item, headers=headers)
+  
+    assert response.status_code == 200
+ 
+
+
+
 
 def test_delete_folder(create_test_folder, logged_in_test_client, csrf_headers):
     headers = dict(csrf_headers) 

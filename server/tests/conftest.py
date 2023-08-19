@@ -28,7 +28,6 @@ def new_script(new_user):
                    )
     return script
 
-
 @pytest.fixture(scope='module')
 def init_database(test_client, new_user, new_script):
     # Create the database and the database table
@@ -43,8 +42,6 @@ def init_database(test_client, new_user, new_script):
     yield
     
     db.drop_all()
-
-
 
 @pytest.fixture(scope='module')
 def test_client():
@@ -62,7 +59,6 @@ def test_client():
     with flask_app.test_client() as testing_client:
         with flask_app.app_context():
             yield testing_client
-
 
 @pytest.fixture(scope='function')
 def logged_in_test_client(test_client):
@@ -90,7 +86,6 @@ def _get_cookie_from_response(response, cookie_name):
             return cookie
     return None
 
-
 '''
 Google Drive
 '''
@@ -104,9 +99,6 @@ def create_test_folder(logged_in_test_client, csrf_headers):
     test_folder_data = json.loads(test_folder.data)
     
     yield test_folder_data
-    # yield test_folder_data
-    
-    # logged_in_test_client.delete(f"/api/drive/{test_folder_data['id']}", headers=headers)
 
 @pytest.fixture(scope='function')
 def scene_item(create_test_folder):
