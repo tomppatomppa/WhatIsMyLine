@@ -101,3 +101,22 @@ export function isCurrentUserScripts(remote: Script[], local: Script[]) {
     return true
   })
 }
+
+interface CustomHTMLAudioElement extends HTMLAudioElement {
+  key: string
+}
+export function createAudioElementsFromFiles(
+  files: { id: any; filename: any; content: any }[]
+): CustomHTMLAudioElement[] {
+  return files.map((file) => {
+    const fileName = file.filename
+    const bytes = Uint8Array.from(atob(file.content), (c) => c.charCodeAt(0))
+
+    const fileUrl = URL.createObjectURL(
+      new Blob([bytes], { type: 'audio/mpeg' })
+    )
+    const audio = new Audio(fileUrl) as CustomHTMLAudioElement
+    audio.key = fileName.replace('.mp3', '')
+    return audio
+  })
+}

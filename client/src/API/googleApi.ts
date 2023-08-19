@@ -5,6 +5,7 @@ import { Line, Scene } from 'src/components/ReaderV3/reader.types'
 
 import { BASE_URI } from 'src/config'
 import { httpClient } from 'src/utils/axiosClient'
+import { createAudioElementsFromFiles } from 'src/utils/helpers'
 
 interface getGoogleDriveFileByIdProps {
   docs: CallbackDoc
@@ -33,9 +34,13 @@ export const getGoogleDriveFileById = async ({
   return data
 }
 
-interface CustomHTMLAudioElement extends HTMLAudioElement {
-  key: string
+interface downloadAudioFilesInSceneProps {
+  rootId: string
+  scriptId: string
+  sceneId: string
+  lines: Line[]
 }
+
 export const downloadSceneAudio = async ({
   rootId,
   scriptId,
@@ -49,28 +54,9 @@ export const downloadSceneAudio = async ({
     lines,
   })
 
-  const audio_files = data.files.map(
-    (file: { id: any; filename: any; content: any }) => {
-      const fileName = file.filename
-      const bytes = Uint8Array.from(atob(file.content), (c) => c.charCodeAt(0))
+  const audio_files = createAudioElementsFromFiles(data.files)
 
-      const fileUrl = URL.createObjectURL(
-        new Blob([bytes], { type: 'audio/mpeg' })
-      )
-      const audio = new Audio(fileUrl) as CustomHTMLAudioElement
-      audio.key = fileName.replace('.mp3', '')
-      return audio
-    }
-  )
-  console.log(audio_files)
   return audio_files
-}
-
-interface downloadAudioFilesInSceneProps {
-  rootId: string
-  scriptId: string
-  sceneId: string
-  lines: Line[]
 }
 
 interface CreateTextToSpeechSceneProps {
