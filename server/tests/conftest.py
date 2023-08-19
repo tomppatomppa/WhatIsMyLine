@@ -100,7 +100,7 @@ def create_test_folder(logged_in_test_client, csrf_headers):
     headers = dict(csrf_headers)
     headers["Authorization"] = f"Bearer {access_token}"
     
-    test_folder = logged_in_test_client.post("/api/drive/create_root_folder", json={"folder_name": "test_dramatify-pdf-reader"}, headers=headers)
+    test_folder = logged_in_test_client.post("/api/drive/create_root_folder", json={"folderName": "test_dramatify-pdf-reader"}, headers=headers)
     test_folder_data = json.loads(test_folder.data)
     
     yield test_folder_data

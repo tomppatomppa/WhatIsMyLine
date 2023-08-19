@@ -6,13 +6,13 @@ from googleapiclient.http import MediaFileUpload
 
 base_url = "https://www.googleapis.com/drive/v3/files"
 
-
-def search_folder_in_root(service, folder_name):
+#TODO: use as default search function
+def search_folder_in_root(service, parent_id, folder_name):
     try:
         files = []
         page_token = None
         while True:
-            response = service.files().list(q=f"'root' in parents and mimeType = 'application/vnd.google-apps.folder' and fullText contains '{folder_name}' and trashed=false",
+            response = service.files().list(q=f"'{parent_id}' in parents and mimeType = 'application/vnd.google-apps.folder' and fullText contains '{folder_name}' and trashed=false",
                                             spaces='drive',
                                              fields='nextPageToken, '
                                                    'files(id, name)',
@@ -28,12 +28,15 @@ def search_folder_in_root(service, folder_name):
 
     return files
 
-def create_folder_in_root(service, folder_name):
+#TODO: use as default create folder function
+def create_folder_in_root(service, parent_id, folder_name):
     try:
         file_metadata = {
             'name': f'{folder_name}',
             'mimeType': 'application/vnd.google-apps.folder'
         }
+        if parent_id:
+            file_metadata['parents'] = [parent_id]
 
         file = service.files().create(body=file_metadata, fields='id'
                                       ).execute() 
@@ -51,21 +54,20 @@ def delete_folder_by_id(service, folder_id):
         print(F'An error occurred: {error}')
         return False
 
-def create_subfolder(service, parent_id, folder_name):
+def find_or_create_folder(service, parent_id, folder_name):
+    '''
+    Find an existing folder with the specified name in the parent folder,
+    or create it if it doesn't exist
+    '''
     try:
-        existing_folder = search_folder_new(service, parent_id, folder_name)
+        existing_folder = search_folder_in_root(service, parent_id, folder_name)
 
         if existing_folder:
             return existing_folder
-        
-        file_metadata = {
-            'name': folder_name,
-            'mimeType': 'application/vnd.google-apps.folder',
-            'parents': [parent_id]
-        }
-        
-        file = service.files().create(body=file_metadata, fields='id, name').execute()
-        return file
+   
+        created_folder = create_folder_in_root(service, parent_id, folder_name)
+
+        return created_folder
     except HttpError as error:
         print(f'An error occurred: {error}')
         return None 
@@ -107,19 +109,6 @@ def search_folder(access_token):
         return files[0]
     return files
 
-def search_folder_new(service, parent_id, folder_name):
-    try:
-        query = f"'{parent_id}' in parents and name='{folder_name}' and mimeType='application/vnd.google-apps.folder' and trashed=false"
-        results = service.files().list(q=query, fields='files(id,name)').execute()
-        folders = results.get('files', [])
-        
-        if folders:
-            return {'id': folders[0]['id'], 'name': folders[0]['name']}
-        else:
-            return None
-    except HttpError as error:
-        print(f'An error occurred: {error}')
-        return None
 
 def create_folder(access_token, parent_id, folder_name):
     headers = {

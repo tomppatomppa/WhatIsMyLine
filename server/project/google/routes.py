@@ -40,12 +40,15 @@ def add_drive_service(func):
 @add_drive_service
 def check_root_folder(service):
     try:
-        folder_name = request.json.get('folder_name')
-        files = driveUtils.search_folder_in_root(service, folder_name)
+        folder_name = request.json.get('folderName')
+        files = driveUtils.search_folder_in_root(service, "root", folder_name)
+        print(folder_name)    
         if len(files) == 1:
+            
             return files[0], 200
         if not files:
-            folder = driveUtils.create_folder_in_root(service, folder_name)
+           
+            folder = driveUtils.create_folder_in_root(service, parent_id=None, folder_name=folder_name)
             return folder, 200
 
         return f"Multiple folders with the name '{folder_name}' already exists in this location.", 400
@@ -62,8 +65,9 @@ def check_root_folder(service):
 def upload_scene(service):
     try:
         root_folder_id, script_id, scene_id = get_folder_ids(request)
-        script_folder = driveUtils.create_subfolder(service, root_folder_id, script_id)
-        scene_folder = driveUtils.create_subfolder(service, script_folder["id"], scene_id)
+        
+        script_folder = driveUtils.find_or_create_folder(service, root_folder_id, script_id)
+        scene_folder = driveUtils.find_or_create_folder(service, script_folder[0]["id"], scene_id)
         
         create_data(request.json)
         filepath = f"./processed_audio/{script_id}/{scene_id}"
@@ -78,8 +82,8 @@ def upload_scene(service):
        if error.response.status_code == 401:
            handle_unauthorized(error)
        return jsonify({'error': 'An error occurred'}), error.response.status_code
+    
     finally:
-      
        remove_dir(f"./processed_audio/{script_id}")
 
 

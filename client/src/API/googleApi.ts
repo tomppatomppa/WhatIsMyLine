@@ -183,11 +183,14 @@ export const createTextToSpeechFromScene = async ({
   scene,
   rootFolderId,
 }: CreateTextToSpeechSceneProps) => {
-  const { data } = await httpClient.post(`${BASE_URI}/api/v3/scene-to-speech`, {
-    id: scriptId,
-    scenes: [scene],
-    rootFolderId,
-  })
+  const { data } = await httpClient.post(
+    `${BASE_URI}/api/drive/scene-to-speech`,
+    {
+      id: scriptId,
+      scenes: [scene],
+      rootFolderId,
+    }
+  )
 
   return data
 }
