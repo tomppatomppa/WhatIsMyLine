@@ -127,6 +127,8 @@ filenames = [
              {"filename": "31.8.pdf", "number_of_scenes": 13},
              {"filename": "1508_BUU_SCRIPT.pdf", "number_of_scenes": 8},
              {"filename": "1608_BUU_SCRIPT.pdf", "number_of_scenes": 5},
+             {"filename": "test2.pdf", "number_of_scenes": 16},
+
             ]
   
 def test_scene_detection():
@@ -137,7 +139,14 @@ def test_scene_detection():
         scenes = reader.make_scenes(reader.file)
         assert len(scenes) == file["number_of_scenes"]
     
-
+def test_group_lines(reader_with_testfile):
+    reader = ReaderV3()
+    reader.read_file("test2.pdf")
+   
+    for line in reader.group_lines(axis=1):
+        print(line["text"])
+    assert 1 == 2
+    
 '''
 helper functions
 '''

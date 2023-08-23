@@ -89,26 +89,21 @@ class ReaderV3():
     def is_scene(self, current_line, previous_line):
         '''
         Hardcoded scene detection
-        
         Scene is assumed to begin with an INT followed by UPPERCASE LETTERS
-
         If the current line is detected as an actor return False
-
         #TODO: Flag as scene if they exists on the same line
 
         '''
-        if not previous_line:
-            return False
-       
+        if previous_line is None:
+            print(current_line["text"])
+            return False  
+            
+
         #if text is not on the same line (x axis)
         if(current_line["origin"][1] != previous_line["origin"][1]):
             return False
         
-        #print(previous_line["text"], current_line["text"])
-
         if(current_line["text"]).isdigit():
-            return False
-        if self.is_actor(current_line["origin"][0], current_line["text"]):
             return False
         #temp fix to handle page numbers flagged as scene start
         if(previous_line["origin"][0] > self.page_width / 2):
@@ -217,6 +212,22 @@ class ReaderV3():
                line["lines"] = "\n".join(line["lines"])
         return script
       
+    def group_lines(self, axis):
+        '''
+        axis = 1 = x-axis
+        axis = 0 = y-axis
+        Groups lines based on ["origin"][axis]
+        '''
+        grouped_lines = []
+        for current_line in self.file["blocks"]:
+            if grouped_lines and current_line["origin"][axis] == grouped_lines[-1]["origin"][axis]:
+                combined_text = " ".join([grouped_lines[-1]["text"], current_line["text"]])
+                grouped_lines[-1]["text"] = combined_text
+            else:
+                grouped_lines.append(current_line)
+        
+        return grouped_lines
+       
     def to_json(self):
         '''
         Converts text content to a script item with the following structure   
