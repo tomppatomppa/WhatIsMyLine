@@ -15,46 +15,36 @@ testfile = "testfile.pdf"
 folder_path = os.path.abspath("uploaded_files")
 
 '''
-helper functions
-'''
-def reader_to_json():
-    reader = ReaderV3()
-    reader.read_file(testfile)
-    return reader.to_json()
-
-def reader_to_json_with_settings():
-    settings = ReaderSettings()
-    reader = ReaderV3(settings)
-    reader.read_file(testfile)
-    return reader.to_json()
-       
-'''
 Tests
 '''
 
-
-def test_reader_reads_file(reader_with_testfile) -> None:
+def test_reader_reads_file(reader_with_testfile):
     assert reader_with_testfile.filename == "testfile.pdf"
 
-def test_reader_to_json_outputs_has_uuid() -> None:
-    result = reader_to_json()
+def test_reader_to_json_output_has_correct_attributes(reader_with_testfile):
+    result = reader_with_testfile.to_json()
     assert result["script_id"]
+    assert result["filename"]
+    assert result["scenes"]
    
 
-def test_reader_to_json_outputs_correct_number_of_scenes() -> None:
-    result = reader_to_json()
+def test_reader_to_json_outputs_correct_number_of_scenes(reader_with_testfile):
+    result = reader_with_testfile.to_json()
     assert len(result["scenes"]) == len(testfile_scenes)
    
-def test_reader_to_json_outputs_correct_scene_ids() -> None:
-    for scene in reader_to_json()["scenes"]:
+def test_reader_has_identified_scenes_correctly(reader_with_testfile):
+    scenes = reader_with_testfile.to_json()["scenes"]
+    for scene in scenes:
         assert scene["id"] in testfile_scenes
         
-def test_reader_to_json_scenes_have_data_attribute_as_list() -> None:
-    for scene in reader_to_json()["scenes"]:
+def test_reader_scene_data_is_a_list(reader_with_testfile):
+    scenes = reader_with_testfile.to_json()["scenes"]
+    for scene in scenes:
         assert isinstance(scene["data"], list) 
 
-def test_reader_to_json_scenes_data_attribute_has_list_of_objects() -> None:
-    for scene in reader_to_json()["scenes"]:
+def test_reader_to_json_scenes_data_attribute_has_list_of_objects(reader_with_testfile) -> None:
+    scenes = reader_with_testfile.to_json()["scenes"]
+    for scene in scenes:
         for line in scene["data"]:
             assert isinstance(line, object) 
 
@@ -138,3 +128,21 @@ def test_scene_detection():
         scenes = reader.make_scenes(reader.file)
         assert len(scenes) == file["number_of_scenes"]
     
+
+
+
+
+'''
+helper functions
+'''
+def reader_to_json():
+    reader = ReaderV3()
+    reader.read_file(testfile)
+    return reader.to_json()
+
+def reader_to_json_with_settings():
+    settings = ReaderSettings()
+    reader = ReaderV3(settings)
+    reader.read_file(testfile)
+    return reader.to_json()
+       
