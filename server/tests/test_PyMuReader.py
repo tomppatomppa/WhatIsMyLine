@@ -31,18 +31,10 @@ def reader_to_json_with_settings():
 '''
 Tests
 '''
-def test_uploaded_files_folder_exists() -> None:
-    folder_exists = os.path.exists(folder_path)
-    assert folder_exists
 
-def test_testfile_exists() -> None:
-    file_exists = os.path.exists(f"{folder_path}/{testfile}")
-    assert file_exists
 
-def test_reader_reads_file() -> None:
-    reader = ReaderV3()
-    reader.read_file(testfile)
-    assert reader.filename == testfile
+def test_reader_reads_file(reader_with_testfile) -> None:
+    assert reader_with_testfile.filename == "testfile.pdf"
 
 def test_reader_to_json_outputs_has_uuid() -> None:
     result = reader_to_json()
@@ -146,13 +138,3 @@ def test_scene_detection():
         scenes = reader.make_scenes(reader.file)
         assert len(scenes) == file["number_of_scenes"]
     
-    
-    
-
-# def test_new_script_has_correct_number_of_scenes():
-#     settings = ReaderSettings()
-#     reader = ReaderV3(settings, line_id=True, lines_as_string=True)
-#     reader.read_file(testfile2)
-#     result = reader.to_json()
-
-#     assert len(result["scenes"]) == 12
