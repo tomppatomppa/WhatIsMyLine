@@ -1,10 +1,23 @@
+from itertools import islice
 import os
 import fitz
 import re
 from uuid import uuid4
 
-MIN_PAGE_WIDTH=100.0
+MIN_PAGE_WIDTH = 100.0
 
+REGEX_PATTERN = {
+    "remove_special_chars": r"[^a-zA-Z0-9\sÄÖÅäöå]", # Matches anything that is not alphanumeric, whitespace, Ä, Ö, Å, ä, ö, or å
+    "scene": [r"^\d+$", r"^[A-ZÄÅÖ0-9]+$", r"^[A-ZÄÅÖ0-9]+$"] ,
+   
+}
+
+def match_regex(list):
+    for index, string in islice(enumerate(list, 0), 3):
+            if not re.match(REGEX_PATTERN["scene"][index], string):
+                return False
+    return True
+          
 class ReaderV3():
     def __init__(self, settings = None, line_id = False, lines_as_string = False):
        self.settings = settings
@@ -85,7 +98,14 @@ class ReaderV3():
         
         return scenes
     
-    #TODO: FIX is_scene
+    def detect_scene(self, line, mutations, conditions):
+        
+        mutated_string = ''.join(mutation(line["text"]) for mutation in mutations)
+     
+
+        return all(cond(mutated_string, line) for cond in conditions)
+       
+
     def is_scene(self, current_line, previous_line):
         '''
         Hardcoded scene detection
@@ -95,7 +115,6 @@ class ReaderV3():
 
         '''
         if previous_line is None:
-            print(current_line["text"])
             return False  
             
 
@@ -227,7 +246,11 @@ class ReaderV3():
                 grouped_lines.append(current_line)
         
         return grouped_lines
-       
+    
+    def remove_special_characters(self, input_string):
+        cleaned_string = re.sub(REGEX_PATTERN["remove_special_chars"], "", input_string)
+        return cleaned_string
+    
     def to_json(self):
         '''
         Converts text content to a script item with the following structure   
