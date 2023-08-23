@@ -44,7 +44,6 @@ def create_app():
         app.logger.info('Database already contains the users table and scripts.')
     
     return app
-   
 
 def initialize_extensions(app):
     db.init_app(app)
@@ -64,7 +63,6 @@ def create_upload_folders(app):
     except Exception as e:
         app.logger.info('An error occurred while creating folder')
         app.logger.error('Exception occurred : {}'.format(e))
-
 
 def register_request_handlers(app):
     '''

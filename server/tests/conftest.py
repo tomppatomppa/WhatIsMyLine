@@ -8,11 +8,11 @@ from flask_jwt_extended import create_access_token, set_access_cookies
 import json
 load_dotenv()
 
-USER_ID = "1234"
+GOOGLE_USER_ID = "1234"
 
 @pytest.fixture(scope='module')
 def new_user():
-    user = User(USER_ID,"picture_url", 'kalle@gmail.com', "google", "12345")
+    user = User(GOOGLE_USER_ID,"picture_url", 'kalle@gmail.com', "google", "12345")
     
     return user
 
@@ -52,7 +52,7 @@ def test_client():
     def access_token():
         domain = request.args.get("domain")
         resp = jsonify(login=True)
-        access_token = create_access_token(USER_ID)
+        access_token = create_access_token(GOOGLE_USER_ID)
         set_access_cookies(resp, access_token, domain=domain)
         return resp
     
@@ -62,7 +62,7 @@ def test_client():
 
 @pytest.fixture(scope='function')
 def logged_in_test_client(test_client):
-    access_token = create_access_token(USER_ID)
+    access_token = create_access_token(GOOGLE_USER_ID)
     response = test_client.get('/access_token')
     set_access_cookies(response, access_token)
     return test_client

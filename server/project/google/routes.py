@@ -42,7 +42,6 @@ def check_root_folder(service):
         files = driveUtils.search_folder(service, "root", folder_name)
         
         if len(files) == 1:
-            
             return files[0], 200
         if not files:
            
