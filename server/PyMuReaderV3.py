@@ -1,7 +1,8 @@
+import os
 import fitz
 import re
-from ReaderSettings import ReaderSettings
 from uuid import uuid4
+
 MIN_PAGE_WIDTH=100.0
 
 class ReaderV3():
@@ -14,19 +15,18 @@ class ReaderV3():
        self.lines_as_string = lines_as_string
 
     def read_file(self, filename):
-        try:
-            self.filename = filename
-            pdf_doc = fitz.open(f'./uploaded_files/{filename}')
-            pages = []
-            for page in pdf_doc:
-                pages.append(page.get_text("dict", sort=False))
-            
-            self.set_page_width(pages[0]['width'])
-            self.file = self.flatten_all(pages)
+        file_path = f"./uploaded_files/{filename}"
+
+        if not os.path.exists(file_path):
+         raise FileNotFoundError(f"No such file: '{file_path}'")
+        
+        self.filename = filename
+        pdf_doc = fitz.open(f'./uploaded_files/{filename}')
+        pages = [page.get_text("dict", sort=False) for page in pdf_doc]
+      
+        self.set_page_width(pages[0]['width'])
+        self.file = self.flatten_all(pages)
            
-        except FileNotFoundError:
-            print("File not found")
-    
     def set_page_width(self, width):
         if not float(width):
            raise ValueError(f"Invalid page width value {width}")

@@ -7,6 +7,7 @@ from project import create_app, db
 from project.models import  User, Script
 from flask_jwt_extended import create_access_token, set_access_cookies
 import json
+
 load_dotenv()
 
 GOOGLE_USER_ID = "1234"

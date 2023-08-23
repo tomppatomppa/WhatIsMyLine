@@ -18,6 +18,15 @@ folder_path = os.path.abspath("uploaded_files")
 Tests
 '''
 
+def test_reader_reads_non_existing_file():
+    invalid_filename = "doesntexist.pdf"
+    reader = ReaderV3() 
+    with pytest.raises(FileNotFoundError,  match=rf"No such file: './uploaded_files/{invalid_filename}'"):
+        reader.read_file("doesntexist.pdf")
+    
+    assert reader.filename == None
+    
+
 def test_reader_reads_file(reader_with_testfile):
     assert reader_with_testfile.filename == "testfile.pdf"
 
@@ -128,9 +137,6 @@ def test_scene_detection():
         scenes = reader.make_scenes(reader.file)
         assert len(scenes) == file["number_of_scenes"]
     
-
-
-
 
 '''
 helper functions
