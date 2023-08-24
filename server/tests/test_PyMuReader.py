@@ -1,4 +1,4 @@
-from functools import partial
+from functools import partial, reduce
 from itertools import islice
 import re
 import pytest
@@ -130,46 +130,26 @@ filenames = [
              {"filename": "31.8.pdf", "number_of_scenes": 13},
              {"filename": "1508_BUU_SCRIPT.pdf", "number_of_scenes": 8},
              {"filename": "1608_BUU_SCRIPT.pdf", "number_of_scenes": 5},
-             {"filename": "test2.pdf", "number_of_scenes": 16},
+             #{"filename": "test2.pdf", "number_of_scenes": 16},
 
             ]
   
-# def test_scene_detection():
-#     settings = ReaderSettings()
-#     reader = ReaderV3(settings, line_id=True, lines_as_string=True)
-#     for file in filenames:
-#         reader.read_file(file["filename"])
-#         scenes = reader.make_scenes(reader.file)
-#         assert len(scenes) == file["number_of_scenes"]
-    
+def test_scene_detection():
+    settings = ReaderSettings()
+    reader = ReaderV3(settings, line_id=True, lines_as_string=True)
+    for file in filenames:
+        reader.read_file(file["filename"])
+        scenes = reader.make_scenes(reader.file)
+        assert len(scenes) == file["number_of_scenes"]
+
 def test_group_lines(reader_with_testfile):
     reader = ReaderV3()
     reader.read_file("test2.pdf")
     
-    def match_regex(string):
-       
-        filtered_array = [string for string in string.split(" ") if string != ""]
-        regex_array = [r"^\d+$", r"^[A-ZÄÅÖ0-9]+$", r"^[A-ZÄÅÖ0-9]+$"]
-        for index, string in islice(enumerate(filtered_array, 0), 3):
-                if not re.match(regex_array[index], string):
-                    return False
-        return True
+    assert len(reader.make_scenes_new()) == 16
     
-    custom_mutations = [
-        partial(re.sub, r"[^a-zA-Z0-9\sÄÖÅäöå]", ""),
-    ]
 
-    custom_conditions = [
-        lambda p1, p2: p2["origin"][0] <= reader.page_width / 2,
-        lambda p1, p2: match_regex(p1)
-    ]
 
-    for line in reader.group_lines(axis = 1):
-        if reader.detect_scene(line, custom_mutations, custom_conditions):
-           print(line["text"])
-        
-    assert 1 == 2
-    
 '''
 helper functions
 '''

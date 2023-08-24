@@ -1,3 +1,4 @@
+from functools import partial, reduce
 from itertools import islice
 import os
 import fitz
@@ -8,16 +9,35 @@ MIN_PAGE_WIDTH = 100.0
 
 REGEX_PATTERN = {
     "remove_special_chars": r"[^a-zA-Z0-9\sÄÖÅäöå]", # Matches anything that is not alphanumeric, whitespace, Ä, Ö, Å, ä, ö, or å
-    "scene": [r"^\d+$", r"^[A-ZÄÅÖ0-9]+$", r"^[A-ZÄÅÖ0-9]+$"] ,
-   
+    "scene": [r"^\d+$", r"^[A-ZÄÅÖ0-9]+$", r"^[A-ZÄÅÖ0-9]+$"] ,  
 }
 
-def match_regex(list):
-    for index, string in islice(enumerate(list, 0), 3):
-            if not re.match(REGEX_PATTERN["scene"][index], string):
-                return False
-    return True
-          
+custom_string_mutations = [
+        partial(re.sub, r"[^a-zA-Z0-9\sÄÖÅäöå]", "ÄÄÄÄÄ"),
+        ]
+        
+
+def match_regex(string):
+        filtered_array = [string for string in string.split(" ") if string != ""]
+        regex_array = [r"^\d+$", r"^[A-ZÄÅÖ0-9]+$", r"^[A-ZÄÅÖ0-9]+$"]
+        for index, string in islice(enumerate(filtered_array, 0), 3):
+                if not re.match(regex_array[index], string):
+                    return False
+        return True
+
+def combine_dicts(acc, current, scenes, default_key):
+    if not acc:
+        acc.append({default_key: []})
+    elif current["text"] in scenes:
+        acc.append({current["text"]: []})
+    else:
+        last_dict = acc[-1]
+        key = next(iter(last_dict))
+        last_dict[key].append(current)
+    return acc
+
+
+
 class ReaderV3():
     def __init__(self, settings = None, line_id = False, lines_as_string = False):
        self.settings = settings
@@ -98,11 +118,27 @@ class ReaderV3():
         
         return scenes
     
+    def make_scenes_new(self):
+        custom_scene_conditions = [
+            lambda p1, p2: p2["origin"][0] <= self.page_width / 2,
+            lambda p1, p2: match_regex(p1)
+        ]
+
+        scenes = []
+        lines = self.group_lines(axis = 1)
+        for line in lines:
+            if self.detect_scene(line, custom_string_mutations, custom_scene_conditions):
+                scenes.append(line["text"])
+
+        combined = partial(combine_dicts, scenes=scenes, default_key="SCRIPT DETAILS")
+        result_list = reduce(combined, lines, [])
+        
+        return result_list
+    
     def detect_scene(self, line, mutations, conditions):
         
         mutated_string = ''.join(mutation(line["text"]) for mutation in mutations)
-     
-
+        
         return all(cond(mutated_string, line) for cond in conditions)
        
 
