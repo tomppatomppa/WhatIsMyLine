@@ -279,11 +279,12 @@ class ReaderV3():
            for line in scene["data"]:
                line["lines"] = "\n".join(line["lines"])
         return script
-      
+    
+
     def group_lines(self, axis):
         '''
-        axis = 1 = x-axis
-        axis = 0 = y-axis
+        axis = 1 = y-axis
+        axis = 0 = x-axis
         Groups lines based on ["origin"][axis]
         '''
         grouped_lines = []
@@ -294,12 +295,6 @@ class ReaderV3():
                 grouped_lines[-1]["text"] = combined_text
             else:
                 grouped_lines.append(current_line)
-
-        
-        
-        keys = self.file["blocks"][0].keys()
-      
-      
         
         return grouped_lines
     
@@ -320,18 +315,14 @@ class ReaderV3():
 
         '''
         result = self.make_scenes(self.file)
-
-        
         result = self.clean_lines(result)
-        
         result = self.make_lines_recursive(result)
        
         if(self.line_id):
             result = self.add_uuid(result)
         if(self.lines_as_string):
             result = self.lines_into_string(result)
-        
-        #result["id"] = result["filename"].replace(".pdf", "")
+     
         result["script_id"] = result["filename"].replace(".pdf", "")
         
         return result

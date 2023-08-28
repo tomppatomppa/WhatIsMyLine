@@ -3,6 +3,7 @@ from flask import jsonify, request
 import pytest
 from dotenv import load_dotenv
 from PyMuReaderV3 import ReaderV3
+from ScriptReader import ScriptReader
 from project import create_app, db
 from project.models import  User, Script
 from flask_jwt_extended import create_access_token, set_access_cookies
@@ -127,3 +128,13 @@ def testfile_scenes(reader_with_testfile):
     scenes = reader_with_testfile.to_json()["scenes"]
     
     yield scenes
+
+'''
+ScriptReader
+
+'''
+@pytest.fixture(scope="module")
+def script_reader_with_file():
+    reader = ScriptReader()
+    reader.read_file("1.9.pdf")
+    yield reader

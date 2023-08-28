@@ -135,7 +135,7 @@ def test_scene_detection():
         assert len(scenes) == file["number_of_scenes"]
 
 '''
-Test make_scenes_new functions
+Test make_scenes_new functions 
 '''
 def test_group_lines():
     reader = ReaderV3()
@@ -143,10 +143,8 @@ def test_group_lines():
    
     list_of_scenes = reader.make_scenes_new()
     for scene_dict in list_of_scenes:
-        for key, value in scene_dict.items():
-            for scene in value:
-                print(scene["text"])
-            break
+        for key in scene_dict:
+            print(key)
     assert len(list_of_scenes) == 12
     
 
@@ -159,9 +157,3 @@ def reader_to_json():
     reader.read_file(testfile)
     return reader.to_json()
 
-def reader_to_json_with_settings():
-    settings = ReaderSettings()
-    reader = ReaderV3(settings)
-    reader.read_file(testfile)
-    return reader.to_json()
-       
