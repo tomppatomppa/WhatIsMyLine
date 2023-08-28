@@ -8,16 +8,6 @@ from uuid import uuid4
 
 MIN_PAGE_WIDTH = 100.0
 
-REGEX_PATTERN = {
-    "remove_special_chars": r"[^a-zA-Z0-9\sÄÖÅäöå]", # Matches anything that is not alphanumeric, whitespace, Ä, Ö, Å, ä, ö, or å
-    "scene": [r"^\d+$", r"^[A-ZÄÅÖ0-9]+$", r"^[A-ZÄÅÖ0-9]+$"] ,  
-}
-
-custom_string_mutations = [
-        partial(re.sub, r"[^a-zA-Z0-9\sÄÖÅäöå]", ""),
-        partial(re.sub, r'(\b\d+\b)\s+\1', r'\1'),
-        ]
-        
 
 def match_regex(string):
         filtered_array = [string for string in string.split(" ") if string != ""]
@@ -121,16 +111,31 @@ class ReaderV3():
         return scenes
     
     def make_scenes_new(self):
-        custom_scene_conditions = [
-            lambda string, line: match_regex(string),
-            lambda string, line: line["origin"][0] <= self.page_width / 2,
-            
+        '''
+        string_mutations:
+            modifications on string before applying scene_conditions
+
+        scene_conditions lambda parameters:
+            modified_string: string from string_mutations
+            line: original string
+
+        '''
+        string_mutations = [
+            #Remove special characters
+            partial(re.sub, r"[^a-zA-Z0-9\sÄÖÅäöå]", ""),
+            #removes the consecutive duplicate numbers from string
+            partial(re.sub, r'(\b\d+\b)\s+\1', r'\1'),
+        ]
+
+        scene_conditions = [
+            lambda modified_string, line: match_regex(modified_string),
+            lambda modified_string, line: line["origin"][0] <= self.page_width / 2,  
         ]
 
         scenes = []
         lines = self.group_lines(axis = 1)
         for line in lines:
-            if self.detect_scene(line, custom_string_mutations, custom_scene_conditions):
+            if self.detect_scene(line, string_mutations, scene_conditions):
                 scenes.append(line["text"])
               
         combined = partial(combine_dicts, scenes=scenes, default_key="SCRIPT DETAILS")
@@ -139,12 +144,12 @@ class ReaderV3():
         return result_list
     
     def detect_scene(self, line, mutations, conditions):
-        mutated_string = line["text"]
+        modified_string = line["text"]
         for mutation in mutations:
-            mutated_string = mutation(mutated_string)
-        is_valid = all(cond(mutated_string, line) for cond in conditions)
+            modified_string = mutation(modified_string)
         
-        #print(mutated_string)
+        is_valid = all(cond(modified_string, line) for cond in conditions)
+
         return is_valid
        
 

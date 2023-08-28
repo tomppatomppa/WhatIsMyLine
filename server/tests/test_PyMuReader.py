@@ -147,8 +147,9 @@ def test_group_lines():
    
     list_of_scenes = reader.make_scenes_new()
     for scene_dict in list_of_scenes:
-        for key in scene_dict:
-            print(key)
+        for key, value in scene_dict.items():
+            for scene in value:
+                print(scene["text"])
     assert len(list_of_scenes) == 12
     
 
