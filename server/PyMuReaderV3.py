@@ -5,6 +5,7 @@ import fitz
 import re
 from uuid import uuid4
 
+
 MIN_PAGE_WIDTH = 100.0
 
 REGEX_PATTERN = {
@@ -13,16 +14,17 @@ REGEX_PATTERN = {
 }
 
 custom_string_mutations = [
-        partial(re.sub, r"[^a-zA-Z0-9\sÄÖÅäöå]", "ÄÄÄÄÄ"),
+        partial(re.sub, r"[^a-zA-Z0-9\sÄÖÅäöå]", ""),
+        partial(re.sub, r'(\b\d+\b)\s+\1', r'\1'),
         ]
         
 
 def match_regex(string):
         filtered_array = [string for string in string.split(" ") if string != ""]
-        regex_array = [r"^\d+$", r"^[A-ZÄÅÖ0-9]+$", r"^[A-ZÄÅÖ0-9]+$"]
+        regex_array = [r"^\d+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$"]
         for index, string in islice(enumerate(filtered_array, 0), 3):
                 if not re.match(regex_array[index], string):
-                    return False
+                    return False  
         return True
 
 def combine_dicts(acc, current, scenes, default_key):
@@ -120,8 +122,9 @@ class ReaderV3():
     
     def make_scenes_new(self):
         custom_scene_conditions = [
-            lambda p1, p2: p2["origin"][0] <= self.page_width / 2,
-            lambda p1, p2: match_regex(p1)
+            lambda string, line: match_regex(string),
+            lambda string, line: line["origin"][0] <= self.page_width / 2,
+            
         ]
 
         scenes = []
@@ -129,17 +132,20 @@ class ReaderV3():
         for line in lines:
             if self.detect_scene(line, custom_string_mutations, custom_scene_conditions):
                 scenes.append(line["text"])
-
+              
         combined = partial(combine_dicts, scenes=scenes, default_key="SCRIPT DETAILS")
         result_list = reduce(combined, lines, [])
         
         return result_list
     
     def detect_scene(self, line, mutations, conditions):
+        mutated_string = line["text"]
+        for mutation in mutations:
+            mutated_string = mutation(mutated_string)
+        is_valid = all(cond(mutated_string, line) for cond in conditions)
         
-        mutated_string = ''.join(mutation(line["text"]) for mutation in mutations)
-        
-        return all(cond(mutated_string, line) for cond in conditions)
+        #print(mutated_string)
+        return is_valid
        
 
     def is_scene(self, current_line, previous_line):
@@ -274,19 +280,23 @@ class ReaderV3():
         Groups lines based on ["origin"][axis]
         '''
         grouped_lines = []
+        
         for current_line in self.file["blocks"]:
             if grouped_lines and current_line["origin"][axis] == grouped_lines[-1]["origin"][axis]:
                 combined_text = " ".join([grouped_lines[-1]["text"], current_line["text"]])
                 grouped_lines[-1]["text"] = combined_text
             else:
                 grouped_lines.append(current_line)
+
+        
+        
+        keys = self.file["blocks"][0].keys()
+      
+      
         
         return grouped_lines
     
-    def remove_special_characters(self, input_string):
-        cleaned_string = re.sub(REGEX_PATTERN["remove_special_chars"], "", input_string)
-        return cleaned_string
-    
+ 
     def to_json(self):
         '''
         Converts text content to a script item with the following structure   

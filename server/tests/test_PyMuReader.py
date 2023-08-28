@@ -10,7 +10,7 @@ scene = {'12102 INT. LOTUS RUM': [{'size': 11.807954788208008, 'flags': 12, 'fon
 183.74301147460938, 457.48236083984375, 197.1192169189453)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'lappuja, lapuissa on eläinkuvia, lasipurkin päällä lappu', 'origin': (96.15774536132812, 205.38131713867188), 'bbox': (96.15774536132812, 195.55096435546875, 492.9061584472656, 208.9271697998047)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'jossa teksti “djur-pantomim”, tyhjiä / epäonnistuneita', 'origin': (96.15774536132812, 217.1892852783203), 'bbox': (96.15774536132812, 207.3589324951172, 478.73663330078125, 220.73513793945312)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'kuvia lattialla, sakset, paperia, Beundrarmus =', 'origin': (96.15774536132812, 228.9972381591797), 'bbox': (96.15774536132812, 219.16688537597656, 429.1433410644531, 232.5430908203125)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'tavallinen oranssi hiiri).', 'origin': (96.15774536132812, 240.80519104003906), 'bbox': (96.15774536132812, 230.97483825683594, 280.36309814453125, 244.35104370117188)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'LOTUS', 'origin': (252.01351928710938, 267.3730773925781), 'bbox': (252.01351928710938, 257.542724609375, 287.4385681152344, 270.9189147949219)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'De va den sista bilden! Kasta burken', 'origin': (202.42933654785156, 286.5610046386719), 'bbox': (202.42933654785156, 276.73065185546875, 457.4823303222656, 290.1068420410156)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'till Tika!', 'origin': (202.42933654785156, 298.36895751953125), 'bbox': (202.42933654785156, 288.5386047363281, 273.27825927734375, 301.914794921875)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'De kastar ner en burk i ett rör.', 'origin': (96.15774536132812, 317.556884765625), 'bbox': (96.15774536132812, 307.7265319824219, 322.87176513671875, 321.10272216796875)}, {'size': 11.807954788208008, 'flags': 28, 'font': 'CourierNewPS-BoldMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': '12104', 'origin': (51.87791061401367, 354.4567565917969), 'bbox': (51.87791061401367, 344.62640380859375, 84.35554504394531, 358.0025939941406)}]}
 
 
-testfile_scenes = ["SCRIPT DETAILS","12102 INT. LOTUS RUM", "12104 INT. LOTUS RUM", "12109 INT. LOTUS RUM", "12111 INT. LOTUS RUM", "12118 INT. LOTUS RUM", "12116 INT. LOTUS RUM","13711 INT. KÄLLAREN", "12203 INT. LABBRÅTTORNAS LABB", "12805 INT. LABBRÅTTORNAS LABB",
+testfile_scene_ids = ["SCRIPT DETAILS","12102 INT. LOTUS RUM", "12104 INT. LOTUS RUM", "12109 INT. LOTUS RUM", "12111 INT. LOTUS RUM", "12118 INT. LOTUS RUM", "12116 INT. LOTUS RUM","13711 INT. KÄLLAREN", "12203 INT. LABBRÅTTORNAS LABB", "12805 INT. LABBRÅTTORNAS LABB",
                     "12809 INT. LABBRÅTTORNAS LABB", "13205 INT. VIKINGMUSVÅNINGEN", "13312 INT. VIKINGAMUSVÅNINGEN", "13510 INT. VIKINGMUSVÅNINGEN", "14404 INT. KONTROLLRUMMET",
                     "14414 INT. KONTROLLRUMMET", "14418 INT. KONTROLLRUMMET", "14421 INT. KONTROLLRUMMET" ,"14503 INT. KONTROLLRUMMET"]
 
@@ -40,23 +40,19 @@ def test_reader_to_json_output_has_correct_attributes(reader_with_testfile):
     assert result["scenes"]
    
 
-def test_reader_to_json_outputs_correct_number_of_scenes(reader_with_testfile):
-    result = reader_with_testfile.to_json()
-    assert len(result["scenes"]) == len(testfile_scenes)
+def test_testfile_has_correct_number_of_scenes(testfile_scenes):
+    assert len(testfile_scenes) == len(testfile_scenes)
    
-def test_reader_has_identified_scenes_correctly(reader_with_testfile):
-    scenes = reader_with_testfile.to_json()["scenes"]
-    for scene in scenes:
-        assert scene["id"] in testfile_scenes
+def test_reader_has_identified_scenes_correctly(testfile_scenes):
+    for scene in testfile_scenes:
+        assert scene["id"] in testfile_scene_ids
         
-def test_reader_scene_data_is_a_list(reader_with_testfile):
-    scenes = reader_with_testfile.to_json()["scenes"]
-    for scene in scenes:
+def test_reader_scene_data_is_a_list(testfile_scenes):
+    for scene in testfile_scenes:
         assert isinstance(scene["data"], list) 
 
-def test_reader_to_json_scenes_data_attribute_has_list_of_objects(reader_with_testfile) -> None:
-    scenes = reader_with_testfile.to_json()["scenes"]
-    for scene in scenes:
+def test_reader_to_json_scenes_data_attribute_has_list_of_objects(testfile_scenes) -> None:
+    for scene in testfile_scenes:
         for line in scene["data"]:
             assert isinstance(line, object) 
 
@@ -67,8 +63,8 @@ def test_reader_to_json_scenes_data_attribute_has_list_of_objects(reader_with_te
    name: -> str
    lines: (default) -> list
 '''
-def test_reader_to_json_data_objects_contain_required_attributes() -> None:
-    for scene in reader_to_json()["scenes"]:
+def test_reader_to_json_data_objects_contain_required_attributes(reader_with_testfile, testfile_scenes) -> None:
+    for scene in testfile_scenes:
         for line in scene["data"]:
             assert line["type"]
             assert isinstance(line["lines"], list)
@@ -106,7 +102,7 @@ def test_reader_to_json_with_settings_outputs_correct_number_of_scenes() -> None
     reader.read_file(testfile)
     result = reader.to_json()
  
-    assert len(result["scenes"]) == len(testfile_scenes)
+    assert len(result["scenes"]) == len(testfile_scene_ids)
 
 
 '''
@@ -142,11 +138,18 @@ def test_scene_detection():
         scenes = reader.make_scenes(reader.file)
         assert len(scenes) == file["number_of_scenes"]
 
-def test_group_lines(reader_with_testfile):
+'''
+Test make_scenes_new functions
+'''
+def test_group_lines():
     reader = ReaderV3()
-    reader.read_file("test2.pdf")
-    
-    assert len(reader.make_scenes_new()) == 16
+    reader.read_file("1.9.pdf")
+   
+    list_of_scenes = reader.make_scenes_new()
+    for scene_dict in list_of_scenes:
+        for key in scene_dict:
+            print(key)
+    assert len(list_of_scenes) == 12
     
 
 

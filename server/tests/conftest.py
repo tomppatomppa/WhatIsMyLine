@@ -121,3 +121,9 @@ def reader_with_testfile():
     reader = ReaderV3()
     reader.read_file("testfile.pdf")
     yield reader
+
+@pytest.fixture(scope="function")
+def testfile_scenes(reader_with_testfile):
+    scenes = reader_with_testfile.to_json()["scenes"]
+    
+    yield scenes
