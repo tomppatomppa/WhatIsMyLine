@@ -31,13 +31,15 @@ def combine_dicts(acc, current, scenes, default_key):
 
 
 class ReaderV3():
-    def __init__(self, settings = None, line_id = False, lines_as_string = False):
-       self.settings = settings
+    def __init__(self,  line_id = False, lines_as_string = False):
+       
        self.filename = None
-       self.page_width = None
        self.file = None
        self.line_id = line_id
        self.lines_as_string = lines_as_string
+       self.min_font_size = 10
+       self.lines_max_start_x_axis = 400
+       self.page_width = None
 
     def read_file(self, filename):
         file_path = f"./uploaded_files/{filename}"
@@ -187,8 +189,8 @@ class ReaderV3():
         cleaned_file = []
         for scene in file:
             for name, lines in scene.items():        
-                filtered_items = [item for item in lines if item['size'] >= self.settings.get_min_font_size()]                                  
-                filtered_items = [item for item in filtered_items if item['origin'][0] <= self.settings.get_lines_max_start_x_axis()]         
+                filtered_items = [item for item in lines if item['size'] >= self.min_font_size]                                  
+                filtered_items = [item for item in filtered_items if item['origin'][0] <= self.lines_max_start_x_axis]         
                 cleaned_file.append({name: filtered_items})
         return cleaned_file
     
@@ -319,8 +321,8 @@ class ReaderV3():
         '''
         result = self.make_scenes(self.file)
 
-        if(self.settings):
-            result = self.clean_lines(result)
+        
+        result = self.clean_lines(result)
         
         result = self.make_lines_recursive(result)
        

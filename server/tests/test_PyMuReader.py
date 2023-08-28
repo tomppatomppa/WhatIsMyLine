@@ -1,9 +1,6 @@
-from functools import partial, reduce
-from itertools import islice
-import re
 import pytest
 from PyMuReaderV3 import ReaderV3
-from ReaderSettings import ReaderSettings
+
 import os
 
 scene = {'12102 INT. LOTUS RUM': [{'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'Lotus och en Beundrarmus sitter och fnissar i Lotus rum,', 'origin': (96.15774536132812, 181.76541137695312), 'bbox': (96.15774536132812, 171.93505859375, 492.9061584472656, 185.31126403808594)}, {'size': 11.807954788208008, 'flags': 12, 'font': 'CourierNewPSMT', 'color': 3355443, 'ascender': 0.83251953125, 'descender': -0.30029296875, 'text': 'de spionerar på Tika. (kannellinen lasipurkki jossa', 'origin': (96.15774536132812, 193.5733642578125), 'bbox': (96.15774536132812, 
@@ -76,7 +73,7 @@ def test_reader_to_json_data_objects_dont_contain_id_attribute_by_default() -> N
             assert not hasattr(line, "id")
 
 def test_reader_to_json_data_objects_contain_id_attribute_if_specified() -> None:
-    reader = ReaderV3(settings=None, line_id=True)
+    reader = ReaderV3(line_id=True)
     reader.read_file(testfile)
     result = reader.to_json()
     for scene in result["scenes"]:
@@ -84,7 +81,7 @@ def test_reader_to_json_data_objects_contain_id_attribute_if_specified() -> None
             assert line["id"]
           
 def test_reader_to_json_data_objects_return_lines_as_string_if_specified() -> None:
-    reader = ReaderV3(settings=None, line_id=True, lines_as_string=True)
+    reader = ReaderV3(line_id=True, lines_as_string=True)
     reader.read_file(testfile)
     result = reader.to_json()
     for scene in result["scenes"]:
@@ -97,8 +94,8 @@ With Settings
 '''
 
 def test_reader_to_json_with_settings_outputs_correct_number_of_scenes() -> None:
-    settings = ReaderSettings()
-    reader = ReaderV3(settings, line_id=True, lines_as_string=True)
+    
+    reader = ReaderV3( line_id=True, lines_as_string=True)
     reader.read_file(testfile)
     result = reader.to_json()
  
@@ -131,8 +128,7 @@ filenames = [
             ]
   
 def test_scene_detection():
-    settings = ReaderSettings()
-    reader = ReaderV3(settings, line_id=True, lines_as_string=True)
+    reader = ReaderV3( line_id=True, lines_as_string=True)
     for file in filenames:
         reader.read_file(file["filename"])
         scenes = reader.make_scenes(reader.file)
@@ -150,6 +146,7 @@ def test_group_lines():
         for key, value in scene_dict.items():
             for scene in value:
                 print(scene["text"])
+            break
     assert len(list_of_scenes) == 12
     
 
