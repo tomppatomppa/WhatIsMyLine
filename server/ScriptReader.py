@@ -66,7 +66,7 @@ class ScriptReader():
         #Sorts x column in ascending order
         #Groups by page and y, so nested subsections only get sorted
         df = df.groupby(['page','y'], group_keys=False, sort=False).apply(pd.DataFrame.sort_values, 'x')
+        df = df.reset_index(drop=True)
         
-        
-       
+        print(df)
         print(df.loc[0:42, ["text", "x", "y"]])
