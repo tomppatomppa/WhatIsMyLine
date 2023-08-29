@@ -52,7 +52,16 @@ class ScriptReader():
         df['page'] = df.index.isin(filtered_df.index).cumsum()
         return df
     
-   
+    def sort_subsections(self, df):
+        '''
+        Sorts x column in ascending order grouped by columns ["page", "y"]
+        returns new data frame with index reset
+        Fitz module returns sometimes the x axis in wrong order even when sort=True.
+        page_doc.get_text("dict", sort=True)
+        '''
+        df = df.groupby(['page','y'], group_keys=False, sort=False).apply(pd.DataFrame.sort_values, 'x')
+        return  df.reset_index(drop=True)
+    
     def prepare_data(self):
         df = pd.DataFrame(self.file["blocks"])
         columns_to_drop = ["color", "ascender", "descender", "flags", "font", "bbox", "origin"]
@@ -61,12 +70,8 @@ class ScriptReader():
         df[['x', 'y']] = df['origin'].apply(lambda x: pd.Series(x))
 
         df = df.drop(columns_to_drop, axis=1, errors="ignore")
-
         df = self.add_page_index(df)
-        #Sorts x column in ascending order
-        #Groups by page and y, so nested subsections only get sorted
-        df = df.groupby(['page','y'], group_keys=False, sort=False).apply(pd.DataFrame.sort_values, 'x')
-        df = df.reset_index(drop=True)
-        
+       
+        df = self.sort_subsections(df) 
         print(df)
         print(df.loc[0:42, ["text", "x", "y"]])
