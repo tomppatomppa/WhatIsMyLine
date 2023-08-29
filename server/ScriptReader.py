@@ -1,5 +1,8 @@
+from itertools import islice
+import re
 import fitz
 import os
+import numpy as np
 import pandas as pd
 
 class ScriptReader():
@@ -59,10 +62,6 @@ class ScriptReader():
         '''
         df = df.groupby(['page','y'], group_keys=False, sort=False).apply(pd.DataFrame.sort_values, 'x')
         return  df.reset_index(drop=True)
-    
-    def add_scene(self, df):
-        return df
-
 
     def remove_max_x_and_y(self, df):
         '''
@@ -90,6 +89,20 @@ class ScriptReader():
         df = df[~df.duplicated(subset='y', keep="first")]
         return df
     
+    def detect_scenes(self, df):
+    
+        def match_regex(string):
+            special_char_removed = re.sub(r"[^a-zA-Z0-9\sÄÖÅäöå]", "", string)
+            filtered_array = [string for string in special_char_removed.split(" ") if string != ""]
+            regex_array = [r"^\d+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$"]
+            for index, string in islice(enumerate(filtered_array, 0), 3):
+                if not re.match(regex_array[index], string):
+                    return False  
+            return True
+        df["scene_start"] = np.where(df["text"].apply(match_regex), True, False)
+
+        return df
+
     def prepare_data(self):
         df = pd.DataFrame(self.file["blocks"])
         columns_to_drop = ["color", "ascender", "descender", "flags", "font", "bbox", "origin"]
@@ -106,7 +119,8 @@ class ScriptReader():
         df = self.remove_max_x_and_y(df)
         df = self.remove_max_x_and_y(df)
         
-        df = self.add_scene(df)
+      
         df = self.concat_consecutive_rows(df)
+        df = self.detect_scenes(df)
 
-        print(df.loc[0:42, ["text","x", "y"]])
+        print(df.loc[42:100, ["scene_start", "text"]])
