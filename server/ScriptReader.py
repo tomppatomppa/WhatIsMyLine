@@ -40,7 +40,6 @@ class ScriptReader():
         }
         return merged_dict
     
-
     def add_page_index(self, df):
         '''
         If the y axis is less than the previous y axis,
@@ -61,6 +60,36 @@ class ScriptReader():
         df = df.groupby(['page','y'], group_keys=False, sort=False).apply(pd.DataFrame.sort_values, 'x')
         return  df.reset_index(drop=True)
     
+    def add_scene(self, df):
+        return df
+
+
+    def remove_max_x_and_y(self, df):
+        '''
+        Clean out max/min y and x values
+        '''
+        x_max = df["x"].max()
+        x_min = df["x"].min()
+        y_max = df["y"].max()
+        y_min = df["y"].min()
+          
+        x_max_and_min_filter = (df["x"] != x_max) & (df["x"] != x_min)
+        y_max_and_min_filter = (df["y"] != y_max) & (df["y"] != y_min)
+
+        filtered_df = df[x_max_and_min_filter & y_max_and_min_filter]
+    
+        return filtered_df.reset_index(drop=True)
+    
+    def concat_consecutive_rows(self, df):
+        '''
+        Concat text from consecutive rows with the same "y" value
+        Removes duplicate rows expect the first 
+        '''
+        consecutive_rows = df['y'] == df['y'].shift(-1)
+        df.loc[consecutive_rows, 'text'] = df['text'] + ' ' + df['text'].shift(-1)
+        df = df[~df.duplicated(subset='y', keep="first")]
+        return df
+    
     def prepare_data(self):
         df = pd.DataFrame(self.file["blocks"])
         columns_to_drop = ["color", "ascender", "descender", "flags", "font", "bbox", "origin"]
@@ -70,7 +99,14 @@ class ScriptReader():
 
         df = df.drop(columns_to_drop, axis=1, errors="ignore")
         df = self.add_page_index(df)
-       
+
         df = self.sort_subsections(df) 
-        print(df)
-        print(df.loc[0:42, ["text", "page", "y"]])
+
+        #TODO: Might need adjustment
+        df = self.remove_max_x_and_y(df)
+        df = self.remove_max_x_and_y(df)
+        
+        df = self.add_scene(df)
+        df = self.concat_consecutive_rows(df)
+
+        print(df.loc[0:42, ["text","x", "y"]])
