@@ -46,10 +46,9 @@ class ScriptReader():
         If the y axis is less than the previous y axis,
         it indicates a new page in the parsed document.
         Adds a new column "page" to the DataFrame
-        to index the pages.
         '''
-        filtered_df = df[df['y'] < df['y'].shift(1)]
-        df['page'] = df.index.isin(filtered_df.index).cumsum()
+        page_break = df[df['y'] < df['y'].shift(1)]
+        df['page'] = df.index.isin(page_break.index).cumsum() + 1
         return df
     
     def sort_subsections(self, df):
@@ -74,4 +73,4 @@ class ScriptReader():
        
         df = self.sort_subsections(df) 
         print(df)
-        print(df.loc[0:42, ["text", "x", "y"]])
+        print(df.loc[0:42, ["text", "page", "y"]])
