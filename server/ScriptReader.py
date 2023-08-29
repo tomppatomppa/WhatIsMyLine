@@ -89,20 +89,35 @@ class ScriptReader():
         df = df[~df.duplicated(subset='y', keep="first")]
         return df
     
-    def detect_scenes(self, df):
+    def detect_scenes(self, string):
+        special_char_removed = re.sub(r"[^a-zA-Z0-9\sÄÖÅäöå]", "", string)
+        filtered_array = [string for string in special_char_removed.split(" ") if string != ""]
+        if len(filtered_array) == 1:
+            return False
+        regex_array = [r"^\d+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$"]
+        for index, string in islice(enumerate(filtered_array, 0), 3):
+            if not re.match(regex_array[index], string):
+                return False  
+        return True
     
-        def match_regex(string):
-            special_char_removed = re.sub(r"[^a-zA-Z0-9\sÄÖÅäöå]", "", string)
-            filtered_array = [string for string in special_char_removed.split(" ") if string != ""]
-            regex_array = [r"^\d+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$"]
-            for index, string in islice(enumerate(filtered_array, 0), 3):
-                if not re.match(regex_array[index], string):
-                    return False  
-            return True
-        df["scene_start"] = np.where(df["text"].apply(match_regex), True, False)
+    def add_index_to_scene(self, df):
+        '''
+        
+        '''
+        group_index = df["scene_start"].cumsum()
+        grouped = df.groupby(group_index)
 
-        return df
+        scene_number = 1
+        new_index = []
 
+        for _, group in grouped:
+            for idx in group.index:
+                new_index.append((scene_number, idx))
+            scene_number += 1
+
+        df.index = pd.MultiIndex.from_tuples(new_index, names=["scene", "index"]) 
+        return df   
+    
     def prepare_data(self):
         df = pd.DataFrame(self.file["blocks"])
         columns_to_drop = ["color", "ascender", "descender", "flags", "font", "bbox", "origin"]
@@ -118,9 +133,13 @@ class ScriptReader():
         #TODO: Might need adjustment
         df = self.remove_max_x_and_y(df)
         df = self.remove_max_x_and_y(df)
-        
       
         df = self.concat_consecutive_rows(df)
-        df = self.detect_scenes(df)
+        df["scene_start"] = np.where(df["text"].apply(self.detect_scenes), True, False)
 
-        print(df.loc[42:100, ["scene_start", "text"]])
+        df = self.add_index_to_scene(df)
+        specific_scene = df.xs(2, level="scene")
+        
+        print(specific_scene.loc[0:42, ["text"]])
+
+
