@@ -51,6 +51,7 @@ class ScriptReader():
         '''
         page_break = df[df['y'] < df['y'].shift(1)]
         df['page'] = df.index.isin(page_break.index).cumsum() + 1
+       
         return df
     
     def sort_subsections(self, df):
@@ -76,25 +77,29 @@ class ScriptReader():
         y_max_and_min_filter = (df["y"] != y_max) & (df["y"] != y_min)
 
         filtered_df = df[x_max_and_min_filter & y_max_and_min_filter]
-    
+      
         return filtered_df.reset_index(drop=True)
     
     def concat_consecutive_rows(self, df):
         '''
         Concat text from consecutive rows with the same "y" value
-        Removes duplicate rows expect the first 
+        Removes duplicate rows, except the first 
         '''
         consecutive_rows = df['y'] == df['y'].shift(-1)
         df.loc[consecutive_rows, 'text'] = df['text'] + ' ' + df['text'].shift(-1)
         df = df[~df.duplicated(subset='y', keep="first")]
+     
         return df
     
     def detect_scenes(self, string):
         special_char_removed = re.sub(r"[^a-zA-Z0-9\sÄÖÅäöå]", "", string)
         filtered_array = [string for string in special_char_removed.split(" ") if string != ""]
+
         if len(filtered_array) == 1:
             return False
+        
         regex_array = [r"^\d+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$"]
+
         for index, string in islice(enumerate(filtered_array, 0), 3):
             if not re.match(regex_array[index], string):
                 return False  
@@ -102,22 +107,41 @@ class ScriptReader():
     
     def add_index_to_scene(self, df):
         '''
-        
+        Adds MultiIndex to the DataFrame
+        The column scene marks an individual scene starting from index 1
         '''
-        group_index = df["scene_start"].cumsum()
-        grouped = df.groupby(group_index)
-
+        scene_index = df["scene_start"].cumsum()
+        grouped_scenes = df.groupby(scene_index)
+      
         scene_number = 1
-        new_index = []
-
-        for _, group in grouped:
-            for idx in group.index:
-                new_index.append((scene_number, idx))
+        scene_column = []
+      
+        for _, group in grouped_scenes:
+            scene_column.extend([scene_number] * len(group))
             scene_number += 1
-
-        df.index = pd.MultiIndex.from_tuples(new_index, names=["scene", "index"]) 
-        return df   
+       
+        df["scene_number"] = scene_column
+        df.reset_index(drop=True, inplace=True)
+      
+        return df
     
+
+    '''
+    Detect Actors
+    '''
+    def detect_actor(self, df, x_column_stats):
+        ratio = 0
+        if df["scene_start"]:
+            return False
+        if df["x"] > x_column_stats["75%"]:
+            ratio += 0.3
+        if df["text"].isupper():
+            ratio += 0.3
+        if ratio > 0.5:
+            return True
+        return False
+
+
     def prepare_data(self):
         df = pd.DataFrame(self.file["blocks"])
         columns_to_drop = ["color", "ascender", "descender", "flags", "font", "bbox", "origin"]
@@ -133,13 +157,20 @@ class ScriptReader():
         #TODO: Might need adjustment
         df = self.remove_max_x_and_y(df)
         df = self.remove_max_x_and_y(df)
-      
+
         df = self.concat_consecutive_rows(df)
         df["scene_start"] = np.where(df["text"].apply(self.detect_scenes), True, False)
-
-        df = self.add_index_to_scene(df)
-        specific_scene = df.xs(2, level="scene")
         
-        print(specific_scene.loc[0:42, ["text"]])
-
+        df = self.add_index_to_scene(df)
+       
+        
+        stats = df.describe()["x"]
+        df["actor_start"] = df.apply(lambda x: self.detect_actor(x, stats), axis=1)
+        filterd = df[df["actor_start"] == True]
+        print(filterd)
+        #print(df.loc[:24,["actor_start", "text"]])
+       
+        
+        
+       
 
