@@ -62,7 +62,7 @@ class ScriptReader():
         page_doc.get_text("dict", sort=True)
         '''
         df = df.groupby(['page','y'], group_keys=False, sort=False).apply(pd.DataFrame.sort_values, 'x')
-        return  df.reset_index(drop=True)
+        return df.reset_index(drop=True)
 
     def remove_max_x_and_y(self, df):
         '''
@@ -107,41 +107,46 @@ class ScriptReader():
     
     def add_index_to_scene(self, df):
         '''
-        Adds MultiIndex to the DataFrame
-        The column scene marks an individual scene starting from index 1
+        The column scene which marks an individual scene starting from index 1
         '''
-        scene_index = df["scene_start"].cumsum()
-        grouped_scenes = df.groupby(scene_index)
-      
+    
         scene_number = 1
         scene_column = []
       
-        for _, group in grouped_scenes:
+        for group in df.groupby(["scene"]):
             scene_column.extend([scene_number] * len(group))
             scene_number += 1
-       
-        df["scene_number"] = scene_column
+    
         df.reset_index(drop=True, inplace=True)
-      
+
+        scene_break = df[df['scene']]
+        df['scene_number'] = df.index.isin(scene_break.index).cumsum() + 1
+
         return df
     
 
     '''
     Detect Actors
     '''
-    def detect_actor(self, df, x_column_stats):
-        ratio = 0
-        if df["scene_start"]:
+    def detect_actor(self, row, x_column_stats):
+        score = 0
+        if row["scene"]:
             return False
-        if df["x"] > x_column_stats["75%"]:
-            ratio += 0.3
-        if df["text"].isupper():
-            ratio += 0.3
-        if ratio > 0.5:
+        if row["x"] > x_column_stats["75%"]:
+            score += 0.3
+        if row["text"].isupper():
+            score += 0.3
+        if score > 0.5:
             return True
         return False
-
-
+    
+    def detect_line_group(self , group, mean_value):
+        original, upper_bound, lower_bound = number_with_variation(mean_value, 20)
+        # Check if all rows in the group satisfy the condition
+        group.loc[(group["x"] >= lower_bound) & (group["x"] <= upper_bound), "line"] = True
+        
+        return group
+    
     def prepare_data(self):
         df = pd.DataFrame(self.file["blocks"])
         columns_to_drop = ["color", "ascender", "descender", "flags", "font", "bbox", "origin"]
@@ -159,18 +164,29 @@ class ScriptReader():
         df = self.remove_max_x_and_y(df)
 
         df = self.concat_consecutive_rows(df)
-        df["scene_start"] = np.where(df["text"].apply(self.detect_scenes), True, False)
-        
+        df["scene"] = df["text"].apply(self.detect_scenes)
+    
         df = self.add_index_to_scene(df)
-       
-        
-        stats = df.describe()["x"]
-        df["actor_start"] = df.apply(lambda x: self.detect_actor(x, stats), axis=1)
-        filterd = df[df["actor_start"] == True]
-        print(filterd)
-        #print(df.loc[:24,["actor_start", "text"]])
-       
+
+        x_column_stats = df.describe()["x"]
+        df["actor"] = df.apply(lambda x: self.detect_actor(x, x_column_stats), axis=1)
+
+        actor_x_mean = df[df["actor"] == True]["x"].mean()
+        filtered_rows = df[(df["actor"] != True) & (df["scene"] != True)]
+        result = filtered_rows.groupby("scene_number", group_keys=False).apply(lambda x: self.detect_line_group(x, actor_x_mean))
+        df = df.merge(result[['line']], left_index=True, right_index=True, how='left')
+        df['line'].fillna(False, inplace=True)
+
+        print(df.loc[0:42, ["text",  "scene_number", "line"]])
+      
         
         
        
 
+def number_with_variation(input_number, percentage_variation):
+    # Calculate the positive and negative variations based on the percentage
+    positive_variation = input_number * (1 + percentage_variation / 100)
+    negative_variation = input_number * (1 - percentage_variation / 100)
+
+    # Return the tuple containing the original number and variations
+    return (input_number, positive_variation, negative_variation)
