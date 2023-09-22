@@ -5,7 +5,6 @@ import os
 import uuid
 from PyMuReaderV3 import ReaderV3
 import json
-from ReaderSettings import ReaderSettings
 
 
 @upload_blueprint.route("/api/v3/upload", methods=['POST'])
