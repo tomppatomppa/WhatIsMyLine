@@ -7,6 +7,7 @@ import { useReducer } from 'react'
 let initialState = {
   mode: 'read',
   highlight: [],
+  currentScrollTarget: '',
   expanded: [],
   settings: {
     info: {
@@ -124,5 +125,18 @@ describe('reducer.ts', () => {
     })
 
     expect(result.current[0].expanded).toHaveLength(0)
+  })
+
+  test('Should assign currentScrollTarget', () => {
+    const { result } = renderHook(() => useReducer(reducer, initialState))
+    const currentScrollTarget = 'e73fd1c0-c18b-4baf-a6f2-367f968c433a'
+
+    act(() => {
+      result.current[1]({
+        type: 'SET_CURRENT_SCROLL_TARGET',
+        payload: { currentScrollTarget },
+      })
+    })
+    expect(result.current[0].currentScrollTarget).toEqual(currentScrollTarget)
   })
 })

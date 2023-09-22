@@ -22,6 +22,8 @@ interface SidebarProps {
 export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
   const deleteScript = useDeleteScript()
   const setScripts = useSetScripts()
+  const setActiveScript = useSetActiveScriptId()
+
   const { updateDatabaseWithLocalChanges, unsavedChanges } = useScriptStore()
   const scripts = useScripts()
 
@@ -46,8 +48,6 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
     deleteScript(script_id)
     mutate(script_id)
   }
-
-  const setActiveScript = useSetActiveScriptId()
 
   return (
     <aside

@@ -99,6 +99,14 @@ export const reducer = (
         isEditing: updatedIsEditing,
       }
     }
+    case 'SET_CURRENT_SCROLL_TARGET': {
+      const { currentScrollTarget } = action.payload
+
+      return {
+        ...state,
+        currentScrollTarget,
+      }
+    }
 
     default:
       throw Error('Unknown action.')

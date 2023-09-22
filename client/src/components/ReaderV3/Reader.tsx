@@ -9,6 +9,7 @@ import { useScriptStore } from 'src/store/scriptStore'
 
 const initialState = {
   mode: 'idle',
+  currentScrollTarget: '',
   highlight: [],
   expanded: [],
   isEditing: [], //array for scenes being edited

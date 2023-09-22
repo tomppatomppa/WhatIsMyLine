@@ -1,7 +1,7 @@
 export type ReaderMode = 'read' | 'edit' | 'idle'
 export type MenuPosition = 'top' | 'bottom'
 
-export type PanelView = 'edit' | 'rehearse'
+export type PanelView = 'edit' | 'rehearse' | 'scroll'
 //Scene types
 export type LineIndex = [number, number]
 export type SceneLine = 'ACTOR' | 'INFO'
@@ -43,6 +43,7 @@ export type Settings = {
 }
 export interface ReaderConfiguration {
   mode: ReaderMode
+  currentScrollTarget: string
   highlight: Actor[]
   expanded: string[]
   settings: Settings
@@ -72,3 +73,4 @@ export type ReaderMenuActions =
       'SET_STYLE',
       { target: LineType; value: string; property: keyof Style }
     >
+  | ReducerAction<'SET_CURRENT_SCROLL_TARGET', { currentScrollTarget: string }>

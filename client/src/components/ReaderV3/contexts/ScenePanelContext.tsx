@@ -1,5 +1,5 @@
 import React, { useState, createContext } from 'react'
-import { PanelView } from '../../../reader.types'
+import { PanelView } from '../reader.types'
 
 export const ScenePanelContext = createContext<any>(null)
 

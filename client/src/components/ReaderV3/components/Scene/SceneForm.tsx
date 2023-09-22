@@ -20,7 +20,7 @@ interface EditorFormProps {
 const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
   const { options } = useReaderContext()
   const isEditing = options.isEditing.includes(scene.id)
-
+  const elementToScrollTo = document.getElementById(options.currentScrollTarget)
   const getLineStyle = (type: LineType) => {
     const style = options.settings[type.toLowerCase()].style
     return style || {}
@@ -29,6 +29,14 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
   const getTextAreaColor = (name: string) => {
     const actor = options?.highlight.find((item: Actor) => item.id === name)
     return actor ? actor.style : {}
+  }
+
+  if (elementToScrollTo) {
+    elementToScrollTo.scrollIntoView({
+      behavior: 'smooth', // Optional: Smooth scrolling animation
+      block: 'start', // Optional: "start", "center", or "end" alignment
+      inline: 'nearest', // Optional: "nearest", "start", or "end" alignment
+    })
   }
 
   return (
@@ -44,7 +52,7 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
           onSubmit(values)
         }}
       >
-        {({ values, dirty }) => (
+        {({ values }) => (
           <Drop key={scene.id} id={scene.id} type="droppable-item">
             <Form autoComplete="off">
               <PanelWidget>
@@ -87,6 +95,7 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
                       </div>
                     </ConditionalField>
                     <Field
+                      id={`${line.id}`}
                       style={getLineStyle(line.type)}
                       disabled={!isEditing || line.type === 'INFO'}
                       name={`data[${lineIndex}].name`}

@@ -1,10 +1,11 @@
 import { useContext } from 'react'
-import { ScenePanelContext } from './contexts/ScenePanelContext'
+import { ScenePanelContext } from '../../contexts/ScenePanelContext'
 
 import EditPanel from './EditPanel'
 import RehearsePanel from './RehearsePanel'
 import { useRootFolder } from 'src/store/scriptStore'
 import { ConditionalField } from '../forms/ConditionalField'
+import ScrollPanel from './ScrollPanel'
 
 const PanelComponent = () => {
   const { panelView } = useContext(ScenePanelContext)
@@ -24,6 +25,8 @@ const PanelComponent = () => {
       )
     case 'edit':
       return <EditPanel />
+    case 'scroll':
+      return <ScrollPanel />
   }
 }
 

@@ -56,6 +56,7 @@ const RehearsePanel = () => {
   const uniqueActors = [
     ...new Set(values.data.map((line) => line.name || line.type)),
   ]
+
   const labeled = labelLines(values, options, audioFiles)
 
   if (user?.name === 'visitor') {
@@ -146,6 +147,7 @@ function handleNextAction(labeled: LabeledLine) {
   if (!labeled || !labeled.shouldPlay) return undefined
   return labeled
 }
+
 function commandBuilder(
   lines: LabeledLine[],
   action: (nextLine: LabeledLine | undefined) => void
