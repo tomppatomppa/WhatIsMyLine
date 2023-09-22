@@ -16,11 +16,11 @@ const LineField = ({
   scrollToElementId,
 }: FieldProps) => {
   const elementToScrollTo = document.getElementById(scrollToElementId)
-  console.log(scrollToElementId)
+
   if (elementToScrollTo) {
     elementToScrollTo.scrollIntoView({
       behavior: 'smooth',
-      block: 'start',
+      block: 'center',
       inline: 'nearest',
     })
   }

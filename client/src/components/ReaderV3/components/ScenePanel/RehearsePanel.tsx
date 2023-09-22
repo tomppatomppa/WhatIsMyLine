@@ -1,34 +1,37 @@
 import { useEffect, useState } from 'react'
-import useAudio from '../../hooks/useAudio'
 import { useFormikContext } from 'formik'
-import { Actor, Scene, SceneLine } from '../../reader.types'
-
-import { useReaderContext } from '../../contexts/ReaderContext'
+import { useMutation } from 'react-query'
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition'
 
 import { AiOutlineSync } from 'react-icons/ai'
-import { labelLines } from '../../utils'
-
-import Modal from 'src/components/common/Modal'
-import { RootFolder, useRootFolder } from 'src/store/scriptStore'
-import Spinner from 'src/components/common/Spinner'
-import Message from 'src/components/common/Message'
-import { useMutation } from 'react-query'
-import { createTextToSpeechFromScene } from 'src/API/googleApi'
-import { useCurrentUser } from 'src/store/userStore'
-
-import Dropdown from 'src/components/common/Dropdown'
-
-import Wrapper from 'src/layout/Wrapper'
-import SelectList from 'src/components/SelectList'
-import usePlayAudio from '../../hooks/usePlayAudio'
 import { PlayIcon } from '../icons'
 import { FaCircle, FaMicrophone } from 'react-icons/fa'
 
+import { labelLines } from '../../utils'
+import { Actor, Scene } from '../../reader.types'
+
+import { useReaderContext } from '../../contexts/ReaderContext'
+import { RootFolder, useRootFolder } from 'src/store/scriptStore'
+import { createTextToSpeechFromScene } from 'src/API/googleApi'
+import { useCurrentUser } from 'src/store/userStore'
+import useAudio from '../../hooks/useAudio'
+import usePlayAudio from '../../hooks/usePlayAudio'
+
+import Modal from 'src/components/common/Modal'
+import Spinner from 'src/components/common/Spinner'
+import Message from 'src/components/common/Message'
+import Dropdown from 'src/components/common/Dropdown'
+import Wrapper from 'src/layout/Wrapper'
+import SelectList from 'src/components/SelectList'
+
 import PreviousScene from 'src/components/PreviousScene'
 import { getSceneNumber } from 'src/utils/helpers'
+import {
+  RehearsalCommandBuilder,
+  handleNextAction,
+} from '../commands/RehersalPanelCommand'
 
 const RehearsePanel = () => {
   const user = useCurrentUser()
@@ -134,33 +137,6 @@ const RehearsePanel = () => {
   )
 }
 
-interface LabeledLine {
-  type: SceneLine
-  name: string
-  id: string
-  lines: string
-  src: HTMLAudioElement
-  shouldPlay: boolean
-}
-
-function handleNextAction(labeled: LabeledLine) {
-  if (!labeled || !labeled.shouldPlay) return undefined
-  return labeled
-}
-
-function commandBuilder(
-  lines: LabeledLine[],
-  action: (nextLine: LabeledLine | undefined) => void
-) {
-  return lines.map((line, index) => ({
-    command: line.lines,
-    callback: () => action(handleNextAction(lines[index + 1])),
-    isFuzzyMatch: true,
-    fuzzyMatchingThreshold: 0.5,
-    bestMatchOnly: true,
-  }))
-}
-
 interface ComponentWhenValidProps {
   values: Scene
   labeled: any[]
@@ -173,6 +149,7 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
   const { audioRef, controls, setCurrentAudio } = usePlayAudio((audio) => {
     const currentIndex = labeled.findIndex((l) => l.src === audio)
     const nextLine = handleNextAction(labeled[currentIndex + 1])
+
     if (nextLine && currentIndex !== -1) {
       setCurrentAudio(nextLine?.src)
       SpeechRecognition.stopListening()
@@ -185,7 +162,7 @@ const ComponentWhenValid = ({ labeled }: ComponentWhenValidProps) => {
     }
   })
 
-  const commands = commandBuilder(labeled, (nextLine) => {
+  const commands = RehearsalCommandBuilder(labeled, (nextLine) => {
     if (nextLine) setCurrentAudio(nextLine.src)
   })
 
