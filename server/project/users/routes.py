@@ -124,6 +124,7 @@ def store_user(user_info):
         User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
     
 def refresh_access_token(refresh_token):
+    
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,

@@ -21,9 +21,14 @@ def add_drive_service(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         access_token = extract_token(request)
+        
+        refresh_token = None
+        if os.getenv('CONFIG_TYPE') == 'config.TestingConfig':
+            refresh_token = os.getenv("TEST_REFRESH_TOKEN")
+            
         credentials = Credentials(
             token=access_token,
-            refresh_token = os.environ["TEST_REFRESH_TOKEN"],
+            refresh_token = refresh_token,
             client_id = os.environ["CLIENT_ID"],
             client_secret = os.environ["CLIENT_SECRET"],
             token_uri = "https://oauth2.googleapis.com/token"
@@ -37,6 +42,7 @@ def add_drive_service(func):
 @jwt_required()
 @add_drive_service
 def check_root_folder(service):
+  
     try:
         folder_name = request.json.get('folderName')
         files = driveUtils.search_folder(service, "root", folder_name)
@@ -44,7 +50,6 @@ def check_root_folder(service):
         if len(files) == 1:
             return files[0], 200
         if not files:
-           
             folder = driveUtils.create_folder(service, parent_id=None, folder_name=folder_name)
             return folder, 200
 
