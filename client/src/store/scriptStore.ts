@@ -57,13 +57,13 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   },
 
   fetchAndCompare: async () => {
-    const databaseData = await fetchAllUserScripts()
+    const scriptsInDatabase = await fetchAllUserScripts()
     const scriptsWithUnsavedChanges = findChangedScripts(
-      databaseData,
+      scriptsInDatabase,
       get().scripts
     )
     set(() => ({ unsavedChanges: scriptsWithUnsavedChanges }))
-    return databaseData
+    return scriptsInDatabase
   },
 
   scripts: [],

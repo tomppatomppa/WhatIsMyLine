@@ -27,7 +27,7 @@ export const Sidebar = ({ setShowMenu, show }: SidebarProps) => {
 
   const { mutate } = useMutation(deleteScriptById)
 
-  //TODO: proper syncing
+  //TODO: remove, use database as only source
   useQuery(['scripts'], () => fetchAllUserScripts(), {
     onSuccess: async (data: Script[]) => {
       if (unsavedChanges && isCurrentUserScripts(data, scripts)) {
