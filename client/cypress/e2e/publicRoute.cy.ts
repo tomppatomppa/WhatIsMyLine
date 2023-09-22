@@ -11,12 +11,14 @@ describe('Public route', () => {
     cy.url().should('include', '/login')
   })
 })
+
 describe('Visitor mode', () => {
   beforeEach(() => {
     localStorage.setItem('scripts', JSON.stringify(testScript))
     cy.visit('/login')
     cy.contains('Visitor').click()
   })
+
   it('Profile shows correct email and name', () => {
     cy.contains('Profile').click()
     cy.contains('visitor@testmail.com')
