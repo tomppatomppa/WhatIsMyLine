@@ -10,6 +10,7 @@ import { FormikTextArea } from '../forms/FormikTextArea'
 
 import PanelWidget from '../ScenePanel/PanelWidget'
 import PanelComponent from '../ScenePanel/PanelComponent'
+import LineField from '../forms/LineField'
 
 interface EditorFormProps {
   scene: Scene
@@ -20,7 +21,7 @@ interface EditorFormProps {
 const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
   const { options } = useReaderContext()
   const isEditing = options.isEditing.includes(scene.id)
-  const elementToScrollTo = document.getElementById(options.currentScrollTarget)
+
   const getLineStyle = (type: LineType) => {
     const style = options.settings[type.toLowerCase()].style
     return style || {}
@@ -31,14 +32,6 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
     return actor ? actor.style : {}
   }
 
-  if (elementToScrollTo) {
-    elementToScrollTo.scrollIntoView({
-      behavior: 'smooth', // Optional: Smooth scrolling animation
-      block: 'start', // Optional: "start", "center", or "end" alignment
-      inline: 'nearest', // Optional: "nearest", "start", or "end" alignment
-    })
-  }
-
   return (
     <div
       className={`border-l-4 ${
@@ -47,7 +40,7 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
     >
       <Formik
         enableReinitialize={true}
-        initialValues={scene as Scene}
+        initialValues={scene}
         onSubmit={(values) => {
           onSubmit(values)
         }}
@@ -94,11 +87,12 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
                         </button>
                       </div>
                     </ConditionalField>
-                    <Field
+                    <LineField
                       id={`${line.id}`}
                       style={getLineStyle(line.type)}
                       disabled={!isEditing || line.type === 'INFO'}
                       name={`data[${lineIndex}].name`}
+                      scrollToElementId={options.currentScrollTarget}
                     />
                     <FormikTextArea
                       style={{

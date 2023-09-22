@@ -1,6 +1,6 @@
 import { useFormikContext } from 'formik'
 import { Scene } from '../../reader.types'
-
+import { useEffect } from 'react'
 import { useReaderContext } from '../../contexts/ReaderContext'
 
 const ScrollPanel = () => {
@@ -13,6 +13,13 @@ const ScrollPanel = () => {
       payload: { currentScrollTarget },
     })
   }
+
+  useEffect(() => {
+    return () => {
+      dispatch({ type: 'SET_CURRENT_SCROLL_TARGET', payload: '' })
+    }
+  }, [dispatch])
+
   return (
     <div>
       <select onChange={(e) => handleSetCurrentScrollTarget(e.target.value)}>
