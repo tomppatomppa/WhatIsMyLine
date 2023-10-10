@@ -1,10 +1,8 @@
 from datetime import datetime
 from sqlalchemy import DateTime, Integer, String
 from sqlalchemy.orm import mapped_column
-from werkzeug.security import check_password_hash, generate_password_hash
 from project import db
 from datetime import datetime
-import pytz
 
 class User(db.Model):
     """

@@ -1,18 +1,14 @@
+import os
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-import sqlalchemy as sa
-from flask import Flask
-from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect, csrf
 from flask_jwt_extended import JWTManager
-import os
+
+import sqlalchemy as sa
 
 db = SQLAlchemy()
 
-login = LoginManager()
-login.login_view = "users.login"
 csrf_protection = CSRFProtect()
 
 
@@ -25,6 +21,7 @@ def create_app():
     app.config.from_object(config_type)
     app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+   
     CORS(app, supports_credentials=True)
     
     initialize_extensions(app)
@@ -32,6 +29,7 @@ def create_app():
     register_blueprints(app)
     
     engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+    
     inspector = sa.inspect(engine)
     if not inspector.has_table("users"):
         with app.app_context():
@@ -39,13 +37,12 @@ def create_app():
             db.create_all()
             app.logger.info('Initialized the database!')
     else:
+       
         app.logger.info('Database already contains the users table.')
-    
     return app
    
 
 def initialize_extensions(app):
-   
     db.init_app(app)
 
 
@@ -76,8 +73,9 @@ def register_blueprints(app):
     @app.route("/csrf")
     def get_csrf():
         response = jsonify(detail="success")
-        response.headers.set("X-CSRFToken", csrf.generate_csrf())
+        response.headers.set("X-CSRsFToken", csrf.generate_csrf())
         return response
+   
     
     from .users import users_blueprint
     from .google import google_blueprint
