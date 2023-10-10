@@ -1,28 +1,13 @@
-<<<<<<< HEAD
 Flask==2.2.5
-=======
-Flask==2.3.2
->>>>>>> main
 gunicorn==20.0.4
 PyMuPDF==1.21.1
 Werkzeug==2.3.6
 pathlib==1.0.1
 pytest==7.2.2
 google-cloud-texttospeech==2.14.1
-<<<<<<< HEAD
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.1
 Flask-JWT-Extended==4.5.3
 
 google-api-python-client==2.103.0
 google-cloud==0.34.0
-=======
-google-api-python-client==2.92.0
-python-dotenv==1.0.0
-Flask-SQLAlchemy==3.0.5
-SQLAlchemy==2.0.18
-Flask-JWT-Extended==4.5.2
-Flask-Cors==4.0.0
-google-auth==2.21.0
-psycopg2-binary==2.9.6
->>>>>>> main

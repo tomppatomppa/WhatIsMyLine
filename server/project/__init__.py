@@ -2,8 +2,6 @@ from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import sqlalchemy as sa
-from flask import Flask
-from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect, csrf
 from flask_jwt_extended import JWTManager
@@ -11,8 +9,7 @@ import os
 
 db = SQLAlchemy()
 
-login = LoginManager()
-login.login_view = "users.login"
+
 csrf_protection = CSRFProtect()
 
 

@@ -1,5 +1,3 @@
-import requests
-import json
 import io
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload

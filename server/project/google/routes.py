@@ -7,17 +7,9 @@ from google.oauth2.credentials import Credentials
 import functools
 import requests
 import os
-<<<<<<< HEAD
 from project.google.TextToSpeech import  create_data
 from utils import remove_dir
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from project.models import User
-=======
-from project.google.TextToSpeech import create_data
-from utils import  remove_dir
 from flask_jwt_extended import jwt_required
->>>>>>> main
-
 
 def add_drive_service(func):
     '''
