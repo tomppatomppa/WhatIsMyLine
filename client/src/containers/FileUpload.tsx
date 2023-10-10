@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { uploadfile } from 'src/API/uploadApi'
 import { useAddScript } from 'src/store/scriptStore'
-
 import { useMutation } from 'react-query'
-import GooglePicker from 'src/components/FileUpload/GooglePicker'
 import UploadButton from 'src/components/FileUpload/UploadButton'
-import LocalFilePicker from 'src/components/FileUpload/LocalFilePicker'
 import { useAccessToken } from 'src/store/userStore'
+import {
+  GooglePicker,
+  LocalFilePicker,
+  TestfilePicker,
+} from 'src/components/FileUpload'
 
 const FileUpload = () => {
-  const access_token = useAccessToken()
+  const access_token = useAccessToken() as string
   const [file, setFile] = useState<File | null>(null)
   const addScript = useAddScript()
 
@@ -26,12 +28,16 @@ const FileUpload = () => {
       <div className="flex gap-2">
         {!file ? (
           <>
+            <TestfilePicker
+              className="hover:bg-gray-600 p-2 rounded-md"
+              handleFileChange={(file: File) => setFile(file)}
+            />
             <GooglePicker
               className="hover:bg-gray-600 p-2 rounded-md"
               onFileSelect={async (file: File) => {
                 if (file) setFile(file)
               }}
-              access_token={access_token || ''}
+              access_token={access_token}
             />
             <LocalFilePicker
               className="hover:bg-gray-600 p-2 rounded-md"

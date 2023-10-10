@@ -1,8 +1,6 @@
 import { Form, Formik } from 'formik'
 import { Drop } from 'src/components/drag-and-drop'
-import { useState } from 'react'
 import { Actor, LineType, Scene } from '../../reader.types'
-import SceneEditorPanel from './SceneEditorPanel'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import { Field } from 'formik'
 import { Drag } from 'src/components/drag-and-drop'
@@ -10,23 +8,19 @@ import { DeleteIcon } from '../icons'
 import { ConditionalField } from '../forms/ConditionalField'
 import { FormikTextArea } from '../forms/FormikTextArea'
 
+import PanelWidget from '../ScenePanel/PanelWidget'
+import PanelComponent from '../ScenePanel/PanelComponent'
+import LineField from '../forms/LineField'
+
 interface EditorFormProps {
   scene: Scene
-  sceneIndex: number
   onSubmit: (scene: Scene) => void
-  addLine: () => void
   deleteLine: (lineIndex: number) => void
 }
 
-const EditorForm = ({
-  scene,
-  sceneIndex,
-  onSubmit,
-  addLine,
-  deleteLine,
-}: EditorFormProps) => {
-  const { options, dispatch } = useReaderContext()
-  const [isEditing, setIsEditing] = useState(false)
+const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
+  const { options } = useReaderContext()
+  const isEditing = options.isEditing.includes(scene.id)
 
   const getLineStyle = (type: LineType) => {
     const style = options.settings[type.toLowerCase()].style
@@ -46,21 +40,17 @@ const EditorForm = ({
     >
       <Formik
         enableReinitialize={true}
-        initialValues={scene as Scene}
+        initialValues={scene}
         onSubmit={(values) => {
-          setIsEditing(false)
           onSubmit(values)
         }}
       >
-        {({ values, dirty }) => (
+        {({ values }) => (
           <Drop key={scene.id} id={scene.id} type="droppable-item">
             <Form autoComplete="off">
-              <SceneEditorPanel
-                isEditing={isEditing}
-                sceneIndex={sceneIndex}
-                setIsEditing={setIsEditing}
-                addLine={addLine}
-              />
+              <PanelWidget>
+                <PanelComponent />
+              </PanelWidget>
               {values.data.map((line: any, lineIndex: number) => (
                 <Drag
                   className="mt-3"
@@ -69,14 +59,12 @@ const EditorForm = ({
                   index={lineIndex}
                   isDragDisabled={false}
                 >
-                  <div className="w-full flex flex-col " key={lineIndex}>
+                  <div className="w-full flex flex-col" key={lineIndex}>
                     <ConditionalField
                       key={lineIndex}
                       show={isEditing}
-                      onShow={() => {}}
-                      onCollapse={() => {
-                        if (dirty) console.log('unsaved changes')
-                      }}
+                      onShow={() => console.log()}
+                      onCollapse={() => console.log()}
                     >
                       <div className="w-full bg-neutral-200 flex justify-end ">
                         <label htmlFor={`data[${lineIndex}].type`}>
@@ -99,22 +87,13 @@ const EditorForm = ({
                         </button>
                       </div>
                     </ConditionalField>
-                    <strong
-                      onClick={() => {
-                        if (!isEditing) {
-                          dispatch({
-                            type: 'HIGHLIGHT_TARGET',
-                            payload: { target: line.name },
-                          })
-                        }
-                      }}
-                    >
-                      <Field
-                        style={getLineStyle(line.type)}
-                        disabled={!isEditing || line.type === 'INFO'}
-                        name={`data[${lineIndex}].name`}
-                      />
-                    </strong>
+                    <LineField
+                      id={`${line.id}`}
+                      style={getLineStyle(line.type)}
+                      disabled={!isEditing || line.type === 'INFO'}
+                      name={`data[${lineIndex}].name`}
+                      scrollToElementId={options.currentScrollTarget}
+                    />
                     <FormikTextArea
                       style={{
                         ...getLineStyle(line.type),
@@ -136,4 +115,4 @@ const EditorForm = ({
   )
 }
 
-export default EditorForm
+export default SceneForm

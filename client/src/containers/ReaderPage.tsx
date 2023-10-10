@@ -5,6 +5,7 @@ import { useActiveScript, useScriptStore } from 'src/store/scriptStore'
 import { useAuth } from 'src/store/userStore'
 
 type OrderHistory = [number, number]
+
 export function Loader() {
   return useAuth()
 }

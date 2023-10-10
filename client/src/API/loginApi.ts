@@ -1,46 +1,31 @@
 import axios from 'axios'
+
+import { httpClient } from 'src/utils/axiosClient'
 import { BASE_URI } from 'src/config'
 
-export const googleLogin = async (code: string) => {
-  const { data } = await axios.post(
-    `${BASE_URI}/login`,
-    { code },
-    {
-      withCredentials: true,
-    }
-  )
-  console.log(data)
+import { getCookie } from 'src/utils/helpers'
 
+export const googleLogin = async (code: string) => {
+  const { data } = await axios.post(`${BASE_URI}/login`, { code })
+  return data
+}
+
+export const refreshToken = async () => {
+  const { data } = await httpClient.post(`${BASE_URI}/refresh-token`, null)
+  return data
+}
+
+export const getUser = async () => {
+  const { data } = await axios.get(`${BASE_URI}/user`, {
+    withCredentials: true,
+    headers: {
+      'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+    },
+  })
   return data
 }
 
 export const logout = async () => {
-  const { data } = await axios.post(
-    `${BASE_URI}/logout`,
-    {},
-    {
-      withCredentials: true,
-    }
-  )
+  const { data } = await axios.post(`${BASE_URI}/logout`, null)
   return data
-}
-
-export async function makeRequestWithJWT() {
-  const { data } = await axios.post(
-    `${BASE_URI}/user`,
-    {},
-    {
-      withCredentials: true,
-      headers: {
-        'X-CSRF-TOKEN': getCookie('csrf_access_token'),
-      },
-    }
-  )
-  return data
-}
-
-export function getCookie(name: string) {
-  const value = `; ${document.cookie}`
-  const parts = value.split(`; ${name}=`) as any
-  if (parts.length === 2) return parts.pop().split(';').shift()
 }

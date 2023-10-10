@@ -15,19 +15,20 @@ interface UserStore {
   user: User | null
   login: (user: User) => void
   logout: () => void
-  setAccessToken: (access_token: string) => void
+  setAccessToken: (access_token: string, expiry: string) => void
 }
 
 const settingsStore: StateCreator<UserStore> = (set: any) => ({
   user: null,
   login: (user: User) => set(() => ({ user })),
-  // logout: () => set(() => ({ user: null })),
   logout: async () => {
     await logout()
     set(() => ({ user: null }))
   },
-  setAccessToken: (access_token: string) =>
-    set((state: UserStore) => ({ user: { ...state.user, access_token } })),
+  setAccessToken: (access_token: string, expiry: string) =>
+    set((state: UserStore) => ({
+      user: { ...state.user, access_token, expiry },
+    })),
 })
 
 export const useUserStore = create<UserStore>()(
@@ -48,3 +49,4 @@ export const useAccessToken = () =>
 
 export const useAuth = () =>
   useUserStore((state) => (state.user ? true : false))
+export const useCurrentUser = () => useUserStore((state) => state.user)

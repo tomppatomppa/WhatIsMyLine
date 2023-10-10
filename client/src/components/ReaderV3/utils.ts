@@ -1,6 +1,7 @@
-//@ts-nocheck
-import { arrayBufferResponse } from 'src/API/googleApi'
-import { Actor, ReaderConfiguration, Scene } from './reader.types'
+import { CustomHTMLAudioElement } from 'src/utils/helpers'
+import { Actor, Line, ReaderConfiguration, Scene } from './reader.types'
+
+const DEFAULT_HIGHLIGHT_COLOR = '#86efac'
 
 export function generateUniqueColor(highlight: Actor[]) {
   const colors = [
@@ -27,43 +28,37 @@ export function generateUniqueColor(highlight: Actor[]) {
       return element
     }
   }
-  return '#86efac'
+  return DEFAULT_HIGHLIGHT_COLOR
 }
 
-/* 
-Used to check if google drive folder has
- all required audio files for a scene
-*/
-export function hasRequiredAudioFiles(arr1: any[], arr2: any[]): boolean {
-  const requiredFileIds = arr1.map((item) => item.id)
-  const allFolderFileIds = arr2.map((item) => item.id)
-  for (let i = 0; i < arr1.length; i++) {
-    if (!allFolderFileIds.includes(requiredFileIds[i])) {
-      return false
+export function filterLines(
+  values: Scene,
+  options: ReaderConfiguration
+): Line[] {
+  return values.data.filter(
+    ({ name }) =>
+      !options.highlight.some((highlight: Actor) => highlight.id === name)
+  )
+}
+
+export function labelLines(
+  values: Scene,
+  options: ReaderConfiguration,
+  audioFiles: HTMLAudioElement[] | undefined
+) {
+  return values.data.map((line) => {
+    return {
+      ...line,
+      shouldPlay: !options.highlight.some(
+        (highlight: Actor) => highlight.id === line.name
+      ),
+      src: audioFiles?.find(
+        (audio) => (audio as CustomHTMLAudioElement).key === line.id
+      ),
     }
-  }
-
-  return true
-}
-
-export function arrayBufferIntoHTMLAudioElement(
-  audioArray: arrayBufferResponse[]
-): HTMLAudioElement[] {
-  const result = audioArray.map((file) => {
-    const fileUrl = URL.createObjectURL(
-      new Blob([file.data], { type: 'audio/mpeg' })
-    )
-    const audio = new Audio(fileUrl)
-
-    audio.key = file.id
-    return audio
   })
-  return result
 }
 
-interface Audio extends HTMLAudioElement {
-  key: string
-}
 export function filterAudioFiles(
   values: Scene,
   audioFiles: HTMLAudioElement[] | undefined,
@@ -71,15 +66,12 @@ export function filterAudioFiles(
 ): HTMLAudioElement[] {
   if (!audioFiles) return []
 
-  const filteredLines: Line[] = values.data.filter(
-    ({ name }) =>
-      !options.highlight.some((highlight: Line) => highlight.id === name)
-  )
+  const filteredLines: Line[] = filterLines(values, options)
 
   const filteredAudio = filteredLines.map((line) => {
     const audio = audioFiles?.find(
-      (item) => (item as Audio).key === line.id
-    ) as Audio
+      (item) => (item as CustomHTMLAudioElement).key === line.id
+    ) as CustomHTMLAudioElement
     return audio
   })
   return filteredAudio

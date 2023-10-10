@@ -1,6 +1,7 @@
 export type ReaderMode = 'read' | 'edit' | 'idle'
 export type MenuPosition = 'top' | 'bottom'
 
+export type PanelView = 'edit' | 'rehearse' | 'scroll'
 //Scene types
 export type LineIndex = [number, number]
 export type SceneLine = 'ACTOR' | 'INFO'
@@ -8,7 +9,7 @@ export type SceneLine = 'ACTOR' | 'INFO'
 export type Line = {
   type: SceneLine
   name: string
-  id?: string
+  id: string
   lines: string
 }
 export type Scene = {
@@ -16,11 +17,13 @@ export type Scene = {
   data: Line[]
 }
 
+export type ScriptWithoutId = Omit<Script, 'id'>
+
 export type Script = {
   filename: string
   scenes: Scene[]
-  trash?: boolean
-  id: string
+  trash?: boolean //TODO: add to database model
+  script_id: string
 }
 // Line types
 export interface Style {
@@ -40,6 +43,7 @@ export type Settings = {
 }
 export interface ReaderConfiguration {
   mode: ReaderMode
+  currentScrollTarget: string
   highlight: Actor[]
   expanded: string[]
   settings: Settings
@@ -69,3 +73,4 @@ export type ReaderMenuActions =
       'SET_STYLE',
       { target: LineType; value: string; property: keyof Style }
     >
+  | ReducerAction<'SET_CURRENT_SCROLL_TARGET', { currentScrollTarget: string }>

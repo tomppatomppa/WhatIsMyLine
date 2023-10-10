@@ -2,10 +2,12 @@ import { ChangeEvent, useRef } from 'react'
 
 import { AiOutlineUpload } from 'react-icons/ai'
 import Tooltip from '../common/Tooltip'
+
 interface LocalFilePickerProps {
   className?: string
   handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void
 }
+
 const LocalFilePicker = ({
   className,
   handleFileChange,
@@ -18,19 +20,18 @@ const LocalFilePicker = ({
   }
 
   return (
-    <>
+    <Tooltip text="Upload File">
       <input
         className="hidden"
         ref={inputRef}
+        accept=".pdf"
         type="file"
         onChange={handleFileChange}
       />
-      <Tooltip text="Upload File">
-        <button className={className} onClick={handleClick}>
-          <AiOutlineUpload size={24} />
-        </button>
-      </Tooltip>
-    </>
+      <button className={className} onClick={handleClick}>
+        <AiOutlineUpload size={24} />
+      </button>
+    </Tooltip>
   )
 }
 

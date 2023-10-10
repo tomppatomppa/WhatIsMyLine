@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  Dramatify-pdf-reader
+  What Is My Line
   <br>
 </h1>
 
@@ -24,11 +24,15 @@
 
 - Supports PDF files
 - Upload your own scripts
-- Supports multiple scripts
-- Search and isolate scenes
+- Google Drive integration
+  - Upload from Google Drive
+  - Create files and folders
+- Google Cloud text-to-speech
+- Practice with audio converted from text
+- Drag and Drop support for Scenes and Lines
 - Highlight selected actor lines
   - unique colors for easy actor identification
-- Saves coverted scripts to localstorage
+- Saves scripts to localstorage
 
 ## Limitations
 
@@ -37,12 +41,17 @@
 
 ## How To Use
 
-To clone and run this application, you'll need [Git](https://git-scm.com), [Python](https://www.python.org/) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+To clone and run this application, you'll need [Git](https://git-scm.com), [Python](https://www.python.org/) installed on your computer. From your command line:
 
 > **Note**
 > For Windows only
 
 ```bash
+#To use all the features available you need the following:
+- Google Account
+- Create a project in Google Cloud
+- Create Oauth 2.0 client ID
+- Enable Google Drive & Google Text-To-Speech API
 
 # Clone this repository
 $ git clone https://github.com/tomppatomppa/dramatify-pdf-reader.git
@@ -61,6 +70,29 @@ $ cd ../server
 # Create a virtual env and activate
 $ python -m venv venv && .\venv\Scripts\activate
 
+# create a .env file in the server root folder with the following contents
+CLIENT_ID = "your google client id"
+CLIENT_SECRET = "your google client secret"
+SECRET_KEY = "your secret key"
+DATABASE_URL = "postgres database url"
+
+# Download google service account credentials,
+# Rename it to google-credentials.json and place it in the root of /server folder
+# contents of the file should look like this
+{
+  "type": "",
+  "project_id": "",
+  "private_key_id": "",
+  "private_key": "",
+  "client_email": "",
+  "client_id": "",
+  "auth_uri": "",
+  "token_uri": "",
+  "auth_provider_x509_cert_url": "",
+  "client_x509_cert_url": "",
+  "universe_domain": ""
+}
+
 # Install Python dependecies
 $ pip install -r requirements.txt
 
@@ -70,22 +102,26 @@ $ flask run
 
 ## Description
 
-This app is designed to help actors easily identify their lines during long shooting days in the studio. With this app, actors can easily access their scripts, highlight their lines without needing to print out hundreds of pages and highlight them manually. Additionally, actors can isolate certain scenes by using the search bar or dropdown menu to filter their script and focus on specific sections. This app is a convenient and efficient tool for actors to prepare for their roles and make the most out of their time on set.
+This app is designed to be your all-in-one companion for actors during long shooting days in the studio. It integrates with Google Cloud Text-to-Speech, Google Drive, and offers Google Auth login for added security. Plus, it introduces a rehearsal mode where you can practice scenes with computer-generated audio. Additionally all scenes are editable and drag and drop enabled by default.
+
+With Google Cloud Text-to-Speech integration, you can turn your scripts into high-quality audio recordings. It's like having your lines read out loud, helping you memorize and prepare for your performance. You can rehearse your scenes with computer-generated voices. It's a great way to practice your lines, even when you don't have other cast members around.
+
+To keep things secure, the app lets you log in using your Google credentials through Google Auth login. It adds an extra layer of protection for your personal info and script content.
+
+# Try it
+
+To quickly test the app visit [dramatify-web](https://dramatify.herokuapp.com/) and login as visitor. No google login required. After login in, click the SCRIPTS logo in the top left corner. Click on the <strong>orange</strong> upload button and press upload. This will load and example file that can be viewed. Visitor mode is restricted to only being able to read and edit the script.
+
+Rehearse mode is only available for logged in users as it requires Google drive integration and extended access to the users Google Drive.
 
 ## Features to be implemented
 
-- Adding additional text/notes to scenes
-- Modifying existing text
-- Adding more actors and lines
-- Change the order of lines and scenes
 - Change the order of scripts in the sidemenu
-- Save to Cloud (Google Drive etc..)
-- Custom scene and actor identification
-- User can change font size
-- User can change Text aligning
-- User can change colors
-- Select multiple scenes
-- User can rehearse her/his own lines with google-text-to-speech
+- Save scripts to database
+- Seperate offline mode
+- Customizable text colors
+- Auto scroll when Rehearsal mode is activated
+- Filtering based on actor names or scenes ids
 
 ## Credits
 
@@ -95,7 +131,6 @@ This software uses the following open source packages:
 - [React](https://react.dev/)
 - [Flask](https://flask.palletsprojects.com/en/2.2.x/)
 - [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/index.html)
-- [React-Select](https://react-select.com/home)
 
 ## Live Website
 

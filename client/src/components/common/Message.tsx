@@ -1,12 +1,18 @@
 import React from 'react'
 
 interface MessageProps {
-  type: string
+  type?: 'success' | 'error' | 'default'
   message: string
+  show: boolean
 }
-const Message = ({ type, message }: MessageProps) => {
-  const variant = type === 'success' ? 'bg-green-200' : 'bg-red-200'
-  return <div className={`${variant} `}>{message}</div>
+
+const VARIANT = {
+  default: '',
+  success: 'bg-green-200',
+  error: 'bg-red-200',
+}
+const Message = ({ show, type = 'default', message }: MessageProps) => {
+  return show ? <div className={`${VARIANT[type]}`}>{message}</div> : null
 }
 
 export default Message

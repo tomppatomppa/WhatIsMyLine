@@ -6,10 +6,11 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const user = useAuth()
+  const loggedIn = useAuth()
 
-  if (!user) {
+  if (!loggedIn) {
     return <Navigate to="/landing" replace />
   }
+
   return children
 }

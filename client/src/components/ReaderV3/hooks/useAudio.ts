@@ -1,47 +1,35 @@
-import { downloadFiles } from 'src/API/googleApi'
-
 import { useQuery } from 'react-query'
-import { useAccessToken, useLogout } from 'src/store/userStore'
-import { useState } from 'react'
+
+import { downloadSceneAudio } from 'src/API/googleApi'
+
 import { Scene } from '../reader.types'
-import {
-  hasRequiredAudioFiles,
-  arrayBufferIntoHTMLAudioElement,
-} from '../utils'
+import { CustomHTMLAudioElement } from 'src/utils/helpers'
 
-const useAudio = (scene: Scene) => {
-  const logout = useLogout()
-  const [isSyncing, setIsSyncing] = useState(true)
-  const [audioFiles, setAudioFiles] = useState<HTMLAudioElement[]>()
-  const [isValid, setIsValid] = useState(false)
-  const access_token = useAccessToken()
-
-  const { isError, isLoading } = useQuery(
-    ['scene_audio', access_token],
-    () => downloadFiles(access_token as string, scene.id),
+const useAudio = (scene: Scene, scriptId: string, rootId: string) => {
+  const { data, isError, isLoading, refetch, isFetching } = useQuery(
+    [`scene-${scene.id}-audio`],
+    () =>
+      downloadSceneAudio({
+        rootId,
+        scriptId,
+        sceneId: scene.id,
+        lines: scene.data,
+      }),
     {
-      onSuccess: (googleDriveFileArray) => {
-        if (hasRequiredAudioFiles(scene.data, googleDriveFileArray)) {
-          const audioFileArray =
-            arrayBufferIntoHTMLAudioElement(googleDriveFileArray)
-          setIsValid(true)
-          setAudioFiles(audioFileArray)
-        }
-      },
-      onError: (error) => {
-        const { response } = error as any
-        if (response?.data?.error.status === 'UNAUTHENTICATED') {
-          logout()
-        }
-      },
-      onSettled: () => {
-        setIsSyncing(false)
-      },
-      enabled: isSyncing,
+      staleTime: 60 * 1000,
+      keepPreviousData: true,
+      retry: false,
+      enabled: !!rootId,
     }
   )
 
-  return { isValid, audioFiles, isError, isLoading, setIsSyncing, isSyncing }
+  return {
+    audioFiles: data as CustomHTMLAudioElement[],
+    isError,
+    isLoading,
+    refetch,
+    isFetching,
+  }
 }
 
 export default useAudio

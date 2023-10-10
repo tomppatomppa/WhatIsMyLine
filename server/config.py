@@ -1,14 +1,19 @@
 import os
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
-
+GOOGLE_CREDENTIALS_PATH = os.path.join(BASEDIR, "google-credentials.json")
 
 class Config(object):
     FLASK_ENV = 'development'
     DEBUG = False
     TESTING = False
     SECRET_KEY = os.getenv("SECRET_KEY")
+<<<<<<< HEAD
     
+=======
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_CREDENTIALS_PATH
+
+>>>>>>> main
     if os.getenv('DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL').replace("postgres://", "postgresql://", 1)
     else:
@@ -25,6 +30,10 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     DEBUG = True
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+<<<<<<< HEAD
+=======
+    
+>>>>>>> main
 
 class TestingConfig(Config):
     TESTING = True

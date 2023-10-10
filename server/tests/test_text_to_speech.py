@@ -1,4 +1,3 @@
-import pytest
 import os
 import project.google.TextToSpeech as TextToSpeech
 import shutil
@@ -47,7 +46,7 @@ def test_should_create_correct_folder_structure() -> None:
     shutil.rmtree(root_folder_path)
 
 
-def test_should_created_mp3_files_in_correct_folders() -> None:
+def test_should_created_mp3_files_in_correct_folders(test_client) -> None:
     TextToSpeech.create_folders(data)
     TextToSpeech.create_audio(data)
 

@@ -2,6 +2,8 @@ import { useGoogleLogin } from '@react-oauth/google'
 import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { googleLogin } from 'src/API/loginApi'
+import Message from 'src/components/common/Message'
+import Spinner from 'src/components/common/Spinner'
 import { useLogin } from 'src/store/userStore'
 
 const logo = require('../assets/images/whats-my-line-logo.png')
@@ -10,7 +12,7 @@ const LoginView = () => {
   const navigate = useNavigate()
   const loginToApp = useLogin()
 
-  const { mutate } = useMutation(googleLogin, {
+  const { mutate: login, isLoading } = useMutation(googleLogin, {
     onSuccess: (user) => {
       loginToApp(user)
       navigate('/')
@@ -21,10 +23,20 @@ const LoginView = () => {
     flow: 'auth-code',
     scope: 'https://www.googleapis.com/auth/drive',
     onSuccess: (credentials) => {
-      mutate(credentials.code)
+      login(credentials.code)
     },
   })
 
+  if (isLoading) {
+    return (
+      <div className="h-screen w-full flex justify-center flex-col">
+        <div>
+          <Spinner show />
+          <Message show message="Logging in..." />
+        </div>
+      </div>
+    )
+  }
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center px-4">
       <div className="max-w-sm w-full text-gray-600">

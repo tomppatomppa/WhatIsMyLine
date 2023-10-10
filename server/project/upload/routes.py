@@ -5,14 +5,13 @@ import os
 import uuid
 from PyMuReaderV3 import ReaderV3
 import json
-from ReaderSettings import ReaderSettings
 
 
 @upload_blueprint.route("/api/v3/upload", methods=['POST'])
 def upload_file():
     if "file" not in request.files:
        return 'No file', 500
-
+   
     file = request.files['file']
     if file.filename == '':
         return 'Invalid filename', 403
@@ -33,8 +32,8 @@ def process_uploaded_file(file, uploaded_files_folder):
         save_path = os.path.join(uploaded_files_folder, uuid_filename)
         file.save(save_path)
         
-        settings = ReaderSettings()
-        reader = ReaderV3(settings, line_id=True, lines_as_string=True)
+        
+        reader = ReaderV3( line_id=True, lines_as_string=True)
         reader.read_file(f'{uuid_filename}')
 
         result = reader.to_json()
@@ -45,6 +44,10 @@ def process_uploaded_file(file, uploaded_files_folder):
     finally:
         os.remove(save_path)
 
+
+'''
+Helper functions
+'''
 def create_uuid_filename():
     uid = uuid.uuid4()
     uuid_filename = f'{str(uid)}.pdf'

@@ -1,33 +1,59 @@
+from functools import partial, reduce
+from itertools import islice
+import os
 import fitz
 import re
-from ReaderSettings import ReaderSettings
-import json
 from uuid import uuid4
-MIN_PAGE_WIDTH=100.0
+
+
+MIN_PAGE_WIDTH = 100.0
+
+
+def match_regex(string):
+        filtered_array = [string for string in string.split(" ") if string != ""]
+        regex_array = [r"^\d+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$", r"^(?!^\d+$)[A-ZÄÅÖ0-9]+$"]
+        for index, string in islice(enumerate(filtered_array, 0), 3):
+                if not re.match(regex_array[index], string):
+                    return False  
+        return True
+
+def combine_dicts(acc, current, scenes, default_key):
+    if not acc:
+        acc.append({default_key: []})
+    elif current["text"] in scenes:
+        acc.append({current["text"]: []})
+    else:
+        last_dict = acc[-1]
+        key = next(iter(last_dict))
+        last_dict[key].append(current)
+    return acc
+
+
 
 class ReaderV3():
-    def __init__(self, settings = None, line_id = False, lines_as_string = False):
-       self.settings = settings
+    def __init__(self,  line_id = False, lines_as_string = False):
+       
        self.filename = None
-       self.page_width = None
        self.file = None
        self.line_id = line_id
        self.lines_as_string = lines_as_string
+       self.min_font_size = 10
+       self.lines_max_start_x_axis = 400
+       self.page_width = None
 
     def read_file(self, filename):
-        try:
-            self.filename = filename
-            pdf_doc = fitz.open(f'./uploaded_files/{filename}')
-            pages = []
-            for page in pdf_doc:
-                pages.append(page.get_text("dict", sort=False))
-            
-            self.set_page_width(pages[0]['width'])
-            self.file = self.flatten_all(pages)
+        file_path = f"./uploaded_files/{filename}"
+
+        if not os.path.exists(file_path):
+         raise FileNotFoundError(f"No such file: '{file_path}'")
+        
+        self.filename = filename
+        pdf_doc = fitz.open(f'./uploaded_files/{filename}')
+        pages = [page.get_text("dict", sort=False) for page in pdf_doc]
+      
+        self.set_page_width(pages[0]['width'])
+        self.file = self.flatten_all(pages)
            
-        except FileNotFoundError:
-            print("File not found")
-    
     def set_page_width(self, width):
         if not float(width):
            raise ValueError(f"Invalid page width value {width}")
@@ -54,7 +80,8 @@ class ReaderV3():
             'blocks': [span for line in lines for span in line["spans"]]
         }
         return merged_dict
-        
+    
+ 
     def make_scenes(self, file):
         '''
         Tries to divide file into different scenes if they exists
@@ -76,6 +103,7 @@ class ReaderV3():
                    scenes.append(current_scene)
                    current_scene = None
                 scene_title = " ".join([previous_line["text"], current_line["text"]])
+               
                 current_scene = {scene_title: []}
             else:
                 current_scene[scene_title].append(current_line)
@@ -83,39 +111,86 @@ class ReaderV3():
         scenes.append(current_scene)
         
         return scenes
+    
+    def make_scenes_new(self):
+        '''
+        string_mutations:
+            modifications on string before applying scene_conditions
+
+        scene_conditions lambda parameters:
+            modified_string: string from string_mutations
+            line: original string
+
+        '''
+        string_mutations = [
+            #Remove special characters
+            partial(re.sub, r"[^a-zA-Z0-9\sÄÖÅäöå]", ""),
+            #removes the consecutive duplicate numbers from string
+            partial(re.sub, r'(\b\d+\b)\s+\1', r'\1'),
+        ]
+
+        scene_conditions = [
+            lambda modified_string, line: match_regex(modified_string),
+            lambda modified_string, line: line["origin"][0] <= self.page_width / 2,  
+        ]
+
+        scenes = []
+        lines = self.group_lines(axis = 1)
+        for line in lines:
+            if self.detect_scene(line, string_mutations, scene_conditions):
+                scenes.append(line["text"])
+              
+        combined = partial(combine_dicts, scenes=scenes, default_key="SCRIPT DETAILS")
+        result_list = reduce(combined, lines, [])
+        
+        return result_list
+    
+    def detect_scene(self, line, mutations, conditions):
+        modified_string = line["text"]
+        for mutation in mutations:
+            modified_string = mutation(modified_string)
+        
+        is_valid = all(cond(modified_string, line) for cond in conditions)
+
+        return is_valid
+       
 
     def is_scene(self, current_line, previous_line):
         '''
         Hardcoded scene detection
-        
         Scene is assumed to begin with an INT followed by UPPERCASE LETTERS
-
         If the current line is detected as an actor return False
-
         #TODO: Flag as scene if they exists on the same line
 
         '''
-        if not previous_line:
+        if previous_line is None:
+            return False  
+            
+
+        #if text is not on the same line (x axis)
+        if(current_line["origin"][1] != previous_line["origin"][1]):
             return False
+        
         if(current_line["text"]).isdigit():
-            return False
-        if self.is_actor(current_line["origin"][0], current_line["text"]):
             return False
         #temp fix to handle page numbers flagged as scene start
         if(previous_line["origin"][0] > self.page_width / 2):
             return False
         #Quick fix to handle /
         text = current_line["text"].replace("/", "")
+        split_text = text.split(" ")
+        if len(split_text) < 2:
+            return False
         section_pattern = r'^(?!.*\b[A-Z\dÄÅÖ]+\s\d)[A-Z\dÄÅÖ.-]+(?: [A-Z\dÄÅÖ-]+)*$'
        
-        return re.match(r"^\d+$", previous_line["text"]) and re.match(section_pattern, text)
+        return re.match(r"^\d+$", previous_line["text"]) and re.match(section_pattern, " ".join(split_text[:2]))
 
     def clean_lines(self, file):
         cleaned_file = []
         for scene in file:
             for name, lines in scene.items():        
-                filtered_items = [item for item in lines if item['size'] >= self.settings.get_min_font_size()]                                  
-                filtered_items = [item for item in filtered_items if item['origin'][0] <= self.settings.get_lines_max_start_x_axis()]         
+                filtered_items = [item for item in lines if item['size'] >= self.min_font_size]                                  
+                filtered_items = [item for item in filtered_items if item['origin'][0] <= self.lines_max_start_x_axis]         
                 cleaned_file.append({name: filtered_items})
         return cleaned_file
     
@@ -127,16 +202,21 @@ class ReaderV3():
         return "INFO"
     
     def make_lines_recursive(self, scenes, current_lines = None, scene_index = 0, currentScene = None, result = None):
+
         if not result:
             result = []
-            
+
+        # Base case: all scenes processed
         if(scene_index >= len(scenes)):
             return { "filename": self.filename,"scenes": result }
         
         scene_id = list(scenes[scene_index].keys())[0]     
-        current_lines = scenes[scene_index][scene_id]             
+        current_lines = scenes[scene_index][scene_id]
+
+        # Get the next line from the current scene          
         line = current_lines.pop(0)
-        #Add to result array go to next scene
+
+        #If no lines left in scene, append current scene to result array and move to the next scene
         if not current_lines:
             currentScene[-1]["lines"].append(line["text"])
             result.append({"id": scene_id, "data": currentScene})
@@ -148,8 +228,9 @@ class ReaderV3():
 
         if currentScene:    
             previous_type = currentScene[-1]["type"]
-            if(line_type == "LINE" or line_type ==  "INFO" and line_type == previous_type):
-                      
+
+            # Check if the line type allows grouping with previous lines
+            if(line_type == "LINE" or (line_type == "INFO" and line_type == previous_type)):    
                 currentScene[-1]["lines"].append(line["text"])
             else:
                 currentScene.append({"type": line_type, "name": name, "lines": text})   
@@ -198,11 +279,31 @@ class ReaderV3():
            for line in scene["data"]:
                line["lines"] = "\n".join(line["lines"])
         return script
-      
+    
+
+    def group_lines(self, axis):
+        '''
+        axis = 1 = y-axis
+        axis = 0 = x-axis
+        Groups lines based on ["origin"][axis]
+        '''
+        grouped_lines = []
+        
+        for current_line in self.file["blocks"]:
+            if grouped_lines and current_line["origin"][axis] == grouped_lines[-1]["origin"][axis]:
+                combined_text = " ".join([grouped_lines[-1]["text"], current_line["text"]])
+                grouped_lines[-1]["text"] = combined_text
+            else:
+                grouped_lines.append(current_line)
+        
+        return grouped_lines
+    
+ 
     def to_json(self):
         '''
         Converts text content to a script item with the following structure   
         {
+           script_id: string
            filename: string
            scenes: [
              {
@@ -214,18 +315,15 @@ class ReaderV3():
 
         '''
         result = self.make_scenes(self.file)
-
-        if(self.settings):
-            result = self.clean_lines(result)
-        
+        result = self.clean_lines(result)
         result = self.make_lines_recursive(result)
        
         if(self.line_id):
             result = self.add_uuid(result)
         if(self.lines_as_string):
             result = self.lines_into_string(result)
-        
-        result["id"] = result["filename"].replace(".pdf", "")
+     
+        result["script_id"] = result["filename"].replace(".pdf", "")
         
         return result
     

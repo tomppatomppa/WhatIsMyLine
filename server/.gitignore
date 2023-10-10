@@ -1,7 +1,13 @@
 __pycache__
 venv
+.env
+server/.env
+instance
 dummyDb.txt
 dummyDb.json
+google-credentials.json
 key.json
-/project/build
 .pytest_cache
+
+/uploaded_files/*
+!/uploaded_files/testfile.pdf
