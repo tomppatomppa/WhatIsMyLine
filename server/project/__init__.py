@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import sqlalchemy as sa
 from flask_wtf import CSRFProtect
-from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies, jwt_required
 import os
 from flask_migrate import Migrate
 
@@ -95,7 +95,9 @@ def register_blueprints(app):
     from .upload import upload_blueprint
    
     app.register_blueprint(users_blueprint)
+
     app.register_blueprint(scripts_blueprint, url_prefix='/api')
+    
     app.register_blueprint(google_blueprint)
     app.register_blueprint(upload_blueprint)
 

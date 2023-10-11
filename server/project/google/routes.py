@@ -7,7 +7,7 @@ from google.oauth2.credentials import Credentials
 import functools
 import requests
 import os
-from project.google.TextToSpeech import  create_data
+from project.google.TextToSpeech import create_data
 from utils import remove_dir
 from flask_jwt_extended import jwt_required
 
@@ -19,7 +19,7 @@ def add_drive_service(func):
     '''
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        access_token = extract_token(request)
+        access_token = extract_access_token(request)
         
         refresh_token = None
         if os.getenv('CONFIG_TYPE') == 'config.TestingConfig':
@@ -104,7 +104,7 @@ def download_scene_audio(service):
         
         audio_files = driveUtils.list_audio_files_in_folder(service, scene_folder[0]["id"])
 
-        if not check_line_ids_exist(lines, audio_files):
+        if not all_line_ids_exist(lines, audio_files):
             return "Not all Line IDs exist in Audio IDs", 400
       
         files = []
@@ -117,9 +117,9 @@ def download_scene_audio(service):
                 
                 base64_content = base64.b64encode(file_content).decode('utf-8')
                 files.append({
-                'content': base64_content,
-                'id': file_id,
-                'filename': file_name
+                    'content': base64_content,
+                    'id': file_id,
+                    'filename': file_name
                 })
             
         return jsonify(files=files)
@@ -149,26 +149,41 @@ def handle_unauthorized(error):
 '''
 Helper functions
 '''
-def extract_token(request):
+def extract_access_token(request):
+    '''
+    Returns google access token from Authorization header
+    '''
     headers = request.headers
     bearer = headers.get('Authorization')
     token = bearer.split()[1]
     return token
 
 def get_folder_ids(request):
+    '''
+    Returns request json as a tuple
+    '''
     script_id = request.json.get("id")
     scene_id = request.json.get("scenes")[0].get("id")
     root_folder_id = request.json.get("rootFolderId")
     return  root_folder_id, script_id, scene_id, 
 
-def check_line_ids_exist(lines, audio_files):
+def all_line_ids_exist(lines, audio_files):
+    """
+    Compares the script line IDs to the .mp3 files in Google Drive.
+    Returns `True` if all files exist.
+    """
     line_ids = [line['id'] for line in lines]
     audio_ids = [audio['name'].replace(".mp3", "") for audio in audio_files]
+
     return all(line_id in audio_ids for line_id in line_ids)
 
 def extract_request_data(request_json):
+    '''
+    Returns request json as a tuple
+    '''
     root_folder_id = request_json.get("rootId")
     script_id = request_json.get("scriptId")
     scene_id = request_json.get("sceneId")
     lines = request_json.get("lines")
+
     return root_folder_id, script_id, scene_id, lines
