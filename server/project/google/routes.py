@@ -37,6 +37,7 @@ def add_drive_service(func):
         return func(service, *args, **kwargs)
     return wrapper
 
+
 @google_blueprint.route("/api/drive/create_root_folder",  methods=["POST"])
 @jwt_required()
 @add_drive_service

@@ -55,7 +55,7 @@ def test_should_created_mp3_files_in_correct_folders(test_client) -> None:
     path_to_first_scene = f'{root_folder_path}/{data["scenes"][0]["id"]}'
     mp3_files = [file for file in os.listdir(path_to_first_scene) if file.endswith('.mp3')]
 
-    expected_filenames = [line["id"]+".mp3" for line in data["scenes"][0]["data"]] # get line ids 
+    expected_filenames = [line["id"] + ".mp3" for line in data["scenes"][0]["data"]] # get line ids 
 
     for expected_filename in expected_filenames:
        assert expected_filename in mp3_files, f"Expected filename '{expected_filename}' not found in the subfolder: {path_to_first_scene}"

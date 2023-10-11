@@ -2,19 +2,20 @@ from itertools import islice
 import re
 import fitz
 import os
-import numpy as np
 import pandas as pd
 
+#TODO: Try to get a working version
 class ScriptReader():
     def __init__(self):
        self.file = None
        self.filename = None
 
     def read_file(self, filename):
+        
         file_path = f"./uploaded_files/{filename}"
 
         if not os.path.exists(file_path):
-         raise FileNotFoundError(f"No such file: '{file_path}'")
+           raise FileNotFoundError(f"No such file: '{file_path}'")
         
         self.filename = filename
         pdf_doc = fitz.open(f'./uploaded_files/{filename}')
@@ -178,6 +179,7 @@ class ScriptReader():
         df['line'].fillna(False, inplace=True)
 
         print(df.loc[0:42, ["text",  "scene_number", "line"]])
+        return True
       
         
         

@@ -57,6 +57,7 @@ def test_download_scene_audio(logged_in_test_client, csrf_headers, scene_item):
 
     assert response.status_code == 200
     assert len(response_data["files"]) == len(scene_item["scenes"][0]["data"])
+    
     for file in response_data["files"]:
         assert isinstance(file, dict)
         assert "content" in file

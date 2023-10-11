@@ -3,7 +3,7 @@ from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import sqlalchemy as sa
-from flask_wtf import CSRFProtect, csrf
+from flask_wtf import CSRFProtect
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies
 import os
 from flask_migrate import Migrate
@@ -15,13 +15,12 @@ csrf_protection = CSRFProtect()
 def create_app():
     app = Flask(__name__, template_folder="build", static_folder="build/static")
 
-    migrate = Migrate(app, db)
-
     jwt = JWTManager(app)
     
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config.from_object(config_type)
     app.config["JWT_COOKIE_SECURE"] = False
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
     CORS(app, supports_credentials=True)
     
@@ -73,7 +72,7 @@ def register_request_handlers(app):
             exp_timestamp = get_jwt()["exp"]
             now = datetime.now(timezone.utc)
             target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-           
+         
             if target_timestamp > exp_timestamp:
                 access_token = create_access_token(identity=get_jwt_identity())
                 set_access_cookies(response, access_token)
@@ -89,12 +88,6 @@ def register_blueprints(app):
     @app.route('/<path:path>')
     def catch_all(path):   
         return render_template('index.html')
-    
-    @app.route("/csrf")
-    def get_csrf():
-        response = jsonify(detail="success")
-        response.headers.set("X-CSRFToken", csrf.generate_csrf())
-        return response
     
     from .users import users_blueprint
     from .scripts import scripts_blueprint
