@@ -1,20 +1,21 @@
+from datetime import timezone, timedelta, datetime
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import sqlalchemy as sa
-from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect, csrf
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies
 import os
+from flask_migrate import Migrate
+
 
 db = SQLAlchemy()
-
-
 csrf_protection = CSRFProtect()
-
 
 def create_app():
     app = Flask(__name__, template_folder="build", static_folder="build/static")
+
+    migrate = Migrate(app, db)
 
     jwt = JWTManager(app)
     

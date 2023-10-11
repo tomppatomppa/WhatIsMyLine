@@ -3,10 +3,6 @@ from sqlalchemy import DateTime, Integer, String, PickleType
 from sqlalchemy.orm import mapped_column
 from project import db
 from datetime import datetime
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 
 class User(db.Model):
     """
@@ -27,7 +23,7 @@ class User(db.Model):
     email = mapped_column(String(), unique=True, nullable=False)
     registered_on = mapped_column(DateTime(), nullable=False)
     refresh_token = mapped_column(String(), nullable=False)
-    
+   
     def __init__(self, user_id: str, picture:str, email: str, provider: str, refresh_token: str):
         """Create a new User object using the email address and hashing the
         plaintext password using Werkzeug.Security.
@@ -39,7 +35,14 @@ class User(db.Model):
         self.registered_on = datetime.now()
         self.refresh_token = refresh_token
       
-
+    def to_dict(self):
+        return {
+            'user_id': self.user_id,
+            'picture': self.picture,
+            'email': self.email,
+            
+        }
+    
     @classmethod
     def get_user_by_user_id(cls, user_id):
         return cls.query.filter_by(user_id=user_id).first()

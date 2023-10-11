@@ -1,6 +1,8 @@
 FROM python:3.11
 
 RUN apt-get update
+#PostgreSQL development libraries
+RUN apt-get install libpq-dev
 
 WORKDIR /usr/src/app
 COPY requirements.txt /usr/src/app

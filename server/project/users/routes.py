@@ -1,3 +1,4 @@
+import json
 import requests
 import os
 from . import users_blueprint
@@ -12,10 +13,11 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
+
 @users_blueprint.route("/login", methods=["POST"])
 def login():
     code = request.json.get('code')
-   
+    
     if not code:
         return "Missing 'code' parameter in the request.", 403 
     try:
