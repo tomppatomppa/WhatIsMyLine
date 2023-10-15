@@ -4,11 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import sqlalchemy as sa
 from flask_wtf import CSRFProtect
+from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies, jwt_required
 import os
 
 
 db = SQLAlchemy()
+migrate = Migrate()
 csrf_protection = CSRFProtect()
 
 def create_app():
@@ -31,22 +33,12 @@ def create_app():
     register_request_handlers(app)
     register_blueprints(app)
     
-    # engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
-    
-    # inspector = sa.inspect(engine)
-    
-    # if not inspector.has_table("users") or not inspector.has_table("scripts"):
-    #     with app.app_context():
-    #         db.drop_all()
-    #         db.create_all()
-    #         app.logger.info('Initialized the database!')
-    # else:
-    #     app.logger.info('Database already contains the users table.')
-    
+ 
     return app
 
 def initialize_extensions(app):
     db.init_app(app)
+    migrate.init_app(app, db)
 
 def create_upload_folders(app):
     try:
