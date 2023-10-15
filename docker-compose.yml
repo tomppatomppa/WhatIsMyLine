@@ -24,3 +24,11 @@ services:
       - ./postgres-data:/var/lib/postgresql/data/
     ports:
       - '5432:5432'
+
+  adminer:
+    image: adminer:4
+    restart: always
+    environment:
+      - ADMINER_DESIGN=db
+    ports:
+      - 8083:8080

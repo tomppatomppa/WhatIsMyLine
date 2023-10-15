@@ -9,22 +9,21 @@ then
     done
 
     echo "PostgreSQL started"
+
+    # Check if the "migrations" folder exists
+    if [ -d "migrations" ]; then
+        echo "Migrations folder found. Running database upgrade..."
+    else
+        echo "Migrations folder not found. Create init migrations."
+        python3 -m flask db init
+    fi
+
 fi
 
-# Check if the "migrations" folder exists
-sleep 3.5
-if [ -d "migrations" ]; then
-    echo "Migrations folder found. Running database upgrade..."
-else
-    echo "Migrations folder not found. Create init migrations."
-    python3 -m flask db init
-    
-fi
 
 python3 -m flask db migrate
 python3 -m flask db upgrade
 python manage.py create_db
 #python manage.py seed_db
-
 
 exec "$@"
