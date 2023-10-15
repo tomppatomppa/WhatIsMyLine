@@ -83,6 +83,8 @@ def register_blueprints(app):
     def catch_all(path):   
         return render_template('index.html')
     
+
+   
     from .users import users_blueprint
     from .scripts import scripts_blueprint
     from .google import google_blueprint
