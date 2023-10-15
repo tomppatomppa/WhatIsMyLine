@@ -1,10 +1,11 @@
-FROM python:3.11
-
-RUN apt-get update
-#PostgreSQL development libraries
-RUN apt-get install libpq-dev
+FROM python:3.11-slim
 
 WORKDIR /usr/src/app
+
+RUN apt-get update
+RUN apt-get install -y libpq-dev gcc
+
+
 COPY requirements.txt /usr/src/app
 
 RUN --mount=type=cache,target=/root/.cache/pip \

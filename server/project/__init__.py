@@ -6,7 +6,6 @@ import sqlalchemy as sa
 from flask_wtf import CSRFProtect
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies, jwt_required
 import os
-from flask_migrate import Migrate
 
 
 db = SQLAlchemy()
@@ -22,6 +21,7 @@ def create_app():
     app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+    
     CORS(app, supports_credentials=True)
     
     initialize_extensions(app)
