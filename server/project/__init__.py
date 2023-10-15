@@ -18,28 +18,30 @@ def create_app():
     
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config.from_object(config_type)
+
     app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
     
     CORS(app, supports_credentials=True)
-    
+   
+    print("INIT", config_type)
     initialize_extensions(app)
     create_upload_folders(app)
     register_request_handlers(app)
     register_blueprints(app)
     
-    engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+    # engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
     
-    inspector = sa.inspect(engine)
+    # inspector = sa.inspect(engine)
     
-    if not inspector.has_table("users") or not inspector.has_table("scripts"):
-        with app.app_context():
-            db.drop_all()
-            db.create_all()
-            app.logger.info('Initialized the database!')
-    else:
-        app.logger.info('Database already contains the users table.')
+    # if not inspector.has_table("users") or not inspector.has_table("scripts"):
+    #     with app.app_context():
+    #         db.drop_all()
+    #         db.create_all()
+    #         app.logger.info('Initialized the database!')
+    # else:
+    #     app.logger.info('Database already contains the users table.')
     
     return app
 

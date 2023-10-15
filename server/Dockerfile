@@ -1,19 +1,25 @@
-FROM python:3.11-slim
+# pull official base image
+FROM python:3.11.3-slim-buster
 
+# set work directory
 WORKDIR /usr/src/app
 
-RUN apt-get update
-RUN apt-get install -y libpq-dev gcc
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
+# install system dependencies
+RUN apt-get update && apt-get install -y netcat
 
-COPY requirements.txt /usr/src/app
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt /usr/src/app/requirements.txt
+RUN pip install -r requirements.txt
+ENV FLASK_APP=app.py
 
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip3 install -r requirements.txt
+# copy project
+COPY . /usr/src/app/
 
-COPY . .
-ENV FLASK_DEBUG=True
-EXPOSE 5000
-
-ENTRYPOINT [ "flask"]
-CMD [ "run", "--host", "0.0.0.0" ]
+EXPOSE 5001
+# run entrypoint.sh
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
