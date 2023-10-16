@@ -3,13 +3,13 @@ import { BASE_URI } from 'src/config'
 import { httpClient } from 'src/utils/axiosClient'
 
 export const fetchAllUserScripts = async () => {
-  const { data } = await httpClient.get(`${BASE_URI}/api/script`)
+  const { data } = await httpClient.get(`${BASE_URI}/script`)
 
   return data
 }
 
 export const addScript = async (script: Script) => {
-  const { data } = await httpClient.post(`${BASE_URI}/api/script`, {
+  const { data } = await httpClient.post(`${BASE_URI}/script`, {
     ...script,
   })
 
@@ -18,7 +18,7 @@ export const addScript = async (script: Script) => {
 
 export const updateScript = async (script: Script) => {
   const { data } = await httpClient.put(
-    `${BASE_URI}/api/script/${script.script_id}`,
+    `${BASE_URI}/script/${script.script_id}`,
     {
       ...script,
     }
@@ -27,7 +27,7 @@ export const updateScript = async (script: Script) => {
   return data
 }
 export const deleteScriptById = async (id: string) => {
-  const { data } = await httpClient.delete(`${BASE_URI}/api/script/${id}`)
+  const { data } = await httpClient.delete(`${BASE_URI}/script/${id}`)
 
   return data
 }

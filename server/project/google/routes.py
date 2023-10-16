@@ -38,7 +38,7 @@ def add_drive_service(func):
     return wrapper
 
 
-@google_blueprint.route("/api/drive/create_root_folder",  methods=["POST"])
+@google_blueprint.route("/drive/create_root_folder",  methods=["POST"])
 @jwt_required()
 @add_drive_service
 def check_root_folder(service):
@@ -60,7 +60,7 @@ def check_root_folder(service):
            handle_unauthorized(error)
         return "Something went wrong", 404     
    
-@google_blueprint.route("/api/drive/scene-to-speech", methods=["POST"])
+@google_blueprint.route("/drive/scene-to-speech", methods=["POST"])
 @jwt_required()
 @add_drive_service
 def upload_scene(service):
@@ -87,7 +87,7 @@ def upload_scene(service):
     finally:
        remove_dir(f"./processed_audio/{script_id}")
 
-@google_blueprint.route("/api/drive/download", methods=["POST"])
+@google_blueprint.route("/drive/download", methods=["POST"])
 @jwt_required()
 @add_drive_service
 def download_scene_audio(service):
@@ -129,7 +129,7 @@ def download_scene_audio(service):
            handle_unauthorized(error)
        return jsonify({'error': 'An error occurred'}), error.response.status_code
  
-@google_blueprint.route("/api/drive/<folder_id>", methods=["DELETE"])
+@google_blueprint.route("/drive/<folder_id>", methods=["DELETE"])
 @jwt_required()
 @add_drive_service
 def delete_folder(service, folder_id):

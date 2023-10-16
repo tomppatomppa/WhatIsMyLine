@@ -7,7 +7,7 @@ from PyMuReaderV3 import ReaderV3
 import json
 
 
-@upload_blueprint.route("/api/v3/upload", methods=['POST'])
+@upload_blueprint.route("/v3/upload", methods=['POST'])
 def upload_file():
     if "file" not in request.files:
        return 'No file', 500
