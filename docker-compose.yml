@@ -10,8 +10,8 @@ services:
       - 5001:5000
     env_file:
       - ./.env.dev
-    environment:
-      - SKIP_TESTS=${{secrets.SKIP_TESTS}}
+    env:
+      CUSTOM_VARIABLE: ${{secrets.SKIP_TESTS}}
     depends_on:
       - db
 
