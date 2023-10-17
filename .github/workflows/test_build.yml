@@ -21,19 +21,6 @@ jobs:
       - name: Build amd run frontend tests
         run: docker-compose -f docker-compose.yml up -d
 
-      # - name: Delay for 3 seconds before running tests
-      #   run: sleep 3
-
-      # - name: Run frontend tests
-      #   run: |
-      #     docker exec react-frontend npm run test-ci | tee frontend_tests_output.txt
-
-      #     if grep -q "FAIL" frontend_tests_output.txt; then
-      #       echo "Pattern 'FAIL' found in frontend test results. Exiting with code 1."
-      #       exit 1
-      #     else
-      #       echo "Pattern 'FAIL' not found in frontend test results."
-      #     fi
       - name: Run backend Tests
         run: |
           docker-compose -f docker-compose.yml exec -T backend python manage.py run_tests | tee tests_output.txt # Run tests

@@ -8,7 +8,7 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
-RUN npm run test
+RUN npm run test-ci
 
 #To avoid "Invalid Host header" when accessing localhost:8080
 ENV DANGEROUSLY_DISABLE_HOST_CHECK=true
