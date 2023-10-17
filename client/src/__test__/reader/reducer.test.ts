@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook, act } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { ReaderConfiguration } from 'src/components/ReaderV3/reader.types'
 import reducer from 'src/components/ReaderV3/reducer'
