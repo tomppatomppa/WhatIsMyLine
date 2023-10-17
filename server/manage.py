@@ -29,6 +29,7 @@ def seed_db():
 
 @cli.command("run_tests")
 def run_tests():
+    os.environ['CONFIG_TYPE'] = 'config.TestingConfig'
     pytest.main(["-q", "tests"])
 
 if __name__ == "__main__":

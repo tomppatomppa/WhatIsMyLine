@@ -25,8 +25,6 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    #SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URI').replace("postgres://", "postgresql://", 1)
-
-    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URI',
-                                        default=f"sqlite:///{os.path.join(BASEDIR, 'instance', 'test.db')}")
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+  
     WTF_CSRF_ENABLED = False

@@ -144,7 +144,7 @@ class ScriptReader():
     def detect_line_group(self , group, mean_value):
         original, upper_bound, lower_bound = number_with_variation(mean_value, 20)
         # Check if all rows in the group satisfy the condition
-        group.loc[(group["x"] >= lower_bound) & (group["x"] <= upper_bound), "line"] = True
+        group.loc[(group["x"] >= lower_bound) & (group["x"] <= upper_bound), "line"] = 1
         
         return group
     
@@ -176,7 +176,7 @@ class ScriptReader():
         filtered_rows = df[(df["actor"] != True) & (df["scene"] != True)]
         result = filtered_rows.groupby("scene_number", group_keys=False).apply(lambda x: self.detect_line_group(x, actor_x_mean))
         df = df.merge(result[['line']], left_index=True, right_index=True, how='left')
-        df['line'].fillna(False, inplace=True)
+        df['line'].fillna(0, inplace=True)
 
         print(df.loc[0:42, ["text",  "scene_number", "line"]])
         return True

@@ -15,7 +15,7 @@ csrf_protection = CSRFProtect()
 
 def create_app():
     app = Flask(__name__, template_folder="build", static_folder="build/static")
-
+    
     jwt = JWTManager(app)
     
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')

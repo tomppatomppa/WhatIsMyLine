@@ -29,7 +29,7 @@ def login():
             
             user_for_database, user_for_client = extract_user_info(user, token_data)
             store_user(user_for_database)
-
+       
             response = jsonify(user_for_client)
             #Set cookies
             access_token = create_access_token(identity=user_for_database.get("user_id"))

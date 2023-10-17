@@ -33,16 +33,15 @@ def new_script(new_user):
 
 @pytest.fixture(scope='module')
 def init_database(test_client, new_user, new_script):
-   
-    # Create the database and the database table
-    db.create_all()
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    db.session.add(new_script)
-    db.session.commit()
     
+    #db.create_all()
+    
+    # db.session.add(new_user)
+    # db.session.commit()
+  
+    # db.session.add(new_script)
+    # db.session.commit()
+        
     yield
     
     db.drop_all()
@@ -50,11 +49,11 @@ def init_database(test_client, new_user, new_script):
 @pytest.fixture(scope='module')
 def test_client():
     os.environ['CONFIG_TYPE'] = 'config.TestingConfig'
+   
     flask_app = create_app()
     
     @flask_app.route("/access_token", methods=["GET"])
     def access_token():
-        #domain = request.args.get("domain")
         resp = jsonify(login=True)
         access_token = create_access_token(GOOGLE_USER_ID, expires_delta=False)
         
