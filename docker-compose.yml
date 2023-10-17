@@ -10,6 +10,7 @@ services:
       - 5001:5000
     env_file:
       - ./.env.dev
+
     depends_on:
       - db
 
