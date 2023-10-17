@@ -26,11 +26,11 @@ jobs:
 
       - name: Run frontend tests
         run: |
-          docker exec react-frontend npm run test | tee frontend_tests_output.txt
+          docker exec react-frontend npm run test-ci | tee frontend_tests_output.txt
 
-          if grep -q "failed" frontend_tests_output.txt; then
-            echo "Pattern 'failed' found in frontend test results. Exiting with code 1."
+          if grep -q "FAIL" frontend_tests_output.txt; then
+            echo "Pattern 'FAIL' found in frontend test results. Exiting with code 1."
             exit 1
           else
-            echo "Pattern 'failed' not found in frontend test results."
+            echo "Pattern 'FAIL' not found in frontend test results."
           fi
