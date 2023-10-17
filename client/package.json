@@ -38,7 +38,7 @@
     "start": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts start",
     "build": "set \"REACT_APP_ENVIROMENT=production\" && react-scripts build",
     "build-dev": "set \"REACT_APP_ENVIROMENT=development\" && react-scripts build && xcopy /s /y /i build ..\\server\\project\\build && rd /s /q build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --detectOpenHandles",
     "cy:open-e2e": "cypress open --e2e --browser chrome",
     "eject": "react-scripts eject"
   },
