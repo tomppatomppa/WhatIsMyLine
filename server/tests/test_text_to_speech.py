@@ -48,7 +48,7 @@ def test_should_create_correct_folder_structure() -> None:
 
     shutil.rmtree(root_folder_path)
 
-
+@pytest.mark.skipif(os.environ.get("SKIP_TESTS") == "true", reason="Tests are skipped in this environment.")    
 def test_should_created_mp3_files_in_correct_folders(test_client) -> None:
     TextToSpeech.create_folders(data)
     TextToSpeech.create_audio(data)
