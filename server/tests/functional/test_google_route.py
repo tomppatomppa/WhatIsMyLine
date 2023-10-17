@@ -1,7 +1,6 @@
 import base64
 import json
 import os
-
 import pytest
 
 url = "/api/drive/create_root_folder"
@@ -9,9 +8,9 @@ url = "/api/drive/create_root_folder"
 access_token = os.getenv("TEST_ACCESS_TOKEN")
 test_folder_name = "test_dramatify-pdf-reader"
 
+@pytest.mark.skipif(os.environ.get("SKIP_TESTS") == "true", reason="Tests are skipped in this environment.")
 def test_scene_to_speech_endpoint(logged_in_test_client, csrf_headers, scene_item):
-    if not access_token:
-       pytest.skip("Unsupported configuration")
+   
     """
     Functional api test for creating audio files for a scene.
 
@@ -34,7 +33,7 @@ def test_scene_to_speech_endpoint(logged_in_test_client, csrf_headers, scene_ite
     filename = f"{scene_item['scenes'][0]['data'][0]['id']}.mp3"
     assert response_data[0]["name"] == filename
    
-
+@pytest.mark.skipif(os.environ.get("SKIP_TESTS") == "true", reason="Tests are skipped in this environment.")
 def test_download_scene_audio(logged_in_test_client, csrf_headers, scene_item):
     if not access_token:
       pytest.skip("Unsupported configuration")
@@ -73,7 +72,7 @@ def test_download_scene_audio(logged_in_test_client, csrf_headers, scene_item):
         assert isinstance(file["id"], str)
         assert isinstance(file["filename"], str)
 
-    
+@pytest.mark.skipif(os.environ.get("SKIP_TESTS") == "true", reason="Tests are skipped in this environment.")
 def test_delete_folder(create_test_folder, logged_in_test_client, csrf_headers):
     if not access_token:
       pytest.skip("Unsupported configuration")
