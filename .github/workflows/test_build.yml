@@ -9,27 +9,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      TEST_ACCESS_TOKEN: ${{secrets.TEST_ACCESS_TOKEN}}
-      TEST_REFRESH_TOKEN: ${{secrets.TEST_REFRESH_TOKEN}}
-      DATABASE_URL: ${{secrets.DATABASE_URL}}
-      CLIENT_ID: ${{secrets.CLIENT_ID}}
-      CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
-      PORT: ${{secrets.PORT}}
-      SECRET_KEY: ${{secrets.SECRET_KEY}}
-      SQL_HOST: ${{secrets.SQL_HOST}}
-      SQL_PORT: ${{secrets.SQL_PORT}}
-      DATABASE: ${{secrets.DATABASE}}
-      FLASK_APP: ${{secrets.FLASK_APP}}
+
     steps:
       - uses: actions/checkout@v3
       - name: file permission
         run: chmod +x server/entrypoint.sh
 
-      # - name: Load environment variables
-      #   run: source .env.dev
+      - name: Load environment variables
+        run: source .env.dev
 
-      - name: Build
+      - name: Build amd run frontend tests
         run: docker-compose -f docker-compose.yml up -d
 
       # - name: Delay for 3 seconds before running tests
