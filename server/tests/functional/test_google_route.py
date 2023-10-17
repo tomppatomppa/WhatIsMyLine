@@ -2,12 +2,16 @@ import base64
 import json
 import os
 
+import pytest
+
 url = "/api/drive/create_root_folder"
 
-access_token = os.environ["TEST_ACCESS_TOKEN"]
+access_token = os.getenv("TEST_ACCESS_TOKEN")
 test_folder_name = "test_dramatify-pdf-reader"
 
 def test_scene_to_speech_endpoint(logged_in_test_client, csrf_headers, scene_item):
+    if not access_token:
+       pytest.skip("Unsupported configuration")
     """
     Functional api test for creating audio files for a scene.
 
@@ -32,6 +36,8 @@ def test_scene_to_speech_endpoint(logged_in_test_client, csrf_headers, scene_ite
    
 
 def test_download_scene_audio(logged_in_test_client, csrf_headers, scene_item):
+    if not access_token:
+      pytest.skip("Unsupported configuration")
     """
     Functional API test for downloading audio files for a scene.
 
@@ -69,6 +75,8 @@ def test_download_scene_audio(logged_in_test_client, csrf_headers, scene_item):
 
     
 def test_delete_folder(create_test_folder, logged_in_test_client, csrf_headers):
+    if not access_token:
+      pytest.skip("Unsupported configuration")
     """
     Functional API test for deleting a folder.
 

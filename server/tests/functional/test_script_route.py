@@ -1,9 +1,16 @@
 import json
+import os
+
+import pytest
 
 url = '/api/script'
 
-
+if not os.getenv("DATABASE_URL"):
+    pytest.skip("Works only locally", allow_module_level=True)
+    
 def test_retrieving_all_logged_in_user_scripts_when_none_exists(logged_in_test_client):
+    
+
     """
     Functional api test for retrieving all scripts of a logged-in user when none exist.
 
