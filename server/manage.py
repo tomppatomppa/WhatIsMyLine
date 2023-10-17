@@ -27,6 +27,12 @@ def seed_db():
     db.session.add(models.User(email="michael@mherman.org"))
     db.session.commit()
 
+@cli.command("reset_db")
+def reset_db():
+    db.drop_all()
+    db.session.commit()
+
+
 @cli.command("run_tests")
 def run_tests():
     os.environ['CONFIG_TYPE'] = 'config.TestingConfig'

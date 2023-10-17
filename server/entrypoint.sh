@@ -20,10 +20,10 @@ then
 
 fi
 
-
+python3 -m manage reset_db
 python3 -m flask db migrate
 python3 -m flask db upgrade
 python manage.py create_db
-#python manage.py seed_db
+
 
 exec "$@"

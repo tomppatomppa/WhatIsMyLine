@@ -24,7 +24,6 @@ def remove_dir(directory_path):
     
 def verify_google_id_token(token):
     try:
-        
         payload = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
     except ValueError as err:
         str_err = str(err)

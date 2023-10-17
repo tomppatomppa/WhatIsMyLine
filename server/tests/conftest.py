@@ -32,19 +32,18 @@ def new_script(new_user):
     return script
 
 @pytest.fixture(scope='module')
-def init_database(test_client, new_user, new_script):
-    
-    #db.create_all()
-    
-    # db.session.add(new_user)
-    # db.session.commit()
+def init_database(new_user, new_script):
   
-    # db.session.add(new_script)
-    # db.session.commit()
-        
+    db.session.add(new_user)
+    db.session.commit()
+ 
+    db.session.add(new_script)
+    db.session.commit()
     yield
-    
+  
     db.drop_all()
+    db.create_all()
+
 
 @pytest.fixture(scope='module')
 def test_client():
