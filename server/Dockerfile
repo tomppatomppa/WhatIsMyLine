@@ -15,8 +15,10 @@ RUN apt-get update && apt-get install -y netcat
 RUN pip install --upgrade pip
 COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
+
 ENV FLASK_APP=app.py
 ENV SKIP_TESTS=${SKIP_TESTS}
+
 # copy project
 COPY . /usr/src/app/
 
