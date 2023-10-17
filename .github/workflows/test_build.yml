@@ -36,7 +36,7 @@ jobs:
           fi
       - name: Run backend Tests
         run: |
-          docker-compose -f docker-compose.yml exec -T web python manage.py run_tests | tee tests_output.txt # Run tests
+          docker-compose -f docker-compose.yml exec -T backend python manage.py run_tests | tee tests_output.txt # Run tests
 
           if grep -q "FAILED tests" tests_output.txt; then
             echo "Pattern 'FAILED tests' found in test results. Exiting with code 1."
