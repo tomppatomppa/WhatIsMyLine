@@ -23,7 +23,7 @@ class User(db.Model):
     email = mapped_column(String(), unique=True, nullable=False)
     registered_on = mapped_column(DateTime(), nullable=False)
     refresh_token = mapped_column(String(), nullable=False)
-    
+   
    
     def __init__(self, user_id: str, picture:str, email: str, provider: str, refresh_token: str):
         """Create a new User object using the email address and hashing the
