@@ -11,6 +11,7 @@ import {
   AiFillPlaySquare,
   AiTwotoneAlert,
 } from 'react-icons/ai'
+import { useAuth } from 'src/store/userStore'
 const heroVideo = require('../assets/video/hero_video.mp4')
 
 const Heading = () => {
@@ -56,6 +57,7 @@ const cards: CardType = [
 ]
 
 const LandingView = () => {
+  const isLoggedIn = useAuth()
   const navigate = useNavigate()
 
   return (
@@ -79,7 +81,7 @@ const LandingView = () => {
             </Subheading>
             <div className="mt-12"></div>
             <Button onClick={() => navigate('/login')}>
-              <span className="font">Login</span>
+              <span className="font">{isLoggedIn ? 'Dashboard' : 'Login'}</span>
             </Button>
           </div>
         </section>
