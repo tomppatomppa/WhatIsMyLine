@@ -18,7 +18,7 @@ jobs:
       - name: Load environment variables
         run: source .env.dev
 
-      - name: Build amd run frontend tests
+      - name: Build and run frontend tests
         run: docker-compose -f docker-compose.yml up -d
 
       - name: Run backend Tests
