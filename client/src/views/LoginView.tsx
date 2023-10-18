@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom'
 import { googleLogin } from 'src/API/loginApi'
 import Message from 'src/components/common/Message'
 import Spinner from 'src/components/common/Spinner'
-import { useLogin } from 'src/store/userStore'
+import { useAuth, useLogin } from 'src/store/userStore'
 
 const logo = require('../assets/images/whats-my-line-logo.png')
 
 const LoginView = () => {
   const navigate = useNavigate()
   const loginToApp = useLogin()
+  const loggedIn = useAuth()
 
   const { mutate: login, isLoading } = useMutation(googleLogin, {
     onSuccess: (user) => {
@@ -26,7 +27,9 @@ const LoginView = () => {
       login(credentials.code)
     },
   })
-
+  if (loggedIn) {
+    navigate('/')
+  }
   if (isLoading) {
     return (
       <div className="h-screen w-full flex justify-center flex-col">

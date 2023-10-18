@@ -1,5 +1,6 @@
 import React from 'react'
 import clsx from 'clsx'
+
 interface CardProps {
   text: string
   icon: React.ReactNode
@@ -23,7 +24,6 @@ const COLORS: { [key in CardColors]: string } = {
 }
 
 const Card = ({ text, icon, index = 0 }: CardProps) => {
-  console.log(index)
   return (
     <div
       className={clsx(

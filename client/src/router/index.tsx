@@ -5,6 +5,7 @@ import { ProtectedRoute } from './ProtectedRoute'
 import LoginView from 'src/views/LoginView'
 import LandingView from '../views/LandingView'
 import { useEffect } from 'react'
+import { useAuth } from 'src/store/userStore'
 
 export const router = createBrowserRouter([
   {
@@ -22,7 +23,14 @@ export const router = createBrowserRouter([
     ],
   },
   { path: '/landing', element: <LandingView /> },
-  { path: '/login', element: <LoginView /> },
+  {
+    path: '/login',
+    element: (
+      <CatchUserIsLoggedIn>
+        <LoginView />
+      </CatchUserIsLoggedIn>
+    ),
+  },
   { path: '*', element: <CatchAllRoute /> },
 ])
 
@@ -35,4 +43,18 @@ function CatchAllRoute() {
   }, [navigate])
 
   return null
+}
+
+interface CatchUserIsLoggedInProps {
+  children: JSX.Element
+}
+function CatchUserIsLoggedIn({ children }: CatchUserIsLoggedInProps) {
+  const navigate = useNavigate()
+  const loggedIn = useAuth()
+
+  useEffect(() => {
+    if (loggedIn) navigate('/')
+  }, [loggedIn, navigate])
+
+  return children
 }
