@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        - REACT_APP_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+        - REACT_APP_GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    command: gunicorn --bind 0.0.0.0:5000 app:app
+    ports:
+      - 5001:5000
+    environment:
+      - FLASK_DEBUG=0
+      - DATABASE_URL=${DATABASE_URL}
+      - SQL_HOST=${SQL_HOST}
+      - SQL_PORT=5432
+      - DATABASE=postgres
+      - CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+      - SECRET_KEY=1234
+
+    # env_file:
+    #   - ./.env.prod
