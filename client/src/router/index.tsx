@@ -1,6 +1,6 @@
 import { createBrowserRouter, useNavigate } from 'react-router-dom'
 import ReaderPage from '../containers/ReaderPage'
-import MainLayout from './MainLayout'
+import MainLayout from '../layout/MainLayout'
 import { ProtectedRoute } from './ProtectedRoute'
 import LoginView from 'src/views/LoginView'
 import LandingView from '../views/LandingView'
