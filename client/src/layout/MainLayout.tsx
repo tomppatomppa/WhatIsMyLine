@@ -5,11 +5,11 @@ import Navbar from 'src/containers/Navbar'
 const MainLayout = () => {
   return (
     <div className="text-center">
-      <nav className="sticky bottom-0 shadow-md flex w-full justify-start bg-primary">
+      <nav className="sticky z-10 bottom-0 shadow-md flex w-full justify-start bg-primary">
         {/* <Navbar /> */}
         <Sidebar />
       </nav>
-      <section>
+      <section className="mr-25">
         <Outlet />
       </section>
     </div>
