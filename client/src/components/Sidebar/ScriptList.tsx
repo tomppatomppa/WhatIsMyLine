@@ -2,12 +2,21 @@ import { useEffect, useState } from 'react'
 import { SearchBox } from './SearchBox'
 import { Script } from '../ReaderV3/reader.types'
 
-const NavLink = ({ ...props }) => {
-  const { children, href = '', className = '', active = '' } = props
+import TrashButton from '../common/buttons/TrashButton'
+
+interface ScriptListItemProps {
+  children?: React.ReactNode
+  isActive: boolean
+  className: string
+  active: string
+  onClick: () => void
+}
+
+const ScriptListItem = ({ ...props }: ScriptListItemProps) => {
+  const { children, className = '', active = '', isActive = false } = props
 
   const [pathname, setPathname] = useState('/')
 
-  const isActive = pathname == href
   const activeClass = isActive ? active : ''
 
   useEffect(() => {
@@ -24,9 +33,14 @@ const NavLink = ({ ...props }) => {
 interface ScriptListProps {
   scripts: Script[]
   setActiveScript: (scriptId: string) => void
+  deleteScript: (scriptId: string) => void
 }
 
-export const ScriptList = ({ scripts, setActiveScript }: ScriptListProps) => {
+export const ScriptList = ({
+  scripts,
+  setActiveScript,
+  deleteScript,
+}: ScriptListProps) => {
   const [search, setSearch] = useState('')
 
   const filteredScripts =
@@ -42,14 +56,17 @@ export const ScriptList = ({ scripts, setActiveScript }: ScriptListProps) => {
       <ul className=" overflow-y-auto max-h-screen pt-6">
         {filteredScripts?.map(
           ({ filename, script_id }, idx: React.Key | null | undefined) => (
-            <li key={idx}>
-              <NavLink
+            <li className="flex" key={idx}>
+              <ScriptListItem
                 onClick={() => setActiveScript(script_id)}
+                isActive={false}
                 active="text-gray-900 border-indigo-600"
-                className="block w-full py-2 px-4 border-l hover:border-indigo-600 hover:text-gray-900 duration-150"
+                className="flex items-center w-full py-2 px-4 border-l hover:border-indigo-600 hover:text-gray-900 duration-150"
               >
                 {filename}
-              </NavLink>
+                <p className="flex-1" />
+                <TrashButton onClick={() => deleteScript(script_id)} />
+              </ScriptListItem>
             </li>
           )
         )}

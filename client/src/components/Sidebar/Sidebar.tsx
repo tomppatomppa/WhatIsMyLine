@@ -49,7 +49,7 @@ const Sidebar = () => {
   }
   return (
     <>
-      <nav
+      <aside
         className={`fixed flex flex-row top-0 left-0 w-auto h-full border-r bg-white space-y-8`}
       >
         <div className="flex flex-col h-full">
@@ -137,7 +137,7 @@ const Sidebar = () => {
         </div>
 
         <ScriptsContainer show={showScripts} />
-      </nav>
+      </aside>
     </>
   )
 }

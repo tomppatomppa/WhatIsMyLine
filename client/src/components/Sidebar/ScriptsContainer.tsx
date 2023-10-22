@@ -1,4 +1,8 @@
-import { useScripts, useSetActiveScriptId } from 'src/store/scriptStore'
+import {
+  useDeleteScript,
+  useScripts,
+  useSetActiveScriptId,
+} from 'src/store/scriptStore'
 import { ScriptList } from './ScriptList'
 import EmptyScriptList from '../EmptyScriptList'
 
@@ -7,8 +11,14 @@ interface ScriptContainerProps {
 }
 const ScriptsContainer = ({ show }: ScriptContainerProps) => {
   const scripts = useScripts()
-
   const setActiveScript = useSetActiveScriptId()
+  const deleteScript = useDeleteScript()
+
+  const scriptProps = {
+    scripts: scripts,
+    setActiveScript: setActiveScript,
+    deleteScript: deleteScript,
+  }
 
   return show ? (
     <div
@@ -18,11 +28,7 @@ const ScriptsContainer = ({ show }: ScriptContainerProps) => {
           : 'opacity-0 transition-opacity duration-300 max-h-0'
       }`}
     >
-      {scripts ? (
-        <ScriptList scripts={scripts} setActiveScript={setActiveScript} />
-      ) : (
-        <EmptyScriptList />
-      )}
+      {scripts.length ? <ScriptList {...scriptProps} /> : <EmptyScriptList />}
     </div>
   ) : null
 }
