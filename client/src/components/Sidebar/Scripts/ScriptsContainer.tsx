@@ -8,6 +8,7 @@ import EmptyScriptList from '../../EmptyScriptList'
 
 interface ScriptContainerProps {
   show: boolean
+  children?: React.ReactNode
 }
 
 const ScriptsContainer = ({ show }: ScriptContainerProps) => {
