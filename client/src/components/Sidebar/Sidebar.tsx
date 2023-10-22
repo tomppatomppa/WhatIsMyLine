@@ -62,9 +62,11 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-      <ScriptsContainer show={showScripts}>
-        <FileUpload />
-      </ScriptsContainer>
+      <div className={` ${showScripts ? '' : 'hidden '}`}>
+        <ScriptsContainer>
+          <FileUpload />
+        </ScriptsContainer>
+      </div>
     </aside>
   )
 }
