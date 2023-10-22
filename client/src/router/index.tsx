@@ -1,11 +1,11 @@
 import { createBrowserRouter, useNavigate } from 'react-router-dom'
-import ReaderPage from '../containers/ReaderPage'
 import MainLayout from '../layout/MainLayout'
 import { ProtectedRoute } from './ProtectedRoute'
 import LoginView from 'src/views/LoginView'
 import LandingView from '../views/LandingView'
 import { useEffect } from 'react'
 import { useAuth } from 'src/store/userStore'
+import ReaderView from '../containers/ReaderView'
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <ReaderPage />,
+        element: <ReaderView />,
       },
     ],
   },

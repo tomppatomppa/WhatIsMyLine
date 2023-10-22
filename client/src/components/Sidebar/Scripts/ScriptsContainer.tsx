@@ -11,7 +11,7 @@ interface ScriptContainerProps {
   children?: React.ReactNode
 }
 
-const ScriptsContainer = ({ show }: ScriptContainerProps) => {
+const ScriptsContainer = ({ show, children }: ScriptContainerProps) => {
   const scripts = useScripts()
   const setActiveScript = useSetActiveScriptId()
   const deleteScript = useDeleteScript()
@@ -24,12 +24,13 @@ const ScriptsContainer = ({ show }: ScriptContainerProps) => {
 
   return show ? (
     <div
-      className={`flex flex-col h-full ${
+      className={`flex flex-col h-full gap-4 ${
         show
           ? 'opacity-100 transition-opacity duration-300 max-h-96'
           : 'opacity-0 transition-opacity duration-300 max-h-0'
       }`}
     >
+      {children}
       {scripts.length ? <ScriptList {...scriptProps} /> : <EmptyScriptList />}
     </div>
   ) : null

@@ -29,7 +29,7 @@ const LocalFilePicker = ({
         onChange={handleFileChange}
       />
       <button className={className} onClick={handleClick}>
-        <AiOutlineUpload size={24} />
+        <AiOutlineUpload color={'gray'} size={24} />
       </button>
     </Tooltip>
   )

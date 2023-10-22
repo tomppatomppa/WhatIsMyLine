@@ -10,7 +10,7 @@ export function Loader() {
   return useAuth()
 }
 
-const ReaderPage = () => {
+const ReaderView = () => {
   const { reorderScenes, reorderLines } = useScriptStore((state) => state)
   const script = useActiveScript()
   const [orderHistory, setOrderHistory] = useState<OrderHistory[]>([])
@@ -59,4 +59,4 @@ const ReaderPage = () => {
   )
 }
 
-export default ReaderPage
+export default ReaderView

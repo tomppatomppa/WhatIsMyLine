@@ -52,7 +52,7 @@ const GooglePicker = ({
   ) : (
     <Tooltip text="Google Drive">
       <button className={className} onClick={() => handleOpenPicker()}>
-        <FaGoogleDrive size={22} />
+        <FaGoogleDrive color="gray" size={22} />
       </button>
     </Tooltip>
   )

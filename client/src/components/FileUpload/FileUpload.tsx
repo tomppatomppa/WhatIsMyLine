@@ -23,24 +23,23 @@ const FileUpload = () => {
   })
 
   return (
-    <div className="w-full h-14 bg-gray-700 text-white items-center p-2 flex justify-start">
-      <div className="flex-1 text-start">{file ? '' : 'Upload File'}</div>
-      <div className="flex gap-2">
+    <div className="w-full h-14 items-center p-2 flex justify-start">
+      <div className="flex gap-2 w-full justify-end items-center">
         {!file ? (
           <>
             <TestfilePicker
-              className="hover:bg-gray-600 p-2 rounded-md"
+              className=" p-2 rounded-md"
               handleFileChange={(file: File) => setFile(file)}
             />
             <GooglePicker
-              className="hover:bg-gray-600 p-2 rounded-md"
+              className=" p-2 rounded-md"
               onFileSelect={async (file: File) => {
                 if (file) setFile(file)
               }}
               access_token={access_token}
             />
             <LocalFilePicker
-              className="hover:bg-gray-600 p-2 rounded-md"
+              className=" p-2 rounded-md"
               handleFileChange={(e) => {
                 if (e.target.files) {
                   setFile(e.target.files[0])
@@ -62,7 +61,7 @@ const FileUpload = () => {
                 }
               }}
             />
-            <button onClick={() => setFile(null)}>cancel</button>
+            <button onClick={() => setFile(null)}>Cancel</button>
           </>
         )}
       </div>

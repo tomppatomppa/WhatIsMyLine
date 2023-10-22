@@ -4,7 +4,7 @@ import { deleteScriptById, fetchAllUserScripts } from 'src/API/scriptApi'
 import EmptyScriptList from 'src/components/EmptyScriptList'
 import { Script } from 'src/components/ReaderV3/reader.types'
 import ScriptList from 'src/components/ScriptList'
-import FileUpload from 'src/containers/FileUpload'
+import FileUpload from 'src/components/FileUpload/FileUpload'
 import {
   useDeleteScript,
   useScriptStore,
