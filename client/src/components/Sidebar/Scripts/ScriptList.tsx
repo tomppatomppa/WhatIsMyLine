@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { SearchBox } from './SearchBox'
-import { Script } from '../ReaderV3/reader.types'
+import { Script } from '../../ReaderV3/reader.types'
 
-import TrashButton from '../common/buttons/TrashButton'
+import TrashButton from '../../common/buttons/TrashButton'
 
 interface ScriptListItemProps {
   children?: React.ReactNode
@@ -15,13 +15,7 @@ interface ScriptListItemProps {
 const ScriptListItem = ({ ...props }: ScriptListItemProps) => {
   const { children, className = '', active = '', isActive = false } = props
 
-  const [pathname, setPathname] = useState('/')
-
   const activeClass = isActive ? active : ''
-
-  useEffect(() => {
-    setPathname(window.location.pathname)
-  }, [props])
 
   return (
     <button {...props} className={`${activeClass} ${className}`}>

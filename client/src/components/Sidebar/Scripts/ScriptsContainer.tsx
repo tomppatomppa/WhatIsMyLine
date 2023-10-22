@@ -4,11 +4,12 @@ import {
   useSetActiveScriptId,
 } from 'src/store/scriptStore'
 import { ScriptList } from './ScriptList'
-import EmptyScriptList from '../EmptyScriptList'
+import EmptyScriptList from '../../EmptyScriptList'
 
 interface ScriptContainerProps {
   show: boolean
 }
+
 const ScriptsContainer = ({ show }: ScriptContainerProps) => {
   const scripts = useScripts()
   const setActiveScript = useSetActiveScriptId()

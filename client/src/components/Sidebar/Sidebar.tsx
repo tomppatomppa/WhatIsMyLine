@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
 
-import Footer from './Footer'
-
-import ScriptsContainer from './ScriptsContainer'
+import ScriptsContainer from './Scripts/ScriptsContainer'
+import SidebarFooter from './SidebarFooter'
+import SidebarButton from './SidebarButton'
 
 const Sidebar = () => {
   const profileRef = useRef()
@@ -65,21 +65,18 @@ const Sidebar = () => {
             <ul className="px-4 text-sm font-medium flex-1">
               {navigation.map((item, idx) => (
                 <li key={idx}>
-                  <button
-                    onClick={item.onClick}
-                    className="relative mx-auto flex items-center justify-center gap-x-2 text-gray-600 p-2 rounded-lg  hover:bg-gray-50 active:bg-gray-100 duration-150 group"
-                  >
+                  <SidebarButton onClick={item.onClick}>
                     <div className="text-gray-500">{item.icon}</div>
                     <span className="absolute left-14 p-1 px-1.5 rounded-md whitespace-nowrap text-xs text-white bg-gray-800 hidden group-hover:inline-block group-focus:hidden duration-150">
                       {item.name}
                     </span>
-                  </button>
+                  </SidebarButton>
                 </li>
               ))}
             </ul>
             <div>
-              <Footer />
-              <div className="relative py-4 px-4 border-t">
+              <SidebarFooter />
+              {/* <div className="relative py-4 px-4 border-t">
                 <button
                   ref={profileRef as any}
                   className="w-12 h-12 flex items-center gap-x-4 cursor-pointer rounded-full ring-offset-2 ring-gray-800 focus:ring-2 duration-150"
@@ -131,11 +128,10 @@ const Sidebar = () => {
                 ) : (
                   ''
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
-
         <ScriptsContainer show={showScripts} />
       </aside>
     </>
