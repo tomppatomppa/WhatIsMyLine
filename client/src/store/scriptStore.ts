@@ -2,7 +2,12 @@ import { Scene, Script } from 'src/components/ReaderV3/reader.types'
 import { StateCreator, create } from 'zustand'
 import { swapLines, swapScenes } from './helpers'
 import { devtools, persist } from 'zustand/middleware'
-import { addScript, fetchAllUserScripts, updateScript } from 'src/API/scriptApi'
+import {
+  addScript,
+  deleteScriptById,
+  fetchAllUserScripts,
+  updateScript,
+} from 'src/API/scriptApi'
 import { findChangedScripts, getSceneNumber } from 'src/utils/helpers'
 
 export type RootFolder = {
@@ -141,10 +146,16 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
       ),
     })),
 
-  deleteScriptByUuid: (id: string) =>
-    set((state) => ({
-      scripts: state.scripts.filter((script) => script.script_id !== id),
-    })),
+  deleteScriptByUuid: async (id: string) => {
+    try {
+      await deleteScriptById(id)
+      set((state) => ({
+        scripts: state.scripts.filter((script) => script.script_id !== id),
+      }))
+    } catch (e) {
+      console.log('Something went wrong deleting script')
+    }
+  },
 })
 
 export const useScriptStore = create<ScriptState & ScriptActions>()(

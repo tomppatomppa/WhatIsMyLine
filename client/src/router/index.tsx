@@ -5,7 +5,7 @@ import LoginView from 'src/views/LoginView'
 import LandingView from '../views/LandingView'
 import { useEffect } from 'react'
 import { useAuth } from 'src/store/userStore'
-import ReaderView from '../containers/ReaderView'
+import ReaderView from '../views/ReaderView'
 
 export const router = createBrowserRouter([
   {
