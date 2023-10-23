@@ -6,11 +6,10 @@ import {
   useSetScripts,
 } from 'src/store/scriptStore'
 import { ScriptList } from './ScriptList'
-import EmptyScriptList from '../../EmptyScriptList'
+import EmptyScriptList from './EmptyScriptList'
 import { useQuery } from 'react-query'
 import { fetchAllUserScripts } from 'src/API/scriptApi'
 import { Script } from 'src/components/ReaderV3/reader.types'
-import { isCurrentUserScripts } from 'src/utils/helpers'
 import Spinner from 'src/components/common/Spinner'
 
 interface ScriptContainerProps {
@@ -23,9 +22,6 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
   const setActiveScript = useSetActiveScriptId()
   const deleteScript = useDeleteScript()
 
-  //TODO: remove this
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { updateDatabaseWithLocalChanges, unsavedChanges } = useScriptStore()
   const scriptProps = {
     scripts: scripts,
     setActiveScript: setActiveScript,
@@ -36,7 +32,6 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
     onSuccess: async (data: Script[]) => {
       setScripts(data)
     },
-
     refetchOnWindowFocus: false,
   })
 

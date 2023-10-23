@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import Card from 'src/components/Card'
+
 import Button from 'src/components/common/Button'
 import GithubIcon from 'src/components/icons/GithubIcon'
 import GridLayout from 'src/layout/GridLayout'
@@ -11,6 +11,8 @@ import {
   AiTwotoneAlert,
 } from 'react-icons/ai'
 import { useAuth } from 'src/store/userStore'
+import Card from 'src/components/Card'
+
 const heroVideo = require('../assets/video/hero_video.mp4')
 
 const Heading = () => {

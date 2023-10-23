@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import EmptyScriptList from './EmptyScriptList'
+import EmptyScriptList from '../Scripts/EmptyScriptList'
 
 describe('EmptyScriptList.tsx', () => {
   test('should render message', async () => {
