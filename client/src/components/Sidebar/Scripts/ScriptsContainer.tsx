@@ -1,7 +1,6 @@
 import {
   useActiveScript,
   useDeleteScript,
-  useScriptStore,
   useScripts,
   useSetActiveScriptId,
   useSetScripts,
@@ -11,9 +10,9 @@ import EmptyScriptList from './EmptyScriptList'
 import { useQuery } from 'react-query'
 import { fetchAllUserScripts } from 'src/API/scriptApi'
 import { Script } from 'src/components/ReaderV3/reader.types'
-import Spinner from 'src/components/common/Spinner'
+
 import { useState } from 'react'
-import { SearchBox } from './SearchBox'
+import { SearchBox } from '../../common/SearchBox'
 
 interface ScriptContainerProps {
   children?: React.ReactNode

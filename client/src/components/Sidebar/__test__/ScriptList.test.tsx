@@ -43,8 +43,7 @@ test('renders correct number of list items', async () => {
       deleteScript={() => {}}
     />
   )
-  // eslint-disable-next-line testing-library/no-debugging-utils
-  screen.debug()
+
   expect(await screen.findAllByRole('listitem')).toHaveLength(scripts.length)
 })
 
