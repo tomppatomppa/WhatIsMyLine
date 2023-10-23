@@ -17,7 +17,7 @@ const Sidebar = () => {
       onClick: () => {
         setShowScripts(() => !showScripts)
       },
-      name: 'Scripts',
+      name: 'All Scripts',
       icon: <ScriptsIcon />,
     },
   ]

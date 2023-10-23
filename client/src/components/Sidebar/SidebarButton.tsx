@@ -4,6 +4,7 @@ interface SidebarButtonProps {
   onClick: () => void
   children: React.ReactNode
 }
+
 const SidebarButton = ({ onClick, children }: SidebarButtonProps) => {
   return (
     <button

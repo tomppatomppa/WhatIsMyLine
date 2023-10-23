@@ -39,7 +39,6 @@ export const ScriptList = ({
                 className="flex items-center w-full py-2 px-4 border-l hover:border-indigo-600 hover:text-gray-900 duration-150"
               >
                 {filename}
-                <p className="flex-1" />
               </ScriptListItem>
               <TrashButton onClick={() => deleteScript(script_id)} />
             </li>

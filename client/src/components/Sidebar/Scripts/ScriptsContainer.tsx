@@ -11,6 +11,7 @@ import { useQuery } from 'react-query'
 import { fetchAllUserScripts } from 'src/API/scriptApi'
 import { Script } from 'src/components/ReaderV3/reader.types'
 import { isCurrentUserScripts } from 'src/utils/helpers'
+import Spinner from 'src/components/common/Spinner'
 
 interface ScriptContainerProps {
   children?: React.ReactNode
@@ -30,16 +31,12 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
     setActiveScript: setActiveScript,
     deleteScript: deleteScript,
   }
-  //TODO: remove, use database as only source
-  useQuery(['scripts'], () => fetchAllUserScripts(), {
+
+  const { isFetching } = useQuery(['scripts'], () => fetchAllUserScripts(), {
     onSuccess: async (data: Script[]) => {
-      if (unsavedChanges && isCurrentUserScripts(data, scripts)) {
-        setScripts(scripts)
-      } else {
-        setScripts(data)
-      }
+      setScripts(data)
     },
-    retry: false,
+
     refetchOnWindowFocus: false,
   })
 
@@ -48,6 +45,7 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
       className={`flex flex-col h-full gap-4 ${'opacity-100 transition-opacity duration-300 max-h-96'}`}
     >
       {children}
+      <Spinner show={isFetching} />
       {scripts.length ? <ScriptList {...scriptProps} /> : <EmptyScriptList />}
     </div>
   )
