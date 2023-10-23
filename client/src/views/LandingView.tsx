@@ -4,7 +4,6 @@ import Button from 'src/components/common/Button'
 import GithubIcon from 'src/components/icons/GithubIcon'
 import GridLayout from 'src/layout/GridLayout'
 import {
-  AiOutlineClose,
   AiOutlineUpload,
   AiOutlineGoogle,
   AiOutlineEdit,
