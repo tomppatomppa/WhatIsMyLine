@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import App from './App'
+import App from './App.tsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { MutationCache, QueryClient, QueryClientProvider } from 'react-query'
 
-import { removeCookie } from './utils/helpers'
+import { removeCookie } from './utils/helpers.ts'
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({

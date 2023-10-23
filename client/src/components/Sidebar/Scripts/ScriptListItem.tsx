@@ -8,7 +8,7 @@ interface ScriptListItemProps {
 }
 
 const ScriptListItem = ({ ...props }: ScriptListItemProps) => {
-  const { children, isActiveScript = false } = props
+  const { children, isActiveScript = false, ...rest } = props
 
   const active = 'text-gray-900 border-indigo-600'
 
@@ -16,7 +16,7 @@ const ScriptListItem = ({ ...props }: ScriptListItemProps) => {
 
   return (
     <li
-      {...props}
+      {...rest}
       className={`${activeClass} flex items-center w-full py-2 px-4 border-l hover:border-indigo-600 hover:text-gray-900 duration-150`}
     >
       {children}

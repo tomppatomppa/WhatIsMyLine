@@ -62,7 +62,7 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-      <div className={` ${showScripts ? '' : 'hidden '}`}>
+      <div className={` ${showScripts ? '' : 'hidden'}`}>
         <ScriptsContainer>
           <FileUpload />
         </ScriptsContainer>

@@ -20,8 +20,9 @@ interface ScriptContainerProps {
 
 const ScriptsContainer = ({ children }: ScriptContainerProps) => {
   const [search, setSearch] = useState('')
-  const scripts = useScripts()
-  const setScripts = useSetScripts()
+  //const scripts = useScripts()
+  const [scripts, setScripts] = useState<Script[]>([])
+  //const setScripts = useSetScripts()
   const setActiveScript = useSetActiveScriptId()
   const activeScript = useActiveScript()
   const deleteScript = useDeleteScript()
