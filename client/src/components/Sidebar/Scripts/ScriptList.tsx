@@ -18,20 +18,10 @@ export const ScriptList = ({
   setActiveScript,
   deleteScript,
 }: ScriptListProps) => {
-  const [search, setSearch] = useState('')
-
-  const filteredScripts =
-    scripts.filter(({ filename }) =>
-      filename.toLowerCase().includes(search.toLowerCase())
-    ) || []
-
   return (
     <div className="text-gray-600 md:px-8">
-      <div className="px-4 md:px-8 sticky">
-        <SearchBox setSearch={setSearch} />
-      </div>
       <ul className=" overflow-y-auto max-h-screen pt-6">
-        {filteredScripts?.map(
+        {scripts?.map(
           ({ filename, script_id }, idx: React.Key | null | undefined) => (
             <li className="flex" key={idx}>
               <ScriptListItem
