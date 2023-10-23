@@ -20,9 +20,9 @@ interface ScriptContainerProps {
 
 const ScriptsContainer = ({ children }: ScriptContainerProps) => {
   const [search, setSearch] = useState('')
-  //const scripts = useScripts()
-  const [scripts, setScripts] = useState<Script[]>([])
-  //const setScripts = useSetScripts()
+  const scripts = useScripts()
+
+  const setScripts = useSetScripts()
   const setActiveScript = useSetActiveScriptId()
   const activeScript = useActiveScript()
   const deleteScript = useDeleteScript()
@@ -32,13 +32,6 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
       filename.toLowerCase().includes(search.toLowerCase())
     ) || []
 
-  const scriptProps = {
-    scripts: filteredScripts,
-    activeScriptId: activeScript?.script_id,
-    setActiveScript: setActiveScript,
-    deleteScript: deleteScript,
-  }
-
   useQuery(['scripts'], () => fetchAllUserScripts(), {
     onSuccess: async (data: Script[]) => {
       setScripts(data)
@@ -46,6 +39,12 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
     refetchOnWindowFocus: false,
   })
 
+  const scriptProps = {
+    scripts: filteredScripts,
+    activeScriptId: activeScript?.script_id,
+    setActiveScript: setActiveScript,
+    deleteScript: deleteScript,
+  }
   return (
     <div
       className={`flex flex-col h-full gap-4 ${'opacity-100 transition-opacity duration-300 max-h-96'}`}
@@ -54,7 +53,11 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
       <div className="px-4 md:px-8 sticky">
         <SearchBox setSearch={setSearch} />
       </div>
-      {scripts.length ? <ScriptList {...scriptProps} /> : <EmptyScriptList />}
+      {filteredScripts.length ? (
+        <ScriptList {...scriptProps} />
+      ) : (
+        <EmptyScriptList />
+      )}
     </div>
   )
 }

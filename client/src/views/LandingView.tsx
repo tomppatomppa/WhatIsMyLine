@@ -11,7 +11,7 @@ import {
   AiTwotoneAlert,
 } from 'react-icons/ai'
 import { useAuth } from 'src/store/userStore'
-import Card from 'src/components/Card'
+import Card from 'src/components/common/Card'
 
 const heroVideo = require('../assets/video/hero_video.mp4')
 

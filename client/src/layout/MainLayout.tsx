@@ -5,7 +5,6 @@ const MainLayout = () => {
   return (
     <div className="text-center">
       <nav className="sticky z-10 bottom-0 shadow-md flex w-full justify-start bg-primary">
-        {/* <Navbar /> */}
         <Sidebar />
       </nav>
       <section className="mr-25">

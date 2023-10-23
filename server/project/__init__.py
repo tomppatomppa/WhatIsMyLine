@@ -22,7 +22,7 @@ def create_app():
     app.config.from_object(config_type)
 
     app.config["JWT_COOKIE_SECURE"] = False
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
     
     CORS(app, supports_credentials=True)
@@ -33,7 +33,6 @@ def create_app():
     register_request_handlers(app)
     register_blueprints(app)
     
- 
     return app
 
 def initialize_extensions(app):
@@ -65,7 +64,7 @@ def register_request_handlers(app):
         try:
             exp_timestamp = get_jwt()["exp"]
             now = datetime.now(timezone.utc)
-            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+            target_timestamp = datetime.timestamp(now + timedelta(hours=12))
          
             if target_timestamp > exp_timestamp:
                 access_token = create_access_token(identity=get_jwt_identity())
@@ -83,17 +82,13 @@ def register_blueprints(app):
     def catch_all(path):   
         return render_template('index.html')
     
-
-   
     from .users import users_blueprint
     from .scripts import scripts_blueprint
     from .google import google_blueprint
     from .upload import upload_blueprint
    
     app.register_blueprint(users_blueprint, url_prefix="/api")
-
     app.register_blueprint(scripts_blueprint, url_prefix='/api')
-    
     app.register_blueprint(google_blueprint, url_prefix='/api')
     app.register_blueprint(upload_blueprint, url_prefix='/api')
 

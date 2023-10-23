@@ -44,6 +44,7 @@ def login():
 @users_blueprint.route("/refresh-token", methods=["POST"])
 @jwt_required()
 def refresh():
+    
     try:
         user_id = get_jwt_identity()
        
@@ -131,9 +132,7 @@ def refresh_access_token(refresh_token):
         'grant_type': 'refresh_token'
     }
     try:
-        
         response = requests.post('https://oauth2.googleapis.com/token', data=payload)
-        
         response.raise_for_status()
         token_data = response.json()
         
