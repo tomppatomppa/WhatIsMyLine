@@ -1,4 +1,5 @@
 import {
+  useActiveScript,
   useDeleteScript,
   useScriptStore,
   useScripts,
@@ -20,10 +21,12 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
   const scripts = useScripts()
   const setScripts = useSetScripts()
   const setActiveScript = useSetActiveScriptId()
+  const activeScript = useActiveScript()
   const deleteScript = useDeleteScript()
 
   const scriptProps = {
     scripts: scripts,
+    activeScriptId: activeScript?.script_id,
     setActiveScript: setActiveScript,
     deleteScript: deleteScript,
   }
