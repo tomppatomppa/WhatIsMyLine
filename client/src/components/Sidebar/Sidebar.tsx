@@ -62,11 +62,12 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-      <div className={` ${showScripts ? '' : 'hidden'}`}>
+      {/* {'If more menu items, add context'} */}
+      {showScripts ? (
         <ScriptsContainer>
           <FileUpload />
         </ScriptsContainer>
-      </div>
+      ) : null}
     </aside>
   )
 }

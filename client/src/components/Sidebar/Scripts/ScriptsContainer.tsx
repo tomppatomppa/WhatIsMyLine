@@ -45,10 +45,9 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
     setActiveScript: setActiveScript,
     deleteScript: deleteScript,
   }
+
   return (
-    <div
-      className={`flex flex-col h-full gap-4 ${'opacity-100 transition-opacity duration-300 max-h-96'}`}
-    >
+    <div className={`flex flex-col h-full gap-4`}>
       {children}
       <div className="px-4 md:px-8 sticky">
         <SearchBox setSearch={setSearch} />
