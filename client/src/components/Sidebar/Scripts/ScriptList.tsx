@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import { SearchBox } from './SearchBox'
 import { Script } from '../../ReaderV3/reader.types'
 
 import TrashButton from '../../common/buttons/TrashButton'
@@ -21,21 +19,17 @@ export const ScriptList = ({
   return (
     <div className="text-gray-600 md:px-8">
       <ul className=" overflow-y-auto max-h-screen pt-6">
-        {scripts?.map(
-          ({ filename, script_id }, idx: React.Key | null | undefined) => (
-            <li className="flex" key={idx}>
-              <ScriptListItem
-                onClick={() => setActiveScript(script_id)}
-                isActive={activeScriptId === script_id}
-                active="text-gray-900 border-indigo-600"
-                className="flex items-center w-full py-2 px-4 border-l hover:border-indigo-600 hover:text-gray-900 duration-150"
-              >
-                {filename}
-              </ScriptListItem>
-              <TrashButton onClick={() => deleteScript(script_id)} />
-            </li>
-          )
-        )}
+        {scripts?.map(({ filename, script_id }, idx) => (
+          <ScriptListItem
+            key={idx}
+            id={`script-list-item-${idx}`}
+            isActive={activeScriptId === script_id}
+            onClick={() => setActiveScript(script_id)}
+          >
+            <span className="flex-1 text-start">{filename}</span>
+            <TrashButton onClick={() => deleteScript(script_id)} />
+          </ScriptListItem>
+        ))}
       </ul>
     </div>
   )

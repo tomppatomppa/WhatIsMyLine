@@ -1,24 +1,26 @@
 import React from 'react'
 
 interface ScriptListItemProps {
+  id: string
   children?: React.ReactNode
   isActive: boolean
-  className: string
-  active: string
   onClick: () => void
 }
 
 const ScriptListItem = ({ ...props }: ScriptListItemProps) => {
-  const { children, className = '', active = '', isActive = false } = props
+  const { children, isActive = false } = props
+
+  const active = 'text-gray-900 border-indigo-600'
 
   const activeClass = isActive ? active : ''
 
   return (
-    <>
-      <button {...props} className={`${activeClass} ${className}`}>
-        {children}
-      </button>
-    </>
+    <li
+      {...props}
+      className={`${activeClass} flex items-center w-full py-2 px-4 border-l hover:border-indigo-600 hover:text-gray-900 duration-150`}
+    >
+      {children}
+    </li>
   )
 }
 export default ScriptListItem

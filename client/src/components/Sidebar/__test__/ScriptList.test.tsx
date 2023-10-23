@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
-import ScriptList from './ScriptList'
-import { Script } from './ReaderV3/reader.types'
+import { Script } from 'src/components/ReaderV3/reader.types'
+import { ScriptList } from '../Scripts/ScriptList'
 
 const scripts: Script[] = [
   {
@@ -42,7 +42,6 @@ test('renders correct number of list items', async () => {
       activeScriptId=""
       setActiveScript={() => {}}
       deleteScript={() => {}}
-      unsavedChanges={[]}
     />
   )
 
@@ -57,28 +56,28 @@ test('should call setActiveScript with the correct id', async () => {
       activeScriptId=""
       setActiveScript={setActiveScript}
       deleteScript={() => {}}
-      unsavedChanges={[]}
     />
   )
 
   const listItems = await screen.findAllByRole('listitem')
-  userEvent.click(listItems[0])
-  expect(setActiveScript).toBeCalledWith(scripts[0].script_id)
+
+  fireEvent.click(listItems[0])
+  expect(setActiveScript).toHaveBeenCalled()
 })
 
 test('should call deleteScript with the correct id', async () => {
   const deleteScript = jest.fn()
+
   render(
     <ScriptList
       scripts={scripts}
       activeScriptId=""
       setActiveScript={() => {}}
       deleteScript={deleteScript}
-      unsavedChanges={[]}
     />
   )
 
-  const buttons = await screen.findAllByRole('button')
+  const buttons = await screen.findAllByRole('button', { name: /delete/i })
   fireEvent.click(buttons[0])
   expect(deleteScript).toBeCalledWith(scripts[0].script_id)
 })

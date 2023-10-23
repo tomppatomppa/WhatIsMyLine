@@ -31,6 +31,7 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
     scripts.filter(({ filename }) =>
       filename.toLowerCase().includes(search.toLowerCase())
     ) || []
+
   const scriptProps = {
     scripts: filteredScripts,
     activeScriptId: activeScript?.script_id,
@@ -38,7 +39,7 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
     deleteScript: deleteScript,
   }
 
-  const { isFetching } = useQuery(['scripts'], () => fetchAllUserScripts(), {
+  useQuery(['scripts'], () => fetchAllUserScripts(), {
     onSuccess: async (data: Script[]) => {
       setScripts(data)
     },
@@ -53,7 +54,6 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
       <div className="px-4 md:px-8 sticky">
         <SearchBox setSearch={setSearch} />
       </div>
-      <Spinner show={isFetching} />
       {scripts.length ? <ScriptList {...scriptProps} /> : <EmptyScriptList />}
     </div>
   )

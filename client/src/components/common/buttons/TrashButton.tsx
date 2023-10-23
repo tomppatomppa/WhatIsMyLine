@@ -11,9 +11,10 @@ const TrashButton = ({ onClick }: TrashButtonProps) => {
         e.stopPropagation()
         onClick()
       }}
-      className="w-6 flex-0 mx-auto flex items-center"
+      className="w-6 flex-none mx-auto flex items-center"
     >
       <AiOutlineDelete color="red" />
+      <span className="hidden">Delete</span>
     </button>
   )
 }
