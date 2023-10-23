@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { Script } from 'src/components/ReaderV3/reader.types'
 import { ScriptList } from '../Scripts/ScriptList'
@@ -44,12 +43,14 @@ test('renders correct number of list items', async () => {
       deleteScript={() => {}}
     />
   )
-
+  // eslint-disable-next-line testing-library/no-debugging-utils
+  screen.debug()
   expect(await screen.findAllByRole('listitem')).toHaveLength(scripts.length)
 })
 
 test('should call setActiveScript with the correct id', async () => {
   const setActiveScript = jest.fn()
+
   render(
     <ScriptList
       scripts={scripts}
@@ -62,7 +63,7 @@ test('should call setActiveScript with the correct id', async () => {
   const listItems = await screen.findAllByRole('listitem')
 
   fireEvent.click(listItems[0])
-  expect(setActiveScript).toHaveBeenCalled()
+  expect(setActiveScript).toHaveBeenCalledWith(scripts[0].script_id)
 })
 
 test('should call deleteScript with the correct id', async () => {

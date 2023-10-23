@@ -3,16 +3,16 @@ import React from 'react'
 interface ScriptListItemProps {
   id: string
   children?: React.ReactNode
-  isActive: boolean
+  isActiveScript: boolean
   onClick: () => void
 }
 
 const ScriptListItem = ({ ...props }: ScriptListItemProps) => {
-  const { children, isActive = false } = props
+  const { children, isActiveScript = false } = props
 
   const active = 'text-gray-900 border-indigo-600'
 
-  const activeClass = isActive ? active : ''
+  const activeClass = isActiveScript ? active : ''
 
   return (
     <li

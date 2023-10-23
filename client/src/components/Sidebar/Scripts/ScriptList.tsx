@@ -23,7 +23,7 @@ export const ScriptList = ({
           <ScriptListItem
             key={idx}
             id={`script-list-item-${idx}`}
-            isActive={activeScriptId === script_id}
+            isActiveScript={activeScriptId === script_id}
             onClick={() => setActiveScript(script_id)}
           >
             <span className="flex-1 text-start">{filename}</span>
