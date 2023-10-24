@@ -8,19 +8,24 @@ import { DeleteIcon } from '../../../icons'
 import { ConditionalField } from '../../../common/ConditionalField'
 import { FormikTextArea } from './FormikTextArea'
 
-import PanelWidget from '../PanelWidget/PanelWidget'
-import PanelComponent from '../PanelWidget/PanelComponent'
 import LineField from './LineField'
 
 interface EditorFormProps {
+  children?: React.ReactNode
   scene: Scene
   onSubmit: (scene: Scene) => void
   deleteLine: (lineIndex: number) => void
 }
 
-const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
+const SceneForm = ({
+  scene,
+  onSubmit,
+  deleteLine,
+  children,
+}: EditorFormProps) => {
   const { options } = useReaderContext()
   const isEditing = options.isEditing.includes(scene.id)
+  const formState = isEditing ? 'border-red-700' : 'border-green-300'
 
   const getLineStyle = (type: LineType) => {
     const style = options.settings[type.toLowerCase()].style
@@ -33,11 +38,7 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
   }
 
   return (
-    <div
-      className={`border-l-4 ${
-        isEditing ? 'border-red-700' : 'border-green-300'
-      }`}
-    >
+    <div className={`border-l-4 ${formState}`}>
       <Formik
         enableReinitialize={true}
         initialValues={scene}
@@ -47,10 +48,9 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
       >
         {({ values }) => (
           <Drop key={scene.id} id={scene.id} type="droppable-item">
+            {/* PanelWidget */}
+            {children}
             <Form autoComplete="off">
-              {/* <PanelWidget>
-                <PanelComponent />
-              </PanelWidget> */}
               {values.data.map((line: any, lineIndex: number) => (
                 <Drag
                   className="mt-3"

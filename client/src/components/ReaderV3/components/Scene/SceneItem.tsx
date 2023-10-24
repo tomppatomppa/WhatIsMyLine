@@ -2,6 +2,10 @@ import { Scene } from '../../reader.types'
 import { Drag } from 'src/components/drag-and-drop'
 import { useUpdateScript } from 'src/store/scriptStore'
 import SceneForm from './SceneForm'
+import { ConditionalField } from 'src/components/common/ConditionalField'
+import PanelWidget from '../PanelWidget/PanelWidget'
+import PanelComponent from '../PanelWidget/PanelComponent'
+import { useState } from 'react'
 
 interface SceneItemProps {
   scene: Scene
@@ -30,22 +34,25 @@ const SceneItem = ({
 
   return (
     <Drag
+      id={scene.id}
       className="flex justify-center items-center my-4 px-1 mx-auto"
       key={scene.id}
-      id={scene.id}
       index={sceneIndex}
-      isDragDisabled={false}
+      isDragDisabled={false} //Add to global settings
     >
       <div className="lg:w-2/3 w-full mx-auto">
         <SceneHeader title={scene.id} onClick={handleSetExpanded} />
-
-        {show ? (
+        <ConditionalField show={show} onCollapse={() => {}} onShow={() => {}}>
           <SceneForm
             scene={scene}
             onSubmit={onSubmit}
             deleteLine={handleDeleteLine}
-          />
-        ) : null}
+          >
+            <PanelWidget>
+              <PanelComponent />
+            </PanelWidget>
+          </SceneForm>
+        </ConditionalField>
       </div>
     </Drag>
   )
