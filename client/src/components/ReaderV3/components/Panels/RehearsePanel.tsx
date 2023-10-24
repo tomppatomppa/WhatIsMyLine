@@ -94,7 +94,7 @@ const RehearsePanel = () => {
           message={`Something went wrong while creating audio for ${values.id}`}
         />
       </Modal>
-      <div className="flex flex-1 ">
+      <div className="flex flex-1">
         <button
           onClick={() => refetch()}
           className={`${isFetching ? 'text-gray-400 animate-spin' : ''} `}
@@ -122,7 +122,7 @@ const RehearsePanel = () => {
           />
         </Wrapper>
       </Dropdown>
-      {audioFiles && !isFetching ? (
+      {audioFiles ? (
         <ComponentWhenValid values={values} labeled={labeled} />
       ) : (
         <button

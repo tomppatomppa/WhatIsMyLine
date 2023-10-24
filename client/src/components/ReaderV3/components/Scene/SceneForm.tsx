@@ -48,9 +48,9 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
         {({ values }) => (
           <Drop key={scene.id} id={scene.id} type="droppable-item">
             <Form autoComplete="off">
-              <PanelWidget>
+              {/* <PanelWidget>
                 <PanelComponent />
-              </PanelWidget>
+              </PanelWidget> */}
               {values.data.map((line: any, lineIndex: number) => (
                 <Drag
                   className="mt-3"
