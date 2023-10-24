@@ -60,6 +60,7 @@ const SceneForm = ({
                   isDragDisabled={false}
                 >
                   <div className="w-full flex flex-col" key={lineIndex}>
+                    {/* Show when edit is enabled */}
                     <ConditionalField
                       key={lineIndex}
                       show={isEditing}
@@ -87,6 +88,7 @@ const SceneForm = ({
                         </button>
                       </div>
                     </ConditionalField>
+                    {/* Line type e.g ACTOR | INFO */}
                     <LineField
                       id={`${line.id}`}
                       style={getLineStyle(line.type)}
@@ -94,6 +96,7 @@ const SceneForm = ({
                       name={`data[${lineIndex}].name`}
                       scrollToElementId={options.currentScrollTarget}
                     />
+                    {/* Line text */}
                     <FormikTextArea
                       style={{
                         ...getLineStyle(line.type),

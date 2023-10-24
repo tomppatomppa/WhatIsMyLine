@@ -5,7 +5,6 @@ import SceneForm from './SceneForm'
 import { ConditionalField } from 'src/components/common/ConditionalField'
 import PanelWidget from '../PanelWidget/PanelWidget'
 import PanelComponent from '../PanelWidget/PanelComponent'
-import { useState } from 'react'
 
 interface SceneItemProps {
   scene: Scene
@@ -20,6 +19,7 @@ const SceneItem = ({
   handleSetExpanded,
   show,
 }: SceneItemProps) => {
+  //TODO: add show as localstate [show, setShow] = useState(false)
   const updateScript = useUpdateScript()
 
   const onSubmit = (updatedScene: Scene) => {
@@ -62,11 +62,12 @@ interface SceneHeaderProps {
   onClick: () => void
   title: string
 }
+
 const SceneHeader = ({ title, onClick }: SceneHeaderProps) => {
   return (
     <h2
       onClick={onClick}
-      className="border p-4 w-full bg-primaryLight border-primary"
+      className="border font-semibold p-4 w-full bg-primaryLight border-primary"
     >
       {title}
     </h2>
