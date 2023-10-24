@@ -12,7 +12,7 @@ const Dropdown = ({ title, children, className }: DropdownProps) => {
   const targetRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div className={` text-left  items-center self-center p-2`}>
+    <div className={` text-left items-center self-center p-2`}>
       <div>
         <button
           onClick={() => isOpen(!open)}

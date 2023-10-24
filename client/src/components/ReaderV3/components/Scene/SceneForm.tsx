@@ -7,7 +7,6 @@ import { Drag } from 'src/components/drag-and-drop'
 import { DeleteIcon } from '../../../icons'
 import { ConditionalField } from '../../../common/ConditionalField'
 import { FormikTextArea } from './FormikTextArea'
-
 import LineField from './LineField'
 
 interface EditorFormProps {

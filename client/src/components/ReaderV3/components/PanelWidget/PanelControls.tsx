@@ -1,5 +1,4 @@
 import { useContext } from 'react'
-
 import { ScenePanelContext } from '../../contexts/ScenePanelContext'
 
 const PanelControls = () => {
