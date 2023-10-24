@@ -9,6 +9,7 @@ interface SceneItemProps {
   handleSetExpanded: () => void
   show: boolean
 }
+
 const SceneItem = ({
   scene,
   sceneIndex,
@@ -29,13 +30,13 @@ const SceneItem = ({
 
   return (
     <Drag
-      className="flex justify-center items-center gap-4 my-4 px-1 mx-auto"
+      className="flex justify-center items-center gap-4 my-4 px-1 mx-auto "
       key={scene.id}
       id={scene.id}
       index={sceneIndex}
       isDragDisabled={false}
     >
-      <div className="w-full">
+      <div className="lg:w-2/3 w-full mx-auto">
         <h2
           onClick={handleSetExpanded}
           className="border p-4 w-full bg-primaryLight border-primary"

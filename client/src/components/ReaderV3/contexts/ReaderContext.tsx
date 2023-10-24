@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
 
+//TODO: fix type
 const ReaderContext = createContext<any>(null)
 
 export function useReaderContext() {

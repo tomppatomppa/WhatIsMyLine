@@ -34,6 +34,7 @@ const ReaderView = () => {
     }
   }
 
+  //TODO: Remove this
   const handleReverseChanges = () => {
     if (!hasEdited) return
 
@@ -45,7 +46,7 @@ const ReaderView = () => {
   }
 
   return (
-    <div>
+    <>
       {hasEdited ? (
         <button
           className="self-end bg-red-200 p-2"
@@ -55,7 +56,7 @@ const ReaderView = () => {
         </button>
       ) : null}
       {script && <Reader script={script} handleDragEnd={handleDragEnd} />}
-    </div>
+    </>
   )
 }
 
