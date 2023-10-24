@@ -25,7 +25,4 @@ test('renders panel widget with options', async () => {
     expect(option).toHaveValue(optionLabels[index])
   })
   expect(options).toHaveLength(3)
-
-  // eslint-disable-next-line testing-library/no-debugging-utils
-  screen.debug()
 })
