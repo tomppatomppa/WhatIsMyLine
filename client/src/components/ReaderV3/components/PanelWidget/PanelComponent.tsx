@@ -1,11 +1,11 @@
 import { useContext } from 'react'
 import { ScenePanelContext } from '../../contexts/ScenePanelContext'
 
-import EditPanel from './EditPanel'
-import RehearsePanel from './RehearsePanel'
+import EditPanel from '../Panels/EditPanel'
+import RehearsePanel from '../Panels/RehearsePanel'
 import { useRootFolder } from 'src/store/scriptStore'
-import { ConditionalField } from '../forms/ConditionalField'
-import ScrollPanel from './ScrollPanel'
+import { ConditionalField } from '../../../common/ConditionalField'
+import ScrollPanel from '../Panels/ScrollPanel'
 
 const PanelComponent = () => {
   const { panelView } = useContext(ScenePanelContext)

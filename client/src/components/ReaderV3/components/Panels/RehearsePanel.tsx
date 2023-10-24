@@ -6,7 +6,7 @@ import SpeechRecognition, {
 } from 'react-speech-recognition'
 
 import { AiOutlineSync } from 'react-icons/ai'
-import { PlayIcon } from '../icons'
+import { PlayIcon } from '../../../icons'
 import { FaCircle, FaMicrophone } from 'react-icons/fa'
 
 import { labelLines } from '../../utils'

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import PanelWidget from '../components/ScenePanel/PanelWidget'
-import PanelComponent from '../components/ScenePanel/PanelComponent'
+import PanelWidget from '../components/PanelWidget/PanelWidget'
+import PanelComponent from '../components/PanelWidget/PanelComponent'
 
 jest.mock('react-speech-recognition', () => ({
   useSpeechRecognition: jest.fn(() => ({

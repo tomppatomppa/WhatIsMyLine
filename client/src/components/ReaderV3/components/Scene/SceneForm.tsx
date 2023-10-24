@@ -4,13 +4,13 @@ import { Actor, LineType, Scene } from '../../reader.types'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import { Field } from 'formik'
 import { Drag } from 'src/components/drag-and-drop'
-import { DeleteIcon } from '../icons'
-import { ConditionalField } from '../forms/ConditionalField'
-import { FormikTextArea } from '../forms/FormikTextArea'
+import { DeleteIcon } from '../../../icons'
+import { ConditionalField } from '../../../common/ConditionalField'
+import { FormikTextArea } from './FormikTextArea'
 
-import PanelWidget from '../ScenePanel/PanelWidget'
-import PanelComponent from '../ScenePanel/PanelComponent'
-import LineField from '../forms/LineField'
+import PanelWidget from '../PanelWidget/PanelWidget'
+import PanelComponent from '../PanelWidget/PanelComponent'
+import LineField from './LineField'
 
 interface EditorFormProps {
   scene: Scene
@@ -63,8 +63,8 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
                     <ConditionalField
                       key={lineIndex}
                       show={isEditing}
-                      onShow={() => console.log()}
-                      onCollapse={() => console.log()}
+                      onShow={() => {}}
+                      onCollapse={() => {}}
                     >
                       <div className="w-full bg-neutral-200 flex justify-end ">
                         <label htmlFor={`data[${lineIndex}].type`}>
