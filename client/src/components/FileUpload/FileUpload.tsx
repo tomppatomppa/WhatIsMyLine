@@ -8,10 +8,9 @@ import Button from '../common/Button'
 
 const FileUpload = () => {
   const [files, setFiles] = useState<File[]>([])
-  const filesToUpload = files.length > 0
-
   const addScript = useAddScript()
 
+  //TODO: move state to useQuery cache
   const { mutate: upload } = useMutation(uploadfile, {
     onSuccess: (script) => {
       addScript(script)
@@ -27,11 +26,15 @@ const FileUpload = () => {
     setFiles([])
   }
 
-  if (filesToUpload) {
+  if (files.length) {
     return (
-      <div className="w-full h-14 items-center p-2">
-        <Button onClick={handleUpload}>Upload</Button>
-        <Button onClick={() => setFiles([])}>Cancel</Button>
+      <div className="w-full h-14 items-center mb-2">
+        <Button variant="secondary" onClick={handleUpload}>
+          Upload
+        </Button>
+        <Button variant="danger" onClick={() => setFiles([])}>
+          Cancel
+        </Button>
       </div>
     )
   }

@@ -7,16 +7,22 @@ interface ButtonProps {
   variant?: ButtonTypes
 }
 
-type ButtonTypes = 'primary'
+type ButtonTypes = 'primary' | 'secondary' | 'danger'
 
 const VARIANT = {
-  primary:
-    'border p-2 w-32 border-white hover:bg-black hover:text-white transition-all duration-200',
+  primary: 'border-white hover:bg-black',
+  secondary: 'border-black hover:bg-black',
+  danger: 'border-white hover:bg-red-900',
 }
 
 const Button = ({ onClick, children, variant = 'primary' }: ButtonProps) => {
+  const baseClass =
+    'border p-2 w-32 hover:text-white transition-all duration-200'
   return (
-    <button className={`${clsx(VARIANT[variant])}`} onClick={onClick}>
+    <button
+      className={`${baseClass} ${clsx(VARIANT[variant])}`}
+      onClick={onClick}
+    >
       {children}
     </button>
   )
