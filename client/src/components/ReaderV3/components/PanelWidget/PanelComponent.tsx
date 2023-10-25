@@ -16,8 +16,8 @@ const PanelComponent = () => {
       return (
         <ConditionalField
           show={!!root}
-          onCollapse={() => console.log()}
-          onShow={() => console.log()}
+          onCollapse={() => {}}
+          onShow={() => {}}
           reason="No Root folder, click Profile and Sync Drive"
         >
           <RehearsePanel />

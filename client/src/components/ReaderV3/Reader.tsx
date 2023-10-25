@@ -1,11 +1,10 @@
-import { useReducer, useEffect } from 'react'
+import { useReducer } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { Drop } from '../drag-and-drop'
 import ReaderContext from './contexts/ReaderContext'
 import reducer from './reducer'
 import SceneItem from './components/Scene/SceneItem'
 import { ReaderConfiguration, Script } from './reader.types'
-import { useScriptStore } from 'src/store/scriptStore'
 
 const initialState = {
   mode: 'idle',

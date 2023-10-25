@@ -1,14 +1,7 @@
-import { useState } from 'react'
 import { DropResult } from 'react-beautiful-dnd'
 import { Reader } from 'src/components/ReaderV3/Reader'
 import { useActiveScript, useScriptStore } from 'src/store/scriptStore'
 import { useAuth } from 'src/store/userStore'
-
-type OrderHistory = [number, number]
-
-export function Loader() {
-  return useAuth()
-}
 
 const ReaderView = () => {
   const { reorderScenes, reorderLines } = useScriptStore((state) => state)
@@ -23,7 +16,6 @@ const ReaderView = () => {
       source.index === destination.index
     )
       return
-
     if (type === 'droppable-item' && script) {
       reorderLines(destination.droppableId, source.index, destination.index)
     } else {
@@ -32,7 +24,9 @@ const ReaderView = () => {
   }
 
   return (
-    <>{script && <Reader script={script} handleDragEnd={handleDragEnd} />}</>
+    <div>
+      {script ? <Reader script={script} handleDragEnd={handleDragEnd} /> : null}
+    </div>
   )
 }
 
