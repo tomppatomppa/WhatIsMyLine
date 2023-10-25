@@ -13,8 +13,6 @@ export function Loader() {
 const ReaderView = () => {
   const { reorderScenes, reorderLines } = useScriptStore((state) => state)
   const script = useActiveScript()
-  const [orderHistory, setOrderHistory] = useState<OrderHistory[]>([])
-  const hasEdited = orderHistory.length > 0
 
   const handleDragEnd = (result: DropResult) => {
     const { type, source, destination } = result
@@ -29,34 +27,12 @@ const ReaderView = () => {
     if (type === 'droppable-item' && script) {
       reorderLines(destination.droppableId, source.index, destination.index)
     } else {
-      setOrderHistory([...orderHistory, [source.index, destination.index]])
       reorderScenes(source.index, destination.index)
     }
   }
 
-  //TODO: Remove this
-  const handleReverseChanges = () => {
-    if (!hasEdited) return
-
-    const history = [...orderHistory]
-    const previousEdit = history.splice(-1)[0]
-    //Reverse indexes
-    reorderScenes(previousEdit[1], previousEdit[0])
-    setOrderHistory(history)
-  }
-
   return (
-    <>
-      {hasEdited ? (
-        <button
-          className="self-end bg-red-200 p-2"
-          onClick={handleReverseChanges}
-        >
-          Undo
-        </button>
-      ) : null}
-      {script && <Reader script={script} handleDragEnd={handleDragEnd} />}
-    </>
+    <>{script && <Reader script={script} handleDragEnd={handleDragEnd} />}</>
   )
 }
 

@@ -18,7 +18,7 @@ export const ScriptList = ({
 }: ScriptListProps) => {
   return (
     <div className="text-gray-600 md:px-8">
-      <ul className=" overflow-y-auto max-h-screen pt-6">
+      <ul className="cursor-pointer overflow-y-auto max-h-screen pt-6">
         {scripts?.map(({ filename, script_id }, idx) => (
           <ScriptListItem
             key={idx}

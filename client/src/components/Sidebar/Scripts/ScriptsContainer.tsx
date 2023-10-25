@@ -32,6 +32,7 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
       filename.toLowerCase().includes(search.toLowerCase())
     ) || []
 
+  //TODO: remove onSuccess, move all state to reactQuery
   useQuery(['scripts'], () => fetchAllUserScripts(), {
     onSuccess: async (data: Script[]) => {
       setScripts(data)
