@@ -20,7 +20,7 @@ const MultiFilePicker = ({
   }
 
   return (
-    <Tooltip text="Multi File">
+    <Tooltip text="Select file(s)">
       <input
         className="hidden"
         ref={inputRef}
