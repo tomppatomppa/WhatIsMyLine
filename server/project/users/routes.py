@@ -12,10 +12,11 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
+
 @users_blueprint.route("/login", methods=["POST"])
 def login():
     code = request.json.get('code')
-   
+    
     if not code:
         return "Missing 'code' parameter in the request.", 403 
     try:
@@ -27,9 +28,8 @@ def login():
             user = verify_google_id_token(token_data.get("id_token"))
             
             user_for_database, user_for_client = extract_user_info(user, token_data)
-            print(user_for_database)
             store_user(user_for_database)
-
+       
             response = jsonify(user_for_client)
             #Set cookies
             access_token = create_access_token(identity=user_for_database.get("user_id"))
@@ -44,6 +44,7 @@ def login():
 @users_blueprint.route("/refresh-token", methods=["POST"])
 @jwt_required()
 def refresh():
+    
     try:
         user_id = get_jwt_identity()
        
@@ -70,7 +71,6 @@ def users():
     if user:
         return jsonify(user.email)
     return jsonify("Invalid request")
-
 
 
 '''
@@ -132,9 +132,7 @@ def refresh_access_token(refresh_token):
         'grant_type': 'refresh_token'
     }
     try:
-        
         response = requests.post('https://oauth2.googleapis.com/token', data=payload)
-        
         response.raise_for_status()
         token_data = response.json()
         

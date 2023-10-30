@@ -15,7 +15,7 @@ GOOGLE_USER_ID = "1234"
 
 @pytest.fixture(scope='module')
 def new_user():
-    user = User(GOOGLE_USER_ID,"picture_url", 'kalle@gmail.com', "google", "12345")
+    user = User(GOOGLE_USER_ID , "picture_url", 'kalle@gmail.com', "google", "12345")
     
     return user
 
@@ -32,42 +32,46 @@ def new_script(new_user):
     return script
 
 @pytest.fixture(scope='module')
-def init_database(test_client, new_user, new_script):
-    # Create the database and the database table
-    db.create_all()
-
+def init_database(new_user, new_script):
+  
     db.session.add(new_user)
     db.session.commit()
-
+ 
     db.session.add(new_script)
     db.session.commit()
-    
     yield
-    
+  
     db.drop_all()
+    db.create_all()
+
 
 @pytest.fixture(scope='module')
 def test_client():
     os.environ['CONFIG_TYPE'] = 'config.TestingConfig'
+   
     flask_app = create_app()
     
     @flask_app.route("/access_token", methods=["GET"])
     def access_token():
-        domain = request.args.get("domain")
         resp = jsonify(login=True)
-        access_token = create_access_token(GOOGLE_USER_ID)
-        set_access_cookies(resp, access_token, domain=domain)
+        access_token = create_access_token(GOOGLE_USER_ID, expires_delta=False)
+        
+        set_access_cookies(resp, access_token)
         return resp
     
     with flask_app.test_client() as testing_client:
         with flask_app.app_context():
             yield testing_client
 
+
 @pytest.fixture(scope='function')
 def logged_in_test_client(test_client):
-    access_token = create_access_token(GOOGLE_USER_ID)
-    response = test_client.get('/access_token')
-    set_access_cookies(response, access_token)
+    '''
+    Fake logs in user by doing a request to /access_token to test_client api
+    Used to access protected api routes that have jwt_required() decorator
+    '''
+    test_client.get('/access_token')
+  
     return test_client
 
 @pytest.fixture(scope='function')

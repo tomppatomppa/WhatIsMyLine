@@ -2,19 +2,21 @@ import { User } from 'src/store/userStore'
 
 interface AvatarProps {
   user: User
+  onClick: () => void
 }
 
-const Avatar = ({ user }: AvatarProps) => {
+const Avatar = ({ user, onClick }: AvatarProps) => {
   return (
-    <div className="flex gap-x-12">
-      <div className="flex items-center gap-x-3 flex-col ">
-        <img src={user.picture} alt="User" className="w-12 h-12 rounded-full" />
-        <span className="block text-gray-700 text-sm font-medium ">
-          {user.name}
-        </span>
-        <span className="block text-gray-700 text-xs">{user.email}</span>
-      </div>
-    </div>
+    <span
+      className="w-12 h-12 flex items-center gap-x-4 cursor-pointer rounded-full ring-offset-2 ring-gray-800 focus:ring-2 duration-150"
+      onClick={onClick}
+    >
+      <img
+        src={user.picture}
+        alt="user avatar"
+        className="w-12 h-12 rounded-full"
+      />
+    </span>
   )
 }
 

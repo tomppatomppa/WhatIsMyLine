@@ -47,7 +47,7 @@ export const downloadSceneAudio = async ({
   sceneId,
   lines,
 }: downloadAudioFilesInSceneProps) => {
-  const { data } = await httpClient.post(`${BASE_URI}/api/drive/download`, {
+  const { data } = await httpClient.post(`${BASE_URI}/drive/download`, {
     rootId,
     scriptId,
     sceneId,
@@ -73,14 +73,11 @@ export const createTextToSpeechFromScene = async ({
   scene,
   rootFolderId,
 }: CreateTextToSpeechSceneProps) => {
-  const { data } = await httpClient.post(
-    `${BASE_URI}/api/drive/scene-to-speech`,
-    {
-      id: scriptId,
-      scenes: [scene],
-      rootFolderId,
-    }
-  )
+  const { data } = await httpClient.post(`${BASE_URI}/drive/scene-to-speech`, {
+    id: scriptId,
+    scenes: [scene],
+    rootFolderId,
+  })
 
   return data
 }
@@ -92,7 +89,7 @@ export const createTextToSpeechFromScene = async ({
 export const syncGoogleDrive = async () => {
   const folderName = 'dramatify-pdf-reader' //TODO: pass as param
   const { data } = await httpClient.post(
-    `${BASE_URI}/api/drive/create_root_folder`,
+    `${BASE_URI}/drive/create_root_folder`,
     { folderName }
   )
 

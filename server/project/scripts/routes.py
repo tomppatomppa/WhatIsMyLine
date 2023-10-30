@@ -1,6 +1,6 @@
 from . import scripts_blueprint
 from flask import request,  make_response
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt, jwt_required, get_jwt_identity
 from project.models import Script
 import json
 
@@ -9,7 +9,7 @@ import json
 @jwt_required()
 def get_all():
     user_scripts = Script.get_scripts_by_user_id(get_jwt_identity())
-
+    
     response = make_response(json.dumps([script.to_dict() for script in user_scripts]), 200)
     return response
 

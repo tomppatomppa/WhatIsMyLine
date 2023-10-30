@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./server
+    command: python manage.py run -h 0.0.0.0
+    volumes:
+      - ./server/:/usr/src/app/
+    ports:
+      - 5001:5000
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+
+  frontend:
+    build: ./client
+    container_name: react-frontend
+    volumes:
+      - ./client/src:/usr/src/app/src
+      - ./client/public/index.html:/usr/src/app/public/index.html
+    ports:
+      - 5000:5000
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=whats_my_line_db
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data/
+    ports:
+      - '5432:5432'
+
+  adminer:
+    image: adminer:4
+    restart: always
+    environment:
+      - ADMINER_DESIGN=db
+    ports:
+      - 8083:8080
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  postgres_data:

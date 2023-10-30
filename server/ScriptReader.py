@@ -2,19 +2,20 @@ from itertools import islice
 import re
 import fitz
 import os
-import numpy as np
 import pandas as pd
 
+#TODO: Try to get a working version
 class ScriptReader():
     def __init__(self):
        self.file = None
        self.filename = None
 
     def read_file(self, filename):
+        
         file_path = f"./uploaded_files/{filename}"
 
         if not os.path.exists(file_path):
-         raise FileNotFoundError(f"No such file: '{file_path}'")
+           raise FileNotFoundError(f"No such file: '{file_path}'")
         
         self.filename = filename
         pdf_doc = fitz.open(f'./uploaded_files/{filename}')
@@ -143,7 +144,7 @@ class ScriptReader():
     def detect_line_group(self , group, mean_value):
         original, upper_bound, lower_bound = number_with_variation(mean_value, 20)
         # Check if all rows in the group satisfy the condition
-        group.loc[(group["x"] >= lower_bound) & (group["x"] <= upper_bound), "line"] = True
+        group.loc[(group["x"] >= lower_bound) & (group["x"] <= upper_bound), "line"] = 1
         
         return group
     
@@ -175,9 +176,10 @@ class ScriptReader():
         filtered_rows = df[(df["actor"] != True) & (df["scene"] != True)]
         result = filtered_rows.groupby("scene_number", group_keys=False).apply(lambda x: self.detect_line_group(x, actor_x_mean))
         df = df.merge(result[['line']], left_index=True, right_index=True, how='left')
-        df['line'].fillna(False, inplace=True)
+        df['line'].fillna(0, inplace=True)
 
         print(df.loc[0:42, ["text",  "scene_number", "line"]])
+        return True
       
         
         

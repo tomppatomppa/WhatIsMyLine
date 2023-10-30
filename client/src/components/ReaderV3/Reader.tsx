@@ -1,11 +1,10 @@
-import { useReducer, useEffect } from 'react'
+import { useReducer } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { Drop } from '../drag-and-drop'
 import ReaderContext from './contexts/ReaderContext'
 import reducer from './reducer'
 import SceneItem from './components/Scene/SceneItem'
 import { ReaderConfiguration, Script } from './reader.types'
-import { useScriptStore } from 'src/store/scriptStore'
 
 const initialState = {
   mode: 'idle',
@@ -40,11 +39,12 @@ interface ReaderProps {
 
 export const Reader = ({ script, handleDragEnd }: ReaderProps) => {
   const [options, dispatch] = useReducer(reducer, initialState)
-  const { fetchAndCompare } = useScriptStore()
+  //TODO: maybe use for localchanges before user saves them to database
+  // const { fetchAndCompare } = useScriptStore()
 
-  useEffect(() => {
-    fetchAndCompare()
-  }, [fetchAndCompare, options.expanded])
+  // useEffect(() => {
+  //   fetchAndCompare()
+  // }, [fetchAndCompare, options.expanded])
 
   return (
     <ReaderContext.Provider

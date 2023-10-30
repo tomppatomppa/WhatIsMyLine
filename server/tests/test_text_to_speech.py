@@ -2,6 +2,8 @@ import os
 import project.google.TextToSpeech as TextToSpeech
 import shutil
 
+import pytest
+
 data = {
     'filename': 'Episode_s01e77__TI_vecka_16_2023_-_Dramatify.pdf',
     'id': '64b5fc73-4667-4886-a3e8-e47e8cc3cce2',
@@ -29,6 +31,7 @@ data = {
                                     
 
 def test_should_create_correct_folder_structure() -> None:
+   
     TextToSpeech.create_folders(data)
 
     root_folder_path = f'processed_audio/{data["id"]}'
@@ -45,7 +48,7 @@ def test_should_create_correct_folder_structure() -> None:
 
     shutil.rmtree(root_folder_path)
 
-
+@pytest.mark.skipif(os.environ.get("SKIP_TESTS") == "true", reason="Tests are skipped in this environment.")    
 def test_should_created_mp3_files_in_correct_folders(test_client) -> None:
     TextToSpeech.create_folders(data)
     TextToSpeech.create_audio(data)
@@ -55,7 +58,7 @@ def test_should_created_mp3_files_in_correct_folders(test_client) -> None:
     path_to_first_scene = f'{root_folder_path}/{data["scenes"][0]["id"]}'
     mp3_files = [file for file in os.listdir(path_to_first_scene) if file.endswith('.mp3')]
 
-    expected_filenames = [line["id"]+".mp3" for line in data["scenes"][0]["data"]] # get line ids 
+    expected_filenames = [line["id"] + ".mp3" for line in data["scenes"][0]["data"]] # get line ids 
 
     for expected_filename in expected_filenames:
        assert expected_filename in mp3_files, f"Expected filename '{expected_filename}' not found in the subfolder: {path_to_first_scene}"

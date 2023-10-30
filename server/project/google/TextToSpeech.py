@@ -1,8 +1,7 @@
 import os
 from google.cloud import texttospeech
 
-
-credentials_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "key.json"
 
 def text_to_mp3(folder_id, scene_id, line_id, text):
    

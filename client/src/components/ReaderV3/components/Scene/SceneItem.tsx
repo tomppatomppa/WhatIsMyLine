@@ -2,6 +2,9 @@ import { Scene } from '../../reader.types'
 import { Drag } from 'src/components/drag-and-drop'
 import { useUpdateScript } from 'src/store/scriptStore'
 import SceneForm from './SceneForm'
+import { ConditionalField } from 'src/components/common/ConditionalField'
+import PanelWidget from '../PanelWidget/PanelWidget'
+import PanelComponent from '../PanelWidget/PanelComponent'
 
 interface SceneItemProps {
   scene: Scene
@@ -9,12 +12,14 @@ interface SceneItemProps {
   handleSetExpanded: () => void
   show: boolean
 }
+
 const SceneItem = ({
   scene,
   sceneIndex,
   handleSetExpanded,
   show,
 }: SceneItemProps) => {
+  //TODO: add show as localstate [show, setShow] = useState(false)
   const updateScript = useUpdateScript()
 
   const onSubmit = (updatedScene: Scene) => {
@@ -29,28 +34,43 @@ const SceneItem = ({
 
   return (
     <Drag
-      className="flex justify-center items-center gap-4 my-4 px-1 mx-auto"
-      key={scene.id}
       id={scene.id}
+      className="flex justify-center items-center my-4 px-1 mx-auto"
+      key={scene.id}
       index={sceneIndex}
-      isDragDisabled={false}
+      isDragDisabled={false} //Add to global settings
     >
-      <div className="w-full">
-        <h2
-          onClick={handleSetExpanded}
-          className="border p-4 w-full bg-primaryLight border-primary"
-        >
-          {scene.id}
-        </h2>
-        {show ? (
+      <div className="lg:w-2/3 w-full mx-auto">
+        <SceneHeader title={scene.id} onClick={handleSetExpanded} />
+        <ConditionalField show={show} onCollapse={() => {}} onShow={() => {}}>
           <SceneForm
             scene={scene}
             onSubmit={onSubmit}
             deleteLine={handleDeleteLine}
-          />
-        ) : null}
+          >
+            <PanelWidget>
+              <PanelComponent />
+            </PanelWidget>
+          </SceneForm>
+        </ConditionalField>
       </div>
     </Drag>
+  )
+}
+
+interface SceneHeaderProps {
+  onClick: () => void
+  title: string
+}
+
+const SceneHeader = ({ title, onClick }: SceneHeaderProps) => {
+  return (
+    <h2
+      onClick={onClick}
+      className="border font-semibold p-4 w-full bg-primaryLight border-primary"
+    >
+      {title}
+    </h2>
   )
 }
 

@@ -13,7 +13,7 @@ const Tooltip = ({ text, children, className }: TooltipProps) => {
     <div
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
-      className={`relative`}
+      className={`relative z-10`}
     >
       <div>{children}</div>
       {showTooltip && (

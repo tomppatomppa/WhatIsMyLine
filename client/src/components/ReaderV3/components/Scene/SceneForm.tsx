@@ -4,23 +4,27 @@ import { Actor, LineType, Scene } from '../../reader.types'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import { Field } from 'formik'
 import { Drag } from 'src/components/drag-and-drop'
-import { DeleteIcon } from '../icons'
-import { ConditionalField } from '../forms/ConditionalField'
-import { FormikTextArea } from '../forms/FormikTextArea'
-
-import PanelWidget from '../ScenePanel/PanelWidget'
-import PanelComponent from '../ScenePanel/PanelComponent'
-import LineField from '../forms/LineField'
+import { DeleteIcon } from '../../../icons'
+import { ConditionalField } from '../../../common/ConditionalField'
+import { FormikTextArea } from './FormikTextArea'
+import LineField from './LineField'
 
 interface EditorFormProps {
+  children?: React.ReactNode
   scene: Scene
   onSubmit: (scene: Scene) => void
   deleteLine: (lineIndex: number) => void
 }
 
-const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
+const SceneForm = ({
+  scene,
+  onSubmit,
+  deleteLine,
+  children,
+}: EditorFormProps) => {
   const { options } = useReaderContext()
   const isEditing = options.isEditing.includes(scene.id)
+  const formState = isEditing ? 'border-red-700' : 'border-green-300'
 
   const getLineStyle = (type: LineType) => {
     const style = options.settings[type.toLowerCase()].style
@@ -33,11 +37,7 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
   }
 
   return (
-    <div
-      className={`border-l-4 ${
-        isEditing ? 'border-red-700' : 'border-green-300'
-      }`}
-    >
+    <div className={`border-l-4 ${formState}`}>
       <Formik
         enableReinitialize={true}
         initialValues={scene}
@@ -47,10 +47,9 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
       >
         {({ values }) => (
           <Drop key={scene.id} id={scene.id} type="droppable-item">
+            {/* PanelWidget */}
+            {children}
             <Form autoComplete="off">
-              <PanelWidget>
-                <PanelComponent />
-              </PanelWidget>
               {values.data.map((line: any, lineIndex: number) => (
                 <Drag
                   className="mt-3"
@@ -60,11 +59,12 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
                   isDragDisabled={false}
                 >
                   <div className="w-full flex flex-col" key={lineIndex}>
+                    {/* Show when edit is enabled */}
                     <ConditionalField
                       key={lineIndex}
                       show={isEditing}
-                      onShow={() => console.log()}
-                      onCollapse={() => console.log()}
+                      onShow={() => {}}
+                      onCollapse={() => {}}
                     >
                       <div className="w-full bg-neutral-200 flex justify-end ">
                         <label htmlFor={`data[${lineIndex}].type`}>
@@ -87,6 +87,7 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
                         </button>
                       </div>
                     </ConditionalField>
+                    {/* Line type e.g ACTOR | INFO */}
                     <LineField
                       id={`${line.id}`}
                       style={getLineStyle(line.type)}
@@ -94,6 +95,7 @@ const SceneForm = ({ scene, onSubmit, deleteLine }: EditorFormProps) => {
                       name={`data[${lineIndex}].name`}
                       scrollToElementId={options.currentScrollTarget}
                     />
+                    {/* Line text */}
                     <FormikTextArea
                       style={{
                         ...getLineStyle(line.type),

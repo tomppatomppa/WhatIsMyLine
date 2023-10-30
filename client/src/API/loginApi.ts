@@ -2,7 +2,6 @@ import axios from 'axios'
 
 import { httpClient } from 'src/utils/axiosClient'
 import { BASE_URI } from 'src/config'
-
 import { getCookie } from 'src/utils/helpers'
 
 export const googleLogin = async (code: string) => {

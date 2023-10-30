@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { tokenIsExpired } from 'src/utils/helpers'
 import axios from 'axios'
 import { getCookie } from './helpers'

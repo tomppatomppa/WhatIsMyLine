@@ -1,10 +1,11 @@
 import { createBrowserRouter, useNavigate } from 'react-router-dom'
-import ReaderPage from '../containers/ReaderPage'
-import MainLayout from './MainLayout'
+import MainLayout from '../layout/MainLayout'
 import { ProtectedRoute } from './ProtectedRoute'
 import LoginView from 'src/views/LoginView'
 import LandingView from '../views/LandingView'
 import { useEffect } from 'react'
+import { useAuth } from 'src/store/userStore'
+import ReaderView from '../views/ReaderView'
 
 export const router = createBrowserRouter([
   {
@@ -17,12 +18,19 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <ReaderPage />,
+        element: <ReaderView />,
       },
     ],
   },
   { path: '/landing', element: <LandingView /> },
-  { path: '/login', element: <LoginView /> },
+  {
+    path: '/login',
+    element: (
+      <CatchUserIsLoggedIn>
+        <LoginView />
+      </CatchUserIsLoggedIn>
+    ),
+  },
   { path: '*', element: <CatchAllRoute /> },
 ])
 
@@ -35,4 +43,18 @@ function CatchAllRoute() {
   }, [navigate])
 
   return null
+}
+
+interface CatchUserIsLoggedInProps {
+  children: JSX.Element
+}
+function CatchUserIsLoggedIn({ children }: CatchUserIsLoggedInProps) {
+  const navigate = useNavigate()
+  const loggedIn = useAuth()
+
+  useEffect(() => {
+    if (loggedIn) navigate('/')
+  }, [loggedIn, navigate])
+
+  return children
 }

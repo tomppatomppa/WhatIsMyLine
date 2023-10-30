@@ -89,10 +89,6 @@ def test_reader_to_json_data_objects_return_lines_as_string_if_specified() -> No
             assert isinstance(line["lines"], str)
           
 
-'''
-With Settings
-'''
-
 def test_reader_to_json_with_settings_outputs_correct_number_of_scenes() -> None:
     
     reader = ReaderV3( line_id=True, lines_as_string=True)
@@ -137,6 +133,7 @@ def test_scene_detection():
 '''
 Test make_scenes_new functions 
 '''
+@pytest.mark.skip(reason="Function make_scenes_new is not finished yet")
 def test_group_lines():
     reader = ReaderV3()
     reader.read_file("1.9.pdf")

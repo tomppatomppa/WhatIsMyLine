@@ -1,52 +1,43 @@
-from datetime import datetime
-from datetime import timedelta
-from datetime import timezone
-
-from flask import Flask, render_template
+from datetime import timezone, timedelta, datetime
+from flask import Flask, render_template, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import sqlalchemy as sa
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager, get_jwt, set_access_cookies,create_access_token, get_jwt_identity
-
+from flask_wtf import CSRFProtect
+from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies, jwt_required
 import os
 
-db = SQLAlchemy()
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
+db = SQLAlchemy()
+migrate = Migrate()
+csrf_protection = CSRFProtect()
 
 def create_app():
     app = Flask(__name__, template_folder="build", static_folder="build/static")
-
+    
     jwt = JWTManager(app)
     
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config.from_object(config_type)
-    app.config["JWT_COOKIE_SECURE"] = False
-    app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 
-    CORS(app, supports_credentials=True)
+    app.config["JWT_COOKIE_SECURE"] = False
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
+    app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
     
+    CORS(app, supports_credentials=True)
+   
+    print("INIT", config_type)
     initialize_extensions(app)
     create_upload_folders(app)
     register_request_handlers(app)
     register_blueprints(app)
     
-    engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
-    inspector = sa.inspect(engine)
-    
-    if not inspector.has_table("users") or not inspector.has_table("scripts"):
-        with app.app_context():
-            db.drop_all()
-            db.create_all()
-            app.logger.info('Initialized the database!')
-    else:
-        app.logger.info('Database already contains the users table and scripts.')
-    
     return app
 
 def initialize_extensions(app):
     db.init_app(app)
+    migrate.init_app(app, db)
 
 def create_upload_folders(app):
     try:
@@ -73,8 +64,8 @@ def register_request_handlers(app):
         try:
             exp_timestamp = get_jwt()["exp"]
             now = datetime.now(timezone.utc)
-            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-           
+            target_timestamp = datetime.timestamp(now + timedelta(hours=12))
+         
             if target_timestamp > exp_timestamp:
                 access_token = create_access_token(identity=get_jwt_identity())
                 set_access_cookies(response, access_token)
@@ -96,9 +87,9 @@ def register_blueprints(app):
     from .google import google_blueprint
     from .upload import upload_blueprint
    
-    app.register_blueprint(users_blueprint)
+    app.register_blueprint(users_blueprint, url_prefix="/api")
     app.register_blueprint(scripts_blueprint, url_prefix='/api')
-    app.register_blueprint(google_blueprint)
-    app.register_blueprint(upload_blueprint)
+    app.register_blueprint(google_blueprint, url_prefix='/api')
+    app.register_blueprint(upload_blueprint, url_prefix='/api')
 
     
