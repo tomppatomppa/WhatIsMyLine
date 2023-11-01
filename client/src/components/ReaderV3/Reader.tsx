@@ -49,6 +49,7 @@ export const Reader = ({ script, handleDragEnd }: ReaderProps) => {
     <ReaderContext.Provider
       value={{ options, dispatch, scriptId: script.script_id }}
     >
+      <div className="w-full bg-primaryLight h-6"></div>
       <DragDropContext onDragEnd={handleDragEnd}>
         <Drop id="droppable" type="droppable-category">
           {script?.scenes?.map((scene, index) => (
