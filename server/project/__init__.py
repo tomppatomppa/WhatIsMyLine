@@ -27,7 +27,6 @@ def create_app():
     
     CORS(app, supports_credentials=True)
    
-    print("INIT", config_type)
     initialize_extensions(app)
     create_upload_folders(app)
     register_request_handlers(app)
@@ -39,6 +38,7 @@ def initialize_extensions(app):
     db.init_app(app)
     migrate.init_app(app, db)
 
+#TODO: move to aws S3 or similar
 def create_upload_folders(app):
     try:
         path = os.path.dirname('current path')
