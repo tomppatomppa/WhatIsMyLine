@@ -12,6 +12,7 @@ import {
 } from 'react-icons/ai'
 import { useAuth } from 'src/store/userStore'
 import Card from 'src/components/common/Card'
+import LoginButton from 'src/components/LoginButton/LoginButton'
 
 const heroVideo = require('../assets/video/hero_video.mp4')
 
@@ -81,9 +82,10 @@ const LandingView = () => {
               Upload your script and streamline your creative workflow
             </Subheading>
             <div className="mt-12"></div>
-            <Button onClick={() => navigate('/login')}>
+            <LoginButton />
+            {/* <Button onClick={() => navigate('/login')}>
               <span className="font">{isLoggedIn ? 'Dashboard' : 'Login'}</span>
-            </Button>
+            </Button> */}
           </div>
         </section>
         <section className="my-12 max-w-2xl mx-auto ">
