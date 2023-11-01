@@ -1,6 +1,7 @@
 import { DropResult } from 'react-beautiful-dnd'
 import { Reader } from 'src/components/ReaderV3/Reader'
 import { useActiveScript, useScriptStore } from 'src/store/scriptStore'
+import EmptyReaderView from './EmptyReaderView'
 
 const ReaderView = () => {
   const { reorderScenes, reorderLines } = useScriptStore((state) => state)
@@ -22,9 +23,13 @@ const ReaderView = () => {
     }
   }
 
+  if (!script) {
+    return <EmptyReaderView />
+  }
+
   return (
     <div>
-      {script ? <Reader script={script} handleDragEnd={handleDragEnd} /> : null}
+      <Reader script={script} handleDragEnd={handleDragEnd} />
     </div>
   )
 }

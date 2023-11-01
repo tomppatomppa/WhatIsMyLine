@@ -6,6 +6,11 @@ import reducer from './reducer'
 import SceneItem from './components/Scene/SceneItem'
 import { ReaderConfiguration, Script } from './reader.types'
 
+/**
+ * Initial Configuration object
+ * Accessible throughout all child components of Reader.tsx
+ * via useReaderContext()
+ */
 const initialState = {
   mode: 'idle',
   currentScrollTarget: '',
