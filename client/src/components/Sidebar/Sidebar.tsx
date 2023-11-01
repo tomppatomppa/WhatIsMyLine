@@ -2,13 +2,18 @@ import { useState } from 'react'
 
 import { FcReadingEbook } from 'react-icons/fc'
 import ScriptsContainer from './Scripts/ScriptsContainer'
-import SidebarFooter from './SidebarFooter'
-import SidebarButton from './SidebarButton'
 import Profile from '../profile/Profile'
 import ScriptsIcon from '../icons/ScriptsIcon'
+import LogoutIcon from '../icons/LogoutIcon'
+import SettingsIcon from '../icons/SettingsIcon'
+import HelpIcon from '../icons/HelpIcon'
+
 import FileUpload from 'src/components/FileUpload/FileUpload'
+import SidebarList from './SidebarList'
+import { useLogout } from 'src/store/userStore'
 
 const Sidebar = () => {
+  const logout = useLogout()
   const [showScripts, setShowScripts] = useState(false)
 
   const navigation = [
@@ -18,6 +23,30 @@ const Sidebar = () => {
       },
       name: 'All Scripts',
       icon: <ScriptsIcon />,
+    },
+  ]
+
+  const navigationFooter = [
+    {
+      onClick: () => {
+        console.log('Help')
+      },
+      name: 'Help',
+      icon: <HelpIcon />,
+    },
+    {
+      onClick: () => {
+        console.log('Settings')
+      },
+      name: 'Settings',
+      icon: <SettingsIcon />,
+    },
+    {
+      onClick: () => {
+        logout()
+      },
+      name: 'Logout',
+      icon: <LogoutIcon />,
     },
   ]
 
@@ -31,26 +60,15 @@ const Sidebar = () => {
             <FcReadingEbook size={24} />
           </button>
         </div>
+
         <div className="flex-1 flex flex-col h-full">
-          <ul className="text-sm font-medium flex-1">
-            {navigation.map((item, idx) => (
-              <li key={idx}>
-                <SidebarButton onClick={item.onClick}>
-                  <div className="text-gray-500">{item.icon}</div>
-                  <span className="absolute left-14 p-1 px-1.5 rounded-md whitespace-nowrap text-xs text-white bg-gray-800 hidden group-hover:inline-block group-focus:hidden duration-150">
-                    {item.name}
-                  </span>
-                </SidebarButton>
-              </li>
-            ))}
-          </ul>
+          <SidebarList data={navigation} />
           <div>
-            <SidebarFooter />
-            <Profile />
+            <SidebarList data={navigationFooter} />
           </div>
+          <Profile />
         </div>
       </div>
-
       {showScripts ? (
         <ScriptsContainer>
           <FileUpload />
