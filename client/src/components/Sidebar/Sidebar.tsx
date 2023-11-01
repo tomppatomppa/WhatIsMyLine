@@ -7,7 +7,7 @@ import ScriptsIcon from '../icons/ScriptsIcon'
 import LogoutIcon from '../icons/LogoutIcon'
 import SettingsIcon from '../icons/SettingsIcon'
 import HelpIcon from '../icons/HelpIcon'
-
+import { PiTrashSimpleThin } from 'react-icons/pi'
 import FileUpload from 'src/components/FileUpload/FileUpload'
 import SidebarList from './SidebarList'
 import { useLogout } from 'src/store/userStore'
@@ -23,6 +23,13 @@ const Sidebar = () => {
       },
       name: 'All Scripts',
       icon: <ScriptsIcon />,
+    },
+    {
+      onClick: () => {
+        console.log('Mark script as trash')
+      },
+      name: 'Trash',
+      icon: <PiTrashSimpleThin color="red" size={24} />,
     },
   ]
 
