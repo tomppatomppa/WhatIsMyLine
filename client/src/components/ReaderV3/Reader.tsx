@@ -39,12 +39,6 @@ interface ReaderProps {
 
 export const Reader = ({ script, handleDragEnd }: ReaderProps) => {
   const [options, dispatch] = useReducer(reducer, initialState)
-  //TODO: maybe use for localchanges before user saves them to database
-  // const { fetchAndCompare } = useScriptStore()
-
-  // useEffect(() => {
-  //   fetchAndCompare()
-  // }, [fetchAndCompare, options.expanded])
 
   return (
     <ReaderContext.Provider
