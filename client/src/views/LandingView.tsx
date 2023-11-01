@@ -10,7 +10,7 @@ import {
   AiFillPlaySquare,
   AiTwotoneAlert,
 } from 'react-icons/ai'
-import { useAuth } from 'src/store/userStore'
+
 import Card from 'src/components/common/Card'
 import LoginButton from 'src/components/LoginButton/LoginButton'
 
@@ -59,9 +59,6 @@ const cards: CardType = [
 ]
 
 const LandingView = () => {
-  const isLoggedIn = useAuth()
-  const navigate = useNavigate()
-
   return (
     <>
       <div className="max-w-6xl justify-center mx-auto text-center">
@@ -83,9 +80,6 @@ const LandingView = () => {
             </Subheading>
             <div className="mt-12"></div>
             <LoginButton />
-            {/* <Button onClick={() => navigate('/login')}>
-              <span className="font">{isLoggedIn ? 'Dashboard' : 'Login'}</span>
-            </Button> */}
           </div>
         </section>
         <section className="my-12 max-w-2xl mx-auto ">
