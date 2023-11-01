@@ -17,7 +17,7 @@ const ScriptListItem = ({ ...props }: ScriptListItemProps) => {
   return (
     <li
       {...rest}
-      className={`${activeClass} flex items-center w-full py-2 px-4 border-l hover:border-indigo-600 hover:text-gray-900 duration-150`}
+      className={`${activeClass} cursor-pointer flex items-center w-full py-2 px-4 border-l hover:border-indigo-600 hover:text-gray-900 duration-150`}
     >
       {children}
     </li>

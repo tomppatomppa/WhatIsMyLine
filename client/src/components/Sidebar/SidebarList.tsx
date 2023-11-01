@@ -1,7 +1,7 @@
 import React from 'react'
 import SidebarButton from './SidebarButton'
 
-export type SideBarItem = {
+type SideBarItem = {
   onClick: () => void
   name: string
   icon: React.ReactNode
