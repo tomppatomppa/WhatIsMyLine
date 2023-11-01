@@ -1,7 +1,6 @@
 import { DropResult } from 'react-beautiful-dnd'
 import { Reader } from 'src/components/ReaderV3/Reader'
 import { useActiveScript, useScriptStore } from 'src/store/scriptStore'
-import { useAuth } from 'src/store/userStore'
 
 const ReaderView = () => {
   const { reorderScenes, reorderLines } = useScriptStore((state) => state)
