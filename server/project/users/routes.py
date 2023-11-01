@@ -38,13 +38,14 @@ def login():
             return response
         return response.json(), response.status_code
     except:
-        
         return "Failed to login", 401
 
 @users_blueprint.route("/refresh-token", methods=["POST"])
 @jwt_required()
 def refresh():
-    
+    '''
+    Refresh clients access token for google services (e.g google drive)
+    '''
     try:
         user_id = get_jwt_identity()
        

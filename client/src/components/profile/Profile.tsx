@@ -25,7 +25,7 @@ const Profile = () => {
   if (!user) return
 
   return (
-    <div className="relative py-4 px-4 border-t">
+    <div className="relative py-4 border-t">
       <Avatar
         user={user}
         onClick={() => setIsProfileActive(!isProfileActive)}

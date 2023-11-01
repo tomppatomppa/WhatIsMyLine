@@ -6,6 +6,11 @@ import reducer from './reducer'
 import SceneItem from './components/Scene/SceneItem'
 import { ReaderConfiguration, Script } from './reader.types'
 
+/**
+ * Initial Configuration object
+ * Accessible throughout all child components of Reader.tsx
+ * via useReaderContext()
+ */
 const initialState = {
   mode: 'idle',
   currentScrollTarget: '',
@@ -39,17 +44,12 @@ interface ReaderProps {
 
 export const Reader = ({ script, handleDragEnd }: ReaderProps) => {
   const [options, dispatch] = useReducer(reducer, initialState)
-  //TODO: maybe use for localchanges before user saves them to database
-  // const { fetchAndCompare } = useScriptStore()
-
-  // useEffect(() => {
-  //   fetchAndCompare()
-  // }, [fetchAndCompare, options.expanded])
 
   return (
     <ReaderContext.Provider
       value={{ options, dispatch, scriptId: script.script_id }}
     >
+      <div className="w-full bg-primaryLight h-6"></div>
       <DragDropContext onDragEnd={handleDragEnd}>
         <Drop id="droppable" type="droppable-category">
           {script?.scenes?.map((scene, index) => (

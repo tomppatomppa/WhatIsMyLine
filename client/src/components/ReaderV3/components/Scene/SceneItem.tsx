@@ -19,7 +19,9 @@ const SceneItem = ({
   handleSetExpanded,
   show,
 }: SceneItemProps) => {
-  //TODO: add show as localstate [show, setShow] = useState(false)
+  //TODO: possibly add show as localstate [show, setShow] = useState(false)
+  //Is closeAll functionality needed?
+
   const updateScript = useUpdateScript()
 
   const onSubmit = (updatedScene: Scene) => {
@@ -67,7 +69,7 @@ const SceneHeader = ({ title, onClick }: SceneHeaderProps) => {
   return (
     <h2
       onClick={onClick}
-      className="border font-semibold p-4 w-full bg-primaryLight border-primary"
+      className="border rounded-sm font-semibold p-4 w-full bg-primaryLight border-primary"
     >
       {title}
     </h2>
