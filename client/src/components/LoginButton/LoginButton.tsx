@@ -4,9 +4,10 @@ import { useGoogleLogin } from '@react-oauth/google'
 import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { googleLogin } from 'src/API/loginApi'
-import { useLogin } from 'src/store/userStore'
+import { useAuth, useLogin } from 'src/store/userStore'
 
 const LoginButton = () => {
+  const userIsLoggedIn = useAuth()
   const navigate = useNavigate()
   const loginToApp = useLogin()
 
@@ -25,6 +26,14 @@ const LoginButton = () => {
     },
   })
 
+  const handleLogin = () => {
+    if (userIsLoggedIn) {
+      navigate('/')
+      return
+    }
+    loginGoogle()
+  }
+
   if (isLoading) {
     return (
       <div className="h-screen w-full flex justify-center flex-col">
@@ -37,7 +46,7 @@ const LoginButton = () => {
   }
   return (
     <button
-      onClick={() => loginGoogle()}
+      onClick={handleLogin}
       className="w-1/2 flex items-center mx-auto justify-center gap-x-3 py-2.5 mt-5 border rounded-lg text-sm font-medium hover:bg-black duration-150 active:bg-gray-100"
     >
       <svg
@@ -70,7 +79,7 @@ const LoginButton = () => {
           </clipPath>
         </defs>
       </svg>
-      Login with Google
+      {`${userIsLoggedIn ? 'Go to app' : 'Login with Google'}`}
     </button>
   )
 }

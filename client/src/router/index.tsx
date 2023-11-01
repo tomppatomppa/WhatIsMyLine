@@ -1,7 +1,7 @@
 import { createBrowserRouter, useNavigate } from 'react-router-dom'
 import MainLayout from '../layout/MainLayout'
 import { ProtectedRoute } from './ProtectedRoute'
-import LoginView from 'src/views/LoginView'
+
 import LandingView from '../views/LandingView'
 import { useEffect } from 'react'
 import { useAuth } from 'src/store/userStore'
@@ -27,7 +27,7 @@ export const router = createBrowserRouter([
     path: '/login',
     element: (
       <CatchUserIsLoggedIn>
-        <LoginView />
+        <LandingView />
       </CatchUserIsLoggedIn>
     ),
   },
