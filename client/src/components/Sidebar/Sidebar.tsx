@@ -35,7 +35,7 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed flex flex-row top-0 left-0 w-auto h-full border-r bg-white space-y-8`}
+      className={`sticky flex flex-row top-0 left-0 w-auto h-screen border-r bg-white space-y-8`}
     >
       <div className="flex flex-col h-full bg-gray-200">
         <div className="h-20 flex items-center justify-center px-8">

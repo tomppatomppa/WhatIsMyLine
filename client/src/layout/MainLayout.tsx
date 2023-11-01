@@ -3,11 +3,11 @@ import Sidebar from 'src/components/Sidebar/Sidebar'
 
 const MainLayout = () => {
   return (
-    <div className="text-center">
-      <nav className="sticky z-10 bottom-0 shadow-md flex w-full justify-start bg-primary">
+    <div className="text-center flex flex-row">
+      <nav className="z-10 bottom-0 shadow-md flex justify-start bg-primary">
         <Sidebar />
       </nav>
-      <section className="mr-25">
+      <section className="mr-25 flex-1">
         <Outlet />
       </section>
     </div>
