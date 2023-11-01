@@ -27,7 +27,7 @@ const SidebarFooter = () => {
   ]
 
   return (
-    <ul className="px-4 pb-4 text-sm font-medium">
+    <ul className="pb-4 text-sm font-medium">
       {navsFooter.map(({ onclick, name, icon }, idx) => (
         <li key={idx}>
           <SidebarButton onClick={onclick}>

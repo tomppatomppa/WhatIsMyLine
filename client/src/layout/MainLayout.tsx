@@ -7,7 +7,7 @@ const MainLayout = () => {
       <nav className="z-10 bottom-0 shadow-md flex justify-start bg-primary">
         <Sidebar />
       </nav>
-      <section className="mr-25 flex-1">
+      <section className="flex-1">
         <Outlet />
       </section>
     </div>
