@@ -1,5 +1,6 @@
 import Spinner from '../common/Spinner'
 import Message from '../common/Message'
+
 import { useGoogleLogin } from '@react-oauth/google'
 import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
@@ -37,13 +38,12 @@ const LoginButton = () => {
   if (isLoading) {
     return (
       <div className="h-screen w-full flex justify-center flex-col">
-        <div>
-          <Spinner show />
-          <Message show message="Logging in..." />
-        </div>
+        <Spinner show />
+        <Message show message="Logging in..." />
       </div>
     )
   }
+
   return (
     <button
       onClick={handleLogin}

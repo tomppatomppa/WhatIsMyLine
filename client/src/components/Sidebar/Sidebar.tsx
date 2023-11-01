@@ -22,6 +22,7 @@ const Sidebar = () => {
     },
   ]
 
+  //TODO: Ask user if this is needed
   if (!showMenu) {
     return (
       <button
@@ -63,6 +64,7 @@ const Sidebar = () => {
         </div>
       </div>
       {/* {'If more menu items, add context'} */}
+
       {showScripts ? (
         <ScriptsContainer>
           <FileUpload />
