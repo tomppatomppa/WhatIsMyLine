@@ -26,8 +26,7 @@ class User(db.Model):
    
    
     def __init__(self, user_id: str, picture:str, email: str, provider: str, refresh_token: str):
-        """Create a new User object using the email address and hashing the
-        plaintext password using Werkzeug.Security.
+        """Create a new User object using the email address
         """
         self.user_id = user_id
         self.picture = picture
@@ -78,8 +77,8 @@ class Script(db.Model):
         * created_on - date & time that the script was created
         * modified_on - date & time that the script was last modified
 
-        *forbidden_keys - columns that cannot be updated
     """
+    
     __tablename__ = 'scripts'
     id = mapped_column(Integer(), primary_key=True, autoincrement=True)
     script_id = mapped_column(String(), unique=True, nullable=False)
