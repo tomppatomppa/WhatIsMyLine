@@ -40,7 +40,7 @@ const SceneItem = ({
       className="flex justify-center items-center my-4 px-1 mx-auto"
       key={scene.id}
       index={sceneIndex}
-      isDragDisabled={true} //Add to global settings
+      isDragDisabled={true} //Add to settings
     >
       <div className="lg:w-2/3 w-full mx-auto">
         <SceneHeader title={scene.id} handleExpandScene={handleSetExpanded} />
