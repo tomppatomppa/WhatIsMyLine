@@ -67,12 +67,12 @@ interface SceneHeaderProps {
 
 const SceneHeader = ({ title, handleExpandScene }: SceneHeaderProps) => {
   return (
-    <h2
+    <h1
       onClick={handleExpandScene}
       className="border border-gray-300 bg-gray-200 rounded-sm font-semibold p-4 w-full shadow-lg"
     >
       {title}
-    </h2>
+    </h1>
   )
 }
 

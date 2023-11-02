@@ -14,7 +14,7 @@ jest.mock('react-speech-recognition', () => ({
 test('renders scene items with correct id', async () => {
   render(<Reader script={script} handleDragEnd={() => {}} />)
 
-  const sceneItems = await screen.findAllByRole('button')
+  const sceneItems = await screen.findAllByRole('heading', { level: 1 })
 
   expect(sceneItems).toHaveLength(script.scenes.length)
   sceneItems.forEach((scene, index) => {
@@ -26,7 +26,7 @@ test('When clicked, expand scene and shows data component', async () => {
   render(<Reader script={script} handleDragEnd={() => {}} />)
 
   //Enable to wait for buttons to render
-  await screen.findAllByRole('button')
+  await screen.findAllByRole('heading', { level: 1 })
 
   fireEvent.click(screen.getByText(script.scenes[0].id))
   await waitFor(() => {
