@@ -12,16 +12,14 @@ const Dropdown = ({ title, children, className }: DropdownProps) => {
   const targetRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div className={` text-left items-center self-center p-2`}>
-      <div>
-        <button
-          onClick={() => isOpen(!open)}
-          type="button"
-          className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-        >
-          {title}
-        </button>
-      </div>
+    <div className={`text-left items-center self-center p-2`}>
+      <button
+        onClick={() => isOpen(!open)}
+        type="button"
+        className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+      >
+        {title}
+      </button>
       {open ? (
         <div
           ref={targetRef}

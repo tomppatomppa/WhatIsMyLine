@@ -69,7 +69,7 @@ const SceneHeader = ({ title, handleExpandScene }: SceneHeaderProps) => {
   return (
     <h2
       onClick={handleExpandScene}
-      className="border border-gray-300 bg-green-100 rounded-sm font-semibold p-4 w-full shadow-lg"
+      className="border border-gray-300 bg-gray-200 rounded-sm font-semibold p-4 w-full shadow-lg"
     >
       {title}
     </h2>

@@ -16,7 +16,7 @@ const Modal = ({
   onAccept,
 }: ModalProps) => {
   return show ? (
-    <div className="fixed inset-0 z-10 overflow-y-auto">
+    <div className="fixed ml-12 inset-0 z-50 overflow-y-auto">
       <div
         className="fixed inset-0 w-full h-full bg-black opacity-40"
         onClick={close}

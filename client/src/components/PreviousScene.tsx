@@ -4,7 +4,7 @@ import { usePreviousScene } from 'src/store/scriptStore'
 import Modal from './common/Modal'
 import LineItem from './ReaderV3/LineItem'
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
-
+import { RxTrackPrevious } from 'react-icons/rx'
 interface PreviousSceneProps {
   sceneId: number
 }
@@ -47,13 +47,13 @@ const PreviousScene = ({ sceneId }: PreviousSceneProps) => {
         </div>
       </Modal>
       <button
-        className={`${previousScene ? 'text-green-600' : 'text-red-900'}`}
+        className={`mx-4 ${previousScene ? 'text-green-600' : 'text-red-900'}`}
         type="button"
         onClick={() => {
           setShowModal(true)
         }}
       >
-        ?
+        <RxTrackPrevious size={24} />
       </button>
     </>
   )
