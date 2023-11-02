@@ -40,7 +40,7 @@ const SceneItem = ({
       className="flex justify-center items-center my-4 px-1 mx-auto"
       key={scene.id}
       index={sceneIndex}
-      isDragDisabled={false} //Add to global settings
+      isDragDisabled={true} //Add to global settings
     >
       <div className="lg:w-2/3 w-full mx-auto">
         <SceneHeader title={scene.id} handleExpandScene={handleSetExpanded} />
@@ -69,7 +69,7 @@ const SceneHeader = ({ title, handleExpandScene }: SceneHeaderProps) => {
   return (
     <h2
       onClick={handleExpandScene}
-      className="border rounded-sm font-semibold p-4 w-full bg-primaryLight border-primary"
+      className="border border-gray-300 bg-green-100 rounded-sm font-semibold p-4 w-full shadow-lg"
     >
       {title}
     </h2>
