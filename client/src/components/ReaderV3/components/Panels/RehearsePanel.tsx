@@ -34,13 +34,9 @@ import {
 } from '../commands/RehersalPanelCommand'
 
 const RehearsePanel = () => {
-  const user = useCurrentUser()
-
   const rootFolder = useRootFolder() as RootFolder //Can be moved to useAudio?
   const [showCreateModal, setShowCreateModal] = useState(false)
-
   const { values } = useFormikContext<Scene>()
-
   const { options, scriptId, dispatch } = useReaderContext()
   const { audioFiles, refetch, isFetching } = useAudio(
     values,
@@ -61,10 +57,6 @@ const RehearsePanel = () => {
   ]
 
   const labeled = labelLines(values, options, audioFiles)
-
-  if (user?.name === 'visitor') {
-    return <div className="text-red-900">Not available in visitor mode</div>
-  }
 
   return (
     <div className="flex md:gap-4 sm:mr-12 w-full">
