@@ -40,10 +40,10 @@ const SceneItem = ({
       className="flex justify-center items-center my-4 px-1 mx-auto"
       key={scene.id}
       index={sceneIndex}
-      isDragDisabled={false} //Add to global settings
+      isDragDisabled={true} //Add to settings
     >
       <div className="lg:w-2/3 w-full mx-auto">
-        <SceneHeader title={scene.id} onClick={handleSetExpanded} />
+        <SceneHeader title={scene.id} handleExpandScene={handleSetExpanded} />
         <ConditionalField show={show} onCollapse={() => {}} onShow={() => {}}>
           <SceneForm
             scene={scene}
@@ -61,18 +61,18 @@ const SceneItem = ({
 }
 
 interface SceneHeaderProps {
-  onClick: () => void
+  handleExpandScene: () => void
   title: string
 }
 
-const SceneHeader = ({ title, onClick }: SceneHeaderProps) => {
+const SceneHeader = ({ title, handleExpandScene }: SceneHeaderProps) => {
   return (
-    <h2
-      onClick={onClick}
-      className="border rounded-sm font-semibold p-4 w-full bg-primaryLight border-primary"
+    <h1
+      onClick={handleExpandScene}
+      className="border border-gray-300 bg-gray-200 rounded-sm font-semibold p-4 w-full shadow-lg"
     >
       {title}
-    </h2>
+    </h1>
   )
 }
 

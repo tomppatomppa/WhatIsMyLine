@@ -50,7 +50,7 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
   return (
     <div className={`flex flex-col h-full gap-4`}>
       {children}
-      <div className="px-4 md:px-8 sticky">
+      <div className="px-4 md:px-8">
         <SearchBox setSearch={setSearch} />
       </div>
       {filteredScripts.length ? (

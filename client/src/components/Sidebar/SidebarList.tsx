@@ -13,16 +13,14 @@ interface SidebarListProps {
 
 const SidebarList = ({ data }: SidebarListProps) => {
   return (
-    <ul className="text-sm font-medium flex-1 gap-8">
+    <ul className={` text-sm font-medium gap-8`}>
       {data.map(({ onClick, icon, name }, idx) => (
-        <li key={idx}>
-          <SidebarButton onClick={onClick}>
-            <div className="text-gray-500">{icon}</div>
-            <span className="absolute left-14 p-1 px-1.5 rounded-md whitespace-nowrap text-xs text-white bg-gray-800 hidden group-hover:inline-block group-focus:hidden duration-150">
-              {name}
-            </span>
-          </SidebarButton>
-        </li>
+        <SidebarButton key={idx} onClick={onClick}>
+          <div className="text-gray-500">{icon}</div>
+          <span className="absolute left-14 p-1 px-1.5 rounded-md whitespace-nowrap text-xs text-white bg-gray-800 hidden group-hover:inline-block group-focus:hidden duration-150">
+            {name}
+          </span>
+        </SidebarButton>
       ))}
     </ul>
   )

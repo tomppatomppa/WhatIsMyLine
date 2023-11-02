@@ -7,10 +7,11 @@ import ScriptsIcon from '../icons/ScriptsIcon'
 import LogoutIcon from '../icons/LogoutIcon'
 import SettingsIcon from '../icons/SettingsIcon'
 import HelpIcon from '../icons/HelpIcon'
-import { PiTrashSimpleThin } from 'react-icons/pi'
 import FileUpload from 'src/components/FileUpload/FileUpload'
 import SidebarList from './SidebarList'
 import { useLogout } from 'src/store/userStore'
+import Drawer from '../common/Drawer'
+import Spacer from '../common/Spacer'
 
 const Sidebar = () => {
   const logout = useLogout()
@@ -23,13 +24,6 @@ const Sidebar = () => {
       },
       name: 'All Scripts',
       icon: <ScriptsIcon />,
-    },
-    {
-      onClick: () => {
-        console.log('Mark script as trash')
-      },
-      name: 'Trash',
-      icon: <PiTrashSimpleThin color="red" size={24} />,
     },
   ]
 
@@ -58,8 +52,8 @@ const Sidebar = () => {
   ]
 
   return (
-    <aside
-      className={`sticky flex flex-row top-0 left-0 w-auto h-screen border-r bg-white space-y-8`}
+    <nav
+      className={`sticky flex flex-row top-0 left-0  h-screen border-r bg-white`}
     >
       <div className="flex flex-col w-12 h-full bg-gray-200">
         <div className="h-20 flex items-center justify-center">
@@ -67,21 +61,19 @@ const Sidebar = () => {
             <FcReadingEbook size={24} />
           </button>
         </div>
-
         <div className="flex-1 flex flex-col h-full">
           <SidebarList data={navigation} />
-          <div>
-            <SidebarList data={navigationFooter} />
-          </div>
+          <Spacer />
+          <SidebarList data={navigationFooter} />
           <Profile />
         </div>
       </div>
-      {showScripts ? (
+      <Drawer show={showScripts}>
         <ScriptsContainer>
           <FileUpload />
         </ScriptsContainer>
-      ) : null}
-    </aside>
+      </Drawer>
+    </nav>
   )
 }
 

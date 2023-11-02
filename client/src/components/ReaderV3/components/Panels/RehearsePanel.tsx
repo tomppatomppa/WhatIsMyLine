@@ -6,6 +6,7 @@ import SpeechRecognition, {
 } from 'react-speech-recognition'
 
 import { AiOutlineSync } from 'react-icons/ai'
+import { FcAudioFile } from 'react-icons/fc'
 import { PlayIcon } from '../../../icons'
 import { FaCircle, FaMicrophone } from 'react-icons/fa'
 
@@ -15,7 +16,6 @@ import { Actor, Scene } from '../../reader.types'
 import { useReaderContext } from '../../contexts/ReaderContext'
 import { RootFolder, useRootFolder } from 'src/store/scriptStore'
 import { createTextToSpeechFromScene } from 'src/API/googleApi'
-import { useCurrentUser } from 'src/store/userStore'
 import useAudio from '../../hooks/useAudio'
 import usePlayAudio from '../../hooks/usePlayAudio'
 
@@ -34,19 +34,16 @@ import {
 } from '../commands/RehersalPanelCommand'
 
 const RehearsePanel = () => {
-  const user = useCurrentUser()
-
   const rootFolder = useRootFolder() as RootFolder //Can be moved to useAudio?
   const [showCreateModal, setShowCreateModal] = useState(false)
-
   const { values } = useFormikContext<Scene>()
-
   const { options, scriptId, dispatch } = useReaderContext()
   const { audioFiles, refetch, isFetching } = useAudio(
     values,
     scriptId,
     rootFolder.id
   )
+
   const { mutate, isError, isSuccess, isLoading } = useMutation(
     createTextToSpeechFromScene,
     {
@@ -61,10 +58,6 @@ const RehearsePanel = () => {
   ]
 
   const labeled = labelLines(values, options, audioFiles)
-
-  if (user?.name === 'visitor') {
-    return <div className="text-red-900">Not available in visitor mode</div>
-  }
 
   return (
     <div className="flex md:gap-4 sm:mr-12 w-full">
@@ -103,6 +96,13 @@ const RehearsePanel = () => {
         </button>
       </div>
       <PreviousScene sceneId={getSceneNumber(values.id)} />
+      {audioFiles ? (
+        <ComponentWhenValid values={values} labeled={labeled} />
+      ) : (
+        <button type="button" onClick={() => setShowCreateModal(true)}>
+          <FcAudioFile size={24} />
+        </button>
+      )}
       <Dropdown title="Actors">
         <Wrapper>
           <SelectList
@@ -122,17 +122,6 @@ const RehearsePanel = () => {
           />
         </Wrapper>
       </Dropdown>
-      {audioFiles ? (
-        <ComponentWhenValid values={values} labeled={labeled} />
-      ) : (
-        <button
-          type="button"
-          className="text-red-900 h-12"
-          onClick={() => setShowCreateModal(true)}
-        >
-          Create
-        </button>
-      )}
     </div>
   )
 }

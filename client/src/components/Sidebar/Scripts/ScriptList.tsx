@@ -17,20 +17,18 @@ export const ScriptList = ({
   deleteScript,
 }: ScriptListProps) => {
   return (
-    <div className="text-gray-600 md:px-8">
-      <ul className="overflow-y-auto max-h-screen pt-6">
-        {scripts?.map(({ filename, script_id }, idx) => (
-          <ScriptListItem
-            key={idx}
-            id={`script-list-item-${idx}`}
-            isActiveScript={activeScriptId === script_id}
-            onClick={() => setActiveScript(script_id)}
-          >
-            <span className="flex-1 text-start">{filename}</span>
-            <TrashButton onClick={() => deleteScript(script_id)} />
-          </ScriptListItem>
-        ))}
-      </ul>
-    </div>
+    <ul className="overflow-y-auto max-h-screen pt-6 text-gray-600 md:px-8">
+      {scripts?.map(({ filename, script_id }, idx) => (
+        <ScriptListItem
+          key={idx}
+          id={`script-list-item-${idx}`}
+          isActiveScript={activeScriptId === script_id}
+          onClick={() => setActiveScript(script_id)}
+        >
+          <span className="flex-1 text-start">{filename}</span>
+          <TrashButton onClick={() => deleteScript(script_id)} />
+        </ScriptListItem>
+      ))}
+    </ul>
   )
 }

@@ -11,7 +11,7 @@ interface PanelWidgetProps {
 const PanelWidget = ({ title, children }: PanelWidgetProps) => {
   return (
     <ScenePanelProvider>
-      <section className="sticky top-0 flex items-center cursor-default justify-end gap-2 bg-blue-200 p-2 h-12">
+      <section className="sticky top-0 flex items-center cursor-default justify-end gap-2 border-b-2 bg-white shadow-sm p-2 h-12">
         <h2>{title}</h2>
         {children}
         <PanelControls />
