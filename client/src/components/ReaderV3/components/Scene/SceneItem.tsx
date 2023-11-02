@@ -43,7 +43,7 @@ const SceneItem = ({
       isDragDisabled={false} //Add to global settings
     >
       <div className="lg:w-2/3 w-full mx-auto">
-        <SceneHeader title={scene.id} onClick={handleSetExpanded} />
+        <SceneHeader title={scene.id} handleExpandScene={handleSetExpanded} />
         <ConditionalField show={show} onCollapse={() => {}} onShow={() => {}}>
           <SceneForm
             scene={scene}
@@ -61,14 +61,14 @@ const SceneItem = ({
 }
 
 interface SceneHeaderProps {
-  onClick: () => void
+  handleExpandScene: () => void
   title: string
 }
 
-const SceneHeader = ({ title, onClick }: SceneHeaderProps) => {
+const SceneHeader = ({ title, handleExpandScene }: SceneHeaderProps) => {
   return (
     <h2
-      onClick={onClick}
+      onClick={handleExpandScene}
       className="border rounded-sm font-semibold p-4 w-full bg-primaryLight border-primary"
     >
       {title}
