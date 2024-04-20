@@ -20,7 +20,7 @@ export const ScriptList = ({
     <ul className="overflow-y-auto max-h-screen pt-6 text-gray-600 md:px-8">
       {scripts?.map(({ filename, script_id }, idx) => (
         <ScriptListItem
-          key={idx}
+          key={script_id}
           id={`script-list-item-${idx}`}
           isActiveScript={activeScriptId === script_id}
           onClick={() => setActiveScript(script_id)}
