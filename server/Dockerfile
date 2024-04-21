@@ -26,4 +26,5 @@ RUN chmod +x /usr/src/app/entrypoint.sh
 EXPOSE 5001
 
 # run entrypoint.sh
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+RUN ["chmod", "+x", "/usr/src/app/entrypoint.sh"]
+#ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
