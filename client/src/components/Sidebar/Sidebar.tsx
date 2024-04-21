@@ -53,7 +53,7 @@ const Sidebar = () => {
 
   return (
     <nav
-      className={`sticky flex flex-row top-0 left-0  h-screen border-r bg-white`}
+      className={`sticky flex flex-row top-0 left-0 h-screen border-r bg-white`}
     >
       <div className="flex flex-col w-12 h-full bg-gray-200">
         <div className="h-20 flex items-center justify-center">
@@ -69,7 +69,7 @@ const Sidebar = () => {
         </div>
       </div>
       <Drawer show={showScripts}>
-        <ScriptsContainer>
+        <ScriptsContainer onScriptChange={() => setShowScripts(false)}>
           <FileUpload />
         </ScriptsContainer>
       </Drawer>

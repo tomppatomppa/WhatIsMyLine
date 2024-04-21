@@ -10,7 +10,7 @@ interface ScriptListItemProps {
 const ScriptListItem = ({ ...props }: ScriptListItemProps) => {
   const { children, isActiveScript = false, ...rest } = props
 
-  const active = 'text-gray-900 border-indigo-600'
+  const active = 'text-gray-900 border-indigo-600 bg-primaryLight'
 
   const activeClass = isActiveScript ? active : ''
 

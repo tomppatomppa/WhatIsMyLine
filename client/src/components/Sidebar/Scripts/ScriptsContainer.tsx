@@ -13,12 +13,17 @@ import { Script } from 'src/components/ReaderV3/reader.types'
 
 import { useState } from 'react'
 import { SearchBox } from '../../common/SearchBox'
+import { scriptChanged } from './utils'
 
 interface ScriptContainerProps {
   children?: React.ReactNode
+  onScriptChange?: () => void
 }
 
-const ScriptsContainer = ({ children }: ScriptContainerProps) => {
+const ScriptsContainer = ({
+  children,
+  onScriptChange,
+}: ScriptContainerProps) => {
   const [search, setSearch] = useState('')
   const scripts = useScripts()
 
@@ -40,15 +45,22 @@ const ScriptsContainer = ({ children }: ScriptContainerProps) => {
     refetchOnWindowFocus: false,
   })
 
+  const handleSetActiveScript = (scriptId: string) => {
+    if (scriptChanged(activeScript?.script_id, scriptId)) {
+      onScriptChange && onScriptChange()
+    }
+    setActiveScript(scriptId)
+  }
+
   const scriptProps = {
     scripts: filteredScripts,
     activeScriptId: activeScript?.script_id,
-    setActiveScript: setActiveScript,
+    setActiveScript: handleSetActiveScript,
     deleteScript: deleteScript,
   }
 
   return (
-    <div className={`flex flex-col h-full gap-4`}>
+    <div className={`flex flex-col h-full w-full gap-4`}>
       {children}
       <div className="px-4 md:px-8">
         <SearchBox setSearch={setSearch} />

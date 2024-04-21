@@ -75,7 +75,7 @@ def register_request_handlers(app):
 
 def register_blueprints(app):
     @app.route('/')
-    def index(): 
+    def index():
         return render_template('index.html')
     
     @app.route('/<path:path>')

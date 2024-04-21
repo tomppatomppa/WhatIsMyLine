@@ -20,7 +20,7 @@ services:
       - ./client/src:/usr/src/app/src
       - ./client/public/index.html:/usr/src/app/public/index.html
     ports:
-      - 5000:5000
+      - 5002:5000
     env_file:
       - ./.env.dev
     depends_on:

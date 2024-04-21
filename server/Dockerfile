@@ -21,7 +21,9 @@ ENV SKIP_TESTS=${SKIP_TESTS}
 
 # copy project
 COPY . /usr/src/app/
+RUN chmod +x /usr/src/app/entrypoint.sh
 
 EXPOSE 5001
+
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
