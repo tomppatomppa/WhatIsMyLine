@@ -1,79 +1,79 @@
-import { Scene, Script } from 'src/components/ReaderV3/reader.types'
-import { StateCreator, create } from 'zustand'
-import { swapLines, swapScenes } from './helpers'
-import { devtools, persist } from 'zustand/middleware'
+import { Scene, Script } from "src/components/ReaderV3/reader.types";
+import { StateCreator, create } from "zustand";
+import { swapLines, swapScenes } from "./helpers";
+import { devtools, persist } from "zustand/middleware";
 import {
   addScript,
   deleteScriptById,
   fetchAllUserScripts,
   updateScript,
-} from 'src/API/scriptApi'
-import { findChangedScripts, getSceneNumber } from 'src/utils/helpers'
+} from "src/API/scriptApi";
+import { findChangedScripts, getSceneNumber } from "src/utils/helpers";
 
 export type RootFolder = {
-  id: string
-  name: string
-}
+  id: string;
+  name: string;
+};
 
 interface ScriptState {
-  scripts: Script[]
-  unsavedChanges: string[]
-  activeScriptId: string
-  rootFolder: RootFolder | null
+  scripts: Script[];
+  unsavedChanges: string[];
+  activeScriptId: string;
+  rootFolder: RootFolder | null;
 }
 
 interface ScriptActions {
-  updateDatabaseWithLocalChanges: () => Promise<void>
-  fetchAndCompare: () => Promise<Script[]>
+  updateDatabaseWithLocalChanges: () => Promise<void>;
+  fetchAndCompare: () => Promise<Script[]>;
 
-  setScripts: (scripts: Script[]) => void
-  addScript: (script: Script) => void
-  setRootFolder: (rootFolder: RootFolder) => void
-  setActiveScriptId: (id: string) => void
-  deleteScriptByUuid: (id: string) => void
+  setScripts: (scripts: Script[]) => void;
+  addScript: (script: Script) => void;
+  setRootFolder: (rootFolder: RootFolder) => void;
+  setActiveScriptId: (id: string) => void;
+  deleteScriptByUuid: (id: string) => void;
 
-  reorderScenes: (sourceId: number, destinationId: number) => void
+  reorderScenes: (sourceId: number, destinationId: number) => void;
   reorderLines: (
     sceneId: string,
     sourceId: number,
     destinationId: number
-  ) => void
-  getActiveScript: () => Script | undefined
-  getPreviousScene: (sceneNumber: number) => Scene | null
+  ) => void;
+  getActiveScript: () => Script | undefined;
+  getPreviousScene: (sceneNumber: number) => Scene | null;
 
-  updateScene: (updatedScene: Scene) => void
+  updateScene: (updatedScene: Scene) => void;
 }
 
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   updateDatabaseWithLocalChanges: async () => {
-    await get().fetchAndCompare()
-    const toUpdate = get().unsavedChanges
+    await get().fetchAndCompare();
+    const toUpdate = get().unsavedChanges;
     const scriptsToUpdate = get().scripts.filter((script) =>
       toUpdate.includes(script.script_id)
-    )
+    );
     if (scriptsToUpdate.length) {
       await Promise.allSettled(
         scriptsToUpdate.map(async (script) => {
-          return await updateScript(script)
+          return await updateScript(script);
         })
-      )
-      set(() => ({ unsavedChanges: [] }))
+      );
+      set(() => ({ unsavedChanges: [] }));
     }
   },
 
   fetchAndCompare: async () => {
-    const scriptsInDatabase = await fetchAllUserScripts()
+    const scriptsInDatabase = await fetchAllUserScripts();
     const scriptsWithUnsavedChanges = findChangedScripts(
       scriptsInDatabase,
       get().scripts
-    )
-    set(() => ({ unsavedChanges: scriptsWithUnsavedChanges }))
-    return scriptsInDatabase
+    );
+    set(() => ({ unsavedChanges: scriptsWithUnsavedChanges }));
+    return scriptsInDatabase;
   },
 
   scripts: [],
   unsavedChanges: [],
-  activeScriptId: '',
+  activeScriptId: "",
   rootFolder: null,
 
   setActiveScriptId: (id: string) => set(() => ({ activeScriptId: id })),
@@ -81,10 +81,10 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
   setRootFolder: (rootFolder: RootFolder) => set(() => ({ rootFolder })),
 
   addScript: async (script: Script) => {
-    const addedScript = await addScript(script)
+    const addedScript = await addScript(script);
     set((state: { scripts: Script[] }) => ({
       scripts: state.scripts.concat(addedScript),
-    }))
+    }));
   },
 
   getActiveScript: () =>
@@ -93,19 +93,20 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
     ),
 
   getPreviousScene: (sceneNumber): Scene | null => {
-    const scripts = get().scripts
-    const targetSceneNumber = sceneNumber - 1
+    const scripts = get().scripts;
+    const targetSceneNumber = sceneNumber - 1;
     const sceneFromScripts =
       scripts
         .flatMap((script) => script.scenes)
-        .find((scene) => getSceneNumber(scene.id) === targetSceneNumber) || null
+        .find((scene) => getSceneNumber(scene.id) === targetSceneNumber) ||
+      null;
 
-    return sceneFromScripts
+    return sceneFromScripts;
   },
   /**
    * Active Script mutations
    */
-  updateScene: (updatedScene: Scene) =>
+  updateScene: async (updatedScene: Scene) => {
     set(({ scripts, activeScriptId }) => ({
       scripts: scripts.map((script) =>
         script.script_id !== activeScriptId
@@ -117,7 +118,18 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
               ),
             }
       ),
-    })),
+    }));
+    try {
+      const script = get().getActiveScript();
+      if (!script) {
+        throw new Error("No script selected");
+      }
+      return await updateScript(script);
+    } catch (e) {
+      throw new Error("Error updating script");
+    }
+  },
+
   reorderScenes: (sourceId: number, destinationId: number) =>
     set((state) => ({
       scripts: state.scripts.map((script) =>
@@ -148,42 +160,42 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
 
   deleteScriptByUuid: async (id: string) => {
     try {
-      await deleteScriptById(id)
+      await deleteScriptById(id);
       set((state) => ({
         scripts: state.scripts.filter((script) => script.script_id !== id),
-      }))
+      }));
     } catch (e) {
-      console.log('Something went wrong deleting script')
+      console.log("Something went wrong deleting script");
     }
   },
-})
+});
 
 export const useScriptStore = create<ScriptState & ScriptActions>()(
   devtools(
     persist(scriptStore, {
-      name: 'scripts',
+      name: "scripts",
     })
   )
-)
+);
 
-export const useScripts = () => useScriptStore((state) => state.scripts)
-export const useSetScripts = () => useScriptStore((state) => state.setScripts)
-export const useAddScript = () => useScriptStore((state) => state.addScript)
+export const useScripts = () => useScriptStore((state) => state.scripts);
+export const useSetScripts = () => useScriptStore((state) => state.setScripts);
+export const useAddScript = () => useScriptStore((state) => state.addScript);
 
 export const useSetRootFolder = () =>
-  useScriptStore((state) => state.setRootFolder)
+  useScriptStore((state) => state.setRootFolder);
 
-export const useRootFolder = () => useScriptStore((state) => state.rootFolder)
+export const useRootFolder = () => useScriptStore((state) => state.rootFolder);
 
 export const useSetActiveScriptId = () =>
-  useScriptStore((state) => state.setActiveScriptId)
+  useScriptStore((state) => state.setActiveScriptId);
 export const useDeleteScript = () =>
-  useScriptStore((state) => state.deleteScriptByUuid)
+  useScriptStore((state) => state.deleteScriptByUuid);
 export const useActiveScript = () =>
-  useScriptStore((state) => state.getActiveScript())
+  useScriptStore((state) => state.getActiveScript());
 
 export const useUpdateScript = () =>
-  useScriptStore((state) => state.updateScene)
+  useScriptStore((state) => state.updateScene);
 
 export const usePreviousScene = () =>
-  useScriptStore((state) => state.getPreviousScene)
+  useScriptStore((state) => state.getPreviousScene);

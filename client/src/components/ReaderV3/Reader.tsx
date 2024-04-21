@@ -1,10 +1,10 @@
-import { useReducer } from 'react'
-import { DragDropContext, DropResult } from 'react-beautiful-dnd'
-import { Drop } from '../drag-and-drop'
-import ReaderContext from './contexts/ReaderContext'
-import reducer from './reducer'
-import SceneItem from './components/Scene/SceneItem'
-import { ReaderConfiguration, Script } from './reader.types'
+import { useReducer } from "react";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { Drop } from "../drag-and-drop";
+import ReaderContext from "./contexts/ReaderContext";
+import reducer from "./reducer";
+import SceneItem from "./components/Scene/SceneItem";
+import { ReaderConfiguration, Script } from "./reader.types";
 
 /**
  * Initial Configuration object
@@ -12,38 +12,38 @@ import { ReaderConfiguration, Script } from './reader.types'
  * via useReaderContext()
  */
 const initialState = {
-  mode: 'idle',
-  currentScrollTarget: '',
+  mode: "idle",
+  currentScrollTarget: "",
   highlight: [],
   expanded: [],
   isEditing: [], //array for scenes being edited
   settings: {
     info: {
       style: {
-        textAlign: 'left',
-        marginLeft: '10px',
-        fontStyle: 'italic',
-        fontSize: '11.8pt',
-        color: '#333333',
+        textAlign: "left",
+        marginLeft: "10px",
+        fontStyle: "italic",
+        fontSize: "11.8pt",
+        color: "#333333",
       },
     },
     actor: {
       style: {
-        textAlign: 'center',
-        fontSize: '11.8pt',
-        color: '#333333',
+        textAlign: "center",
+        fontSize: "11.8pt",
+        color: "#333333",
       },
     },
   },
-} as ReaderConfiguration
+} as ReaderConfiguration;
 
 interface ReaderProps {
-  script: Script
-  handleDragEnd: (values: DropResult) => void
+  script: Script;
+  handleDragEnd: (values: DropResult) => void;
 }
 
 export const Reader = ({ script, handleDragEnd }: ReaderProps) => {
-  const [options, dispatch] = useReducer(reducer, initialState)
+  const [options, dispatch] = useReducer(reducer, initialState);
 
   return (
     <ReaderContext.Provider
@@ -58,7 +58,7 @@ export const Reader = ({ script, handleDragEnd }: ReaderProps) => {
               scene={scene}
               sceneIndex={index}
               handleSetExpanded={() =>
-                dispatch({ type: 'SET_EXPAND', payload: { sceneId: scene.id } })
+                dispatch({ type: "SET_EXPAND", payload: { sceneId: scene.id } })
               }
               show={options.expanded.includes(scene?.id)}
             />
@@ -66,5 +66,5 @@ export const Reader = ({ script, handleDragEnd }: ReaderProps) => {
         </Drop>
       </DragDropContext>
     </ReaderContext.Provider>
-  )
-}
+  );
+};
