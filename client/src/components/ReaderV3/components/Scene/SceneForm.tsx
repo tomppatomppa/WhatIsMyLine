@@ -16,6 +16,7 @@ interface EditorFormProps {
   deleteLine: (lineIndex: number) => void
 }
 
+
 const SceneForm = ({
   scene,
   onSubmit,
@@ -41,9 +42,7 @@ const SceneForm = ({
       <Formik
         enableReinitialize={true}
         initialValues={scene}
-        onSubmit={(values) => {
-          onSubmit(values)
-        }}
+        onSubmit={onSubmit}
       >
         {({ values }) => (
           <Drop key={scene.id} id={scene.id} type="droppable-item">

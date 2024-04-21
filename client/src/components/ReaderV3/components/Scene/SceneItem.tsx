@@ -24,7 +24,7 @@ const SceneItem = ({
 
   const updateScript = useUpdateScript()
 
-  const onSubmit = (updatedScene: Scene) => {
+  const onSubmit = async (updatedScene: Scene) => {
     updateScript(updatedScene)
   }
 

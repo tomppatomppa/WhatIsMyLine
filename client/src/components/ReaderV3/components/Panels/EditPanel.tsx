@@ -17,7 +17,7 @@ function createNewLine() {
 
 const EditPanel = () => {
   const updateScript = useUpdateScript()
-  const { dirty, resetForm, values } = useFormikContext<Scene>()
+  const { dirty, resetForm, values, submitForm } = useFormikContext<Scene>()
   const { dispatch } = useReaderContext()
 
   const handleAddLine = () => {
@@ -47,8 +47,8 @@ const EditPanel = () => {
       <button type="button" onClick={handleAddLine}>
         Add Line
       </button>
-      <button className={dirty ? 'text-black' : 'text-gray-400'} type="submit">
-        Save
+      <button className={dirty ? 'text-black' : 'text-gray-400'} onClick={submitForm} type="submit">
+       {"Save"}
       </button>
     </div>
   )
