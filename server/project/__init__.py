@@ -14,7 +14,7 @@ migrate = Migrate()
 csrf_protection = CSRFProtect()
 
 def create_app():
-    app = Flask(__name__, template_folder="dist", static_folder="dist")
+    app = Flask(__name__, template_folder="dist", static_folder="dist/assets")
     
     jwt = JWTManager(app)
     
