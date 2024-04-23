@@ -1,0 +1,4 @@
+node_modules
+client
+postgres-data
+/client_vite/node_modules
