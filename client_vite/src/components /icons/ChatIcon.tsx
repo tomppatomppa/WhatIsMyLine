@@ -1,5 +1,3 @@
-import React from 'react'
-
 const ChatIcon = () => {
   return (
     <svg
@@ -19,7 +17,7 @@ const ChatIcon = () => {
         />
       </g>
     </svg>
-  )
-}
+  );
+};
 
-export default ChatIcon
+export default ChatIcon;

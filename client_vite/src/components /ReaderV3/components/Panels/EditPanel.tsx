@@ -3,6 +3,7 @@ import { useFormikContext } from 'formik'
 import uuid from 'react-uuid'
 import { Scene, SceneLine } from '../../reader.types'
 import { useReaderContext } from '../../contexts/ReaderContext'
+import { useUpdateScript } from '../../../../store/scriptStore'
 
 function createNewLine() {
   return {

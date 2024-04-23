@@ -1,8 +1,7 @@
-import React from 'react'
-import { Line } from './reader.types'
+import { Line } from "./reader.types";
 
 interface LineItemProps {
-  line: Line
+  line: Line;
 }
 const LineItem = ({ line }: LineItemProps) => {
   return (
@@ -10,7 +9,7 @@ const LineItem = ({ line }: LineItemProps) => {
       <p>{line.name}</p>
       <p>{line.lines}</p>
     </div>
-  )
-}
+  );
+};
 
-export default LineItem
+export default LineItem;

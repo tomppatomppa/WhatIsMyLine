@@ -1,4 +1,4 @@
-import { Script } from 'src/components/ReaderV3/reader.types'
+import { Script } from "../components /ReaderV3/reader.types"
 
 export function tokenIsExpired(date: number) {
   const currentDate = Date.now()

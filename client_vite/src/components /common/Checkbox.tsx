@@ -1,9 +1,7 @@
-import React from 'react'
-
 interface CheckboxProps {
-  checked: boolean
-  label?: string
-  onChange: () => void
+  checked: boolean;
+  label?: string;
+  onChange: () => void;
 }
 
 const Checkbox = ({ checked, label, onChange }: CheckboxProps) => {
@@ -17,7 +15,7 @@ const Checkbox = ({ checked, label, onChange }: CheckboxProps) => {
         onChange={onChange}
       />
     </label>
-  )
-}
+  );
+};
 
-export default Checkbox
+export default Checkbox;

@@ -1,4 +1,5 @@
-import { CustomHTMLAudioElement } from 'src/utils/helpers'
+
+import { CustomHTMLAudioElement } from '../../utils/helpers'
 import { Actor, Line, ReaderConfiguration, Scene } from './reader.types'
 
 const DEFAULT_HIGHLIGHT_COLOR = '#86efac'
