@@ -3,4 +3,3 @@ postgres-data
 
 .env.prod
 .env
-/client_vite

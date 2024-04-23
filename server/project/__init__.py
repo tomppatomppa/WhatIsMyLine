@@ -77,7 +77,11 @@ def register_blueprints(app):
     @app.route('/')
     def index():
         return render_template('index.html')
-    
+
+    @app.route('/api/ping')
+    def test():   
+        return "pongs"
+
     @app.route('/<path:path>')
     def catch_all(path):   
         return render_template('index.html')

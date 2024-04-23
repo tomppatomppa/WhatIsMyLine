@@ -2,31 +2,49 @@ version: '3.8'
 
 services:
   backend:
+    platform: linux/x86_64
     build: ./server
     command: python manage.py run -h 0.0.0.0
     volumes:
       - ./server/:/usr/src/app/
-    ports:
-      - 5001:5000
     env_file:
       - ./.env.dev
     depends_on:
       - db
 
+  # frontend:
+  #   build: ./client
+  #   container_name: react-frontend
+  #   volumes:
+  #     - ./client/src:/usr/src/app/src
+  #     - ./client/public/index.html:/usr/src/app/public/index.html
+  #   ports:
+  #     - 5002:5000
+  #   env_file:
+  #     - ./.env.dev
+  #   depends_on:
+  #     - backend
+
   frontend:
-    build: ./client
-    container_name: react-frontend
+    platform: linux/x86_64
+    image: frontend
+    build: ./client_vite
     volumes:
-      - ./client/src:/usr/src/app/src
-      - ./client/public/index.html:/usr/src/app/public/index.html
-    ports:
-      - 5002:5000
-    env_file:
-      - ./.env.dev
+     - "./client_vite/src:/usr/src/app/src"
+    # - "./client_vite/node_modules:/usr/src/app/node_modules"
+   #  - "./client_vite/vite.config.ts:/usr/src/app/vite.config.ts"
+    # volumes:
+    #   - ./client_vite:/usr/src/app
+    
+    #   - ./client_vite:/usr/src/app # Let us modify the contents of the container locally
+    # # volumes:
+    #   - node_modules:/usr/src/app/node_modules
+    #   - ./client_vite:/usr/src/app
     depends_on:
       - backend
 
   db:
+    platform: linux/x86_64
     image: postgres:16
     restart: always
     environment:
@@ -38,24 +56,26 @@ services:
     ports:
       - '5432:5432'
 
-  adminer:
-    image: adminer:4
-    restart: always
-    environment:
-      - ADMINER_DESIGN=db
-    ports:
-      - 8083:8080
+  # adminer:
+  #   image: adminer:4
+  #   restart: always
+  #   environment:
+  #     - ADMINER_DESIGN=db
+  #   ports:
+  #     - 8083:8080
 
   nginx:
+    platform: linux/x86_64
     image: nginx:1.20.1
     volumes:
       - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - 8080:80
+      - 80:80
     container_name: reverse-proxy
     depends_on:
       - frontend
       - backend
 
 volumes:
+  node_modules:
   postgres_data:
