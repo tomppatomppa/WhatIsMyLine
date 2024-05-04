@@ -37,7 +37,7 @@ class ReaderV3():
        self.file = None
        self.line_id = line_id
        self.lines_as_string = lines_as_string
-       self.min_font_size = 10
+       self.min_font_size = 9.41166877746582
        self.lines_max_start_x_axis = 400
        self.page_width = None
 
@@ -188,7 +188,7 @@ class ReaderV3():
     def clean_lines(self, file):
         cleaned_file = []
         for scene in file:
-            for name, lines in scene.items():        
+            for name, lines in scene.items():
                 filtered_items = [item for item in lines if item['size'] >= self.min_font_size]                                  
                 filtered_items = [item for item in filtered_items if item['origin'][0] <= self.lines_max_start_x_axis]         
                 cleaned_file.append({name: filtered_items})
@@ -202,7 +202,6 @@ class ReaderV3():
         return "INFO"
     
     def make_lines_recursive(self, scenes, current_lines = None, scene_index = 0, currentScene = None, result = None):
-
         if not result:
             result = []
 

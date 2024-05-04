@@ -51,7 +51,7 @@ httpClient.interceptors.request.use(async (config) => {
   if (userExists) {
     const { state } = JSON.parse(userExists);
     let { access_token, expiry } = state.user;
-
+    
     if (tokenIsExpired(expiry)) {
       const { data } = await axios.post(
         `${BASE_URI}/refresh-token`,

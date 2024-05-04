@@ -1,10 +1,10 @@
-import 'regenerator-runtime/runtime'
+import "regenerator-runtime/runtime";
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
 import { useMutation } from "react-query";
 import SpeechRecognition, {
   useSpeechRecognition,
-} from 'react-speech-recognition'
+} from "react-speech-recognition";
 
 import { AiOutlineSync } from "react-icons/ai";
 import { FcAudioFile } from "react-icons/fc";
@@ -26,7 +26,10 @@ import { RootFolder, useRootFolder } from "../../../../store/scriptStore";
 import { createTextToSpeechFromScene } from "../../../../API/googleApi";
 import Modal from "../../../common/Modal";
 import Wrapper from "../../../../layout/Wrapper";
-import { getSceneNumber } from "../../../../utils/helpers";
+import {
+  createAudioElementsFromFiles,
+  getSceneNumber,
+} from "../../../../utils/helpers";
 import PreviousScene from "../../../PreviousScene";
 import SelectList from "../../../SelectList";
 import Dropdown from "../../../common/Dropdown";
@@ -38,11 +41,12 @@ const RehearsePanel = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const { values } = useFormikContext<Scene>();
   const { options, scriptId, dispatch } = useReaderContext();
-  const { audioFiles, refetch, isFetching } = useAudio(
+  const { data, refetch, isFetching } = useAudio(
     values,
     scriptId,
     rootFolder.id
   );
+  const audioFiles = createAudioElementsFromFiles(data?.files || []);
 
   const { mutate, isError, isSuccess, isLoading } = useMutation(
     createTextToSpeechFromScene,
@@ -96,7 +100,7 @@ const RehearsePanel = () => {
         </button>
       </div>
       <PreviousScene sceneId={getSceneNumber(values.id)} />
-      {audioFiles ? (
+      {audioFiles.length ? (
         <ComponentWhenValid values={values} labeled={labeled} />
       ) : (
         <button type="button" onClick={() => setShowCreateModal(true)}>

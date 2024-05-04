@@ -119,8 +119,7 @@ filenames = [
              {"filename": "31.8.pdf", "number_of_scenes": 13},
              {"filename": "1508_BUU_SCRIPT.pdf", "number_of_scenes": 8},
              {"filename": "1608_BUU_SCRIPT.pdf", "number_of_scenes": 5},
-             #{"filename": "test2.pdf", "number_of_scenes": 16},
-
+             {"filename": "10.5.pdf", "number_of_scenes": 15},
             ]
   
 def test_scene_detection():

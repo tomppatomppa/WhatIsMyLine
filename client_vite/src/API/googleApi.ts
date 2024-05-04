@@ -1,7 +1,6 @@
 import { ResponseType } from 'axios'
 import { CallbackDoc } from 'react-google-drive-picker/dist/typeDefs'
 import { httpClient } from '../utils/axiosClient'
-import { createAudioElementsFromFiles } from '../utils/helpers'
 import { Line, Scene } from '../components /ReaderV3/reader.types'
 import { BASE_URI } from '../config'
 
@@ -52,9 +51,7 @@ export const downloadSceneAudio = async ({
     lines,
   })
 
-  const audio_files = createAudioElementsFromFiles(data.files)
-
-  return audio_files
+  return data
 }
 
 interface CreateTextToSpeechSceneProps {
