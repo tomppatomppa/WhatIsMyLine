@@ -33,7 +33,7 @@ def process_uploaded_file(file, uploaded_files_folder):
         file.save(save_path)
         
         
-        reader = ReaderV3( line_id=True, lines_as_string=True)
+        reader = ReaderV3(line_id=True, lines_as_string=True)
         reader.read_file(f'{uuid_filename}')
 
         result = reader.to_json()

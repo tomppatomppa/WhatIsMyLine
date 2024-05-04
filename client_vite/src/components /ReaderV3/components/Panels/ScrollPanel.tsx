@@ -33,25 +33,25 @@ const ScrollPanel = () => {
     }
   })
 
-  const { listening } = useSpeechRecognition({
+  const { listening, isMicrophoneAvailable } = useSpeechRecognition({
     commands,
   })
-
+ 
   SpeechRecognition.startListening({
     language: 'sv-SE',
     continuous: true,
   })
 
-  return (
+  return isMicrophoneAvailable ? (
     <div>
       {listening ? 'listening' : 'not listening'}
       <select onChange={(e) => handleSetCurrentScrollTarget(e.target.value)}>
         {values.data.map((line) => (
-          <option>{line.id}</option>
+          <option key={line.id}>{line.id}</option>
         ))}
       </select>
     </div>
-  )
+  ) : <div>No microphone available</div>
 }
 
 export default ScrollPanel

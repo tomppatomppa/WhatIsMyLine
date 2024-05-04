@@ -17,7 +17,7 @@ export const ScriptList = ({
   deleteScript,
 }: ScriptListProps) => {
   return (
-    <ul className="overflow-y-auto max-h-screen pt-6 text-gray-600 md:px-8">
+    <ul className="overflow-y-auto max-h-screen pt-6 text-gray-600">
       {scripts?.map(({ filename, script_id }, idx) => (
         <ScriptListItem
           key={script_id}
