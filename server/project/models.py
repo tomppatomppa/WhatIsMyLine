@@ -87,6 +87,7 @@ class Script(db.Model):
     scenes = mapped_column(PickleType(), nullable=True)
     created_on = mapped_column(DateTime(), nullable=False)
     modified_on = mapped_column(DateTime(), nullable=False)
+    deleted_at = mapped_column(DateTime(), nullable=True)
     
     forbidden_keys = ['id', 'script_id', "created_on", "user_id"]
 
@@ -99,6 +100,7 @@ class Script(db.Model):
         self.scenes = scenes
         self.created_on = datetime.now()
         self.modified_on = datetime.now()
+        self.deleted_at = None
     
     def to_dict(self):
       return {
@@ -122,7 +124,7 @@ class Script(db.Model):
     
     @classmethod
     def get_scripts_by_user_id(cls, user_id):
-        return cls.query.filter_by(user_id=user_id).all()
+        return cls.query.filter_by(user_id=user_id, deleted_at=None).all()
     
     @classmethod
     def update(cls, updated_data, script):
@@ -135,8 +137,8 @@ class Script(db.Model):
     @classmethod
     def delete_script_by_script_id(cls, script_id, user_id):
         script = cls.query.filter_by(script_id=script_id, user_id=user_id).first()
-        if script:
-            db.session.delete(script)
+        if script and not script.deleted_at:
+            script.deleted_at = datetime.now()
             db.session.commit()
         return script
     
