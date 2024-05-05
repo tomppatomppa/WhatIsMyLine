@@ -8,10 +8,14 @@ import json
 @scripts_blueprint.route("/script", methods=["GET"])
 @jwt_required()
 def get_all():
-    user_scripts = Script.get_scripts_by_user_id(get_jwt_identity())
+    try:
+        user_scripts = Script.get_scripts_by_user_id(get_jwt_identity())
     
-    response = make_response(json.dumps([script.to_dict() for script in user_scripts]), 200)
-    return response
+        response = make_response(json.dumps([script.to_dict() for script in user_scripts]), 200)
+        return response
+    except Exception as error:
+        return str("Something went wrong fetching scripts"), 404
+   
 
 @scripts_blueprint.route("/script/<script_id>", methods=["GET"])
 @jwt_required()
