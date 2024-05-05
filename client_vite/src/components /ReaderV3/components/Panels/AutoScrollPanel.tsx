@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { PanelButton } from "../../../common/buttons/PanelButton";
-import { useReaderContext } from "../../contexts/ReaderContext";
 import { useFormikContext } from "formik";
 import { Scene } from "../../reader.types";
 
