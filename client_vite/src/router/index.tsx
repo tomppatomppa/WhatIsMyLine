@@ -1,14 +1,17 @@
-import { createBrowserRouter, useNavigate } from 'react-router-dom'
-import { ProtectedRoute } from './ProtectedRoute'
-import MainLayout from '../layout/MainLayout'
-import LandingView from '../views/LandingView'
-import { useEffect } from 'react'
-import ReaderView from '../views/ReaderView'
-import { useAuth } from '../store/userStore'
+import { createBrowserRouter, useNavigate } from "react-router-dom";
+import { ProtectedRoute } from "./ProtectedRoute";
+
+import LandingView from "../views/LandingView";
+import { useEffect } from "react";
+import ReaderView from "../views/ReaderView";
+import { useAuth } from "../store/userStore";
+import React from "react";
+
+const MainLayout = React.lazy(() => import("../layout/MainLayout"));
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: (
       <ProtectedRoute>
         <MainLayout />
@@ -16,44 +19,44 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        path: '/',
+        path: "/script/:id",
         element: <ReaderView />,
       },
     ],
   },
-  { path: '/landing', element: <LandingView /> },
+  { path: "/landing", element: <LandingView /> },
   {
-    path: '/login',
+    path: "/login",
     element: (
       <CatchUserIsLoggedIn>
         <LandingView />
       </CatchUserIsLoggedIn>
     ),
   },
-  { path: '*', element: <CatchAllRoute /> },
-])
+  { path: "*", element: <CatchAllRoute /> },
+]);
 
 function CatchAllRoute() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Redirect to '/' when the component mounts (catch-all route)
-    navigate('/')
-  }, [navigate])
+    navigate("/");
+  }, [navigate]);
 
-  return null
+  return null;
 }
 
 interface CatchUserIsLoggedInProps {
-  children: JSX.Element
+  children: JSX.Element;
 }
 function CatchUserIsLoggedIn({ children }: CatchUserIsLoggedInProps) {
-  const navigate = useNavigate()
-  const loggedIn =  useAuth()
+  const navigate = useNavigate();
+  const loggedIn = useAuth();
 
   useEffect(() => {
-    if (loggedIn) navigate('/')
-  }, [loggedIn, navigate])
+    if (loggedIn) navigate("/");
+  }, [loggedIn, navigate]);
 
-  return children
+  return children;
 }

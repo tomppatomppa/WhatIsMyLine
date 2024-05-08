@@ -1,31 +1,23 @@
+import { useMutation } from "react-query";
 
-import { useMutation } from 'react-query'
-
-import MultiFilePicker from './MultiFilePicker'
-import Button from '../common/Button'
-import { useState } from 'react'
-import { uploadfile } from '../../API/uploadApi'
-import { useAddScript } from '../../store/scriptStore'
+import MultiFilePicker from "./MultiFilePicker";
+import Button from "../common/Button";
+import { useState } from "react";
+import { useUploadScript } from "./useUploadScript";
 
 const FileUpload = () => {
-  const [files, setFiles] = useState<File[]>([])
-  const addScript = useAddScript()
+  const [files, setFiles] = useState<File[]>([]);
 
-  //TODO: move state to useQuery cache
-  const { mutate: upload } = useMutation(uploadfile, {
-    onSuccess: (script) => {
-      addScript(script)
-    },
-  })
+  const { mutate: upload } = useUploadScript();
 
   const handleUpload = () => {
     files.forEach((file) => {
-      const formData = new FormData()
-      formData.append('file', file)
-      upload(formData)
-    })
-    setFiles([])
-  }
+      const formData = new FormData();
+      formData.append("file", file);
+      upload(formData);
+    });
+    setFiles([]);
+  };
 
   if (files.length) {
     return (
@@ -37,7 +29,7 @@ const FileUpload = () => {
           Cancel
         </Button>
       </div>
-    )
+    );
   }
 
   return (
@@ -47,14 +39,14 @@ const FileUpload = () => {
           className=" p-2 rounded-md"
           handleFileChange={(e) => {
             if (e.target.files) {
-              const filesArray: File[] = Array.from(e.target.files)
-              setFiles(filesArray)
+              const filesArray: File[] = Array.from(e.target.files);
+              setFiles(filesArray);
             }
           }}
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default FileUpload
+export default FileUpload;

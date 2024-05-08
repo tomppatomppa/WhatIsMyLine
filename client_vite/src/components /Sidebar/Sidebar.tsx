@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { FcReadingEbook } from "react-icons/fc";
 import ScriptsContainer from "./Scripts/ScriptsContainer";
 import Profile from "../profile/Profile";
@@ -11,6 +11,7 @@ import Drawer from "../common/Drawer";
 import Spacer from "../common/Spacer";
 import { useLogout } from "../../store/userStore";
 import FileUpload from "../FileUpload/FileUpload";
+import { ErrorBoundary } from "../../ErrorBoundary";
 
 const Sidebar = () => {
   const logout = useLogout();
@@ -68,9 +69,13 @@ const Sidebar = () => {
         </div>
       </div>
       <Drawer show={showScripts}>
-        <ScriptsContainer onScriptChange={() => setShowScripts(false)}>
-          <FileUpload />
-        </ScriptsContainer>
+        <ErrorBoundary fallback={<div>Oops something went terribly wrong</div>}>
+          <Suspense fallback={<div>loading...</div>}>
+            <ScriptsContainer onScriptChange={() => setShowScripts(false)}>
+              <FileUpload />
+            </ScriptsContainer>
+          </Suspense>
+        </ErrorBoundary>
       </Drawer>
     </nav>
   );

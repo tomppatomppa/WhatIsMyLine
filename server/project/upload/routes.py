@@ -1,3 +1,7 @@
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
+from project import db
+from project.models import User, Script
 from . import upload_blueprint
 from flask import  request, current_app
 from werkzeug.utils import secure_filename
@@ -6,22 +10,31 @@ import uuid
 from PyMuReaderV3 import ReaderV3
 import json
 
-
 @upload_blueprint.route("/v3/upload", methods=['POST'])
+@jwt_required()
 def upload_file():
     if "file" not in request.files:
-       return 'No file', 500
+       return 'No file', 406
    
     file = request.files['file']
     if file.filename == '':
         return 'Invalid filename', 403
     
-    if file and allowed_file(file.filename):
+    user: User = db.get_or_404(User,
+                         get_jwt_identity(),
+                         description=f"User doesn't exist")
+    if not file or not allowed_file(file.filename):
+        return 'Invalid filetype', 403
+    try:
         folder = current_app.config.get('uploaded_files_folder')
         result = process_uploaded_file(file, folder)
-        return result
+        script = Script.add_script(result, user_id=user.id)
+        return script.to_dict()
+    except:
+        return "Error uploading script", 404
+   
 
-    return 'Invalid filetype', 403
+    
 
 
 def process_uploaded_file(file, uploaded_files_folder):
@@ -36,10 +49,9 @@ def process_uploaded_file(file, uploaded_files_folder):
         reader = ReaderV3(line_id=True, lines_as_string=True)
         reader.read_file(f'{uuid_filename}')
 
-        result = reader.to_json()
-        
+        result = reader.to_json() 
         result["filename"] = filename
-        return json.dumps(result)
+        return result
     
     finally:
         os.remove(save_path)

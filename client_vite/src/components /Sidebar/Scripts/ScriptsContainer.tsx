@@ -7,13 +7,11 @@ import { SearchBox } from "../../common/SearchBox";
 import { scriptChanged } from "./utils";
 import { fetchAllUserScripts } from "../../../API/scriptApi";
 import {
-  useScripts,
-  useSetScripts,
   useSetActiveScriptId,
   useActiveScript,
-  useDeleteScript,
 } from "../../../store/scriptStore";
-import { Script } from "../../ReaderV3/reader.types";
+import { useDeleteScript } from "./useDeleteScript";
+import { redirect, useMatch, useNavigate } from "react-router-dom";
 
 interface ScriptContainerProps {
   children?: React.ReactNode;
@@ -24,31 +22,31 @@ const ScriptsContainer = ({
   children,
   onScriptChange,
 }: ScriptContainerProps) => {
-  const [search, setSearch] = useState("");
-  const scripts = useScripts();
+  const navigate = useNavigate();
 
-  const setScripts = useSetScripts();
+  const [search, setSearch] = useState("");
+
   const setActiveScript = useSetActiveScriptId();
   const activeScript = useActiveScript();
-  const deleteScript = useDeleteScript();
 
-  const filteredScripts = scripts.filter(({ filename }) =>
-    filename.toLowerCase().includes(search.toLowerCase())
-  );
+  const { mutate: deleteScript } = useDeleteScript();
 
-  //TODO: remove onSuccess, move all state to reactQuery
-  useQuery(["scripts"], () => fetchAllUserScripts(), {
-    onSuccess: async (data: Script[]) => {
-      setScripts(data);
-    },
-    refetchOnWindowFocus: false,
+  const { data } = useQuery(["scripts"], fetchAllUserScripts, {
+    suspense: true,
   });
 
-  const handleSetActiveScript = (scriptId: string) => {
-    if (scriptChanged(activeScript?.script_id, scriptId)) {
-      onScriptChange && onScriptChange();
-    }
-    setActiveScript(scriptId);
+  const filteredScripts =
+    data?.filter(({ filename }) =>
+      filename.toLowerCase().includes(search.toLowerCase())
+    ) || [];
+
+  const handleSetActiveScript = (id: number) => {
+    // if (scriptChanged(activeScript?.script_id, scriptId)) {
+    //   onScriptChange && onScriptChange();
+    // }
+    
+    navigate("/script/" + id)
+   // setActiveScript(scriptId);
   };
 
   const scriptProps = {
@@ -64,7 +62,7 @@ const ScriptsContainer = ({
       <div className="px-4 md:px-8">
         <SearchBox setSearch={setSearch} />
       </div>
-      {filteredScripts.length ? (
+      {scriptProps.scripts ? (
         <ScriptList {...scriptProps} />
       ) : (
         <EmptyScriptList />

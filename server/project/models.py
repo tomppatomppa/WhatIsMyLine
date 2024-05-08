@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import DateTime, Integer, String, PickleType
+from sqlalchemy import DateTime, ForeignKey, Integer, String, PickleType
 from sqlalchemy.orm import mapped_column
 from project import db
 from datetime import datetime
@@ -37,32 +37,49 @@ class User(db.Model):
       
     def to_dict(self):
         return {
+            'id': self.id,
             'user_id': self.user_id,
             'picture': self.picture,
-            'email': self.email,
-            
+            'email': self.email,   
         }
     
     @classmethod
-    def get_user_by_user_id(cls, user_id):
-        return cls.query.filter_by(user_id=user_id).first()
+    def get_user_by_user_id(cls, id):
+        return cls.query.filter_by(id=id).first()
     
  
     @classmethod
-    def get_refresh_token_by_user_id(cls, user_id):
-        user = cls.query.filter_by(user_id=user_id).first()
+    def get_refresh_token_by_user_id(cls, id):
+        user = cls.query.filter_by(id=id).first()
      
         return user.refresh_token
     
     @classmethod
-    def update_refresh_token_by_user_id(cls, user_id, refresh_token):
-        user = cls.query.filter_by(user_id=user_id).first()
+    def update_refresh_token_by_user_id(cls, id, refresh_token):
+        user = cls.query.filter_by(id=id).first()
         user.refresh_token = refresh_token
 
         db.session.commit()
         return user.refresh_token
     
-
+    @classmethod
+    def find_or_create_user(cls, user_info):
+        user = cls.query.filter_by(user_id=user_info["user_id"],
+                                        email=user_info["email"],
+                                        provider=user_info["provider"]
+                                        ).first()
+        if not user:
+            user = User(user_info["user_id"],
+                        user_info["picture"],
+                        user_info["email"],
+                        user_info["provider"],
+                        user_info["refresh_token"],
+                        )
+            db.session.add(user)
+            db.session.commit()
+    
+        return user
+    
     def __repr__(self):
         return f'<User: {self.email}>'
 
@@ -83,7 +100,7 @@ class Script(db.Model):
     id = mapped_column(Integer(), primary_key=True, autoincrement=True)
     script_id = mapped_column(String(), unique=True, nullable=False)
     filename = mapped_column(String(), nullable=False)
-    user_id = mapped_column(String(), nullable=False)
+    user_id = mapped_column(ForeignKey("users.id"))
     scenes = mapped_column(PickleType(), nullable=True)
     created_on = mapped_column(DateTime(), nullable=False)
     modified_on = mapped_column(DateTime(), nullable=False)
@@ -108,8 +125,16 @@ class Script(db.Model):
           "script_id": self.script_id,
           "filename": self.filename,
           "user_id": self.user_id,
-          "scenes": self.scenes
+        #  "scenes": self.scenes
       }
+    def to_response(self):
+        return {
+          "id": self.id,
+          "script_id": self.script_id,
+          "filename": self.filename,
+          "user_id": self.user_id,
+          "scenes": self.scenes
+        }
     
     @classmethod
     def add_script(cls, script, user_id):
@@ -141,6 +166,7 @@ class Script(db.Model):
             script.deleted_at = datetime.now()
             db.session.commit()
         return script
+        
     
     def __repr__(self):
         return f'<Script: {self.filename}>'

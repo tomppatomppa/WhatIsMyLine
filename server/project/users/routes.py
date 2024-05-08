@@ -1,12 +1,13 @@
 import requests
 import os
+
+from project.auth.LoginManager import LoginManager
 from . import users_blueprint
+
 from flask import request, jsonify
 from utils import create_timestamp, verify_google_id_token
 from project.models import User
 from flask_jwt_extended import create_access_token, jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
-
-from project import db
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -16,27 +17,26 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 @users_blueprint.route("/login", methods=["POST"])
 def login():
     code = request.json.get('code')
-    
+
     if not code:
         return "Missing 'code' parameter in the request.", 403 
     try:
-        response = get_token_data(code)
-        
-        token_data = response.json()
-        
+        response = LoginManager(code).login() #get_token_data(code)
         if response.status_code == 200:
+            token_data = response.json()
             user = verify_google_id_token(token_data.get("id_token"))
-            
             user_for_database, user_for_client = extract_user_info(user, token_data)
-            store_user(user_for_database)
-       
+            user = store_user(user_for_database)
+            
             response = jsonify(user_for_client)
-            #Set cookies
-            access_token = create_access_token(identity=user_for_database.get("user_id"))
+            access_token = create_access_token(identity=user.id)
+            
             set_access_cookies(response, access_token) 
-           
+            
             return response
         return response.json(), response.status_code
+    except ValueError as valueError:
+        return str(valueError), 406
     except:
         return "Failed to login", 401
 
@@ -48,7 +48,7 @@ def refresh():
     '''
     try:
         user_id = get_jwt_identity()
-       
+        
         refresh_token = User.get_refresh_token_by_user_id(user_id)
         if not refresh_token:
             return "Missing 'refresh_token' login again.", 401 
@@ -110,19 +110,16 @@ def get_token_data(code):
         
     return response
 
-def store_user(user_info):
-    user_exists = User.query.filter_by(user_id=user_info["user_id"]).first()
-    if not user_exists:
-        new_user = User(user_info["user_id"],
-                        user_info["picture"],
-                        user_info["email"],
-                        user_info["provider"],
-                        user_info["refresh_token"],
-                        )
-        db.session.add(new_user)
-        db.session.commit()
-    else:
-        User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
+def store_user(user_info) -> User:
+   
+    user = User.find_or_create_user(user_info)
+
+    if not user:
+        raise ValueError("User not found or could not be created")
+
+    return user
+   
+    #User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
     
 def refresh_access_token(refresh_token):
     

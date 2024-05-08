@@ -1,7 +1,8 @@
+from datetime import datetime, timedelta, timezone
 from . import scripts_blueprint
-from flask import request,  make_response
-from flask_jwt_extended import get_jwt, jwt_required, get_jwt_identity
-from project.models import Script
+from flask import request, make_response
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from project.models import Script, User
 import json
 
 
@@ -10,11 +11,11 @@ import json
 def get_all():
     try:
         user_scripts = Script.get_scripts_by_user_id(get_jwt_identity())
-    
+      
         response = make_response(json.dumps([script.to_dict() for script in user_scripts]), 200)
         return response
     except Exception as error:
-        return str("Something went wrong fetching scripts"), 404
+        return str(error), 404
    
 
 @scripts_blueprint.route("/script/<script_id>", methods=["GET"])
@@ -35,7 +36,7 @@ def create():
     script = request.get_json()
     try:
         new_script = Script.add_script(script, get_jwt_identity())
-      
+
         return json.dumps(new_script.to_dict()), 200
     except Exception as error:
         return str(error), 400
@@ -50,7 +51,6 @@ def delete(script_id):
         return f"Script {deleted_script.script_id} Deleted Succesfully", 200
     else:
         return "Error deleting script", 404
-   
 
 @scripts_blueprint.route("/script/<script_id>", methods=["PUT"])
 @jwt_required()

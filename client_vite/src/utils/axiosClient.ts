@@ -51,7 +51,7 @@ httpClient.interceptors.request.use(async (config) => {
     const { state } = JSON.parse(userExists);
     let { access_token, expiry } = state.user;
     //This should only be for google speific endpoints
-    if (!tokenIsExpired(expiry)) {
+    if (tokenIsExpired(expiry)) {
       try {
         const { data } = await axios.post(
           `${BASE_URI}/refresh-token`,

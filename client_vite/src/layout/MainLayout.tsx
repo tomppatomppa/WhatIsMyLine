@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components /Sidebar/Sidebar";
 
+
 const MainLayout = () => {
   return (
     <div className="text-center flex flex-row">
@@ -15,3 +16,4 @@ const MainLayout = () => {
 };
 
 export default MainLayout;
+
