@@ -121,10 +121,12 @@ export function createAudioElementsFromFiles(
   });
 }
 
-export function clearCookiesAndLogout(msg?: string) {
+export async  function clearCookiesAndLogout(msg?: string) {
   msg && window.alert(msg);
-  localStorage.removeItem("user");
-  removeCookie("csrf_access_token");
   removeCookie("access_token_cookie");
-  window.location.href = "/login";
+  removeCookie("csrf_access_token");
+
+  localStorage.removeItem("user");
+  localStorage.removeItem("tanstack.auth.user");
+  window.location.href = "/";
 }

@@ -42,32 +42,6 @@ interface ScriptActions {
 }
 
 const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
-  // updateDatabaseWithLocalChanges: async () => {
-  //   await get().fetchAndCompare();
-  //   const toUpdate = get().unsavedChanges;
-  //   const scriptsToUpdate = get().scripts.filter((script) =>
-  //     toUpdate.includes(script.script_id)
-  //   );
-  //   if (scriptsToUpdate.length) {
-  //     await Promise.allSettled(
-  //       scriptsToUpdate.map(async (script) => {
-  //         return await updateScript(script);
-  //       })
-  //     );
-  //     set(() => ({ unsavedChanges: [] }));
-  //   }
-  // },
-
-  // fetchAndCompare: async () => {
-  //   const scriptsInDatabase = await fetchAllUserScripts();
-  //   const scriptsWithUnsavedChanges = findChangedScripts(
-  //     scriptsInDatabase,
-  //     get().scripts
-  //   );
-  //   set(() => ({ unsavedChanges: scriptsWithUnsavedChanges }));
-  //   return scriptsInDatabase;
-  // },
-
   scripts: [],
   unsavedChanges: [],
   activeScriptId: "",

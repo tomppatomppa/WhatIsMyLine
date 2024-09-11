@@ -13,8 +13,10 @@ import { useLogout } from "../../store/userStore";
 import FileUpload from "../FileUpload/FileUpload";
 import { ErrorBoundary } from "../../ErrorBoundary";
 
-const Sidebar = () => {
-  const logout = useLogout();
+interface SidebarProps {
+  handleLogout: () => void;
+}
+const Sidebar = ({ handleLogout }: SidebarProps) => {
   const [showScripts, setShowScripts] = useState(false);
 
   const navigation = [
@@ -44,7 +46,7 @@ const Sidebar = () => {
     },
     {
       onClick: () => {
-        logout();
+        handleLogout();
       },
       name: "Logout",
       icon: <LogoutIcon />,

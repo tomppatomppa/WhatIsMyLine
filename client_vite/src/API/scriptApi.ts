@@ -3,6 +3,7 @@ import { BASE_URI } from "../config";
 import { httpClient } from "../utils/axiosClient";
 
 export const fetchAllUserScripts = async (): Promise<Script[]> => {
+  console.log("FETCH")
   const { data } = await httpClient.get(`${BASE_URI}/script`);
 
   return data;

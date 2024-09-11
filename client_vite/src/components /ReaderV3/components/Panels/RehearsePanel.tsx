@@ -1,7 +1,7 @@
 import "regenerator-runtime/runtime";
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -48,14 +48,12 @@ const RehearsePanel = () => {
   );
   const audioFiles = createAudioElementsFromFiles(data?.files || []);
 
-  const { mutate, isError, isSuccess, isLoading } = useMutation(
-    createTextToSpeechFromScene,
-    {
-      onSuccess: () => {
-        refetch();
-      },
-    }
-  );
+  const { mutate, isError, isSuccess, isPending } = useMutation({
+    mutationFn: createTextToSpeechFromScene,
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const uniqueActors = [
     ...new Set(values.data.map((line) => line.name || line.type)),
@@ -79,7 +77,7 @@ const RehearsePanel = () => {
           })
         }
       >
-        <Spinner show={isLoading} />
+        <Spinner show={isPending} />
         <Message
           show={isSuccess}
           type="success"

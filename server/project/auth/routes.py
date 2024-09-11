@@ -7,8 +7,10 @@ from . import auth_blueprint
 def refresh():
     '''
     Verify user is logged in
+    
     '''
+    print("HERE")
     try:
-        return 200
+        return 'success', 200
     except:
-        return 401
+        return 'logout', 401

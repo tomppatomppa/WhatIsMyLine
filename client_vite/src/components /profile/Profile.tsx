@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import DriveInfo from "./DriveInfo";
 import Avatar from "./Avatar";
 import { useState } from "react";
@@ -13,7 +13,8 @@ const Profile = () => {
   const rootFolder = useRootFolder();
   const setRootFolder = useSetRootFolder();
 
-  const { mutate } = useMutation(syncGoogleDrive, {
+  const { mutate } = useMutation({
+    mutationFn: syncGoogleDrive,
     onSuccess: (data) => {
       setRootFolder(data);
     },

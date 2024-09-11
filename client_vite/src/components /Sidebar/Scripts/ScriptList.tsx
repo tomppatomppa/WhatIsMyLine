@@ -23,7 +23,7 @@ export const ScriptList = ({
           key={script_id}
           id={`script-list-item-${idx}`}
           isActiveScript={activeScriptId === script_id}
-          onClick={() => setActiveScript(id)}
+          onClick={() => setActiveScript(script_id)}
         >
           <span className="flex-1 text-start">{filename}</span>
           <TrashButton onClick={() => deleteScript(script_id)} />

@@ -4,6 +4,7 @@ import GridLayout from '../layout/GridLayout'
 import GithubIcon from '../components /icons/GithubIcon'
 import { AiOutlineGoogle, AiOutlineUpload, AiOutlineEdit, AiFillPlaySquare, AiTwotoneAlert } from 'react-icons/ai'
 import LoginButton from '../components /LoginButton/LoginButton'
+import { Link } from '@tanstack/react-router'
 
 const Heading = () => {
   return (
@@ -47,6 +48,7 @@ const cards: CardType = [
   },
 ]
 
+
 const LandingView = () => {
   return (
     <>
@@ -68,7 +70,8 @@ const LandingView = () => {
               Upload your script and streamline your creative workflow
             </Subheading>
             <div className="mt-12"></div>
-            <LoginButton />
+            <Link to='/login'>Login</Link>
+            {/* <LoginButton /> */}
           </div>
         </section>
         <section className="my-12 max-w-2xl mx-auto ">

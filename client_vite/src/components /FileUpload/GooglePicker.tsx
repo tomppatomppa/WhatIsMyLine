@@ -1,5 +1,5 @@
 import useDrivePicker from "react-google-drive-picker";
-import { useMutation } from "react-query";
+import { useMutation } from '@tanstack/react-query'
 import { PickerCallback } from "react-google-drive-picker/dist/typeDefs";
 import { FaGoogleDrive } from "react-icons/fa";
 
@@ -21,7 +21,8 @@ const GooglePicker = ({
   access_token,
 }: GooglePickerProps) => {
   const [openPicker] = useDrivePicker();
-  const { mutate, isLoading } = useMutation(getGoogleDriveFileById, {
+  const { mutate, isPending } = useMutation( {
+    mutationFn: getGoogleDriveFileById,
     onSuccess: (pdfFile, variables) => {
       const file = new File([pdfFile], variables.docs.name, {
         type: variables.docs.mimeType,
@@ -48,8 +49,8 @@ const GooglePicker = ({
     });
   };
 
-  return isLoading ? (
-    <Spinner show={isLoading} delay={400} />
+  return isPending ? (
+    <Spinner show={isPending} delay={400} />
   ) : (
     <Tooltip text="Google Drive">
       <button className={className} onClick={() => handleOpenPicker()}>

@@ -1,6 +1,6 @@
 import { ScriptList } from "./ScriptList";
 import EmptyScriptList from "./EmptyScriptList";
-import { useQuery } from "react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useState } from "react";
 import { SearchBox } from "../../common/SearchBox";
@@ -11,7 +11,6 @@ import {
   useActiveScript,
 } from "../../../store/scriptStore";
 import { useDeleteScript } from "./useDeleteScript";
-import { redirect, useMatch, useNavigate } from "react-router-dom";
 
 interface ScriptContainerProps {
   children?: React.ReactNode;
@@ -22,8 +21,6 @@ const ScriptsContainer = ({
   children,
   onScriptChange,
 }: ScriptContainerProps) => {
-  const navigate = useNavigate();
-
   const [search, setSearch] = useState("");
 
   const setActiveScript = useSetActiveScriptId();
@@ -31,22 +28,22 @@ const ScriptsContainer = ({
 
   const { mutate: deleteScript } = useDeleteScript();
 
-  const { data } = useQuery(["scripts"], fetchAllUserScripts, {
-    suspense: true,
+  const { data } = useSuspenseQuery({
+    queryKey: ["scripts"],
+    queryFn: fetchAllUserScripts,
   });
 
   const filteredScripts =
-    data?.filter(({ filename }) =>
+    data?.filter(({ filename }: any) =>
       filename.toLowerCase().includes(search.toLowerCase())
     ) || [];
 
-  const handleSetActiveScript = (id: number) => {
-    // if (scriptChanged(activeScript?.script_id, scriptId)) {
-    //   onScriptChange && onScriptChange();
-    // }
-    
-    navigate("/script/" + id)
-   // setActiveScript(scriptId);
+  const handleSetActiveScript = (id: string) => {
+    if (scriptChanged(activeScript?.script_id, id)) {
+      onScriptChange && onScriptChange();
+    }
+
+    setActiveScript(id);
   };
 
   const scriptProps = {

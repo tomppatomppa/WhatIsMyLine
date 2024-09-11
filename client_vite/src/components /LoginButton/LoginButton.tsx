@@ -1,52 +1,68 @@
-import Spinner from '../common/Spinner'
-import Message from '../common/Message'
+import Spinner from "../common/Spinner";
+import Message from "../common/Message";
 
-import { useGoogleLogin } from '@react-oauth/google'
-import { useMutation } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import { useAuth, useLogin } from '../../store/userStore'
-import { googleLogin } from '../../API/loginApi'
+import { useGoogleLogin } from "@react-oauth/google";
+import { useMutation } from "@tanstack/react-query";
+import { googleLogin } from "../../API/loginApi";
+import { useAuth } from "../../auth";
+import { redirect, useRouter, useRouterState } from "@tanstack/react-router";
+import { Route } from "../../routes/login";
+
+const fallback = "/dashboard" as const;
 
 const LoginButton = () => {
-  const userIsLoggedIn = useAuth()
-  const navigate = useNavigate()
-  const loginToApp = useLogin()
+  const {login} = useAuth()
+  const router = useRouter();
+  const isLoading = useRouterState({ select: (s) => s.isLoading });
+  const navigate = Route.useNavigate();
 
-  const { mutate: login, isLoading } = useMutation(googleLogin, {
+  const { mutate: loginCall, isPending } = useMutation({
+    mutationFn: googleLogin,
     onSuccess: (user) => {
-      loginToApp(user)
-      navigate('/')
+      login(user)
+      router.invalidate().finally(() => {
+        navigate({ to: fallback });
+      });
     },
-  })
+  });
 
   const loginGoogle = useGoogleLogin({
-    flow: 'auth-code',
-    scope: 'https://www.googleapis.com/auth/drive',
-    onSuccess: (credentials) => {
-      login(credentials.code)
+    flow: "auth-code",
+    scope: "https://www.googleapis.com/auth/drive",
+    onSuccess: async (credentials) => {
+      loginCall(credentials.code);
     },
-  })
+  });
 
-  const handleLogin = () => {
-    if (userIsLoggedIn) {
-      navigate('/')
-      return
-    }
-    loginGoogle()
-  }
+  const handleLogin = async () => {
+    loginGoogle();
+  };
 
-  if (isLoading) {
-    return (
-      <div className="h-screen w-full flex justify-center flex-col">
-        <Spinner show />
-        <Message show message="Logging in..." />
-      </div>
-    )
-  }
+  // if (isPending) {
+  //   return (
+  //     <div className="h-screen w-full flex justify-center flex-col">
+  //       <Spinner show />
+  //       <Message show message="Logging in..." />
+  //     </div>
+  //   );
+  // }
 
   return (
     <button
-      onClick={handleLogin}
+      onClick={loginGoogle}
+      // onClick={() => {
+      //   login({
+      //     email: "asdas",
+      //     name: "asdasd",
+      //     picture: "asd",
+      //     access_token: "asdasd",
+      //     expiry: "asd",
+      //     user_id: "1",
+      //   });
+      //   router.invalidate().finally(() => {
+      //     navigate({ to: search.redirect || fallback });
+      //   });
+      // }}
       className="w-1/2 flex items-center mx-auto justify-center gap-x-3 py-2.5 mt-5 border rounded-lg text-sm font-medium hover:bg-black duration-150 active:bg-gray-100"
     >
       <svg
@@ -79,9 +95,8 @@ const LoginButton = () => {
           </clipPath>
         </defs>
       </svg>
-      {`${userIsLoggedIn ? 'Go to app' : 'Login with Google'}`}
     </button>
-  )
-}
+  );
+};
 
-export default LoginButton
+export default LoginButton;
