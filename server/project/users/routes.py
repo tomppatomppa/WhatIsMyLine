@@ -28,11 +28,11 @@ def login():
             user = verify_google_id_token(token_data.get("id_token"))
             
             user_for_database, user_for_client = extract_user_info(user, token_data)
-            store_user(user_for_database)
-       
+            currentUser = store_user(user_for_database)
+            
             response = jsonify(user_for_client)
             #Set cookies
-            access_token = create_access_token(identity=user_for_database.get("user_id"))
+            access_token = create_access_token(identity=currentUser.to_dict().get('id'))
             set_access_cookies(response, access_token) 
            
             return response
@@ -123,7 +123,7 @@ def store_user(user_info):
         db.session.commit()
     else:
         User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
-    
+    return User.query.filter_by(user_id=user_info["user_id"], email=user_info["email"]).first()
 def refresh_access_token(refresh_token):
     
     payload = {
