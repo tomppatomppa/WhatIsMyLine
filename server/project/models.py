@@ -45,18 +45,18 @@ class User(db.Model):
     
     @classmethod
     def get_user_by_user_id(cls, user_id):
-        return cls.query.filter_by(user_id=user_id).first()
+        return cls.query.filter_by(user_id=str(user_id)).first()
     
  
     @classmethod
     def get_refresh_token_by_user_id(cls, user_id):
-        user = cls.query.filter_by(user_id=user_id).first()
+        user = cls.query.filter_by(user_id=str(user_id)).first()
      
         return user.refresh_token
     
     @classmethod
     def update_refresh_token_by_user_id(cls, user_id, refresh_token):
-        user = cls.query.filter_by(user_id=user_id).first()
+        user = cls.query.filter_by(user_id=str(user_id)).first()
         user.refresh_token = refresh_token
 
         db.session.commit()
@@ -111,18 +111,18 @@ class Script(db.Model):
     
     @classmethod
     def add_script(cls, script, user_id):
-        new_script = Script(**script, user_id=user_id)
+        new_script = Script(**script, user_id=str(user_id))
         db.session.add(new_script)
         db.session.commit()
         return new_script   
     
     @classmethod
-    def get_script_by_script_id(cls, script_id, user_id):
-        return cls.query.filter_by(script_id=script_id, user_id=user_id).first()
+    def get_script_by_script_id(cls, script_id, user_id): #fix user_id set to int in db
+        return cls.query.filter_by(script_id=script_id, user_id=str(user_id)).first()
     
     @classmethod
     def get_scripts_by_user_id(cls, user_id):
-        return cls.query.filter_by(user_id=user_id).all()
+        return cls.query.filter_by(user_id=str(user_id)).all()
     
     @classmethod
     def update(cls, updated_data, script):
@@ -134,7 +134,7 @@ class Script(db.Model):
     
     @classmethod
     def delete_script_by_script_id(cls, script_id, user_id):
-        script = cls.query.filter_by(script_id=script_id, user_id=user_id).first()
+        script = cls.query.filter_by(script_id=script_id, user_id=str(user_id)).first()
         if script:
             db.session.delete(script)
             db.session.commit()
