@@ -121,7 +121,7 @@ class Script(db.Model):
         return cls.query.filter_by(script_id=script_id, user_id=str(user_id)).first()
     
     @classmethod
-    def get_scripts_by_user_id(cls, user_id):
+    def get_scripts_by_user_id(cls, user_id: int):
         return cls.query.filter_by(user_id=str(user_id)).all()
     
     @classmethod

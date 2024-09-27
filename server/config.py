@@ -17,6 +17,7 @@ class Config(object):
     LOG_WITH_GUNICORN = os.getenv('LOG_WITH_GUNICORN', default=False)
 
 class ProductionConfig(Config):
+    JWT_COOKIE_SECURE = True
     FLASK_ENV = 'production'
 
 class DevelopmentConfig(Config):

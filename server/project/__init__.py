@@ -1,11 +1,11 @@
 from datetime import timezone, timedelta, datetime
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import sqlalchemy as sa
 from flask_wtf import CSRFProtect
 from flask_migrate import Migrate
-from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies, jwt_required
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies
 import os
 
 
@@ -21,7 +21,7 @@ def create_app():
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config.from_object(config_type)
 
-    app.config["JWT_COOKIE_SECURE"] = False
+    # app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
     
@@ -85,7 +85,7 @@ def register_blueprints(app):
     @app.route('/<path:path>')
     def catch_all(path):   
         return render_template('index.html')
-    
+
     from .users import users_blueprint
     from .scripts import scripts_blueprint
     from .google import google_blueprint
