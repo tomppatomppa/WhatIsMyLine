@@ -2,16 +2,25 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { sleep, useAuth } from "../auth";
 import { useState, useTransition } from "react";
 import Button from "../components /common/Button";
+import { userQueryOptions } from "./_auth.user.settings";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_auth/dashboard")({
+  loader(opts) {
+    opts.context.queryClient.ensureQueryData(userQueryOptions());
+  },
   component: DashboardPage,
 });
 
 function DashboardPage() {
+  const userQuery = useSuspenseQuery(userQueryOptions());
+  const user = userQuery.data;
   const auth = useAuth();
+
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
+
   const mockActivity = [
     { id: 1, action: "Logged in", timestamp: "2025-01-24 10:00 AM" },
     {
@@ -20,12 +29,6 @@ function DashboardPage() {
       timestamp: "2025-01-23 3:15 PM",
     },
     { id: 3, action: "Viewed statistics", timestamp: "2025-01-22 8:45 PM" },
-  ];
-
-  const mockScripts = [
-    { id: 1, name: "analytics.js", createdAt: "2025-01-23" },
-    { id: 2, name: "dashboard-enhancer.js", createdAt: "2025-01-22" },
-    { id: 3, name: "user-tracker.js", createdAt: "2025-01-21" },
   ];
 
   const mockStats = {
@@ -43,6 +46,9 @@ function DashboardPage() {
     });
   };
   const router = useRouter();
+
+  const scripts = user.scripts.filter((script) => script.deleted_at === null);
+
   return (
     <section className="p-4 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto grid gap-6">
@@ -55,20 +61,20 @@ function DashboardPage() {
             Here’s what’s happening on your dashboard:
           </p>
 
-          <Button onClick={() => router.navigate({ to: "/logs" })}>
-            Logs
-          </Button>
+          <Button onClick={() => router.navigate({ to: "/logs" })}>Logs</Button>
         </div>
 
         {/* Statistics Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-6 bg-blue-500 text-white rounded-2xl shadow">
             <h2 className="text-lg font-semibold">Total Scripts</h2>
-            <p className="text-3xl font-bold">{mockStats.totalScripts}</p>
+            <p className="text-3xl font-bold">{scripts.length}</p>
           </div>
-          <div className="p-6 bg-green-500 text-white rounded-2xl shadow">
-            <h2 className="text-lg font-semibold">Active Users</h2>
-            <p className="text-3xl font-bold">{mockStats.activeUsers}</p>
+          <div className="p-6 bg-red-500 text-white rounded-2xl shadow">
+            <h2 className="text-lg font-semibold">Deleted Scripts</h2>
+            <p className="text-3xl font-bold">
+              {user.scripts.length - scripts.length}
+            </p>
           </div>
           <div className="p-6 bg-purple-500 text-white rounded-2xl shadow">
             <h2 className="text-lg font-semibold">Monthly Views</h2>
@@ -100,14 +106,17 @@ function DashboardPage() {
             Latest Added Scripts
           </h2>
           <ul className="mt-4 space-y-2">
-            {mockScripts.map((script) => (
+            {scripts.map((script) => (
               <li
                 key={script.id}
-                className="flex justify-between items-center bg-gray-100 p-4 rounded-lg"
+                onClick={() => router.navigate({ to: `/scripts/${script.script_id}` })}
+                className="flex justify-between items-center bg-gray-100 p-4 rounded-lg hover:bg-green-200 cursor-pointer"
               >
-                <span className="text-gray-700 font-medium">{script.name}</span>
+                <span className="text-gray-700 font-medium">
+                  {script.filename}
+                </span>
                 <span className="text-gray-500 text-sm">
-                  Added on {script.createdAt}
+                  Added on {script.created_on.toISOString()}
                 </span>
               </li>
             ))}

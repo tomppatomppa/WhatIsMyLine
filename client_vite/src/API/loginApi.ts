@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { BASE_URI } from '../config'
 import { httpClient } from '../utils/axiosClient'
-import { getCookie } from '../utils/helpers'
 
 export const googleLogin = async (code: string) => {
   const { data } = await axios.post(`${BASE_URI}/login`, { code }, { withCredentials: true})
@@ -14,12 +13,12 @@ export const refreshToken = async () => {
   return data
 }
 
-export const getUser = async () => {
-  const { data } = await axios.get(`${BASE_URI}/user`, {
-    withCredentials: true,
-    headers: {
-      'X-CSRF-TOKEN': getCookie('csrf_access_token'),
-    },
-  })
-  return data
-}
+// export const getUser = async () => {
+//   const { data } = await axios.get(`${BASE_URI}/user`, {
+//     withCredentials: true,
+//     headers: {
+//       'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+//     },
+//   })
+//   return data
+// }

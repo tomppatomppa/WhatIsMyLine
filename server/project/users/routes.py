@@ -77,9 +77,9 @@ def refresh():
 @users_blueprint.route("/user", methods=["GET", "POST"])
 @jwt_required()
 def users():
-    user = User.get_user_by_user_id(get_jwt_identity())
+    user = User.get_logged_in_user_data(get_jwt_identity())
     if user:
-        return jsonify(user.email)
+        return jsonify(user)
     return jsonify("Invalid request")
 
 

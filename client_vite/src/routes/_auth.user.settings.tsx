@@ -1,31 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { sleep, useAuth } from "../auth";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { getUser } from "../API/userApi";
 
-const test = async () => {
-  await sleep(1000);
-  return { message: "message" };
-};
-export const invoicesQueryOptions = () =>
+export const userQueryOptions = () =>
   queryOptions({
-    queryKey: ["invoices"],
-    queryFn: () => test(),
+    queryKey: ["user"],
+    queryFn: () => getUser(),
   });
 
 export const Route = createFileRoute("/_auth/user/settings")({
   loader(opts) {
-    opts.context.queryClient.ensureQueryData(invoicesQueryOptions());
-    sleep(5000);
+    opts.context.queryClient.ensureQueryData(userQueryOptions());
   },
 
   component: UserSettingsPage,
 });
 
 function UserSettingsPage() {
-  useSuspenseQuery(invoicesQueryOptions());
-  //   const invoices = invoicesQuery.data;
-  //   console.log(invoices);
-  const auth = useAuth();
+  const userQuery = useSuspenseQuery(userQueryOptions());
+  const user = userQuery.data;
 
   const mockPayments = [
     { id: 1, date: "2025-01-10", amount: "$10.00", status: "Completed" },
@@ -54,10 +47,10 @@ function UserSettingsPage() {
             Account Information
           </h2>
           <p className="text-gray-600 mt-2">
-            <strong>Email:</strong> {auth.user?.email}
+            <strong>Email:</strong> {user.email}
           </p>
           <p className="text-gray-600 mt-1">
-            <strong>Joined:</strong> 2024-01-15
+            <strong>Joined:</strong> {user.registered_on}
           </p>
         </div>
 

@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import DateTime, ForeignKey, Integer, String, PickleType
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import mapped_column, relationship
 from project import db
 from datetime import datetime
 
@@ -24,6 +24,7 @@ class User(db.Model):
     registered_on = mapped_column(DateTime(), nullable=False)
     refresh_token = mapped_column(String(), nullable=False)
    
+    scripts = relationship("Script", back_populates="user")
    
     def __init__(self, user_id: str, picture:str, email: str, provider: str, refresh_token: str):
         """Create a new User object using the email address
@@ -80,6 +81,32 @@ class User(db.Model):
     
         return user
     
+    @classmethod
+    def get_logged_in_user_data(cls, id: str):
+        """
+        Get the data of the logged-in user by their user_id.
+        This includes user data and their associated scripts.
+
+        :param session: The SQLAlchemy session
+        :param user_id: The unique identifier of the logged-in user
+        :return: The user data and associated scripts
+        """
+        user = cls.query.filter_by(id=id).first()
+        if not user:
+            return None
+      
+        filteredScripts = [script.to_data() for script in user.scripts]
+
+        user_data = {
+            "id": user.id,
+            "picture": user.picture,
+            "email": user.email,
+            "registered_on": user.registered_on,
+            "scripts": filteredScripts 
+        }
+
+        return user_data
+       
     def __repr__(self):
         return f'<User: {self.email}>'
 
@@ -105,7 +132,8 @@ class Script(db.Model):
     created_on = mapped_column(DateTime(), nullable=False)
     modified_on = mapped_column(DateTime(), nullable=False)
     deleted_at = mapped_column(DateTime(), nullable=True)
-    
+
+    user = relationship("User", back_populates="scripts")
     forbidden_keys = ['id', 'script_id', "created_on", "user_id"]
 
     def __init__(self,script_id: str, filename: str, user_id: str, scenes: list = []):
@@ -127,6 +155,16 @@ class Script(db.Model):
           "user_id": self.user_id,
           "scenes": self.scenes
       }
+    def to_data(self):
+        return {
+          "id": self.id,
+          "script_id": self.script_id,
+          "filename": self.filename,
+          "user_id": self.user_id,
+          "created_on": self.created_on,
+          "modified_on": self.modified_on,
+          "deleted_at": self.deleted_at
+        }
     def to_response(self):
         return {
           "id": self.id,
