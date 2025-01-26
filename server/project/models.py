@@ -91,7 +91,7 @@ class User(db.Model):
         :param user_id: The unique identifier of the logged-in user
         :return: The user data and associated scripts
         """
-        user = cls.query.filter_by(id=id).first()
+        user = cls.query.filter_by(id=int(id)).first()
         if not user:
             return None
       
