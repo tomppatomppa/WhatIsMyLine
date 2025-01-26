@@ -13,6 +13,7 @@
     "@react-oauth/google": "^0.11.0",
     "@tanstack/react-query": "^5.35.1",
     "@tanstack/react-router": "^1.57.9",
+    "@tanstack/react-table": "^8.20.6",
     "@types/dom-speech-recognition": "^0.0.1",
     "@types/google.picker": "^0.0.39",
     "@types/node": "^20.2.5",

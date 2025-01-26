@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { sleep, useAuth } from "../auth";
 import { useState, useTransition } from "react";
+import Button from "../components /common/Button";
 
 export const Route = createFileRoute("/_auth/dashboard")({
   component: DashboardPage,
@@ -41,7 +42,7 @@ function DashboardPage() {
       setFeedback(""); // Clear input field
     });
   };
-
+  const router = useRouter();
   return (
     <section className="p-4 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto grid gap-6">
@@ -53,6 +54,10 @@ function DashboardPage() {
           <p className="text-gray-600 mt-2">
             Here’s what’s happening on your dashboard:
           </p>
+
+          <Button onClick={() => router.navigate({ to: "/logs" })}>
+            Logs
+          </Button>
         </div>
 
         {/* Statistics Section */}

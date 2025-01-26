@@ -89,9 +89,11 @@ def register_blueprints(app):
     from .scripts import scripts_blueprint
     from .google import google_blueprint
     from .upload import upload_blueprint
+    from .admin import admin_blueprint
     
     app.register_blueprint(auth_blueprint, url_prefix="/api")
     app.register_blueprint(users_blueprint, url_prefix="/api")
     app.register_blueprint(scripts_blueprint, url_prefix='/api')
     app.register_blueprint(google_blueprint, url_prefix='/api')
     app.register_blueprint(upload_blueprint, url_prefix='/api')
+    app.register_blueprint(admin_blueprint, url_prefix='/api')

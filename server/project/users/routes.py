@@ -2,6 +2,7 @@ import requests
 import os
 
 from project.auth.LoginManager import LoginManager
+from project.FileLogger import FileLogger
 from . import users_blueprint
 
 from flask import request, jsonify
@@ -16,6 +17,15 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 @users_blueprint.route("/login", methods=["POST"])
 def login():
+    logger = FileLogger(route="api/auth/login")
+
+    # Log request details
+    user_agent = request.headers.get('User-Agent', 'Unknown')
+    ip_address = request.remote_addr or 'Unknown'
+    data = request.json or {}
+    
+    logger.info(f"Login attempt detected. IP: {ip_address}, User-Agent: {user_agent}, Payload: {data}")
+    
     code = request.json.get('code')
 
     if not code:
@@ -35,9 +45,8 @@ def login():
             
             return response
         return response.json(), response.status_code
-    except ValueError as valueError:
-        return str(valueError), 406
-    except:
+    except Exception as e:
+        logger.error('Login exception occurred : {}'.format(e))
         return "Failed to login", 401
 
 @users_blueprint.route("/refresh-token", methods=["POST"])
