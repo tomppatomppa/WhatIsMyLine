@@ -42,7 +42,7 @@ def login():
             access_token = create_access_token(identity=str(user.id))
             
             set_access_cookies(response, access_token) 
-            
+            logger.info('Succesfull login: {}'.format(user_for_client))
             return response
         return response.json(), response.status_code
     except Exception as e:
@@ -68,20 +68,16 @@ def refresh():
     except:
         return "Failed to refresh token", 401
 
-# @users_blueprint.route("/logout", methods=["POST"])
-# def logout_with_cookies():
-#     response = jsonify("Logout successful")
-#     unset_jwt_cookies(response)
-#     return response
-
 @users_blueprint.route("/user", methods=["GET", "POST"])
 @jwt_required()
 def users():
-    user = User.get_logged_in_user_data(get_jwt_identity())
-    if user:
-        return jsonify(user)
-    return jsonify("Invalid request")
-
+    logger = FileLogger(route="api/auth/user")
+    try:
+        user = User.get_logged_in_user_data(get_jwt_identity())
+        return user
+    except Exception as e:
+        logger.error('Exception occurred : {}'.format(e))
+        return jsonify("Invalid request")
 
 '''
 Helper Functions

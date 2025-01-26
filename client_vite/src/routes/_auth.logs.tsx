@@ -43,6 +43,10 @@ function RouteComponent() {
   const columns = React.useMemo(
     () => [
       {
+        accessorKey: "filepath", // accessorKey is used instead of accessor
+        header: "Filepath",
+      },
+      {
         accessorKey: "timestamp", // accessorKey is used instead of accessor
         header: "Date",
         cell: (info: { getValue: () => string | number | Date; }) => {

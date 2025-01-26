@@ -64,7 +64,7 @@ class FileLogger:
        """Fetch data from all .log files in the base directory"""
        all_log_entries = []
     
-       
+
        for root, dirs, files in os.walk(self.base_directory):
             for file in files:
                if file.endswith(".log"):
@@ -72,7 +72,7 @@ class FileLogger:
                    # Read the file's log data
                    with open(log_file_path, 'r') as log_file:
                        lines = log_file.readlines()
-                     
+                      
                        for line in lines:
                            parts = line.strip().split("] [")
                            print(parts, len(parts))
@@ -80,7 +80,7 @@ class FileLogger:
                                timestamp, level, message = parts
                                timestamp = timestamp.strip('[')
                                level = level.strip()
-                               all_log_entries.append({"timestamp": timestamp, "level": level, "message": message})
+                               all_log_entries.append({"filepath": log_file_path, "timestamp": timestamp, "level": level, "message": message})
        return all_log_entries
 
     def get_log_files_data_from_folder(self, folder_name):

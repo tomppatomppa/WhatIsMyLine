@@ -5,9 +5,13 @@ import "./index.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { CLIENT_ID } from "./config.ts";
-import { clearCookiesAndLogout, getCookie } from "./utils/helpers.ts";
+import { clearCookiesAndLogout } from "./utils/helpers.ts";
 
-import { ErrorComponent, RouterProvider, createRouter } from "@tanstack/react-router";
+import {
+  ErrorComponent,
+  RouterProvider,
+  createRouter,
+} from "@tanstack/react-router";
 import {
   QueryClient,
   MutationCache,
@@ -33,13 +37,13 @@ const queryClient = new QueryClient({
     onError: (error: any) => {
       const { msg } = error?.response?.data;
       if (error.response?.status === 401 && msg) {
-       // clearCookiesAndLogout(msg);
+        // clearCookiesAndLogout(msg);
       }
     },
   }),
   queryCache: new QueryCache({
     onError: (error: any) => {
-      if (error.response?.status === 401 && getCookie("csrf_access_token")) {
+      if (error.response?.status === 401) {
         clearCookiesAndLogout("Logout");
       }
     },
