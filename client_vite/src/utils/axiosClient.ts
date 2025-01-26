@@ -41,6 +41,10 @@ export const updateAccessToken = async () => {
 export const httpClient = axios.create({
   withCredentials: true,
 });
+httpClient.interceptors.request.use(async (config) => {
+  config.headers["X-CSRF-TOKEN"] = getCookie("csrf_access_token");
+  return config;
+})
 
 // httpClient.interceptors.request.use(async (config) => {
 //   config.headers["X-CSRF-TOKEN"] = getCookie("csrf_access_token");

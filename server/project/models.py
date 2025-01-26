@@ -125,7 +125,7 @@ class Script(db.Model):
           "script_id": self.script_id,
           "filename": self.filename,
           "user_id": self.user_id,
-        #  "scenes": self.scenes
+          "scenes": self.scenes
       }
     def to_response(self):
         return {
@@ -135,7 +135,16 @@ class Script(db.Model):
           "user_id": self.user_id,
           "scenes": self.scenes
         }
-    
+
+    def to_summary_dict(self):
+       """Return script data without the 'scenes' field."""
+       return {
+           "id": self.id,
+           "script_id": self.script_id,
+           "filename": self.filename,
+           "user_id": self.user_id
+       }
+       
     @classmethod
     def add_script(cls, script, user_id):
         new_script = Script(**script, user_id=user_id)
@@ -149,7 +158,9 @@ class Script(db.Model):
     
     @classmethod
     def get_scripts_by_user_id(cls, user_id):
-        return cls.query.filter_by(user_id=user_id, deleted_at=None).all()
+        scripts = cls.query.filter_by(user_id=user_id, deleted_at=None).all()
+        # Use the `to_summary_dict` method to exclude scenes
+        return [script.to_summary_dict() for script in scripts]
     
     @classmethod
     def update(cls, updated_data, script):

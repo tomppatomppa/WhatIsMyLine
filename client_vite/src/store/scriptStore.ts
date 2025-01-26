@@ -1,11 +1,13 @@
-
 import { StateCreator, create } from "zustand";
 import { swapLines, swapScenes } from "./helpers";
 import { devtools, persist } from "zustand/middleware";
-import { updateScript, fetchAllUserScripts, addScript, deleteScriptById } from "../API/scriptApi";
+import {
+  updateScript,
+  addScript,
+  deleteScriptById,
+} from "../API/scriptApi";
 import { Script, Scene } from "../components /ReaderV3/reader.types";
-import { findChangedScripts, getSceneNumber } from "../utils/helpers";
-
+import { getSceneNumber } from "../utils/helpers";
 
 export type RootFolder = {
   id: string;
@@ -35,6 +37,13 @@ interface ScriptActions {
     sourceId: number,
     destinationId: number
   ) => void;
+  reorderLinesNew: (
+    script: Script,
+    sceneId: string,
+    sourceId: number,
+    destinationId: number
+  ) => any;
+
   getActiveScript: () => Script | undefined;
   getPreviousScene: (sceneNumber: number) => Scene | null;
 
@@ -128,7 +137,22 @@ const scriptStore: StateCreator<ScriptState & ScriptActions> = (set, get) => ({
             }
       ),
     })),
-
+  reorderLinesNew: (
+    script: Script,
+    sceneId: string,
+    sourceId: number,
+    destinationId: number
+  ) => {
+    // Map through the scenes to find the one that matches the sceneId
+    const updatedScript = {
+      ...script,
+      scenes: script.scenes.map((scene) =>
+        scene.id !== sceneId ? scene : swapLines(scene, sourceId, destinationId)
+      ),
+    };
+  
+    return updatedScript; // Return the updated script
+  },
   deleteScriptByUuid: async (id: string) => {
     try {
       await deleteScriptById(id);
@@ -158,7 +182,7 @@ export const useSetRootFolder = () =>
 
 export const useRootFolder = () => useScriptStore((state) => state.rootFolder);
 
-export const useSetActiveScriptId = () =>
+export const useSetActiveScriptId = (p0: string) =>
   useScriptStore((state) => state.setActiveScriptId);
 export const useDeleteScript = () =>
   useScriptStore((state) => state.deleteScriptByUuid);

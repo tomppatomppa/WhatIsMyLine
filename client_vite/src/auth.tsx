@@ -35,11 +35,12 @@ function setStoredUser(user: User | null) {
     localStorage.removeItem(key);
   }
 }
-
+export async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<User | null>(getStoredUser());
   const isAuthenticated = !!user;
-  
 
   const logout = React.useCallback(() => {
     removeCookie("access_token_cookie");

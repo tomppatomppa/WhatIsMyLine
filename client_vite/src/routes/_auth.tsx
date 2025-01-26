@@ -1,17 +1,14 @@
 import {
   createFileRoute,
   Outlet,
-  redirect,
-  useRouter,
+  redirect
 } from "@tanstack/react-router";
 
-import Sidebar from "../components /Sidebar/Sidebar";
-import { useAuth } from "../auth";
-import { getAuth } from "../API/authApi";
-import { clearCookiesAndLogout } from "../utils/helpers";
-import { useLogout } from "../store/userStore";
 import { useMutation } from "@tanstack/react-query";
 import { logout } from "../API/loginApi";
+import { useAuth } from "../auth";
+import Sidebar from "../components /Sidebar/Sidebar";
+import { clearCookiesAndLogout } from "../utils/helpers";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ context, location }) => {
@@ -24,9 +21,8 @@ export const Route = createFileRoute("/_auth")({
       });
     }
   },
-  shouldReload({ context }) {
-    console.log("RELOAD")
-    return !context.auth.isAuthenticated; 
+  shouldReload: ({ context }) => {
+    return !context.auth.isAuthenticated;
   },
   component: AuthLayout,
 });
@@ -42,7 +38,6 @@ function AuthLayout() {
     },
   });
 
-  console.log(auth);
   return (
     <div className="text-center flex flex-row">
       <nav className="z-10 bottom-0 shadow-md flex justify-start bg-primary">

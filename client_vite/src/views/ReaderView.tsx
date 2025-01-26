@@ -2,16 +2,13 @@ import { DropResult } from "react-beautiful-dnd";
 import { useActiveScript, useScriptStore } from "../store/scriptStore";
 import EmptyReaderView from "./EmptyReaderView";
 import { Reader } from "../components /ReaderV3/Reader";
-import { useParams } from "react-router-dom";
-import { useScript } from "../components /Sidebar/Scripts/useScript";
+import { Route, Router, useParams } from "@tanstack/react-router";
 
-const ReaderView = () => {
-  let { id } = useParams();
-
-  const { data } = useScript(id);
-
+function ReaderView() {
+ // const { id } = Route.useParams<Params>();
+ 
   const { reorderScenes, reorderLines } = useScriptStore((state) => state);
-  
+
   const script = useActiveScript();
 
   const handleDragEnd = (result: DropResult) => {
@@ -39,6 +36,6 @@ const ReaderView = () => {
       <Reader script={script} handleDragEnd={handleDragEnd} />
     </div>
   );
-};
+}
 
 export default ReaderView;

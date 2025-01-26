@@ -7,7 +7,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { CLIENT_ID } from "./config.ts";
 import { clearCookiesAndLogout, getCookie } from "./utils/helpers.ts";
 
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { ErrorComponent, RouterProvider, createRouter } from "@tanstack/react-router";
 import {
   QueryClient,
   MutationCache,
@@ -17,6 +17,7 @@ import {
 // Create a new router instance
 import { routeTree } from "./routeTree.gen";
 import { AuthProvider, useAuth } from "./auth.tsx";
+import { Spinner } from "./routes/__root.tsx";
 
 // Create a new router instance
 
@@ -32,7 +33,7 @@ const queryClient = new QueryClient({
     onError: (error: any) => {
       const { msg } = error?.response?.data;
       if (error.response?.status === 401 && msg) {
-        clearCookiesAndLogout(msg);
+       // clearCookiesAndLogout(msg);
       }
     },
   }),
@@ -50,6 +51,12 @@ const router = createRouter({
     queryClient,
     auth: undefined!,
   },
+  defaultPendingComponent: () => (
+    <div className="flex items-center justify-center min-h-screen">
+      <Spinner />
+    </div>
+  ),
+  defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
   defaultPreload: "intent",
   // Since we're using React Query, we don't want loader calls to ever be stale
   // This will ensure that the loader is always called when the route is preloaded or visited

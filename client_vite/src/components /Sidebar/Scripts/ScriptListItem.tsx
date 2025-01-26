@@ -1,26 +1,34 @@
-import React from 'react'
+import { Link } from "@tanstack/react-router";
+import React from "react";
 
 interface ScriptListItemProps {
-  id: string
-  children?: React.ReactNode
-  isActiveScript: boolean
-  onClick: () => void
+  id: string;
+  text: string;
+  children?: React.ReactNode;
+  isActiveScript: boolean;
+  slug: string;
+  onClick: () => void;
 }
 
 const ScriptListItem = ({ ...props }: ScriptListItemProps) => {
-  const { children, isActiveScript = false, ...rest } = props
+  const { children, isActiveScript = false, text, ...rest } = props;
 
-  const active = 'text-gray-900 border-indigo-600 bg-primaryLight'
+  const active = "text-gray-900 border-indigo-600 bg-primaryLight";
 
-  const activeClass = isActiveScript ? active : ''
+  const activeClass = isActiveScript ? active : "";
 
   return (
-    <li
-      {...rest}
-      className={`${activeClass} cursor-pointer flex items-center w-full py-2 px-4 border-l hover:border-indigo-600 hover:text-gray-900 duration-150`}
-    >
+    <div className="flex flex-row justify-center items-center mr-2">
+      <Link
+        to="/scripts/$id"
+        params={{ id: props.slug }}
+        {...rest}
+        className={`${activeClass} cursor-pointer flex items-center w-full py-2 px-4 border-l hover:border-indigo-600 hover:text-gray-900 duration-150`}
+      >
+        {text}
+      </Link>
       {children}
-    </li>
-  )
-}
-export default ScriptListItem
+    </div>
+  );
+};
+export default ScriptListItem;

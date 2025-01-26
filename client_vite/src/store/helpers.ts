@@ -28,6 +28,5 @@ export const swapLines = (
   destinationId: number
 ): Scene => {
   const updatedOrder = reorder(scene.data, lineId, destinationId)
-
   return { ...scene, data: updatedOrder }
 }

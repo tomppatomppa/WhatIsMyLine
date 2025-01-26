@@ -26,6 +26,9 @@ def create_app():
     app.config.from_object(config_type)
 
     app.config["JWT_COOKIE_SECURE"] = False
+   # app.config["JWT_COOKIE_CSRF_PROTECT"] = False
+    # app.config['WTF_CSRF_ENABLED'] = False
+    # app.config["SESSION_COOKIE_DOMAIN"] = False
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
     

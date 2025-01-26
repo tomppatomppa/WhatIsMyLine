@@ -39,6 +39,7 @@ const ScriptsContainer = ({
     ) || [];
 
   const handleSetActiveScript = (id: string) => {
+    
     if (scriptChanged(activeScript?.script_id, id)) {
       onScriptChange && onScriptChange();
     }

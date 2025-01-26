@@ -1,22 +1,23 @@
 import { Suspense, useState } from "react";
 import { FcReadingEbook } from "react-icons/fc";
-import ScriptsContainer from "./Scripts/ScriptsContainer";
-import Profile from "../profile/Profile";
-import ScriptsIcon from "../icons/ScriptsIcon";
-import LogoutIcon from "../icons/LogoutIcon";
-import SettingsIcon from "../icons/SettingsIcon";
-import HelpIcon from "../icons/HelpIcon";
-import SidebarList from "./SidebarList";
+import { ErrorBoundary } from "../../ErrorBoundary";
 import Drawer from "../common/Drawer";
 import Spacer from "../common/Spacer";
-import { useLogout } from "../../store/userStore";
 import FileUpload from "../FileUpload/FileUpload";
-import { ErrorBoundary } from "../../ErrorBoundary";
+import HelpIcon from "../icons/HelpIcon";
+import LogoutIcon from "../icons/LogoutIcon";
+import ScriptsIcon from "../icons/ScriptsIcon";
+import SettingsIcon from "../icons/SettingsIcon";
+import Profile from "../profile/Profile";
+import ScriptsContainer from "./Scripts/ScriptsContainer";
+import SidebarList from "./SidebarList";
+import { useRouter } from "@tanstack/react-router";
 
 interface SidebarProps {
   handleLogout: () => void;
 }
 const Sidebar = ({ handleLogout }: SidebarProps) => {
+  const router = useRouter();
   const [showScripts, setShowScripts] = useState(false);
 
   const navigation = [
@@ -39,7 +40,7 @@ const Sidebar = ({ handleLogout }: SidebarProps) => {
     },
     {
       onClick: () => {
-        console.log("Settings");
+        router.navigate({ to: "/user/settings" });
       },
       name: "Settings",
       icon: <SettingsIcon />,
@@ -59,7 +60,10 @@ const Sidebar = ({ handleLogout }: SidebarProps) => {
     >
       <div className="flex flex-col w-12 h-full bg-gray-200">
         <div className="h-20 flex items-center justify-center">
-          <button onClick={() => console.log("About")} className="flex-none">
+          <button
+            onClick={() => router.navigate({ to: "/dashboard" })}
+            className="flex-none"
+          >
             <FcReadingEbook size={24} />
           </button>
         </div>
