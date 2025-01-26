@@ -47,7 +47,7 @@ def login():
         return response.json(), response.status_code
     except Exception as e:
         logger.error('Login exception occurred : {}'.format(e))
-        return "Failed to login", 401
+        return 'Login exception occurred : {}'.format(e), 401
 
 @users_blueprint.route("/refresh-token", methods=["POST"])
 @jwt_required()
