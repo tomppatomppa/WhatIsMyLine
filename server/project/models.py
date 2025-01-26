@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import DateTime, ForeignKey, Integer, String, PickleType
-from sqlalchemy.orm import mapped_column, relationship
+from sqlalchemy.orm import mapped_column, relationship, joinedload
 from project import db
 from datetime import datetime
 
@@ -91,18 +91,18 @@ class User(db.Model):
         :param user_id: The unique identifier of the logged-in user
         :return: The user data and associated scripts
         """
-        user = cls.query.filter_by(id=int(id)).first()
+        user = cls.query.filter_by(id=id).first()
         if not user:
             return None
       
-        filteredScripts = [script.to_data() for script in user.scripts]
+        #filteredScripts = [script.to_data() for script in user.scripts]
 
         user_data = {
             "id": user.id,
             "picture": user.picture,
             "email": user.email,
             "registered_on": user.registered_on,
-            "scripts": filteredScripts 
+            "scripts": []
         }
 
         return user_data
