@@ -94,15 +94,13 @@ class User(db.Model):
         user = cls.query.filter_by(id=id).first()
         if not user:
             return None
-      
-        #filteredScripts = [script.to_data() for script in user.scripts]
 
         user_data = {
             "id": user.id,
             "picture": user.picture,
             "email": user.email,
             "registered_on": user.registered_on,
-            "scripts": []
+            "scripts": [script.to_data() for script in user.scripts]
         }
 
         return user_data
