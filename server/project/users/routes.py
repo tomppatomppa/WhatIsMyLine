@@ -39,7 +39,7 @@ def login():
             user = store_user(user_for_database)
             
             response = jsonify(user_for_client)
-            access_token = create_access_token(identity=user.id)
+            access_token = create_access_token(identity=str(user.id))
             
             set_access_cookies(response, access_token) 
             
@@ -47,7 +47,7 @@ def login():
         return response.json(), response.status_code
     except Exception as e:
         logger.error('Login exception occurred : {}'.format(e))
-        return 'Login exception occurred : {}'.format(e), 401
+        return 'Failed to login', 401
 
 @users_blueprint.route("/refresh-token", methods=["POST"])
 @jwt_required()
