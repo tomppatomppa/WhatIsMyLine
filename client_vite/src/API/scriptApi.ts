@@ -1,4 +1,3 @@
-import { sleep } from "../auth";
 import { Script } from "../components /ReaderV3/reader.types";
 import { BASE_URI } from "../config";
 import { httpClient } from "../utils/axiosClient";

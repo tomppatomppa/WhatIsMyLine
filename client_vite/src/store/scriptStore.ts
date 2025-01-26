@@ -182,7 +182,7 @@ export const useSetRootFolder = () =>
 
 export const useRootFolder = () => useScriptStore((state) => state.rootFolder);
 
-export const useSetActiveScriptId = (p0: string) =>
+export const useSetActiveScriptId = (_: string) =>
   useScriptStore((state) => state.setActiveScriptId);
 export const useDeleteScript = () =>
   useScriptStore((state) => state.deleteScriptByUuid);

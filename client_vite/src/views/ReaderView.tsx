@@ -1,8 +1,7 @@
 import { DropResult } from "react-beautiful-dnd";
+import { Reader } from "../components /ReaderV3/Reader";
 import { useActiveScript, useScriptStore } from "../store/scriptStore";
 import EmptyReaderView from "./EmptyReaderView";
-import { Reader } from "../components /ReaderV3/Reader";
-import { Route, Router, useParams } from "@tanstack/react-router";
 
 function ReaderView() {
  // const { id } = Route.useParams<Params>();

@@ -13,7 +13,6 @@ interface ScriptListProps {
 export const ScriptList = ({
   scripts,
   activeScriptId,
-  setActiveScript,
   deleteScript,
 }: ScriptListProps) => {
   return (

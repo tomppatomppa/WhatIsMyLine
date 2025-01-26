@@ -66,7 +66,7 @@ export const useUpdateScript = () => {
 function ScriptsPage() {
   const { id } = Route.useParams<Params>();
   const { data: script } = useSuspenseQuery(scriptQueryOptions(id));
-  const { reorderScenes, reorderLines, reorderLinesNew } = useScriptStore(
+  const { reorderScenes, reorderLinesNew } = useScriptStore(
     (state) => state
   );
   const { mutate } = useUpdateScript();

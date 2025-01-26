@@ -1,25 +1,22 @@
-import Spinner from "../common/Spinner";
-import Message from "../common/Message";
-
 import { useGoogleLogin } from "@react-oauth/google";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 import { googleLogin } from "../../API/loginApi";
 import { useAuth } from "../../auth";
-import { redirect, useRouter, useRouterState } from "@tanstack/react-router";
 import { Route } from "../../routes/login";
 
 const fallback = "/dashboard" as const;
 
 const LoginButton = () => {
-  const {login} = useAuth()
+  const { login } = useAuth();
   const router = useRouter();
-  const isLoading = useRouterState({ select: (s) => s.isLoading });
+
   const navigate = Route.useNavigate();
 
-  const { mutate: loginCall, isPending } = useMutation({
+  const { mutate: loginCall } = useMutation({
     mutationFn: googleLogin,
     onSuccess: (user) => {
-      login(user)
+      login(user);
       router.invalidate().finally(() => {
         navigate({ to: fallback });
       });
@@ -33,10 +30,6 @@ const LoginButton = () => {
       loginCall(credentials.code);
     },
   });
-
-  const handleLogin = async () => {
-    loginGoogle();
-  };
 
   // if (isPending) {
   //   return (

@@ -22,7 +22,7 @@ export type ScriptWithoutId = Omit<Script, 'id'>
 export type Script = {
   id: number,
   filename: string
-  //scenes: Scene[]
+  scenes: Scene[]
   trash?: boolean //TODO: add to database model
   script_id: string
 }

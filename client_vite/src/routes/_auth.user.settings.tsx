@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_auth/user/settings")({
 });
 
 function UserSettingsPage() {
-  const invoicesQuery = useSuspenseQuery(invoicesQueryOptions());
+  useSuspenseQuery(invoicesQueryOptions());
   //   const invoices = invoicesQuery.data;
   //   console.log(invoices);
   const auth = useAuth();

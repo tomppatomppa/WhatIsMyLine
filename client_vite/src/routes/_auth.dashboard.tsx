@@ -33,7 +33,7 @@ function DashboardPage() {
     monthlyViews: 1043,
   };
 
-  const handleFeedbackSubmit = async (e) => {
+  const handleFeedbackSubmit = async (e: any) => {
     e.preventDefault();
     startTransition(() => {
       sleep(5000);

@@ -1,10 +1,9 @@
 
-import Card from '../components /common/Card'
-import GridLayout from '../layout/GridLayout'
-import GithubIcon from '../components /icons/GithubIcon'
-import { AiOutlineGoogle, AiOutlineUpload, AiOutlineEdit, AiFillPlaySquare, AiTwotoneAlert } from 'react-icons/ai'
-import LoginButton from '../components /LoginButton/LoginButton'
 import { Link } from '@tanstack/react-router'
+import { AiFillPlaySquare, AiOutlineEdit, AiOutlineGoogle, AiOutlineUpload, AiTwotoneAlert } from 'react-icons/ai'
+import Card from '../components /common/Card'
+import GithubIcon from '../components /icons/GithubIcon'
+import GridLayout from '../layout/GridLayout'
 
 const Heading = () => {
   return (

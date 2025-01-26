@@ -1,16 +1,15 @@
-import { ScriptList } from "./ScriptList";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import EmptyScriptList from "./EmptyScriptList";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { ScriptList } from "./ScriptList";
 
 import { useState } from "react";
-import { SearchBox } from "../../common/SearchBox";
-import { scriptChanged } from "./utils";
 import { fetchAllUserScripts } from "../../../API/scriptApi";
 import {
-  useSetActiveScriptId,
   useActiveScript,
 } from "../../../store/scriptStore";
+import { SearchBox } from "../../common/SearchBox";
 import { useDeleteScript } from "./useDeleteScript";
+import { scriptChanged } from "./utils";
 
 interface ScriptContainerProps {
   children?: React.ReactNode;
@@ -23,7 +22,7 @@ const ScriptsContainer = ({
 }: ScriptContainerProps) => {
   const [search, setSearch] = useState("");
 
-  const setActiveScript = useSetActiveScriptId();
+  //const setActiveScript = useSetActiveScriptId();
   const activeScript = useActiveScript();
 
   const { mutate: deleteScript } = useDeleteScript();
@@ -44,7 +43,7 @@ const ScriptsContainer = ({
       onScriptChange && onScriptChange();
     }
 
-    setActiveScript(id);
+    //setActiveScript(id);
   };
 
   const scriptProps = {
