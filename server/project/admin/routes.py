@@ -11,7 +11,7 @@ from project.FileLogger import FileLogger
 def get_logs():
     user_id = get_jwt_identity()
 
-    if user_id != 5:
+    if int(user_id) != 5:
         return "Not permitted", 404
     try:
         logger = FileLogger(route="api/auth/login")
