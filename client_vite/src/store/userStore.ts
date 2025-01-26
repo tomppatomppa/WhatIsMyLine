@@ -1,7 +1,7 @@
 import { StateCreator, create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import { logout } from "../API/loginApi";
 import { getCookie } from "../utils/helpers";
+import { logout } from "../API/authApi";
 
 export type User = {
   email: string;

@@ -25,7 +25,7 @@ def create_app():
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config.from_object(config_type)
 
-    app.config["JWT_COOKIE_SECURE"] = False
+    app.config["JWT_COOKIE_SECURE"] = True
    # app.config["JWT_COOKIE_CSRF_PROTECT"] = False
     # app.config['WTF_CSRF_ENABLED'] = False
     # app.config["SESSION_COOKIE_DOMAIN"] = False

@@ -5,10 +5,10 @@ import {
 } from "@tanstack/react-router";
 
 import { useMutation } from "@tanstack/react-query";
-import { logout } from "../API/loginApi";
 import { useAuth } from "../auth";
 import Sidebar from "../components /Sidebar/Sidebar";
 import { clearCookiesAndLogout } from "../utils/helpers";
+import { logout } from "../API/authApi";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ context, location }) => {
@@ -32,10 +32,10 @@ function AuthLayout() {
 
   const { mutate } = useMutation({
     mutationFn: logout,
-    onSuccess: () => {
+    onSettled: () => {
       clearCookiesAndLogout();
       auth.logout();
-    },
+    }
   });
 
   return (

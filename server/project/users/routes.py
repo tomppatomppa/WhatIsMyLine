@@ -59,11 +59,11 @@ def refresh():
     except:
         return "Failed to refresh token", 401
 
-@users_blueprint.route("/logout", methods=["POST"])
-def logout_with_cookies():
-    response = jsonify("Logout successful")
-    unset_jwt_cookies(response)
-    return response
+# @users_blueprint.route("/logout", methods=["POST"])
+# def logout_with_cookies():
+#     response = jsonify("Logout successful")
+#     unset_jwt_cookies(response)
+#     return response
 
 @users_blueprint.route("/user", methods=["GET", "POST"])
 @jwt_required()

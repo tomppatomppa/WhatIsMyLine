@@ -1,8 +1,7 @@
-from datetime import datetime, timedelta, timezone
 from . import scripts_blueprint
 from flask import request, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from project.models import Script, User
+from project.models import Script
 import json
 
 

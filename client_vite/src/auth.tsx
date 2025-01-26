@@ -1,15 +1,6 @@
 import * as React from "react";
 import { User } from "./store/userStore";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAuth } from "./API/authApi";
-import { clearCookiesAndLogout, removeCookie } from "./utils/helpers";
-import {
-  redirect,
-  useNavigate,
-  useRouter,
-  useSearch,
-} from "@tanstack/react-router";
-import { Route } from "./routes/login";
+import { removeCookie } from "./utils/helpers";
 
 export interface AuthContext {
   isAuthenticated: boolean;
