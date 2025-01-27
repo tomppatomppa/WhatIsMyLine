@@ -74,6 +74,7 @@ def users():
     logger = FileLogger(route="api/auth/user")
     try:
         user = User.get_logged_in_user_data(get_jwt_identity())
+        logger.info('Exception occurred : {}'.format(user))
         return user
     except Exception as e:
         logger.error('Exception occurred : {}'.format(e))

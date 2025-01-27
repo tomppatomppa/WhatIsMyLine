@@ -95,12 +95,13 @@ class User(db.Model):
         if not user:
             return None
 
+        scripts = [script.to_data() for script in user.scripts]
         user_data = {
             "id": user.id,
             "picture": user.picture,
             "email": user.email,
             "registered_on": user.registered_on,
-            "scripts": [script.to_data() for script in user.scripts]
+            "scripts": scripts
         }
 
         return user_data
