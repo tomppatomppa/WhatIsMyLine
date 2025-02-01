@@ -1,9 +1,11 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { Suspense, useState, useTransition } from "react";
+import { getScripts } from "../API/scriptApi";
 import { sleep, useAuth } from "../auth";
-import { useState, useTransition } from "react";
 import Button from "../components /common/Button";
 import { userQueryOptions } from "./_auth.user.settings";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Script } from "../components /ReaderV3/reader.types";
 
 export const Route = createFileRoute("/_auth/dashboard")({
   loader(opts) {
@@ -13,6 +15,7 @@ export const Route = createFileRoute("/_auth/dashboard")({
 });
 
 function DashboardPage() {
+  const router = useRouter();
   const userQuery = useSuspenseQuery(userQueryOptions());
   const user = userQuery.data;
   const auth = useAuth();
@@ -31,12 +34,6 @@ function DashboardPage() {
     { id: 3, action: "Viewed statistics", timestamp: "2025-01-22 8:45 PM" },
   ];
 
-  const mockStats = {
-    totalScripts: 12,
-    activeUsers: 57,
-    monthlyViews: 1043,
-  };
-
   const handleFeedbackSubmit = async (e: any) => {
     e.preventDefault();
     startTransition(() => {
@@ -45,9 +42,6 @@ function DashboardPage() {
       setFeedback(""); // Clear input field
     });
   };
-  const router = useRouter();
-
-  const scripts = user.scripts.filter((script) => script.deleted_at === null);
 
   return (
     <section className="p-4 bg-gray-50 min-h-screen">
@@ -61,11 +55,17 @@ function DashboardPage() {
             Here’s what’s happening on your dashboard:
           </p>
 
-          <Button onClick={() => router.navigate({ to: "/logs" })}>Logs</Button>
+          {user.is_admin ? (
+            <Button onClick={() => router.navigate({ to: "/logs" })}>
+              Logs
+            </Button>
+          ) : null}
         </div>
-
+        <Suspense fallback={<div>Loading...</div>}>
+          <StatsGrid />
+        </Suspense>
         {/* Statistics Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-6 bg-blue-500 text-white rounded-2xl shadow">
             <h2 className="text-lg font-semibold">Total Scripts</h2>
             <p className="text-3xl font-bold">{scripts.length}</p>
@@ -80,7 +80,7 @@ function DashboardPage() {
             <h2 className="text-lg font-semibold">Monthly Views</h2>
             <p className="text-3xl font-bold">{mockStats.monthlyViews}</p>
           </div>
-        </div>
+        </div> */}
 
         {/* Latest Activity Section */}
         <div className="p-6 bg-white shadow rounded-2xl">
@@ -94,29 +94,6 @@ function DashboardPage() {
                 <span className="text-gray-700">{activity.action}</span>
                 <span className="text-gray-500 text-sm">
                   {activity.timestamp}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Latest Scripts Section */}
-        <div className="p-6 bg-white shadow rounded-2xl">
-          <h2 className="text-xl font-bold text-gray-800">
-            Latest Added Scripts
-          </h2>
-          <ul className="mt-4 space-y-2">
-            {scripts.map((script) => (
-              <li
-                key={script.id}
-                onClick={() => router.navigate({ to: `/scripts/${script.script_id}` })}
-                className="flex justify-between items-center bg-gray-100 p-4 rounded-lg hover:bg-green-200 cursor-pointer"
-              >
-                <span className="text-gray-700 font-medium">
-                  {script.filename}
-                </span>
-                <span className="text-gray-500 text-sm">
-                  Added on {script.created_on.toISOString()}
                 </span>
               </li>
             ))}
@@ -159,3 +136,80 @@ function DashboardPage() {
 }
 
 export default DashboardPage;
+
+function StatsGrid() {
+  const router = useRouter();
+  const { data } = useSuspenseQuery({
+    queryKey: ["scripts"],
+    queryFn: getScripts,
+  });
+  const mockStats = {
+    totalScripts: 12,
+    activeUsers: 57,
+    monthlyViews: 1043,
+  };
+
+  const { scripts, deletedScripts } = data.reduce<{
+    scripts: Script[];
+    deletedScripts: Script[];
+  }>(
+    (acc, script) => {
+      if (script.deleted_at !== null) {
+        acc.deletedScripts.push(script);
+      } else {
+        acc.scripts.push(script);
+      }
+      return acc;
+    },
+    { scripts: [], deletedScripts: [] }
+  );
+
+  return (
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-6 bg-green-500 text-white rounded-2xl shadow">
+          <h2 className="text-lg font-semibold">Active Scripts</h2>
+          <p className="text-3xl font-bold">{scripts.length}</p>
+        </div>
+        <div className="p-6 bg-blue-500 text-white rounded-2xl shadow">
+          <h2 className="text-lg font-semibold">Total Scripts</h2>
+          <p className="text-3xl font-bold">{data.length}</p>
+        </div>
+
+        <div className="p-6 bg-red-500 text-white rounded-2xl shadow">
+          <h2 className="text-lg font-semibold">Deleted Scripts</h2>
+          <p className="text-3xl font-bold">{deletedScripts.length}</p>
+        </div>
+        <div className="p-6 bg-purple-500 text-white rounded-2xl shadow">
+          <h2 className="text-lg font-semibold">Monthly Views</h2>
+          <p className="text-3xl font-bold">{mockStats.monthlyViews}</p>
+        </div>
+      </div>
+
+      {/* Latest Scripts Section */}
+      <div className="p-6 bg-white shadow rounded-2xl">
+        <h2 className="text-xl font-bold text-gray-800">
+          Latest Added Scripts
+        </h2>
+        <ul className="mt-4 space-y-2">
+          {scripts.slice(0, 5).map((script) => (
+            <li
+              key={script.id}
+              onClick={() =>
+                router.navigate({ to: `/scripts/${script.script_id}` })
+              }
+              className="flex justify-between items-center bg-gray-100 p-4 rounded-lg hover:bg-green-200 cursor-pointer"
+            >
+              <span className="text-gray-700 font-medium">
+                {script.filename}
+              </span>
+              <span className="text-gray-500 text-sm">
+                Added on {script.created_on.toString()}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+}

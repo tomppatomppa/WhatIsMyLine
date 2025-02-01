@@ -8,8 +8,8 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 import os
 from flask.logging import default_handler
-
 from project.formatter.default_formatter import RequestFormatter
+from project.logger_helper import setup_logger
 from project.request_handlers import request_handlers
 
 
@@ -26,9 +26,9 @@ def create_app():
     app.config.from_object(config_type)
 
     app.config["JWT_COOKIE_SECURE"] = True
-   # app.config["JWT_COOKIE_CSRF_PROTECT"] = False
+    app.config["JWT_COOKIE_CSRF_PROTECT"] = True
     # app.config['WTF_CSRF_ENABLED'] = False
-    # app.config["SESSION_COOKIE_DOMAIN"] = False
+    #app.config["SESSION_COOKIE_DOMAIN"] = True
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
     
@@ -40,6 +40,8 @@ def create_app():
     request_handlers(app)
     register_blueprints(app)
     
+    app.logger = setup_logger()
+
     return app
 
 def init_formatters():
@@ -77,7 +79,7 @@ def register_blueprints(app):
         return render_template('index.html')
 
     @app.route('/api/ping')
-    def test():   
+    def test():
         return "pongs"
 
     @app.route('/<path:path>')

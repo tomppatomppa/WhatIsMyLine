@@ -5,7 +5,7 @@ from project.models import Script
 import json
 
 
-@scripts_blueprint.route("/script", methods=["GET"])
+@scripts_blueprint.route("/scripts", methods=["GET"])
 @jwt_required()
 def get_all():
     try:

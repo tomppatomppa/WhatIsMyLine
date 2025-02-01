@@ -1,20 +1,29 @@
 
 # Endpoint to fetch log data from all log files as JSON
+from functools import wraps
 from flask import jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
+
+from project.models import User
 from . import admin_blueprint
 from project.FileLogger import FileLogger
 
 
-@admin_blueprint.route('/admin/logs', methods=['GET'])
-@jwt_required()
-def get_logs():
-    user_id = get_jwt_identity()
+def admin_required(func):
+    @wraps(func)
+    @jwt_required()
+    def wrapper(*args, **kwargs):
+        user = User.get_user_by_user_id(get_jwt_identity())
+        if not user or not user.is_admin:
+            return "Insufficient permission", 403
+        return func(*args, **kwargs)
+    return wrapper
 
-    if int(user_id) != 5:
-        return "Not permitted", 404
+@admin_blueprint.route('/admin/logs', methods=['GET'])
+@admin_required
+def get_logs():
     try:
-        logger = FileLogger(route="api/auth/login")
+        logger = FileLogger()
         all_log_data = logger.get_all_log_files_data()
         return jsonify(all_log_data)
     except Exception as error:

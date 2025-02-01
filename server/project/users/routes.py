@@ -3,6 +3,7 @@ import os
 
 from project.auth.LoginManager import LoginManager
 from project.FileLogger import FileLogger
+from project.logger_helper import logger_helper
 from . import users_blueprint
 
 from flask import request, jsonify
@@ -16,16 +17,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 
 @users_blueprint.route("/login", methods=["POST"])
-def login():
-    logger = FileLogger(route="api/auth/login")
-
-    # Log request details
-    user_agent = request.headers.get('User-Agent', 'Unknown')
-    ip_address = request.remote_addr or 'Unknown'
-    data = request.json or {}
-    
-    logger.info(f"Login attempt detected. IP: {ip_address}, User-Agent: {user_agent}, Payload: {data}")
-    
+@logger_helper()
+def login():    
     code = request.json.get('code')
 
     if not code:
@@ -42,11 +35,10 @@ def login():
             access_token = create_access_token(identity=str(user.id))
             
             set_access_cookies(response, access_token) 
-            logger.info('Succesfull login: {}'.format(user_for_client))
             return response
         return response.json(), response.status_code
     except Exception as e:
-        logger.error('Login exception occurred : {}'.format(e))
+        # logger.error('Login exception occurred : {}'.format(e))
         return 'Failed to login', 401
 
 @users_blueprint.route("/refresh-token", methods=["POST"])
@@ -69,16 +61,17 @@ def refresh():
         return "Failed to refresh token", 401
 
 @users_blueprint.route("/user", methods=["GET", "POST"])
+@logger_helper(log_incoming=False, log_outgoing=False)
 @jwt_required()
 def users():
-    logger = FileLogger(route="api/auth/user")
     try:
-        user = User.get_logged_in_user_data(get_jwt_identity())
-        logger.info('Exception occurred : {}'.format(user))
-        return user
+        user = User.get_user_by_user_id(get_jwt_identity())
+        response = {
+            **user.to_dict(),
+        }
+        return response, 200
     except Exception as e:
-        logger.error('Exception occurred : {}'.format(e))
-        return jsonify("Invalid request")
+        return jsonify("Failed to get user"), 404
 
 '''
 Helper Functions
@@ -117,15 +110,12 @@ def get_token_data(code):
     return response
 
 def store_user(user_info) -> User:
-   
     user = User.find_or_create_user(user_info)
-
     if not user:
         raise ValueError("User not found or could not be created")
 
     return user
-   
-    #User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
+
     
 def refresh_access_token(refresh_token):
     

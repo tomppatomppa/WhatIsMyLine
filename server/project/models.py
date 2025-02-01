@@ -1,6 +1,6 @@
 from datetime import datetime
-from sqlalchemy import DateTime, ForeignKey, Integer, String, PickleType
-from sqlalchemy.orm import mapped_column, relationship, joinedload
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, PickleType
+from sqlalchemy.orm import mapped_column, relationship
 from project import db
 from datetime import datetime
 
@@ -18,6 +18,7 @@ class User(db.Model):
     __tablename__ = 'users'
     id = mapped_column(Integer(), primary_key=True, autoincrement=True)
     user_id = mapped_column(String(), unique=True, nullable=False)
+    is_admin = mapped_column(Boolean(), default=False)
     picture = mapped_column(String(), unique=True, nullable=True, default="")
     provider = mapped_column(String(), nullable=False)
     email = mapped_column(String(), unique=True, nullable=False)
@@ -35,14 +36,19 @@ class User(db.Model):
         self.provider = provider
         self.registered_on = datetime.now()
         self.refresh_token = refresh_token
-      
+    
     def to_dict(self):
         return {
             'id': self.id,
             'user_id': self.user_id,
+            "registered_on": self.registered_on,
+            'is_admin': self.is_admin,
             'picture': self.picture,
             'email': self.email,   
         }
+
+    def get_user_scripts(self):
+        return [script.to_data() for script in self.scripts]  
     
     @classmethod
     def get_user_by_user_id(cls, id):
@@ -80,32 +86,7 @@ class User(db.Model):
             db.session.commit()
     
         return user
-    
-    @classmethod
-    def get_logged_in_user_data(cls, id: str):
-        """
-        Get the data of the logged-in user by their user_id.
-        This includes user data and their associated scripts.
 
-        :param session: The SQLAlchemy session
-        :param user_id: The unique identifier of the logged-in user
-        :return: The user data and associated scripts
-        """
-        user = cls.query.filter_by(id=id).first()
-        if not user:
-            return None
-
-        scripts = [script.to_data() for script in user.scripts]
-        user_data = {
-            "id": user.id,
-            "picture": user.picture,
-            "email": user.email,
-            "registered_on": user.registered_on,
-            "scripts": scripts
-        }
-
-        return user_data
-       
     def __repr__(self):
         return f'<User: {self.email}>'
 
@@ -179,7 +160,10 @@ class Script(db.Model):
            "id": self.id,
            "script_id": self.script_id,
            "filename": self.filename,
-           "user_id": self.user_id
+           "user_id": self.user_id,
+           "created_on": self.created_on.isoformat() if self.created_on else None,
+           "modified_on": self.modified_on.isoformat() if self.modified_on else None,
+           "deleted_at": self.deleted_at.isoformat() if self.deleted_at else None,
        }
        
     @classmethod
@@ -195,7 +179,7 @@ class Script(db.Model):
     
     @classmethod
     def get_scripts_by_user_id(cls, user_id):
-        scripts = cls.query.filter_by(user_id=user_id, deleted_at=None).all()
+        scripts = cls.query.filter_by(user_id=user_id).all() #, deleted_at=None
         # Use the `to_summary_dict` method to exclude scenes
         return [script.to_summary_dict() for script in scripts]
     

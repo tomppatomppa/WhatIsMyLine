@@ -3,7 +3,7 @@ import EmptyScriptList from "./EmptyScriptList";
 import { ScriptList } from "./ScriptList";
 
 import { useState } from "react";
-import { fetchAllUserScripts } from "../../../API/scriptApi";
+import { getScripts } from "../../../API/scriptApi";
 import {
   useActiveScript,
 } from "../../../store/scriptStore";
@@ -29,7 +29,7 @@ const ScriptsContainer = ({
 
   const { data } = useSuspenseQuery({
     queryKey: ["scripts"],
-    queryFn: fetchAllUserScripts,
+    queryFn: getScripts,
   });
 
   const filteredScripts =

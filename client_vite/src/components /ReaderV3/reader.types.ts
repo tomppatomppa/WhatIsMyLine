@@ -25,6 +25,9 @@ export type Script = {
   scenes: Scene[]
   trash?: boolean //TODO: add to database model
   script_id: string
+  deleted_at: string
+  modified_on: string
+  created_on: string
 }
 
 // Line types

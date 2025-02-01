@@ -7,11 +7,12 @@ class FileLogger:
     def __init__(self, base_directory="logs", route="default"):
         self.base_directory = base_directory
         self.route = route
-        
+        self.current_date = datetime.now().strftime("%Y-%m-%d")
+
         log_directory = os.path.join(self.base_directory, *self.route.split('/'))  # Create subdirectories based on the route
         os.makedirs(log_directory, exist_ok=True)  # Ensure that the directory exists
-        
-        self.file_path = os.path.join(log_directory, f"{self.route.split('/')[-1]}.log")
+
+        self.file_path = os.path.join(log_directory, f"{self.route.split('/')[-1]}-{self.current_date}.log")
         # Ensure the log file exists
         if not os.path.exists(self.file_path):
             with open(self.file_path, 'w') as f:
