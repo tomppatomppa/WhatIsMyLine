@@ -49,12 +49,12 @@ def logger_helper(log_incoming=True, log_outgoing=True, log_errors=True):
                     status_code = response.status_code  
                     
                 if hasattr(response_data, 'get_data'):
-                    data = response_data.get_data(as_text=True)
+                    data = response_data.get_data()
                 else:
                     data = response_data
 
                 if log_outgoing:
-                    log_message = f"Outgoing response: {status_code} - {request.method} {request.path}, Response payload: {response_data.get_data(as_text=True)}"
+                    log_message = f"Outgoing response: {status_code} - {request.method} {request.path}, Response payload: {data}"
                     logger.info(log_message)
                 
                 return response
