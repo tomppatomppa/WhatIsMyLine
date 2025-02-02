@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 if [ "$DATABASE" = "postgres" ]
 then
@@ -27,4 +28,4 @@ python3 -m flask db upgrade
 
 
 
-exec "$@"
+exec gunicorn --workers 4 --bind 0.0.0.0:5000 app:app
