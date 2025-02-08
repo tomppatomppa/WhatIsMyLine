@@ -15,8 +15,8 @@ const LoginButton = () => {
 
   const { mutate: loginCall } = useMutation({
     mutationFn: googleLogin,
-    onSuccess: (user) => {
-      login(user);
+    onSuccess: (_user) => {
+      login();
       router.invalidate().finally(() => {
         navigate({ to: fallback });
       });

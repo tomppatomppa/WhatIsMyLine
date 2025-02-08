@@ -5,23 +5,23 @@ import "./index.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { CLIENT_ID } from "./config.ts";
-import { clearCookiesAndLogout, getCookie } from "./utils/helpers.ts";
+import { clearCookiesAndLogout } from "./utils/helpers.ts";
 
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import {
   ErrorComponent,
   RouterProvider,
   createRouter,
 } from "@tanstack/react-router";
-import {
-  QueryClient,
-  MutationCache,
-  QueryCache,
-  QueryClientProvider,
-} from "@tanstack/react-query";
 // Create a new router instance
-import { routeTree } from "./routeTree.gen";
 import { AuthProvider, useAuth } from "./auth.tsx";
 import { Spinner } from "./routes/__root.tsx";
+import { routeTree } from "./routeTree.gen";
 
 // Create a new router instance
 

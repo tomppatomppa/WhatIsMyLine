@@ -1,11 +1,10 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Suspense, useState, useTransition } from "react";
-import { getScripts } from "../API/scriptApi";
-import { sleep, useAuth } from "../auth";
+import { scriptsQueryOptions, userQueryOptions } from "../API/queryOptions";
+import { sleep } from "../auth";
 import Button from "../components /common/Button";
 import { Script } from "../components /ReaderV3/reader.types";
-import { scriptsQueryOptions, userQueryOptions } from "../API/queryOptions";
 
 export const Route = createFileRoute("/_auth/dashboard")({
   loader(opts) {
@@ -18,7 +17,6 @@ function DashboardPage() {
   const router = useRouter();
   const userQuery = useSuspenseQuery(userQueryOptions());
   const user = userQuery.data;
-  const auth = useAuth();
 
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState("");
@@ -49,7 +47,7 @@ function DashboardPage() {
         {/* Welcome Section */}
         <div className="p-6 bg-white shadow rounded-2xl">
           <h1 className="text-2xl font-bold text-gray-800">
-            Welcome, {auth.user?.email}!
+            Welcome, {user.email}!
           </h1>
           <p className="text-gray-600 mt-2">
             Here’s what’s happening on your dashboard:
