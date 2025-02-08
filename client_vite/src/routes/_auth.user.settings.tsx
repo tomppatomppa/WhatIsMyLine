@@ -1,12 +1,6 @@
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { getUser } from "../API/userApi";
-
-export const userQueryOptions = () =>
-  queryOptions({
-    queryKey: ["user"],
-    queryFn: () => getUser(),
-  });
+import { userQueryOptions } from "../API/queryOptions";
 
 export const Route = createFileRoute("/_auth/user/settings")({
   loader(opts) {

@@ -1,29 +1,23 @@
 import {
+  useMutation,
+  useQueryClient,
+  useQueryErrorResetBoundary,
+  useSuspenseQuery
+} from "@tanstack/react-query";
+import {
   createFileRoute,
   ErrorComponent,
   ErrorComponentProps,
   useRouter,
 } from "@tanstack/react-router";
-import { getScript, updateScript } from "../API/scriptApi";
-import {
-  queryOptions,
-  useMutation,
-  useQueryClient,
-  useQueryErrorResetBoundary,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
 import React from "react";
 import { DropResult } from "react-beautiful-dnd";
-import EmptyReaderView from "../views/EmptyReaderView";
+import { scriptQueryOptions } from "../API/queryOptions";
+import { updateScript } from "../API/scriptApi";
 import { Reader } from "../components /ReaderV3/Reader";
-import { useScriptStore } from "../store/scriptStore";
 import { Script } from "../components /ReaderV3/reader.types";
-
-export const scriptQueryOptions = (scriptId: string) =>
-  queryOptions({
-    queryKey: [`scripts`, scriptId],
-    queryFn: () => getScript(scriptId),
-  });
+import { useScriptStore } from "../store/scriptStore";
+import EmptyReaderView from "../views/EmptyReaderView";
 
 export type Params = {
   id: string;
@@ -66,9 +60,7 @@ export const useUpdateScript = () => {
 function ScriptsPage() {
   const { id } = Route.useParams<Params>();
   const { data: script } = useSuspenseQuery(scriptQueryOptions(id));
-  const { reorderScenes, reorderLinesNew } = useScriptStore(
-    (state) => state
-  );
+  const { reorderScenes, reorderLinesNew } = useScriptStore((state) => state);
   const { mutate } = useUpdateScript();
 
   const handleDragEnd = (result: DropResult) => {

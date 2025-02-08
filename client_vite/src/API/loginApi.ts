@@ -12,13 +12,3 @@ export const refreshToken = async () => {
   const { data } = await httpClient.post(`${BASE_URI}/refresh-token`, null)
   return data
 }
-
-// export const getUser = async () => {
-//   const { data } = await axios.get(`${BASE_URI}/user`, {
-//     withCredentials: true,
-//     headers: {
-//       'X-CSRF-TOKEN': getCookie('csrf_access_token'),
-//     },
-//   })
-//   return data
-// }

@@ -12,6 +12,7 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import React from "react";
+
 export const Route = createFileRoute("/_auth/logs")({
   loader: async ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData(logsQueryOptions());

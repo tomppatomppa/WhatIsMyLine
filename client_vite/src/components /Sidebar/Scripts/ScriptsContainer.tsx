@@ -3,17 +3,20 @@ import EmptyScriptList from "./EmptyScriptList";
 import { ScriptList } from "./ScriptList";
 
 import { useState } from "react";
-import { getScripts } from "../../../API/scriptApi";
-import {
-  useActiveScript,
-} from "../../../store/scriptStore";
+import { scriptsQueryOptions } from "../../../API/queryOptions";
+import { useActiveScript } from "../../../store/scriptStore";
 import { SearchBox } from "../../common/SearchBox";
 import { useDeleteScript } from "./useDeleteScript";
 import { scriptChanged } from "./utils";
+import { Script } from "../../ReaderV3/reader.types";
 
 interface ScriptContainerProps {
   children?: React.ReactNode;
   onScriptChange?: () => void;
+}
+
+function getActiveScripts(scripts: Script[]) {
+  return scripts.filter((script) => !script.deleted_at);
 }
 
 const ScriptsContainer = ({
@@ -27,18 +30,15 @@ const ScriptsContainer = ({
 
   const { mutate: deleteScript } = useDeleteScript();
 
-  const { data } = useSuspenseQuery({
-    queryKey: ["scripts"],
-    queryFn: getScripts,
-  });
+  const { data } = useSuspenseQuery(scriptsQueryOptions());
+  const scripts = getActiveScripts(data);
 
   const filteredScripts =
-    data?.filter(({ filename }: any) =>
+    scripts?.filter(({ filename }: any) =>
       filename.toLowerCase().includes(search.toLowerCase())
     ) || [];
 
   const handleSetActiveScript = (id: string) => {
-    
     if (scriptChanged(activeScript?.script_id, id)) {
       onScriptChange && onScriptChange();
     }

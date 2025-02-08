@@ -39,8 +39,6 @@ class User(db.Model):
     
     def to_dict(self):
         return {
-            'id': self.id,
-            'user_id': self.user_id,
             "registered_on": self.registered_on,
             'is_admin': self.is_admin,
             'picture': self.picture,

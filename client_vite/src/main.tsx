@@ -5,7 +5,7 @@ import "./index.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { CLIENT_ID } from "./config.ts";
-import { clearCookiesAndLogout } from "./utils/helpers.ts";
+import { clearCookiesAndLogout, getCookie } from "./utils/helpers.ts";
 
 import {
   ErrorComponent,
@@ -69,6 +69,7 @@ const router = createRouter({
 
 function InnerApp() {
   const auth = useAuth();
+
   return <RouterProvider router={router} context={{ auth }} />;
 }
 

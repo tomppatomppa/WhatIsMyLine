@@ -4,8 +4,8 @@ import { Suspense, useState, useTransition } from "react";
 import { getScripts } from "../API/scriptApi";
 import { sleep, useAuth } from "../auth";
 import Button from "../components /common/Button";
-import { userQueryOptions } from "./_auth.user.settings";
 import { Script } from "../components /ReaderV3/reader.types";
+import { scriptsQueryOptions, userQueryOptions } from "../API/queryOptions";
 
 export const Route = createFileRoute("/_auth/dashboard")({
   loader(opts) {
@@ -64,24 +64,6 @@ function DashboardPage() {
         <Suspense fallback={<div>Loading...</div>}>
           <StatsGrid />
         </Suspense>
-        {/* Statistics Section */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-6 bg-blue-500 text-white rounded-2xl shadow">
-            <h2 className="text-lg font-semibold">Total Scripts</h2>
-            <p className="text-3xl font-bold">{scripts.length}</p>
-          </div>
-          <div className="p-6 bg-red-500 text-white rounded-2xl shadow">
-            <h2 className="text-lg font-semibold">Deleted Scripts</h2>
-            <p className="text-3xl font-bold">
-              {user.scripts.length - scripts.length}
-            </p>
-          </div>
-          <div className="p-6 bg-purple-500 text-white rounded-2xl shadow">
-            <h2 className="text-lg font-semibold">Monthly Views</h2>
-            <p className="text-3xl font-bold">{mockStats.monthlyViews}</p>
-          </div>
-        </div> */}
-
         {/* Latest Activity Section */}
         <div className="p-6 bg-white shadow rounded-2xl">
           <h2 className="text-xl font-bold text-gray-800">Recent Activity</h2>
@@ -100,7 +82,6 @@ function DashboardPage() {
           </ul>
         </div>
 
-        {/* Feedback Section */}
         {/* Feedback Section */}
         <div className="p-6 bg-white shadow rounded-2xl">
           <h2 className="text-xl font-bold text-gray-800">
@@ -139,10 +120,7 @@ export default DashboardPage;
 
 function StatsGrid() {
   const router = useRouter();
-  const { data } = useSuspenseQuery({
-    queryKey: ["scripts"],
-    queryFn: getScripts,
-  });
+  const { data } = useSuspenseQuery(scriptsQueryOptions());
   const mockStats = {
     totalScripts: 12,
     activeUsers: 57,

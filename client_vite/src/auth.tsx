@@ -1,53 +1,32 @@
 import * as React from "react";
-import { User } from "./store/userStore";
-import { removeCookie } from "./utils/helpers";
+import { getCookie, removeCookie } from "./utils/helpers";
 
 export interface AuthContext {
   isAuthenticated: boolean;
-  login: (user: User) => void;
+  login: () => void;
   logout: () => void;
-  user: User | null;
 }
 
 const AuthContext = React.createContext<AuthContext | null>(null);
 
-const key = "tanstack.auth.user";
-
-function getStoredUser() {
-  const item = localStorage.getItem(key);
-  if (item) return JSON.parse(item);
-  return null;
-}
-
-function setStoredUser(user: User | null) {
-  if (user) {
-    localStorage.setItem(key, JSON.stringify(user));
-  } else {
-    localStorage.removeItem(key);
-  }
-}
 export async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = React.useState<User | null>(getStoredUser());
-  const isAuthenticated = !!user;
+  const [isAuthenticated, setIsAuthenticated] = React.useState(!!getCookie("csrf_access_token")) // !!user;
 
   const logout = React.useCallback(() => {
     removeCookie("access_token_cookie");
     removeCookie("csrf_access_token");
-
-    setStoredUser(null);
-    setUser(null);
+    setIsAuthenticated(false)
   }, []);
 
-  const login = React.useCallback((user: User) => {
-    setStoredUser(user);
-    setUser(user);
+  const login = React.useCallback(() => {
+    setIsAuthenticated(!!getCookie("csrf_access_token"))
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -35,9 +35,8 @@ function LoginComponent() {
 
   const { mutate: loginCall, isPending } = useMutation({
     mutationFn: googleLogin,
-    onSuccess: async (user) => {
-      console.log(user)
-      auth.login(user);
+    onSuccess: async (_user) => {
+      auth.login();
       await router.invalidate();
       await sleep(2); // @hack to make navigate work
       await navigate({ to: search.redirect || fallback });
