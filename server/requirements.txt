@@ -1,9 +1,9 @@
 Flask==3.0.0
 gunicorn==20.0.4
-PyMuPDF==1.21.1
+PyMuPDF==1.25.3
 #Werkzeug==2.3.6
 pathlib==1.0.1
-pytest==7.2.2
+pytest==8.3.4
 Flask-Cors==4.0.0
 
 Flask-SQLAlchemy==3.0.3
@@ -20,3 +20,5 @@ python-dotenv==1.0.0
 google-api-python-client==2.92.0
 google-cloud-texttospeech==2.14.1
 google-auth==2.21.0
+
+Flask-APScheduler==1.13.1

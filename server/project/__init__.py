@@ -1,17 +1,15 @@
+import os
 from datetime import timedelta
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-import sqlalchemy as sa
 from flask_wtf import CSRFProtect
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-import os
 from flask.logging import default_handler
 from project.formatter.default_formatter import RequestFormatter
 from project.logger_helper import setup_logger
 from project.request_handlers import request_handlers
-
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -39,8 +37,11 @@ def create_app():
     create_upload_folders(app)
     request_handlers(app)
     register_blueprints(app)
-    
     app.logger = setup_logger()
+    
+    with app.app_context():
+       from .scheduler import init_scheduled_tasks 
+       init_scheduled_tasks(app)
 
     return app
 

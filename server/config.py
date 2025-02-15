@@ -16,6 +16,8 @@ class Config(object):
     # Logging
     LOG_WITH_GUNICORN = os.getenv('LOG_WITH_GUNICORN', default=False)
 
+    SCHEDULER_API_ENABLED = True
+
 class ProductionConfig(Config):
     FLASK_ENV = 'production'
 
