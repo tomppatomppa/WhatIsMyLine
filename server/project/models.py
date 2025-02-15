@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, PickleType
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, PickleType, event
 from sqlalchemy.orm import mapped_column, relationship
 from project import db
 from datetime import datetime
@@ -109,6 +109,7 @@ class Script(db.Model):
     scenes = mapped_column(PickleType(), nullable=True)
     created_on = mapped_column(DateTime(), nullable=False)
     modified_on = mapped_column(DateTime(), nullable=False)
+    opened_on = mapped_column(DateTime(), nullable=True)
     deleted_at = mapped_column(DateTime(), nullable=True)
 
     user = relationship("User", back_populates="scripts")
@@ -161,6 +162,7 @@ class Script(db.Model):
            "user_id": self.user_id,
            "created_on": self.created_on.isoformat() if self.created_on else None,
            "modified_on": self.modified_on.isoformat() if self.modified_on else None,
+           "opened_on": self.opened_on.strftime('%Y-%m-%d %H:%M:%S') if self.opened_on else None,
            "deleted_at": self.deleted_at.isoformat() if self.deleted_at else None,
        }
        
@@ -173,7 +175,11 @@ class Script(db.Model):
     
     @classmethod
     def get_script_by_script_id(cls, script_id, user_id):
-        return cls.query.filter_by(script_id=script_id, user_id=user_id).first()
+        script = cls.query.filter_by(script_id=script_id, user_id=user_id).first()
+        if script:
+            script.opened_on = datetime.utcnow()
+            db.session.commit()  
+        return script
     
     @classmethod
     def get_scripts_by_user_id(cls, user_id):
@@ -200,3 +206,8 @@ class Script(db.Model):
     
     def __repr__(self):
         return f'<Script: {self.filename}>'
+    
+@event.listens_for(Script, "load")
+def update_opened_on(instance, context):
+    print("LOADED")
+   # instance.opened_on = datetime.utcnow()

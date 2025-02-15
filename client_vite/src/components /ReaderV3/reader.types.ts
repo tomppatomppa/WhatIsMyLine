@@ -28,6 +28,7 @@ export type Script = {
   deleted_at: string
   modified_on: string
   created_on: string
+  opened_on: string
 }
 
 // Line types

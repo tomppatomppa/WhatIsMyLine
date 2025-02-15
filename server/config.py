@@ -11,7 +11,7 @@ class Config(object):
 
     if os.getenv('DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI =  os.getenv("DATABASE_URL")
-    
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # Logging
     LOG_WITH_GUNICORN = os.getenv('LOG_WITH_GUNICORN', default=False)
