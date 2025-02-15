@@ -1,3 +1,5 @@
+import os
+import pymupdf4llm
 from . import scripts_blueprint
 from flask import request, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -63,6 +65,19 @@ def update(script_id):
     updated_script = Script.update(updated_data, script_to_update)
    
     return json.dumps(updated_script.to_dict()), 200
+
+@scripts_blueprint.route("/script/markdown-test", methods=["GET"])
+def get_markdown():
+    folder_path = os.path.abspath("uploaded_files")
+   
+    try:
+        md_text = pymupdf4llm.to_markdown(f'{folder_path}/1.9.pdf')
+   
+        return md_text, 200
+
+    except Exception as e:
+        return "ERROR", 404
+    
    
    
 

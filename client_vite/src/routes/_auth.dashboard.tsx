@@ -40,9 +40,11 @@ function DashboardPage() {
       setFeedback(""); // Clear input field
     });
   };
+  // const {data} = useQuery(scriptsMarkdownQueryOptions())
 
   return (
     <section className="p-4 bg-gray-50 min-h-screen">
+      {/* {data && JSON.stringify(data)} */}
       <div className="max-w-7xl mx-auto grid gap-6">
         {/* Welcome Section */}
         <div className="p-6 bg-white shadow rounded-2xl">
@@ -57,7 +59,15 @@ function DashboardPage() {
             <Button onClick={() => router.navigate({ to: "/logs" })}>
               Logs
             </Button>
+            
           ) : null}
+          {user.is_admin ? (
+            <Button onClick={() => router.navigate({ to: "/markdown-edit" })}>
+              markdown
+            </Button>
+            
+          ) : null}
+
         </div>
         <Suspense fallback={<div>Loading...</div>}>
           <StatsGrid />

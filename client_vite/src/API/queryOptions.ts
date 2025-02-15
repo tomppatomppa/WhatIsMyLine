@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getScript, getScripts } from "./scriptApi";
+import { getScript, getScriptMarkdown, getScripts } from "./scriptApi";
 import { getUser } from "./userApi";
 
 export const scriptsQueryOptions = () =>
@@ -7,6 +7,11 @@ export const scriptsQueryOptions = () =>
     queryKey: ["scripts"],
     queryFn: () => getScripts(),
     staleTime: 1000 * 20,
+  });
+export const scriptsMarkdownQueryOptions = () =>
+  queryOptions({
+    queryKey: ["scripts-markdown"],
+    queryFn: () => getScriptMarkdown(),
   });
 
 export const scriptQueryOptions = (scriptId: string) =>
