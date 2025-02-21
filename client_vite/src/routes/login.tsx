@@ -38,7 +38,7 @@ function LoginComponent() {
     onSuccess: async (_user) => {
       auth.login();
       await router.invalidate();
-      await sleep(2); // @hack to make navigate work
+      await sleep(10); // @hack to make navigate work
       await navigate({ to: search.redirect || fallback });
     },
   });

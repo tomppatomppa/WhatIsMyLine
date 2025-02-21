@@ -8,7 +8,6 @@ from werkzeug.utils import secure_filename
 import os
 import uuid
 from PyMuReaderV3 import ReaderV3
-import json
 
 @upload_blueprint.route("/v3/upload", methods=['POST'])
 @jwt_required()
@@ -32,10 +31,6 @@ def upload_file():
         return script.to_dict()
     except:
         return "Error uploading script", 404
-   
-
-    
-
 
 def process_uploaded_file(file, uploaded_files_folder):
     try:

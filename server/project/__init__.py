@@ -25,10 +25,12 @@ def create_app():
 
     app.config["JWT_COOKIE_SECURE"] = True
     app.config["JWT_COOKIE_CSRF_PROTECT"] = True
-    # app.config['WTF_CSRF_ENABLED'] = False
-    #app.config["SESSION_COOKIE_DOMAIN"] = True
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
+    app.config["SESSION_COOKIE_DOMAIN"] = True
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=7)
+    app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+    app.config["SESSION_COOKIE_HTTPONLY"] = True  
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
     
     CORS(app, supports_credentials=True)
     
@@ -94,7 +96,7 @@ def register_blueprints(app):
     from .upload import upload_blueprint
     from .admin import admin_blueprint
     
-    app.register_blueprint(auth_blueprint, url_prefix="/api")
+    app.register_blueprint(auth_blueprint, url_prefix="/api/auth")
     app.register_blueprint(users_blueprint, url_prefix="/api")
     app.register_blueprint(scripts_blueprint, url_prefix='/api')
     app.register_blueprint(google_blueprint, url_prefix='/api')

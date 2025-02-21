@@ -18,6 +18,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = React.useCallback(() => {
     removeCookie("access_token_cookie");
     removeCookie("csrf_access_token");
+    removeCookie("refresh_token_cookie");
+    removeCookie("csrf_refresh_token");
     setIsAuthenticated(false)
   }, []);
 

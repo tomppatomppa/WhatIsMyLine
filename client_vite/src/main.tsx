@@ -5,7 +5,7 @@ import "./index.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { CLIENT_ID } from "./config.ts";
-import { clearCookiesAndLogout } from "./utils/helpers.ts";
+import { clearCookiesAndLogout, getCookie } from "./utils/helpers.ts";
 
 import {
   MutationCache,
@@ -22,6 +22,7 @@ import {
 import { AuthProvider, useAuth } from "./auth.tsx";
 import { Spinner } from "./routes/__root.tsx";
 import { routeTree } from "./routeTree.gen";
+import { refreshToken } from "./API/authApi.ts";
 
 // Create a new router instance
 
@@ -32,19 +33,35 @@ declare module "@tanstack/react-router" {
   }
 }
 
+async function handleUnauthorized() {
+  if (!getCookie("csrf_refresh_token")) return clearCookiesAndLogout();
+
+  if (confirm("Your session has expired. Would you like to refresh?")) {
+    try {
+      await refreshToken();
+      location.reload();
+    } catch {
+      clearCookiesAndLogout();
+    }
+  } else {
+    clearCookiesAndLogout();
+  }
+}
+
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error: any) => {
-      const { msg } = error?.response?.data;
-      if (error.response?.status === 401 && msg) {
-        // clearCookiesAndLogout(msg);
+      const unauthorized = error.response?.status === 401;
+      if (unauthorized) {
+        handleUnauthorized();
       }
     },
   }),
   queryCache: new QueryCache({
     onError: (error: any) => {
-      if (error.response?.status === 401) {
-        clearCookiesAndLogout("Logout");
+      const unauthorized = error.response?.status === 401;
+      if (unauthorized) {
+        handleUnauthorized();
       }
     },
   }),

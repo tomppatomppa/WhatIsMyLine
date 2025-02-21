@@ -2,14 +2,13 @@ import requests
 import os
 
 from project.auth.LoginManager import LoginManager
-from project.FileLogger import FileLogger
 from project.logger_helper import logger_helper
 from . import users_blueprint
 
 from flask import request, jsonify
 from utils import create_timestamp, verify_google_id_token
 from project.models import User
-from flask_jwt_extended import create_access_token, jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required,set_access_cookies, get_jwt_identity, set_refresh_cookies
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -33,13 +32,16 @@ def login():
             
             response = jsonify(user_for_client)
             access_token = create_access_token(identity=str(user.id))
+            refresh_token = create_refresh_token(identity=str(user.id))
             
             set_access_cookies(response, access_token) 
+            set_refresh_cookies(response, refresh_token)
             return response
         return response.json(), response.status_code
     except Exception as e:
         # logger.error('Login exception occurred : {}'.format(e))
         return 'Failed to login', 401
+
 
 @users_blueprint.route("/refresh-token", methods=["POST"])
 @jwt_required()
@@ -104,7 +106,8 @@ def get_token_data(code):
             'client_secret': CLIENT_SECRET,
             'redirect_uri': "postmessage",
             'grant_type': 'authorization_code',
-            'scope': ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/drive.file"]
+            'scope': ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"]
+            #, "https://www.googleapis.com/auth/drive.file"
         })
         
     return response
