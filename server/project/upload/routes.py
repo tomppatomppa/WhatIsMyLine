@@ -4,7 +4,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from project import db
 from project.models import File, User, Script
 from project.adapters.S3Client import S3Handler
-from project.logger_helper import logger_helper
+from project.logger_helper import get_logger, logger_helper
 from . import upload_blueprint
 from flask import  request, current_app
 from werkzeug.utils import secure_filename
@@ -70,6 +70,7 @@ def upload_file_s3():
 
         return "OK", 200
     except Exception as e:
+        get_logger().error(e)
         return 'Failed to upload file, try again later', 404
 
 def process_uploaded_file(file, uploaded_files_folder):
