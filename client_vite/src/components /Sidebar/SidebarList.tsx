@@ -13,7 +13,7 @@ interface SidebarListProps {
 
 const SidebarList = ({ data }: SidebarListProps) => {
   return (
-    <ul className={` text-sm font-medium gap-8`}>
+    <ul className={`text-sm font-medium gap-8`}>
       {data.map(({ onClick, icon, name }, idx) => (
         <SidebarButton key={idx} onClick={onClick}>
           <div className="text-gray-500">{icon}</div>

@@ -10,6 +10,7 @@ from flask.logging import default_handler
 from project.formatter.default_formatter import RequestFormatter
 from project.logger_helper import setup_logger
 from project.request_handlers import request_handlers
+from project.adapters.repositories.files import start_mappers
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -57,6 +58,7 @@ def init_formatters():
     
 def initialize_extensions(app):
     db.init_app(app)
+    #start_mappers(db)
     migrate.init_app(app, db)
 
 #TODO: move to aws S3 or similar

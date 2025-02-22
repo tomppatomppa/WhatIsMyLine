@@ -17,6 +17,7 @@ import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthLogsImport } from './routes/_auth.logs'
 import { Route as AuthDashboardImport } from './routes/_auth.dashboard'
+import { Route as AuthUserUploadImport } from './routes/_auth.user.upload'
 import { Route as AuthUserSettingsImport } from './routes/_auth.user.settings'
 import { Route as AuthScriptsIdImport } from './routes/_auth.scripts.$id'
 
@@ -54,6 +55,12 @@ const AuthLogsRoute = AuthLogsImport.update({
 const AuthDashboardRoute = AuthDashboardImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthUserUploadRoute = AuthUserUploadImport.update({
+  id: '/user/upload',
+  path: '/user/upload',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -129,6 +136,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthUserSettingsImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/user/upload': {
+      id: '/_auth/user/upload'
+      path: '/user/upload'
+      fullPath: '/user/upload'
+      preLoaderRoute: typeof AuthUserUploadImport
+      parentRoute: typeof AuthImport
+    }
   }
 }
 
@@ -139,6 +153,7 @@ interface AuthRouteChildren {
   AuthLogsRoute: typeof AuthLogsRoute
   AuthScriptsIdRoute: typeof AuthScriptsIdRoute
   AuthUserSettingsRoute: typeof AuthUserSettingsRoute
+  AuthUserUploadRoute: typeof AuthUserUploadRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
@@ -146,6 +161,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthLogsRoute: AuthLogsRoute,
   AuthScriptsIdRoute: AuthScriptsIdRoute,
   AuthUserSettingsRoute: AuthUserSettingsRoute,
+  AuthUserUploadRoute: AuthUserUploadRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -159,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/logs': typeof AuthLogsRoute
   '/scripts/$id': typeof AuthScriptsIdRoute
   '/user/settings': typeof AuthUserSettingsRoute
+  '/user/upload': typeof AuthUserUploadRoute
 }
 
 export interface FileRoutesByTo {
@@ -170,6 +187,7 @@ export interface FileRoutesByTo {
   '/logs': typeof AuthLogsRoute
   '/scripts/$id': typeof AuthScriptsIdRoute
   '/user/settings': typeof AuthUserSettingsRoute
+  '/user/upload': typeof AuthUserUploadRoute
 }
 
 export interface FileRoutesById {
@@ -182,6 +200,7 @@ export interface FileRoutesById {
   '/_auth/logs': typeof AuthLogsRoute
   '/_auth/scripts/$id': typeof AuthScriptsIdRoute
   '/_auth/user/settings': typeof AuthUserSettingsRoute
+  '/_auth/user/upload': typeof AuthUserUploadRoute
 }
 
 export interface FileRouteTypes {
@@ -195,6 +214,7 @@ export interface FileRouteTypes {
     | '/logs'
     | '/scripts/$id'
     | '/user/settings'
+    | '/user/upload'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -205,6 +225,7 @@ export interface FileRouteTypes {
     | '/logs'
     | '/scripts/$id'
     | '/user/settings'
+    | '/user/upload'
   id:
     | '__root__'
     | '/'
@@ -215,6 +236,7 @@ export interface FileRouteTypes {
     | '/_auth/logs'
     | '/_auth/scripts/$id'
     | '/_auth/user/settings'
+    | '/_auth/user/upload'
   fileRoutesById: FileRoutesById
 }
 
@@ -257,7 +279,8 @@ export const routeTree = rootRoute
         "/_auth/dashboard",
         "/_auth/logs",
         "/_auth/scripts/$id",
-        "/_auth/user/settings"
+        "/_auth/user/settings",
+        "/_auth/user/upload"
       ]
     },
     "/about": {
@@ -280,6 +303,10 @@ export const routeTree = rootRoute
     },
     "/_auth/user/settings": {
       "filePath": "_auth.user.settings.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/user/upload": {
+      "filePath": "_auth.user.upload.tsx",
       "parent": "/_auth"
     }
   }

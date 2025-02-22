@@ -22,3 +22,4 @@ google-cloud-texttospeech==2.14.1
 google-auth==2.21.0
 
 Flask-APScheduler==1.13.1
+boto3==1.36.26

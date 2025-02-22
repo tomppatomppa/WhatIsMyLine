@@ -1,7 +1,9 @@
+import hashlib
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from project import db
-from project.models import User, Script
+from project.models import File, User, Script
+from project.adapters.S3Client import S3Handler
 from . import upload_blueprint
 from flask import  request, current_app
 from werkzeug.utils import secure_filename
@@ -31,6 +33,42 @@ def upload_file():
         return script.to_dict()
     except:
         return "Error uploading script", 404
+
+@upload_blueprint.route("/v4/upload", methods=['POST'])
+@jwt_required()
+def upload_file_s3():
+    if "file" not in request.files:
+       return 'No file', 406
+
+    try:
+        file = request.files['file']
+        user_id = get_jwt_identity()
+        
+        hasher = hashlib.sha1()
+        file_bytes = file.read()
+        hasher.update(file_bytes)
+        file.seek(0)  # Reset file pointer for reuse
+        file_hash = hasher.hexdigest()
+
+        filename = secure_filename(file.filename)
+        unique_id = str(uuid.uuid4())
+
+        new_file = File(filename=secure_filename(file.filename), user_id=user_id, hash=file_hash, uuid=unique_id, mime_type=file.mimetype)
+        
+        existing_file = File.query.filter_by(hash=file_hash, user_id=user_id).first()
+        if not existing_file:
+            S3Handler().upload_file(file, new_file.get_storage_path())
+
+        new_file.save()
+        
+        reader = ReaderV3(line_id=True, lines_as_string=True)
+        reader.read_file_from_memory(file_bytes, filename)  
+        result = reader.to_json_new(unique_id)
+        Script.add_script(result, user_id=user_id)
+
+        return "OK", 200
+    except Exception as e:
+        return 'Failed to upload file, try again later: {}'.format(e), 404
 
 def process_uploaded_file(file, uploaded_files_folder):
     try:

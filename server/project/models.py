@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, PickleType, event
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, PickleType, event, Uuid
 from sqlalchemy.orm import mapped_column, relationship
 from project import db
 from datetime import datetime
@@ -26,6 +26,7 @@ class User(db.Model):
     refresh_token = mapped_column(String(), nullable=False)
    
     scripts = relationship("Script", back_populates="user")
+    files = relationship("File", back_populates="user")
    
     def __init__(self, user_id: str, picture:str, email: str, provider: str, refresh_token: str):
         """Create a new User object using the email address
@@ -206,8 +207,54 @@ class Script(db.Model):
     
     def __repr__(self):
         return f'<Script: {self.filename}>'
-    
+
 @event.listens_for(Script, "load")
 def update_opened_on(instance, context):
     print("LOADED")
    # instance.opened_on = datetime.utcnow()
+   
+class File(db.Model):
+    """
+    Class that represents a file in the application
+    The following attributes of a file are stored in this table:
+        * id = database id of the file
+        * uuid = stored in bucket
+        * filename = name of the file
+        * user_id = id of the user who owns the file
+        * created_on - date & time that the file was created
+        * modified_on - date & time that the file was last modified
+    """
+    __tablename__ = "files"
+    
+    id = mapped_column(Integer(), primary_key=True, autoincrement=True)
+    uuid = mapped_column(Uuid(), unique=True, nullable=True)
+    hash = mapped_column(String(), unique=False, nullable=True)
+    filename = mapped_column(String(), nullable=True)
+    mime_type = mapped_column(String(), nullable=True)
+    user_id = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    created_on = mapped_column(DateTime(), default= datetime.now(), nullable=True)
+    modified_on = mapped_column(DateTime(), default= datetime.now(), onupdate= datetime.now(), nullable=True)
+    deleted_at = mapped_column(DateTime(), nullable=True)
+
+    user = relationship("User", back_populates="files")
+
+    def __init__(self, filename: str, user_id: int, uuid: str, hash: str, mime_type: str ):
+        """Create a new File object using the name of the file and the user_id"""
+        self.filename = filename
+        self.user_id = user_id
+        self.uuid = uuid
+        self.hash = hash
+        self.mime_type = mime_type
+        self.created_on = datetime.now()
+        self.modified_on = datetime.now()
+        self.deleted_at = None
+    
+    def get_storage_path(self):
+        return f'{self.user_id}/files/{self.hash}'
+    def save(self):
+        """Saves the file instance to the database."""
+        db.session.add(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return f"File(id={self.uuid}, filename='{self.filename}', user_id={self.user_id})"

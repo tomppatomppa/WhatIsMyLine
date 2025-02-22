@@ -2,7 +2,7 @@ import {
   useMutation,
   useQueryClient,
   useQueryErrorResetBoundary,
-  useSuspenseQuery
+  useSuspenseQuery,
 } from "@tanstack/react-query";
 import {
   createFileRoute,

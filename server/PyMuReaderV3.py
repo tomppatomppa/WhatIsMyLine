@@ -53,7 +53,20 @@ class ReaderV3():
       
         self.set_page_width(pages[0]['width'])
         self.file = self.flatten_all(pages)
-           
+
+    def read_file_from_memory(self, file_content, filename="default"):
+        """Reads a PDF file from memory instead of disk."""
+        try:
+            self.filename = filename
+            pdf_doc = fitz.open(stream=file_content, filetype="pdf")  # Load from memory
+            pages = [page.get_text("dict", sort=False) for page in pdf_doc]
+
+            self.set_page_width(pages[0]['width'])
+            self.file = self.flatten_all(pages)
+
+        except Exception as e:
+            raise ValueError(f"Failed to read file from memory: {e}")
+        
     def set_page_width(self, width):
         if not float(width):
            raise ValueError(f"Invalid page width value {width}")
@@ -323,6 +336,34 @@ class ReaderV3():
             result = self.lines_into_string(result)
      
         result["script_id"] = result["filename"].replace(".pdf", "")
+        
+        return result
+    
+    def to_json_new(self, script_id):
+        '''
+        Converts text content to a script item with the following structure   
+        {
+           script_id: string
+           filename: string
+           scenes: [
+             {
+               id: string
+               data: [{ type: string, name: string, lines: [string]}, ...]           
+             },
+           ]
+        }
+
+        '''
+        result = self.make_scenes(self.file)
+        result = self.clean_lines(result)
+        result = self.make_lines_recursive(result)
+       
+        if(self.line_id):
+            result = self.add_uuid(result)
+        if(self.lines_as_string):
+            result = self.lines_into_string(result)
+     
+        result["script_id"] = script_id
         
         return result
     
