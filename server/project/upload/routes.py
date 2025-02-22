@@ -58,7 +58,7 @@ def upload_file_s3():
         new_file = File(filename=secure_filename(file.filename), user_id=user_id, hash=file_hash, uuid=unique_id, mime_type=file.mimetype)
 
         existing_file = File.query.filter_by(hash=file_hash, user_id=user_id).first()
-        if not existing_file:
+        if existing_file is None:
             S3Handler().upload_file(file, new_file.get_storage_path())
 
         new_file.save()
