@@ -210,7 +210,8 @@ class Script(db.Model):
 
 @event.listens_for(Script, "load")
 def update_opened_on(instance, context):
-    print("LOADED")
+    pass
+    #print("LOADED")
    # instance.opened_on = datetime.utcnow()
    
 class File(db.Model):

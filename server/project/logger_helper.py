@@ -55,8 +55,11 @@ def logger_helper(log_incoming=True, log_outgoing=True, log_errors=True):
 
                 if log_outgoing:
                     log_message = f"Outgoing response: {status_code} - {request.method} {request.path}, Response payload: {data}"
-                    logger.info(log_message)
-                
+                    if status_code >= 400:
+                        logger.error(log_message)
+                    else:
+                        logger.info(log_message)
+
                 return response
             except Exception as e:
                 #Handle errors: Log the error traceback if enabled
