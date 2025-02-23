@@ -251,7 +251,7 @@ class File(db.Model):
         self.deleted_at = None
     
     def get_storage_path(self):
-        return f'{self.user_id}/files/{self.hash}'
+        return f'{self.user_id}/files/{self.uuid}'
     def save(self):
         """Saves the file instance to the database."""
         db.session.add(self)
