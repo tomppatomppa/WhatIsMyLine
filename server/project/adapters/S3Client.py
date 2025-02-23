@@ -11,7 +11,7 @@ class S3Handler:
             aws_secret_access_key=os.getenv("R2_SECRET_ACCESS_KEY"),
             region_name=region_name,
         )
-        self.bucket_name = bucket_name or os.getenv("S3_BUCKET")
+        self.bucket_name = bucket_name or os.getenv("R2_BUCKET")
 
     def upload_file(self, file_obj, file_name, acl="private"):
         """Upload a file to S3."""
