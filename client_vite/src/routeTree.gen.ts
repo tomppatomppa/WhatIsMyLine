@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as MarkdownEditImport } from './routes/markdown-edit'
 import { Route as LoginImport } from './routes/login'
 import { Route as AboutImport } from './routes/about'
 import { Route as AuthImport } from './routes/_auth'
@@ -22,6 +23,12 @@ import { Route as AuthUserSettingsImport } from './routes/_auth.user.settings'
 import { Route as AuthScriptsIdImport } from './routes/_auth.scripts.$id'
 
 // Create/Update Routes
+
+const MarkdownEditRoute = MarkdownEditImport.update({
+  id: '/markdown-edit',
+  path: '/markdown-edit',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LoginRoute = LoginImport.update({
   id: '/login',
@@ -108,6 +115,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/markdown-edit': {
+      id: '/markdown-edit'
+      path: '/markdown-edit'
+      fullPath: '/markdown-edit'
+      preLoaderRoute: typeof MarkdownEditImport
+      parentRoute: typeof rootRoute
+    }
     '/_auth/dashboard': {
       id: '/_auth/dashboard'
       path: '/dashboard'
@@ -171,6 +185,7 @@ export interface FileRoutesByFullPath {
   '': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/markdown-edit': typeof MarkdownEditRoute
   '/dashboard': typeof AuthDashboardRoute
   '/logs': typeof AuthLogsRoute
   '/scripts/$id': typeof AuthScriptsIdRoute
@@ -183,6 +198,7 @@ export interface FileRoutesByTo {
   '': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/markdown-edit': typeof MarkdownEditRoute
   '/dashboard': typeof AuthDashboardRoute
   '/logs': typeof AuthLogsRoute
   '/scripts/$id': typeof AuthScriptsIdRoute
@@ -196,6 +212,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/markdown-edit': typeof MarkdownEditRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/_auth/logs': typeof AuthLogsRoute
   '/_auth/scripts/$id': typeof AuthScriptsIdRoute
@@ -210,6 +227,7 @@ export interface FileRouteTypes {
     | ''
     | '/about'
     | '/login'
+    | '/markdown-edit'
     | '/dashboard'
     | '/logs'
     | '/scripts/$id'
@@ -221,6 +239,7 @@ export interface FileRouteTypes {
     | ''
     | '/about'
     | '/login'
+    | '/markdown-edit'
     | '/dashboard'
     | '/logs'
     | '/scripts/$id'
@@ -232,6 +251,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/about'
     | '/login'
+    | '/markdown-edit'
     | '/_auth/dashboard'
     | '/_auth/logs'
     | '/_auth/scripts/$id'
@@ -245,6 +265,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   AboutRoute: typeof AboutRoute
   LoginRoute: typeof LoginRoute
+  MarkdownEditRoute: typeof MarkdownEditRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -252,6 +273,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   AboutRoute: AboutRoute,
   LoginRoute: LoginRoute,
+  MarkdownEditRoute: MarkdownEditRoute,
 }
 
 export const routeTree = rootRoute
@@ -267,7 +289,8 @@ export const routeTree = rootRoute
         "/",
         "/_auth",
         "/about",
-        "/login"
+        "/login",
+        "/markdown-edit"
       ]
     },
     "/": {
@@ -288,6 +311,9 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/markdown-edit": {
+      "filePath": "markdown-edit.tsx"
     },
     "/_auth/dashboard": {
       "filePath": "_auth.dashboard.tsx",

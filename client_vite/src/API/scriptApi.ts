@@ -12,6 +12,11 @@ export const getScript = async (id: string): Promise<Script> => {
   return data;
 };
 
+export const getScriptMarkdown = async (): Promise<any> => {
+  const { data } = await httpClient.get(`${BASE_URI}/script/markdown-test`);
+  return data;
+};
+
 export const addScript = async (script: Script) => {
   const { data } = await httpClient.post(`${BASE_URI}/script`, {
     ...script,
