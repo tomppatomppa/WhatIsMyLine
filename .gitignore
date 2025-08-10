@@ -1,6 +1,6 @@
 /server/project/build
 postgres-data
-
+server/logs
 .env.prod
 .env
 node_modules
