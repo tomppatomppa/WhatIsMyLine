@@ -12,7 +12,6 @@ import Profile from "../profile/Profile";
 import ScriptsContainer from "./Scripts/ScriptsContainer";
 import SidebarList from "./SidebarList";
 import { useRouter } from "@tanstack/react-router";
-import { FaUpload } from "react-icons/fa";
 
 interface SidebarProps {
   handleLogout: () => void;
@@ -29,13 +28,13 @@ const Sidebar = ({ handleLogout }: SidebarProps) => {
       name: "All Scripts",
       icon: <ScriptsIcon />,
     },
-    {
-      onClick: () => {
-        router.navigate({ to: "/user/upload" });
-      },
-      name: "Upload",
-      icon: <FaUpload />,
-    },
+    // {
+    //   onClick: () => {
+    //     router.navigate({ to: "/user/upload" });
+    //   },
+    //   name: "Upload",
+    //   icon: <FaUpload />,
+    // },
   ];
 
   const navigationFooter = [
