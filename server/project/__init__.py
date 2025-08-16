@@ -1,7 +1,8 @@
 import os
 from datetime import timezone, timedelta, datetime
-from flask import Flask, render_template
+from flask import Flask, g, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from flask_cors import CORS
 from flask_wtf import CSRFProtect
@@ -12,7 +13,7 @@ from project.formatter.default_formatter import RequestFormatter
 from project.logger_helper import setup_logger
 from project.request_handlers import request_handlers
 from project.adapters.repositories.files import start_mappers
-from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies
+from flask_jwt_extended import JWTManager
 import os
 
 
@@ -24,11 +25,10 @@ csrf_protection = CSRFProtect()
 def create_app():
     app = Flask(__name__, template_folder="build", static_folder="build/static")
     
-    jwt = JWTManager(app)
-    
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config.from_object(config_type)
-
+    
+    jwt = JWTManager(app)
     
     app.config["JWT_COOKIE_SECURE"] = True
     app.config["JWT_COOKIE_CSRF_PROTECT"] = True
