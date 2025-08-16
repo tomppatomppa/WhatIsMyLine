@@ -98,9 +98,10 @@ function RouteComponent() {
 
   const { mutate } = useMutation({
     mutationFn: createScriptMarkdown,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      await query.invalidateQueries({ queryKey: ["scripts"] });
       if (search.redirect) {
-        query.invalidateQueries({ queryKey: ["scripts"] });
+
         router.navigate({ to: decodeURIComponent(search.redirect) });
       } else {
         router.navigate({ to: `/markdown-edit/${data.id}` });
@@ -154,7 +155,7 @@ export const Markdown = ({
 }: MarkdownProps) => {
   const ref = React.useRef<MDXEditorMethods>(null);
   const [filename, setFilename] = useState(initialFilename);
-  const [width, setWidth] = useState(700);
+  const [width] = useState(700);
 
   function handleMarkdownChange(): void {
     console.log("Function not implemented.");
@@ -171,9 +172,9 @@ export const Markdown = ({
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
-      <header className="flex items-center justify-between px-6 py-4 border-b bg-white shadow-sm sticky top-0 z-30">
+      <header className="flex items-center justify-between px-2 md:px-6 py-2 md:py-4 border-b bg-white shadow-sm sticky top-0 z-30">
         <Link to="/" className="text-xl font-light text-slate-800">
-          Script Editor
+         Home
         </Link>
         <div className="flex items-center gap-3">
           {/* Filename input */}
@@ -182,10 +183,10 @@ export const Markdown = ({
             value={filename}
             onChange={(e) => setFilename(e.target.value)}
             placeholder="Enter filename"
-            className="px-3 py-1.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400"
+            className="px-3 w-full py-1.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400"
           />
           {/* Width controls */}
-          <button
+          {/* <button
             onClick={() =>
               setWidth((prev) => (prev + 50 > 1000 ? prev : prev + 50))
             }
@@ -200,7 +201,7 @@ export const Markdown = ({
             className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
           >
             -
-          </button>
+          </button> */}
 
           {/* Save button */}
           <button
@@ -213,7 +214,7 @@ export const Markdown = ({
       </header>
 
       {/* Main Editor Area */}
-      <main className="flex-1 overflow-y-auto px-6 ">
+      <main className="flex-1 overflow-y-auto md:px-6 ">
         <div
           style={
             {

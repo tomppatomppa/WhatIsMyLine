@@ -35,7 +35,7 @@ function AuthLayout() {
   // });
 
   return (
-    <div className="text-center flex flex-row my-16">
+    <div className="text-center flex flex-row my-16 max-w-screen">
       <nav className="z-10 bottom-0 shadow-md flex justify-start bg-primary">
          <NavbarPrivate />
       </nav>

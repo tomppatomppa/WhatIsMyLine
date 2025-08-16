@@ -43,7 +43,7 @@ function DashboardPage() {
   // const {data} = useQuery(scriptsMarkdownQueryOptions())
 
   return (
-    <section className="p-4 bg-gray-50 min-h-screen">
+    <section className="p-1 md:p-4 bg-gray-50 min-h-screen">
       {/* {data && JSON.stringify(data)} */}
       <div className="max-w-7xl mx-auto grid gap-6">
         {/* Welcome Section */}

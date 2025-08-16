@@ -204,7 +204,7 @@ export function NavbarPrivate() {
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-6 flex-row">
           {!showScriptsList ? (
             <>
               {/* Initial Menu */}
@@ -218,7 +218,6 @@ export function NavbarPrivate() {
                 to="/markdown-edit/{-$id}"
                 className="block w-full px-4 py-3 mb-3 text-left text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 font-medium"
                 onClick={() => setSidebarOpen(false)}
-                search={{ redirect: "" }}
               >
                 ➕ Create New Script
               </Link>
@@ -268,6 +267,25 @@ export function NavbarPrivate() {
             </>
           )}
         </div>
+        <Button
+          onClick={() => console.log()}
+          className="group mt-16 inline-flex items-center px-4 py-2.5 text-sm font-semibold text-red-600 bg-red-50/80 border border-red-200/60 rounded-lg hover:bg-red-100 hover:border-red-300 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md"
+        >
+          <svg
+            className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            />
+          </svg>
+          Logout
+        </Button>
       </div>
 
       {/* Main Navbar */}
@@ -317,7 +335,7 @@ export function NavbarPrivate() {
             {/* Mobile menu button */}
             <div className="md:hidden">
               <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setSidebarOpen(true)}
                 className="text-gray-600 hover:text-slate-800 focus:outline-none"
               >
                 <svg
@@ -451,9 +469,11 @@ const ScriptList = ({ setSidebarOpen }: { setSidebarOpen: any }) => {
           </svg>
           <p>No scripts found</p>
           <Link
-              to="/markdown-edit/{-$id}"
-              className="inline-block mt-2 text-slate-600 hover:text-slate-800 font-medium text-xs"
-              onClick={() => setSidebarOpen && setSidebarOpen(false)} search={{redirect: ''}}          >
+            to="/markdown-edit/{-$id}"
+            className="inline-block mt-2 text-slate-600 hover:text-slate-800 font-medium text-xs"
+            onClick={() => setSidebarOpen && setSidebarOpen(false)}
+            search={{ redirect: "" }}
+          >
             Create your first script →
           </Link>
         </div>

@@ -35,13 +35,14 @@ function Component() {
           <li
             key={script.id}
             className="bg-white rounded-xl shadow-sm hover:shadow-lg transition p-5 cursor-pointer"
+             onClick={() =>
+                setExpandedId(expandedId === script.id ? null : script.id)
+              }
           >
             {/* Header */}
             <div
               className="flex justify-between items-center"
-              onClick={() =>
-                setExpandedId(expandedId === script.id ? null : script.id)
-              }
+             
             >
               <span className="font-medium text-lg text-gray-800">
                 {script.filename || "Untitled Script"}
@@ -53,7 +54,7 @@ function Component() {
             {expandedId === script.id && (
               <div className="mt-4 border-t border-gray-200 pt-4 space-y-3 text-gray-700">
                 <p className="text-sm leading-relaxed">{script.markdown}</p>
-                <div className="flex items-center gap-2 mt-3">
+                <div className="flex flex-wrap items-center gap-2 mt-3">
                   <Button
                     onClick={() =>
                       router.navigate({ to: `/scripts/${script.id}` })
