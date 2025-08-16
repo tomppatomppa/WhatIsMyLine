@@ -20,11 +20,13 @@ class Config(object):
 
 class ProductionConfig(Config):
     JWT_COOKIE_SECURE = True
+    SESSION_COOKIE_DOMAIN = 'whatsmylines.com'
     FLASK_ENV = 'production'
 
 class DevelopmentConfig(Config):
     DEBUG = True
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+    SESSION_COOKIE_DOMAIN = None
 
 class TestingConfig(Config):
     TESTING = True

@@ -32,7 +32,7 @@ def create_app():
     
     app.config["JWT_COOKIE_SECURE"] = True
     app.config["JWT_COOKIE_CSRF_PROTECT"] = True
-    app.config["SESSION_COOKIE_DOMAIN"] = True
+    # app.config["SESSION_COOKIE_DOMAIN"] = 'whatsmylines.com'
     app.config["JWT_SESSION_COOKIE"] = False 
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=7)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
