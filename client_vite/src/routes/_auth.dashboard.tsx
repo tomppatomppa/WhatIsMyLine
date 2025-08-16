@@ -129,13 +129,13 @@ export default DashboardPage;
 function StatsGrid() {
   const router = useRouter();
   const { data } = useSuspenseQuery(scriptsQueryOptions());
-  const mockStats = {
-    totalScripts: 12,
-    activeUsers: 57,
-    monthlyViews: 1043,
-  };
+  // const mockStats = {
+  //   totalScripts: 12,
+  //   activeUsers: 57,
+  //   monthlyViews: 1043,
+  // };
 
-  const { scripts, deletedScripts } = data.reduce<{
+  const { scripts } = data.reduce<{
     scripts: Script[];
     deletedScripts: Script[];
   }>(
