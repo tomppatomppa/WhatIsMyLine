@@ -222,7 +222,7 @@ class Script(Model):
 
     @classmethod
     def add_script(cls, script, user_id):
-        new_script = Script(**script, user_id=user_id)
+        new_script = Script(**script, user_id=str(user_id))
         db.session.add(new_script)
         db.session.commit()
         return new_script

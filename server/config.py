@@ -19,6 +19,7 @@ class Config(object):
     SCHEDULER_API_ENABLED = True
 
 class ProductionConfig(Config):
+    JWT_COOKIE_SECURE = True
     FLASK_ENV = 'production'
 
 class DevelopmentConfig(Config):

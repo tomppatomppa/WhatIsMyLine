@@ -1,5 +1,5 @@
 import os
-from datetime import timedelta
+from datetime import timezone, timedelta, datetime
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
@@ -12,6 +12,8 @@ from project.formatter.default_formatter import RequestFormatter
 from project.logger_helper import setup_logger
 from project.request_handlers import request_handlers
 from project.adapters.repositories.files import start_mappers
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies
+import os
 
 
 db = SQLAlchemy()
@@ -30,10 +32,11 @@ def create_app():
     
     app.config["JWT_COOKIE_SECURE"] = True
     app.config["JWT_COOKIE_CSRF_PROTECT"] = True
-    app.config["SESSION_COOKIE_DOMAIN"] = False
+    app.config["SESSION_COOKIE_DOMAIN"] = True
     app.config["JWT_SESSION_COOKIE"] = False 
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=7)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
+    # app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
     app.config["SESSION_COOKIE_HTTPONLY"] = True  
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
@@ -101,6 +104,7 @@ def register_blueprints(app):
         return render_template('index.html')
     
     from .auth import auth_blueprint
+
     from .users import users_blueprint
     from .scripts import scripts_blueprint
     from .google import google_blueprint
