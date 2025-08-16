@@ -268,7 +268,7 @@ export function NavbarPrivate() {
           )}
         </div>
         <Button
-          onClick={() => console.log()}
+          onClick={() => mutate()}
           className="group mt-16 inline-flex items-center px-4 py-2.5 text-sm font-semibold text-red-600 bg-red-50/80 border border-red-200/60 rounded-lg hover:bg-red-100 hover:border-red-300 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md"
         >
           <svg
