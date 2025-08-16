@@ -26,7 +26,7 @@ const SceneForm = ({
   const formState = isEditing ? "border-red-700" : "border-green-300";
 
   const getLineStyle = (type: LineType) => {
-    const style = options.settings[type.toLowerCase()].style;
+    const style = options.settings[type.toLowerCase()]?.style;
     return style || {};
   };
 

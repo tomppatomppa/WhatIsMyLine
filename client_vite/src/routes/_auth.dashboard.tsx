@@ -62,7 +62,7 @@ function DashboardPage() {
             
           ) : null}
           {user.is_admin ? (
-            <Button onClick={() => router.navigate({ to: "/markdown-edit" })}>
+            <Button onClick={() => router.navigate({ to: "/markdown-edit/{-$id}" })}>
               markdown
             </Button>
             

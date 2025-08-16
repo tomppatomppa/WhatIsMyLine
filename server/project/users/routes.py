@@ -4,7 +4,7 @@ import os
 from project.auth.LoginManager import LoginManager
 from project.logger_helper import logger_helper
 from . import users_blueprint
-
+from . import user_service
 from flask import request, jsonify
 from utils import create_timestamp, verify_google_id_token
 from project.models import User
@@ -67,11 +67,8 @@ def refresh():
 @jwt_required()
 def users():
     try:
-        user = User.get_user_by_user_id(get_jwt_identity())
-        response = {
-            **user.to_dict(),
-        }
-        return response, 200
+        user = user_service.get_by_id(get_jwt_identity())
+        return user.to_dict(), 200
     except Exception as e:
         return jsonify("Failed to get user"), 404
 

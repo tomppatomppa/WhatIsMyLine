@@ -14,6 +14,7 @@ export const getScript = async (id: string): Promise<Script> => {
 
 interface GetScriptResponse {
   id: number,
+  filename: string,
   markdown: string
 }
 export const getScriptMarkdown = async (id: number): Promise<GetScriptResponse> => {
@@ -24,12 +25,7 @@ export const getScriptMarkdown = async (id: number): Promise<GetScriptResponse> 
   return data;
 };
 
-interface CreateScriptResponse {
-  id: number,
-  markdown: string
-}
-
-export const createScriptMarkdown = async (params: {id: undefined | number, markdown: string}): Promise<GetScriptResponse> => {
+export const createScriptMarkdown = async (params: {id: undefined | number, markdown: string, filename: string}): Promise<GetScriptResponse> => {
   const { data } = await httpClient.post(`${BASE_URI}/script/markdown-test`, {...params});
   
   return data;

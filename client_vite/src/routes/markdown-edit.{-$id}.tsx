@@ -1,7 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createFileRoute,
   Link,
+  useLocation,
   useRouter,
 } from "@tanstack/react-router";
 import { scriptsMarkdownQueryOptions } from "../API/queryOptions";
@@ -28,7 +29,6 @@ import {
   currentBlockType$,
   Select,
   convertSelectionToNode$,
-  rangeSearchScan,
   rootEditor$,
   BoldItalicUnderlineToggles,
   MDXEditorMethods,
@@ -47,9 +47,7 @@ import { useEffect, useState } from "react";
 import {
   $createParagraphNode,
   $getRoot,
-  $getSelection,
   $isParagraphNode,
-  $isRangeSelection,
   $isTextNode,
   ElementNode,
 } from "lexical";
@@ -78,19 +76,35 @@ import { createScriptMarkdown } from "../API/scriptApi";
 //   );
 // };
 
+type ScriptSearch = {
+  redirect?: string;
+};
 export const Route = createFileRoute("/markdown-edit/{-$id}")({
+  validateSearch: (search: Record<string, unknown>): ScriptSearch => {
+    return {
+      redirect: (search?.redirect as string) ?? "",
+    };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { id } = Route.useParams();
+  const query = useQueryClient();
   const router = useRouter();
+  const { search } = useLocation();
+  const { id } = Route.useParams();
+
   const { data, isLoading } = useQuery(scriptsMarkdownQueryOptions(Number(id)));
 
   const { mutate } = useMutation({
     mutationFn: createScriptMarkdown,
     onSuccess: (data) => {
-      router.navigate({ to: `/markdown-edit/${data.id}` });
+      if (search.redirect) {
+        query.invalidateQueries({ queryKey: ["scripts"] });
+        router.navigate({ to: decodeURIComponent(search.redirect) });
+      } else {
+        router.navigate({ to: `/markdown-edit/${data.id}` });
+      }
     },
   });
 
@@ -102,21 +116,44 @@ function RouteComponent() {
     );
   }
 
-  const markdown = !id || !data?.markdown ? DEFAULT : data.markdown;
+  const defaults = (): { markdown: string; filename: string } => {
+    if (!id || !data?.markdown) {
+      return {
+        markdown: DEFAULT,
+        filename: "default-" + Date.now().toString(),
+      };
+    }
+
+    return {
+      markdown: data.markdown,
+      filename: data.filename ?? "default-" + Date.now().toString(),
+    };
+  };
+
+  const { markdown, filename } = defaults();
   return (
     <Markdown
       markdown={markdown}
-      onSave={(txt) => mutate({ id: Number(id), markdown: txt })}
+      initialFilename={filename}
+      onSave={({ markdown, filename }) =>
+        mutate({ id: Number(id), markdown: markdown, filename: filename })
+      }
     />
   );
 }
 
 interface MarkdownProps {
   markdown: string;
-  onSave: (markdown: string) => void;
+  initialFilename: string;
+  onSave: (data: { markdown: string; filename: string }) => void;
 }
-export const Markdown = ({ markdown, onSave }: MarkdownProps) => {
+export const Markdown = ({
+  markdown,
+  initialFilename,
+  onSave,
+}: MarkdownProps) => {
   const ref = React.useRef<MDXEditorMethods>(null);
+  const [filename, setFilename] = useState(initialFilename);
   const [width, setWidth] = useState(700);
 
   function handleMarkdownChange(): void {
@@ -129,7 +166,7 @@ export const Markdown = ({ markdown, onSave }: MarkdownProps) => {
     console.log("Saving markdown:", current);
     // 🔹 Replace this with API call to save the content
     //   alert("Markdown saved! (check console for content)");
-    onSave(current);
+    onSave({ markdown: current, filename: filename });
   }
 
   return (
@@ -139,6 +176,14 @@ export const Markdown = ({ markdown, onSave }: MarkdownProps) => {
           Script Editor
         </Link>
         <div className="flex items-center gap-3">
+          {/* Filename input */}
+          <input
+            type="text"
+            value={filename}
+            onChange={(e) => setFilename(e.target.value)}
+            placeholder="Enter filename"
+            className="px-3 py-1.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400"
+          />
           {/* Width controls */}
           <button
             onClick={() =>
@@ -156,6 +201,7 @@ export const Markdown = ({ markdown, onSave }: MarkdownProps) => {
           >
             -
           </button>
+
           {/* Save button */}
           <button
             onClick={handleSave}
@@ -302,17 +348,16 @@ const Test = ({ options }: { options: { auto: boolean } }) => {
             // console.log("Current paragraph:", node.getTextContent());
           }
 
-          const matches: { headingText: string; start: any; end: any }[] = [];
+          // const matches: { headingText: string; start: any; end: any }[] = [];
           if ($isHeadingNode(node) && node.getTag() === "h2") {
             const text = node.getTextContent();
             if (text.includes("TIKA")) {
               // Use 0 offsets since we're scanning the full text of the node
-              const generator = rangeSearchScan("TIKA", {
-                allText: text,
-                offsetIndex: [0, 23],
-                nodeIndex: [],
-              });
-
+              // const generator = rangeSearchScan("TIKA", {
+              //   allText: text,
+              //   offsetIndex: [0, 23],
+              //   nodeIndex: [],
+              // });
               //  for (const range of generator.next()) {
               //     console.log(`Found range: start=${range.start}, end=${range.end}`);
               //   }

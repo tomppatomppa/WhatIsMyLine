@@ -29,6 +29,7 @@ export type Script = {
   modified_on: string
   created_on: string
   opened_on: string
+  updated: string
 }
 
 // Line types

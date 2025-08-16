@@ -2,6 +2,7 @@ import os
 from datetime import timedelta
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import sessionmaker
 from flask_cors import CORS
 from flask_wtf import CSRFProtect
 from flask_migrate import Migrate
@@ -14,6 +15,7 @@ from project.adapters.repositories.files import start_mappers
 
 
 db = SQLAlchemy()
+
 migrate = Migrate()
 csrf_protection = CSRFProtect()
 

@@ -1,6 +1,7 @@
 import re
+import uuid
 import pymupdf4llm
-
+import markdown
 
 class ScriptManager:
     
@@ -171,3 +172,153 @@ class ScriptManager:
             fixed_lines.append('```')  # Add missing closing ticks at the end
 
         return '\n'.join(fixed_lines)
+    
+    def parse_markdown_to_json(self, md_text):
+        # Convert Markdown to HTML
+        html = markdown.markdown(md_text, extensions=['extra'])
+
+        # Split HTML into lines for easier processing
+        lines = html.splitlines()
+        result = []
+        current_scene = None
+        current_actor = None
+        current_lines = []
+        scene_id = None
+
+        # Regular expressions for parsing
+        scene_pattern = re.compile(r'^<h1>(.*?)</h1>$')
+        actor_pattern = re.compile(r'^<h2>(.*?)</h2>$')
+        ext_pattern = re.compile(r'^<h3>(.*?)</h3>$')
+        int_pattern = re.compile(r'^<h4>(.*?)</h4>$')
+        p_pattern = re.compile(r'^<p>(.*?)</p>$')
+
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+
+            # Check for scene (h1)
+            scene_match = scene_pattern.match(line)
+            if scene_match:
+                if current_scene:
+                    # Save previous scene if exists
+                    result.append(current_scene)
+                scene_id = self.clean_text(scene_match.group(1).strip())
+                current_scene = {
+                    "id": scene_id,
+                    "data": []
+                }
+                current_actor = None
+                current_lines = []
+                continue
+
+            # Check for actor (h2)
+            actor_match = actor_pattern.match(line)
+            if actor_match:
+                if current_actor and current_lines:
+                    # Save previous actor's data with line breaks
+                    current_scene["data"].append({
+                        "type": "ACTOR",
+                        "name": self.clean_text(current_actor),
+                        "lines": "\n".join(self.clean_text(line) for line in current_lines if line),
+                        "id": str(uuid.uuid4())
+                    })
+                    current_lines = []
+                current_actor = self.clean_text(actor_match.group(1).strip())
+                continue
+
+            # Check for EXT (h3)
+            ext_match = ext_pattern.match(line)
+            if ext_match:
+                if current_actor and current_lines:
+                    # Save previous actor's data with line breaks
+                    current_scene["data"].append({
+                        "type": "ACTOR",
+                        "name": self.clean_text(current_actor),
+                        "lines": "\n".join(self.clean_text(line) for line in current_lines if line),
+                        "id": str(uuid.uuid4())
+                    })
+                    current_actor = None
+                    current_lines = []
+                current_scene["data"].append({
+                    "type": "EXT",
+                    "name": "",
+                    "lines": self.clean_text(ext_match.group(1).strip()),
+                    "id": str(uuid.uuid4())
+                })
+                continue
+
+            # Check for INT (h4)
+            int_match = int_pattern.match(line)
+            if int_match:
+                if current_actor and current_lines:
+                    # Save previous actor's data with line breaks
+                    current_scene["data"].append({
+                        "type": "ACTOR",
+                        "name": self.clean_text(current_actor),
+                        "lines": "\n".join(self.clean_text(line) for line in current_lines if line),
+                        "id": str(uuid.uuid4())
+                    })
+                    current_actor = None
+                    current_lines = []
+                current_scene["data"].append({
+                    "type": "INT",
+                    "name": "",
+                    "lines": self.clean_text(int_match.group(1).strip()),
+                    "id": str(uuid.uuid4())
+                })
+                continue
+
+            # Check for paragraph (p) or other text
+            p_match = p_pattern.match(line)
+            if p_match:
+                content = p_match.group(1).strip()
+                if content.startswith('*') and content.endswith('*'):
+                    # This is an INFO block
+                    if current_actor and current_lines:
+                        # Save previous actor's data with line breaks
+                        current_scene["data"].append({
+                            "type": "ACTOR",
+                            "name": self.clean_text(current_actor),
+                            "lines": "\n".join(self.clean_text(line) for line in current_lines if line),
+                            "id": str(uuid.uuid4())
+                        })
+                        current_actor = None
+                        current_lines = []
+                    current_scene["data"].append({
+                        "type": "INFO",
+                        "name": "",
+                        "lines": self.clean_text(content[1:-1]),  # Remove asterisks
+                        "id": str(uuid.uuid4())
+                    })
+                else:
+                    # This is actor dialogue
+                    if current_actor:
+                        current_lines.append(content)
+                continue
+
+            # Handle plain text (non-<p> wrapped content)
+            if current_actor and line:
+                current_lines.append(line.strip())
+
+        # Save the last actor/scene if they exist
+        if current_actor and current_lines:
+            current_scene["data"].append({
+                "type": "ACTOR",
+                "name": self.clean_text(current_actor),
+                "lines": "\n".join(self.clean_text(line) for line in current_lines if line),
+                "id": str(uuid.uuid4())
+            })
+        if current_scene:
+            result.append(current_scene)
+
+        return result
+
+    def clean_text(self, text):
+        # Remove HTML tags
+        text = re.sub(r'<[^>]+>', '', text)
+        # Remove &#x20; (HTML space entity)
+        text = text.replace('&#x20;', '')
+        # Remove multiple spaces and normalize whitespace
+        text = re.sub(r'\s+', ' ', text).strip()
+        return text

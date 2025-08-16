@@ -19,9 +19,10 @@ import os
 #     TesseractOcrOptions,
 # )
 
-from project.scripts import script_service
 from project.scripts.script_manager import ScriptManager
+from .dataclasses import ScriptUpdateDTO
 from . import scripts_blueprint
+from . import script_service
 from flask import request, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from project.models import Script
@@ -32,25 +33,28 @@ import json
 @jwt_required()
 def get_all():
     try:
-        scripts = Script.get_scripts_by_user_id(get_jwt_identity())
-      
-        response = make_response(json.dumps(scripts), 200)
-        return response
+        scripts = script_service.get_all(get_jwt_identity())
+        result = [script.to_summary_dict() for script in scripts]
+        return make_response(json.dumps(result), 200)
     except Exception as error:
-        return str(error), 404
+        return "Not found", 404
    
 
 @scripts_blueprint.route("/script/<script_id>", methods=["GET"])
 @jwt_required()
 def get_by_script_id(script_id):
-   
-    script = Script.get_script_by_script_id(script_id, get_jwt_identity())
-    if not script:
-        return "Script doesn't exist", 404
-
-    response = make_response(json.dumps(script.to_dict()), 200)
-    return response
-
+ #   script = script_service.find_by_uuid(uuid=script_id, user_id=get_jwt_identity())
+    try:
+        
+        script = script_service.find_by_id(script_id, get_jwt_identity())
+        if script.scenes: 
+            return make_response(json.dumps(script.to_dict()), 200)
+        
+        script_manager = ScriptManager()
+        test = script_manager.parse_markdown_to_json(script.content)
+        return make_response(json.dumps({"id": script.id, "filename": script.filename, "scenes" : test}, indent=2, ensure_ascii=False), 200)
+    except Exception as err:
+        return "Not found", 400
 
 @scripts_blueprint.route("/script", methods=["POST"])
 @jwt_required()
@@ -103,7 +107,9 @@ def get_markdown_test():
 @jwt_required()
 def get_markdown(id):
     try:
-        script = script_service.find_by_id(id)
+        script = script_service.find_by_id(id, get_jwt_identity())
+        # script_manager = ScriptManager()
+        # test = script_manager.parse_markdown_to_json(script.content)
         return json.dumps(script.to_markdown()), 200
 
     except Exception as e:
@@ -112,13 +118,15 @@ def get_markdown(id):
 @scripts_blueprint.route("/script/markdown-test", methods=["POST"])
 @jwt_required()
 def create_markdown():
-    data = request.get_json()
+    payload = request.get_json()
    
     try:
-        if data.get('id'):
-            script = script_service.update({"id": data.get('id'), "markdown": data.get('markdown'), "user_id": get_jwt_identity()})   
+        user_id = get_jwt_identity()
+        data = ScriptUpdateDTO(**payload)  
+        if data.id:
+            script = script_service.update(data, user_id)   
         else:
-            script = script_service.create({"markdown": data.get('markdown'), "user_id": get_jwt_identity()})
+            script = script_service.create(data, user_id)
             
         return json.dumps(script.to_markdown()), 200
 

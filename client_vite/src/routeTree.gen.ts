@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MarkdownEditChar123IdChar125RouteImport } from './routes/markdown-edit.{-$id}'
+import { Route as AuthScriptsListRouteImport } from './routes/_auth.scripts-list'
 import { Route as AuthLogsRouteImport } from './routes/_auth.logs'
 import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
 import { Route as AuthUserUploadRouteImport } from './routes/_auth.user.upload'
@@ -45,6 +46,11 @@ const MarkdownEditChar123IdChar125Route =
     path: '/markdown-edit/{-$id}',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AuthScriptsListRoute = AuthScriptsListRouteImport.update({
+  id: '/scripts-list',
+  path: '/scripts-list',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthLogsRoute = AuthLogsRouteImport.update({
   id: '/logs',
   path: '/logs',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthDashboardRoute
   '/logs': typeof AuthLogsRoute
+  '/scripts-list': typeof AuthScriptsListRoute
   '/markdown-edit/{-$id}': typeof MarkdownEditChar123IdChar125Route
   '/scripts/$id': typeof AuthScriptsIdRoute
   '/user/settings': typeof AuthUserSettingsRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthDashboardRoute
   '/logs': typeof AuthLogsRoute
+  '/scripts-list': typeof AuthScriptsListRoute
   '/markdown-edit/{-$id}': typeof MarkdownEditChar123IdChar125Route
   '/scripts/$id': typeof AuthScriptsIdRoute
   '/user/settings': typeof AuthUserSettingsRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/_auth/logs': typeof AuthLogsRoute
+  '/_auth/scripts-list': typeof AuthScriptsListRoute
   '/markdown-edit/{-$id}': typeof MarkdownEditChar123IdChar125Route
   '/_auth/scripts/$id': typeof AuthScriptsIdRoute
   '/_auth/user/settings': typeof AuthUserSettingsRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/dashboard'
     | '/logs'
+    | '/scripts-list'
     | '/markdown-edit/{-$id}'
     | '/scripts/$id'
     | '/user/settings'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/dashboard'
     | '/logs'
+    | '/scripts-list'
     | '/markdown-edit/{-$id}'
     | '/scripts/$id'
     | '/user/settings'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/_auth/dashboard'
     | '/_auth/logs'
+    | '/_auth/scripts-list'
     | '/markdown-edit/{-$id}'
     | '/_auth/scripts/$id'
     | '/_auth/user/settings'
@@ -188,6 +200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarkdownEditChar123IdChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/scripts-list': {
+      id: '/_auth/scripts-list'
+      path: '/scripts-list'
+      fullPath: '/scripts-list'
+      preLoaderRoute: typeof AuthScriptsListRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/logs': {
       id: '/_auth/logs'
       path: '/logs'
@@ -229,6 +248,7 @@ declare module '@tanstack/react-router' {
 interface AuthRouteChildren {
   AuthDashboardRoute: typeof AuthDashboardRoute
   AuthLogsRoute: typeof AuthLogsRoute
+  AuthScriptsListRoute: typeof AuthScriptsListRoute
   AuthScriptsIdRoute: typeof AuthScriptsIdRoute
   AuthUserSettingsRoute: typeof AuthUserSettingsRoute
   AuthUserUploadRoute: typeof AuthUserUploadRoute
@@ -237,6 +257,7 @@ interface AuthRouteChildren {
 const AuthRouteChildren: AuthRouteChildren = {
   AuthDashboardRoute: AuthDashboardRoute,
   AuthLogsRoute: AuthLogsRoute,
+  AuthScriptsListRoute: AuthScriptsListRoute,
   AuthScriptsIdRoute: AuthScriptsIdRoute,
   AuthUserSettingsRoute: AuthUserSettingsRoute,
   AuthUserUploadRoute: AuthUserUploadRoute,
