@@ -9,8 +9,14 @@ class Config(object):
     TESTING = False
     SECRET_KEY = os.getenv("SECRET_KEY")
 
+    USER = os.getenv("user", default="postgres")
+    PASSWORD = os.getenv("password", default="password")
+    HOST = os.getenv("host", default="db")
+    PORT = os.getenv("port", default=5432)
+    DBNAME = os.getenv("dbname", default="whats_my_line_db")
+    DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
     if os.getenv('DATABASE_URL'):
-        SQLALCHEMY_DATABASE_URI =  os.getenv("DATABASE_URL")
+        SQLALCHEMY_DATABASE_URI =  DATABASE_URL
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # Logging
