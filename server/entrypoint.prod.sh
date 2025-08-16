@@ -27,4 +27,5 @@ fi
 # python3 -m flask db upgrade
 
 
-exec gunicorn --workers 4 --bind 0.0.0.0:${PORT:-5000} app:app
+#exec gunicorn --workers 4 --bind 0.0.0.0:${PORT:-5000} app:app
+exec gunicorn --workers 2 --threads 2 --bind 0.0.0.0:${PORT:-5000} --timeout 60 app:app
