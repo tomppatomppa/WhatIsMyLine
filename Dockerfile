@@ -1,7 +1,7 @@
 ####################
 # BUILDER FRONTEND #
 ####################
-FROM node:21-alpine as client
+FROM node:21-alpine AS client
 
 WORKDIR /usr/src/app
 
