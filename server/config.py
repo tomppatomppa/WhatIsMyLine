@@ -14,7 +14,7 @@ class Config(object):
     HOST = os.getenv("host", default="db")
     PORT = os.getenv("port", default=5432)
     DBNAME = os.getenv("dbname", default="whats_my_line_db")
-    DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+    DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require&pool_mode=transaction"
     if os.getenv('DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI =  DATABASE_URL
 
