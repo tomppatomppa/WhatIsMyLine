@@ -152,8 +152,8 @@ function StatsGrid() {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-6 bg-green-500 text-white rounded-2xl shadow">
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className=" bg-green-500 text-white rounded-2xl shadow">
           <h2 className="text-lg font-semibold">Active Scripts</h2>
           <p className="text-3xl font-bold">{scripts.length}</p>
         </div>
@@ -170,7 +170,7 @@ function StatsGrid() {
           <h2 className="text-lg font-semibold">Monthly Views</h2>
           <p className="text-3xl font-bold">{mockStats.monthlyViews}</p>
         </div>
-      </div>
+      </div> */}
 
       {/* Latest Scripts Section */}
       <div className="p-6 bg-white shadow rounded-2xl">
