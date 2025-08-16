@@ -23,3 +23,55 @@
     background: #555;
   }
   
+.prose {
+  font-family: "Inter", sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center; 
+}
+
+.prose p span[data-lexical-text="true"] {
+       /* so width applies without breaking flow */
+        /* left-aligns text inside */
+  width: var(--text-width, 500px);         /* or another fixed size */
+  max-width: var(--text-width, 800px); 
+  margin: 0 auto;               /* keep span centered in paragraph */
+ 
+}
+
+.prose p span[data-lexical-text="true"] {
+  min-width: 500px;
+}
+
+.prose p {
+  background-color: #eae9e9;
+}
+
+.prose h1, h2 {
+  margin-bottom: 10px;
+  margin-top: 10px;
+ text-transform: uppercase;
+}
+
+.prose h3 {
+  text-align: left;
+  font-style: italic;
+}
+
+.prose h4 {
+  text-align: right;
+  font-style: italic;
+}
+
+/* highlight styles */
+::highlight(rainbow-color-1) {
+  color: violet;
+  text-decoration: underline;
+}
+
+/* example for multiple colors */
+::highlight(rainbow-color-2) {
+  color: orange;
+  background-color: yellow;
+}
+

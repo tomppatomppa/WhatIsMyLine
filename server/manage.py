@@ -4,9 +4,17 @@ import pytest
 from project import db, models
 import app
 from sqlalchemy import create_engine, inspect
+from sqlalchemy.orm import sessionmaker
 cli = FlaskGroup(app)
 
 engine = create_engine(os.getenv('DATABASE_URL'))
+models.Model.metadata.create_all(engine)
+Session = sessionmaker(engine)
+
+with Session() as session:
+    with session.begin():
+        print("START")
+        #session.add(c64)
 
 # Create an inspector
 inspector = inspect(engine)

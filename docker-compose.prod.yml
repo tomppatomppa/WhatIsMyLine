@@ -3,6 +3,7 @@ version: '3.8'
 services:
   web:
     platform: linux/x86_64
+    container_name: whats-my-line-production
     build:
       context: .
       dockerfile: Dockerfile

@@ -1,7 +1,7 @@
 ####################
 # BUILDER FRONTEND #
 ####################
-FROM node:21-alpine as client
+FROM node:21-alpine AS client
 
 WORKDIR /usr/src/app
 
@@ -23,7 +23,7 @@ RUN npm run build
 ###########
 
 # pull official base image
-FROM python:3.11.3-slim-buster as builder
+FROM python:3.11-slim-bullseye AS builder
 
 # set work directory
 WORKDIR /usr/src/app
@@ -52,7 +52,8 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 #########
 
 # pull official base image
-FROM python:3.11.3-slim-buster
+#FROM python:3.11.3-slim-buster
+FROM python:3.11-slim-bullseye
 
 # create directory for the app user
 RUN mkdir -p /home/app

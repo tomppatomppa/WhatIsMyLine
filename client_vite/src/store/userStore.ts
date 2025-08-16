@@ -1,6 +1,7 @@
 import { StateCreator, create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import { logout } from "../API/loginApi";
+import { getCookie } from "../utils/helpers";
+import { logout } from "../API/authApi";
 
 export type User = {
   email: string;
@@ -48,5 +49,5 @@ export const useAccessToken = () =>
   useUserStore((state) => state.user?.access_token);
 
 export const useAuth = () =>
-  useUserStore((state) => (state.user ? true : false));
+  useUserStore(() => (getCookie('csrf_access_token') ? true : false));
 export const useCurrentUser = () => useUserStore((state) => state.user);

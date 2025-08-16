@@ -11,12 +11,15 @@ class Config(object):
 
     if os.getenv('DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI =  os.getenv("DATABASE_URL")
-   
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # Logging
     LOG_WITH_GUNICORN = os.getenv('LOG_WITH_GUNICORN', default=False)
 
+    SCHEDULER_API_ENABLED = True
+
 class ProductionConfig(Config):
+    JWT_COOKIE_SECURE = True
     FLASK_ENV = 'production'
 
 class DevelopmentConfig(Config):

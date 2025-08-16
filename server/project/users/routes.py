@@ -1,12 +1,14 @@
 import requests
 import os
+
+from project.auth.LoginManager import LoginManager
+from project.logger_helper import logger_helper
 from . import users_blueprint
+from . import user_service
 from flask import request, jsonify
 from utils import create_timestamp, verify_google_id_token
 from project.models import User
-from flask_jwt_extended import create_access_token, jwt_required,set_access_cookies, get_jwt_identity, unset_jwt_cookies
-
-from project import db
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required,set_access_cookies, get_jwt_identity, set_refresh_cookies
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -14,31 +16,32 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 
 @users_blueprint.route("/login", methods=["POST"])
-def login():
+@logger_helper()
+def login():    
     code = request.json.get('code')
-    
+
     if not code:
         return "Missing 'code' parameter in the request.", 403 
     try:
-        response = get_token_data(code)
-        
-        token_data = response.json()
-        
+        response = LoginManager(code).login() #get_token_data(code)
         if response.status_code == 200:
+            token_data = response.json()
             user = verify_google_id_token(token_data.get("id_token"))
-            
             user_for_database, user_for_client = extract_user_info(user, token_data)
-            currentUser = store_user(user_for_database)
+            user = store_user(user_for_database)
             
             response = jsonify(user_for_client)
-            #Set cookies
-            access_token = create_access_token(identity=currentUser.to_dict().get('id'))
+            access_token = create_access_token(identity=str(user.id))
+            refresh_token = create_refresh_token(identity=str(user.id))
+            
             set_access_cookies(response, access_token) 
-           
+            set_refresh_cookies(response, refresh_token)
             return response
         return response.json(), response.status_code
-    except:
-        return "Failed to login", 401
+    except Exception as e:
+        # logger.error('Login exception occurred : {}'.format(e))
+        return 'Failed to login', 401
+
 
 @users_blueprint.route("/refresh-token", methods=["POST"])
 @jwt_required()
@@ -48,7 +51,7 @@ def refresh():
     '''
     try:
         user_id = get_jwt_identity()
-       
+        
         refresh_token = User.get_refresh_token_by_user_id(user_id)
         if not refresh_token:
             return "Missing 'refresh_token' login again.", 401 
@@ -59,20 +62,15 @@ def refresh():
     except:
         return "Failed to refresh token", 401
 
-@users_blueprint.route("/logout", methods=["POST"])
-def logout_with_cookies():
-    response = jsonify("Logout successful")
-    unset_jwt_cookies(response)
-    return response
-
 @users_blueprint.route("/user", methods=["GET", "POST"])
+@logger_helper(log_incoming=False, log_outgoing=False)
 @jwt_required()
 def users():
-    user = User.get_user_by_user_id(get_jwt_identity())
-    if user:
-        return jsonify(user.email)
-    return jsonify("Invalid request")
-
+    try:
+        user = user_service.get_by_id(get_jwt_identity())
+        return user.to_dict(), 200
+    except Exception as e:
+        return jsonify("Failed to get user"), 404
 
 '''
 Helper Functions
@@ -105,25 +103,20 @@ def get_token_data(code):
             'client_secret': CLIENT_SECRET,
             'redirect_uri': "postmessage",
             'grant_type': 'authorization_code',
-            'scope': ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/drive.file"]
+            'scope': ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"]
+            #, "https://www.googleapis.com/auth/drive.file"
         })
         
     return response
 
-def store_user(user_info):
-    user_exists = User.query.filter_by(user_id=user_info["user_id"]).first()
-    if not user_exists:
-        new_user = User(user_info["user_id"],
-                        user_info["picture"],
-                        user_info["email"],
-                        user_info["provider"],
-                        user_info["refresh_token"],
-                        )
-        db.session.add(new_user)
-        db.session.commit()
-    else:
-        User.update_refresh_token_by_user_id(user_info["user_id"], user_info["refresh_token"])
-    return User.query.filter_by(user_id=user_info["user_id"], email=user_info["email"]).first()
+def store_user(user_info) -> User:
+    user = User.find_or_create_user(user_info)
+    if not user:
+        raise ValueError("User not found or could not be created")
+
+    return user
+
+    
 def refresh_access_token(refresh_token):
     
     payload = {

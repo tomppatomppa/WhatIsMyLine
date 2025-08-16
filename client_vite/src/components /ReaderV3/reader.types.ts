@@ -20,11 +20,18 @@ export type Scene = {
 export type ScriptWithoutId = Omit<Script, 'id'>
 
 export type Script = {
+  id: number,
   filename: string
   scenes: Scene[]
   trash?: boolean //TODO: add to database model
   script_id: string
+  deleted_at: string
+  modified_on: string
+  created_on: string
+  opened_on: string
+  updated: string
 }
+
 // Line types
 export interface Style {
   textAlign?: string

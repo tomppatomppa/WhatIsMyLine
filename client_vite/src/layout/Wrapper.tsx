@@ -5,7 +5,7 @@ interface WrapperProps {
 }
 
 const Wrapper = ({ children }: WrapperProps) => {
-  return <div className="relative items-center p-2 w-auto">{children}</div>
+  return <div className=" md:mt-0">{children}</div>
 }
 
 export default Wrapper

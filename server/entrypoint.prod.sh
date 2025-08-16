@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 if [ "$DATABASE" = "postgres" ]
 then
@@ -26,5 +27,4 @@ python3 -m flask db migrate
 python3 -m flask db upgrade
 
 
-
-exec "$@"
+exec gunicorn --workers 4 --bind 0.0.0.0:${PORT:-5000} app:app

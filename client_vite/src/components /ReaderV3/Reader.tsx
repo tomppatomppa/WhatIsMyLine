@@ -34,6 +34,24 @@ const initialState = {
         color: "#333333",
       },
     },
+    ext: {
+     style: {
+        textAlign: "left",
+        marginLeft: "10px",
+        fontStyle: "italic",
+        fontSize: "11.8pt",
+        color: "#333333",
+      },
+    },
+    int: {
+      style: {
+        textAlign: "right",
+        marginLeft: "10px",
+        fontStyle: "italic",
+        fontSize: "11.8pt",
+        color: "#333333",
+      },
+    },
   },
 } as ReaderConfiguration;
 
