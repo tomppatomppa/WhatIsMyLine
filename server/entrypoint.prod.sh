@@ -16,15 +16,15 @@ then
         echo "Migrations folder found. Running database upgrade..."
     else
         echo "Migrations folder not found. Create init migrations."
-        python3 -m flask db init
+        # python3 -m flask db init
        
     fi
 
 fi
 
-python manage.py create_db
-python3 -m flask db migrate
-python3 -m flask db upgrade
+# python manage.py create_db
+# python3 -m flask db migrate
+# python3 -m flask db upgrade
 
 
 exec gunicorn --workers 4 --bind 0.0.0.0:${PORT:-5000} app:app
