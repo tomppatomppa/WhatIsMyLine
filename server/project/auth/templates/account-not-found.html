@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Not Found - What's My Line</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+  <div class="bg-white p-10 rounded-xl shadow-md max-w-md w-full text-center">
+    <!-- Warning Icon -->
+    <div class="flex justify-center mb-6">
+      <svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M12 9v2m0 4h.01M12 5.07L19.07 12 12 18.93 4.93 12 12 5.07z" />
+      </svg>
+    </div>
+
+    <!-- Message -->
+    <h1 class="text-2xl font-semibold text-gray-900 mb-3">Account Not Found</h1>
+    <p class="text-gray-600 mb-8">
+      We couldn’t find an account linked with your Google login.  
+      Would you like to create a new account instead?
+    </p>
+
+    <!-- Actions -->
+    <div class="space-y-4">
+      <a href="/api/auth/register" 
+         class="block w-full bg-slate-900 text-white py-3 rounded-lg font-medium hover:bg-slate-700 transition">
+        Create an Account
+      </a>
+      <a href="/api/auth/login" 
+         class="block w-full text-slate-600 py-3 rounded-lg font-medium hover:bg-gray-100 transition">
+        Back to Login
+      </a>
+    </div>
+  </div>
+</body>
+</html>

@@ -8,10 +8,12 @@ export const scriptsQueryOptions = () =>
     queryFn: () => getScripts(),
     staleTime: 1000 * 20,
   });
-export const scriptsMarkdownQueryOptions = () =>
+
+export const scriptsMarkdownQueryOptions = (id: number | undefined) =>
   queryOptions({
-    queryKey: ["scripts-markdown"],
-    queryFn: () => getScriptMarkdown(),
+    enabled: !!id,
+    queryKey: ["scripts-markdown", id],
+    queryFn: () => getScriptMarkdown(id!),
   });
 
 export const scriptQueryOptions = (scriptId: string) =>

@@ -1,14 +1,17 @@
 from datetime import datetime
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, PickleType, event, Uuid
-from sqlalchemy.orm import mapped_column, relationship
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, PickleType, Text, event, Uuid, func
+from sqlalchemy.orm import mapped_column, relationship, DeclarativeBase
 from project import db
 from datetime import datetime
+
+class Model(DeclarativeBase):
+    pass
 
 class User(db.Model):
     """
     Class that represents a user of the application
     The following attributes of a user are stored in this table:
-        * user_id = id provided by the social login provider e.g Google
+        * provider_id = id provided by the social login provider e.g Google
         * picture = profile picture from social login
         * provider = social login provider
         * email - email address of the user
@@ -16,31 +19,31 @@ class User(db.Model):
         * refresh_token = refresh token from google
     """
     __tablename__ = 'users'
-    id = mapped_column(Integer(), primary_key=True, autoincrement=True)
-    user_id = mapped_column(String(), unique=True, nullable=False)
-    is_admin = mapped_column(Boolean(), default=False)
-    picture = mapped_column(String(), unique=True, nullable=True, default="")
-    provider = mapped_column(String(), nullable=False)
-    email = mapped_column(String(), unique=True, nullable=False)
-    registered_on = mapped_column(DateTime(), nullable=False)
-    refresh_token = mapped_column(String(), nullable=False)
+    id = mapped_column(Integer, primary_key=True)
+    provider_id = mapped_column(String, unique=False)
+    is_admin = mapped_column(Boolean, default=False, nullable=False)
+    picture = mapped_column(String, default="")
+    provider = mapped_column(String, nullable=True)
+    email = mapped_column(String, unique=True, nullable=False)
+    refresh_token = mapped_column(String, nullable=True)
+    created = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
    
     scripts = relationship("Script", back_populates="user")
     files = relationship("File", back_populates="user")
    
-    def __init__(self, user_id: str, picture:str, email: str, provider: str, refresh_token: str):
+    def __init__(self, provider_id: str, picture:str, email: str, provider: str, refresh_token: str):
         """Create a new User object using the email address
         """
-        self.user_id = user_id
+        self.provider_id = provider_id
         self.picture = picture
         self.email = email
         self.provider = provider
-        self.registered_on = datetime.now()
         self.refresh_token = refresh_token
     
     def to_dict(self):
         return {
-            "registered_on": self.registered_on,
+            "registered_on": self.created,
             'is_admin': self.is_admin,
             'picture': self.picture,
             'email': self.email,   
@@ -70,12 +73,12 @@ class User(db.Model):
     
     @classmethod
     def find_or_create_user(cls, user_info):
-        user = cls.query.filter_by(user_id=user_info["user_id"],
+        user = cls.query.filter_by(provider_id=user_info["provider_id"],
                                         email=user_info["email"],
                                         provider=user_info["provider"]
                                         ).first()
         if not user:
-            user = User(user_info["user_id"],
+            user = User(user_info["provider_id"],
                         user_info["picture"],
                         user_info["email"],
                         user_info["provider"],
@@ -104,28 +107,27 @@ class Script(db.Model):
     
     __tablename__ = 'scripts'
     id = mapped_column(Integer(), primary_key=True, autoincrement=True)
-    script_id = mapped_column(String(), unique=True, nullable=False)
-    filename = mapped_column(String(), nullable=False)
+    script_id = mapped_column(String(), unique=True, nullable=True)
+    filename = mapped_column(String(), nullable=True)
     user_id = mapped_column(ForeignKey("users.id"))
     scenes = mapped_column(PickleType(), nullable=True)
-    created_on = mapped_column(DateTime(), nullable=False)
-    modified_on = mapped_column(DateTime(), nullable=False)
-    opened_on = mapped_column(DateTime(), nullable=True)
-    deleted_at = mapped_column(DateTime(), nullable=True)
+    content = mapped_column(Text(), nullable=True)
+    created = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    deleted_at = mapped_column(DateTime(timezone=True), nullable=True, default=None)
+    
 
     user = relationship("User", back_populates="scripts")
     forbidden_keys = ['id', 'script_id', "created_on", "user_id"]
 
-    def __init__(self,script_id: str, filename: str, user_id: str, scenes: list = []):
+    def __init__(self, script_id: str, filename: str, user_id: str, scenes: list = [], content: str = ''):
         """Create a new Script object using the name of the script and the user_id
         """
         self.script_id = script_id
         self.filename = filename
         self.user_id = user_id
         self.scenes = scenes
-        self.created_on = datetime.now()
-        self.modified_on = datetime.now()
-        self.deleted_at = None
+        self.content = content
     
     def to_dict(self):
       return {
@@ -141,10 +143,14 @@ class Script(db.Model):
           "script_id": self.script_id,
           "filename": self.filename,
           "user_id": self.user_id,
-          "created_on": self.created_on,
-          "modified_on": self.modified_on,
           "deleted_at": self.deleted_at
         }
+    def to_markdown(self):
+        return {
+          "id": self.id,
+          "markdown": self.content,
+        }
+   
     def to_response(self):
         return {
           "id": self.id,
@@ -161,9 +167,11 @@ class Script(db.Model):
            "script_id": self.script_id,
            "filename": self.filename,
            "user_id": self.user_id,
-           "created_on": self.created_on.isoformat() if self.created_on else None,
-           "modified_on": self.modified_on.isoformat() if self.modified_on else None,
-           "opened_on": self.opened_on.strftime('%Y-%m-%d %H:%M:%S') if self.opened_on else None,
+            "modified_on": self.updated.isoformat() if self.updated else None,  #delete
+           "created": self.created.isoformat() if self.created else None,
+           "created_on": self.created.isoformat() if self.created else None, #delete
+           "updated": self.updated.isoformat() if self.updated else None,
+           "opened_on": self.updated.strftime('%Y-%m-%d %H:%M:%S') if self.updated else None,  #delete
            "deleted_at": self.deleted_at.isoformat() if self.deleted_at else None,
        }
        

@@ -1,11 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
+import { TanStackRouterVite, tanstackRouter } from '@tanstack/router-vite-plugin'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: "/",
-  plugins: [react(), TanStackRouterVite(),],
+  plugins: [react(), tanstackRouter(),],
   build: {
     assetsDir: 'static',
   },

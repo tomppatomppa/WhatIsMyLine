@@ -8,159 +8,223 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as MarkdownEditChar123IdChar125RouteImport } from './routes/markdown-edit.{-$id}'
+import { Route as AuthLogsRouteImport } from './routes/_auth.logs'
+import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
+import { Route as AuthUserUploadRouteImport } from './routes/_auth.user.upload'
+import { Route as AuthUserSettingsRouteImport } from './routes/_auth.user.settings'
+import { Route as AuthScriptsIdRouteImport } from './routes/_auth.scripts.$id'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as MarkdownEditImport } from './routes/markdown-edit'
-import { Route as LoginImport } from './routes/login'
-import { Route as AboutImport } from './routes/about'
-import { Route as AuthImport } from './routes/_auth'
-import { Route as IndexImport } from './routes/index'
-import { Route as AuthLogsImport } from './routes/_auth.logs'
-import { Route as AuthDashboardImport } from './routes/_auth.dashboard'
-import { Route as AuthUserUploadImport } from './routes/_auth.user.upload'
-import { Route as AuthUserSettingsImport } from './routes/_auth.user.settings'
-import { Route as AuthScriptsIdImport } from './routes/_auth.scripts.$id'
-
-// Create/Update Routes
-
-const MarkdownEditRoute = MarkdownEditImport.update({
-  id: '/markdown-edit',
-  path: '/markdown-edit',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LoginRoute = LoginImport.update({
+const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AboutRoute = AboutImport.update({
+const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthRoute = AuthImport.update({
+const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthLogsRoute = AuthLogsImport.update({
+const MarkdownEditChar123IdChar125Route =
+  MarkdownEditChar123IdChar125RouteImport.update({
+    id: '/markdown-edit/{-$id}',
+    path: '/markdown-edit/{-$id}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthLogsRoute = AuthLogsRouteImport.update({
   id: '/logs',
   path: '/logs',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthDashboardRoute = AuthDashboardImport.update({
+const AuthDashboardRoute = AuthDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthUserUploadRoute = AuthUserUploadImport.update({
+const AuthUserUploadRoute = AuthUserUploadRouteImport.update({
   id: '/user/upload',
   path: '/user/upload',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthUserSettingsRoute = AuthUserSettingsImport.update({
+const AuthUserSettingsRoute = AuthUserSettingsRouteImport.update({
   id: '/user/settings',
   path: '/user/settings',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthScriptsIdRoute = AuthScriptsIdImport.update({
+const AuthScriptsIdRoute = AuthScriptsIdRouteImport.update({
   id: '/scripts/$id',
   path: '/scripts/$id',
   getParentRoute: () => AuthRoute,
 } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/dashboard': typeof AuthDashboardRoute
+  '/logs': typeof AuthLogsRoute
+  '/markdown-edit/{-$id}': typeof MarkdownEditChar123IdChar125Route
+  '/scripts/$id': typeof AuthScriptsIdRoute
+  '/user/settings': typeof AuthUserSettingsRoute
+  '/user/upload': typeof AuthUserUploadRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/dashboard': typeof AuthDashboardRoute
+  '/logs': typeof AuthLogsRoute
+  '/markdown-edit/{-$id}': typeof MarkdownEditChar123IdChar125Route
+  '/scripts/$id': typeof AuthScriptsIdRoute
+  '/user/settings': typeof AuthUserSettingsRoute
+  '/user/upload': typeof AuthUserUploadRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/_auth/dashboard': typeof AuthDashboardRoute
+  '/_auth/logs': typeof AuthLogsRoute
+  '/markdown-edit/{-$id}': typeof MarkdownEditChar123IdChar125Route
+  '/_auth/scripts/$id': typeof AuthScriptsIdRoute
+  '/_auth/user/settings': typeof AuthUserSettingsRoute
+  '/_auth/user/upload': typeof AuthUserUploadRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/login'
+    | '/dashboard'
+    | '/logs'
+    | '/markdown-edit/{-$id}'
+    | '/scripts/$id'
+    | '/user/settings'
+    | '/user/upload'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/about'
+    | '/login'
+    | '/dashboard'
+    | '/logs'
+    | '/markdown-edit/{-$id}'
+    | '/scripts/$id'
+    | '/user/settings'
+    | '/user/upload'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/about'
+    | '/login'
+    | '/_auth/dashboard'
+    | '/_auth/logs'
+    | '/markdown-edit/{-$id}'
+    | '/_auth/scripts/$id'
+    | '/_auth/user/settings'
+    | '/_auth/user/upload'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  AboutRoute: typeof AboutRoute
+  LoginRoute: typeof LoginRoute
+  MarkdownEditChar123IdChar125Route: typeof MarkdownEditChar123IdChar125Route
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthImport
-      parentRoute: typeof rootRoute
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/about': {
       id: '/about'
       path: '/about'
       fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/markdown-edit': {
-      id: '/markdown-edit'
-      path: '/markdown-edit'
-      fullPath: '/markdown-edit'
-      preLoaderRoute: typeof MarkdownEditImport
-      parentRoute: typeof rootRoute
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_auth/dashboard': {
-      id: '/_auth/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthDashboardImport
-      parentRoute: typeof AuthImport
+    '/markdown-edit/{-$id}': {
+      id: '/markdown-edit/{-$id}'
+      path: '/markdown-edit/{-$id}'
+      fullPath: '/markdown-edit/{-$id}'
+      preLoaderRoute: typeof MarkdownEditChar123IdChar125RouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_auth/logs': {
       id: '/_auth/logs'
       path: '/logs'
       fullPath: '/logs'
-      preLoaderRoute: typeof AuthLogsImport
-      parentRoute: typeof AuthImport
+      preLoaderRoute: typeof AuthLogsRouteImport
+      parentRoute: typeof AuthRoute
     }
-    '/_auth/scripts/$id': {
-      id: '/_auth/scripts/$id'
-      path: '/scripts/$id'
-      fullPath: '/scripts/$id'
-      preLoaderRoute: typeof AuthScriptsIdImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/user/settings': {
-      id: '/_auth/user/settings'
-      path: '/user/settings'
-      fullPath: '/user/settings'
-      preLoaderRoute: typeof AuthUserSettingsImport
-      parentRoute: typeof AuthImport
+    '/_auth/dashboard': {
+      id: '/_auth/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthDashboardRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/user/upload': {
       id: '/_auth/user/upload'
       path: '/user/upload'
       fullPath: '/user/upload'
-      preLoaderRoute: typeof AuthUserUploadImport
-      parentRoute: typeof AuthImport
+      preLoaderRoute: typeof AuthUserUploadRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/user/settings': {
+      id: '/_auth/user/settings'
+      path: '/user/settings'
+      fullPath: '/user/settings'
+      preLoaderRoute: typeof AuthUserSettingsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/scripts/$id': {
+      id: '/_auth/scripts/$id'
+      path: '/scripts/$id'
+      fullPath: '/scripts/$id'
+      preLoaderRoute: typeof AuthScriptsIdRouteImport
+      parentRoute: typeof AuthRoute
     }
   }
 }
-
-// Create and export the route tree
 
 interface AuthRouteChildren {
   AuthDashboardRoute: typeof AuthDashboardRoute
@@ -180,161 +244,13 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
-  '/markdown-edit': typeof MarkdownEditRoute
-  '/dashboard': typeof AuthDashboardRoute
-  '/logs': typeof AuthLogsRoute
-  '/scripts/$id': typeof AuthScriptsIdRoute
-  '/user/settings': typeof AuthUserSettingsRoute
-  '/user/upload': typeof AuthUserUploadRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
-  '/markdown-edit': typeof MarkdownEditRoute
-  '/dashboard': typeof AuthDashboardRoute
-  '/logs': typeof AuthLogsRoute
-  '/scripts/$id': typeof AuthScriptsIdRoute
-  '/user/settings': typeof AuthUserSettingsRoute
-  '/user/upload': typeof AuthUserUploadRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/_auth': typeof AuthRouteWithChildren
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
-  '/markdown-edit': typeof MarkdownEditRoute
-  '/_auth/dashboard': typeof AuthDashboardRoute
-  '/_auth/logs': typeof AuthLogsRoute
-  '/_auth/scripts/$id': typeof AuthScriptsIdRoute
-  '/_auth/user/settings': typeof AuthUserSettingsRoute
-  '/_auth/user/upload': typeof AuthUserUploadRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | ''
-    | '/about'
-    | '/login'
-    | '/markdown-edit'
-    | '/dashboard'
-    | '/logs'
-    | '/scripts/$id'
-    | '/user/settings'
-    | '/user/upload'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | ''
-    | '/about'
-    | '/login'
-    | '/markdown-edit'
-    | '/dashboard'
-    | '/logs'
-    | '/scripts/$id'
-    | '/user/settings'
-    | '/user/upload'
-  id:
-    | '__root__'
-    | '/'
-    | '/_auth'
-    | '/about'
-    | '/login'
-    | '/markdown-edit'
-    | '/_auth/dashboard'
-    | '/_auth/logs'
-    | '/_auth/scripts/$id'
-    | '/_auth/user/settings'
-    | '/_auth/user/upload'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthRoute: typeof AuthRouteWithChildren
-  AboutRoute: typeof AboutRoute
-  LoginRoute: typeof LoginRoute
-  MarkdownEditRoute: typeof MarkdownEditRoute
-}
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
   AboutRoute: AboutRoute,
   LoginRoute: LoginRoute,
-  MarkdownEditRoute: MarkdownEditRoute,
+  MarkdownEditChar123IdChar125Route: MarkdownEditChar123IdChar125Route,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/_auth",
-        "/about",
-        "/login",
-        "/markdown-edit"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/_auth": {
-      "filePath": "_auth.tsx",
-      "children": [
-        "/_auth/dashboard",
-        "/_auth/logs",
-        "/_auth/scripts/$id",
-        "/_auth/user/settings",
-        "/_auth/user/upload"
-      ]
-    },
-    "/about": {
-      "filePath": "about.tsx"
-    },
-    "/login": {
-      "filePath": "login.tsx"
-    },
-    "/markdown-edit": {
-      "filePath": "markdown-edit.tsx"
-    },
-    "/_auth/dashboard": {
-      "filePath": "_auth.dashboard.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/logs": {
-      "filePath": "_auth.logs.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/scripts/$id": {
-      "filePath": "_auth.scripts.$id.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/user/settings": {
-      "filePath": "_auth.user.settings.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/user/upload": {
-      "filePath": "_auth.user.upload.tsx",
-      "parent": "/_auth"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

@@ -12,6 +12,7 @@ from project.logger_helper import setup_logger
 from project.request_handlers import request_handlers
 from project.adapters.repositories.files import start_mappers
 
+
 db = SQLAlchemy()
 migrate = Migrate()
 csrf_protection = CSRFProtect()
@@ -24,15 +25,20 @@ def create_app():
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config.from_object(config_type)
 
+    
     app.config["JWT_COOKIE_SECURE"] = True
     app.config["JWT_COOKIE_CSRF_PROTECT"] = True
-    app.config["SESSION_COOKIE_DOMAIN"] = True
+    app.config["SESSION_COOKIE_DOMAIN"] = False
     app.config["JWT_SESSION_COOKIE"] = False 
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=7)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
     app.config["SESSION_COOKIE_HTTPONLY"] = True  
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    
+    app.config["GOOGLE_CLIENT_ID"] = os.getenv("CLIENT_ID")
+    app.config["GOOGLE_CLIENT_SECRET"] = os.getenv("CLIENT_SECRET")
+    app.config["GOOGLE_REDIRECT_URI"] =  os.getenv("REDIRECT_URI") # os.environ["GOOGLE_REDIRECT_URI"]  # e.g. https://yourapp.com/auth/callback
     
     CORS(app, supports_credentials=True)
     

@@ -1,0 +1,10 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Profile</title></head>
+<body>
+  <h2>Welcome {{ user.name or user.email }}</h2>
+  {% if user.picture %}<img src="{{ user.picture }}" alt="avatar" width="96">{% endif %}
+  <p>Email: {{ user.email }}</p>
+  <form method="POST" action="/api/auth/logout"><button>Logout</button></form>
+</body>
+</html>
