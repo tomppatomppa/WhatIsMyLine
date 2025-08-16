@@ -54,9 +54,9 @@ def create_app():
     register_blueprints(app)
     app.logger = setup_logger()
     
-    # with app.app_context():
-    #    from .scheduler import init_scheduled_tasks 
-    #    init_scheduled_tasks(app)
+    with app.app_context():
+       from .scheduler import init_scheduled_tasks 
+       init_scheduled_tasks(app)
 
     return app
 
