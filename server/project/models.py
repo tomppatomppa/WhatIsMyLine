@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytz
 from sqlalchemy import (
     Boolean,
     DateTime,
@@ -15,7 +16,9 @@ from sqlalchemy import (
 from sqlalchemy.orm import mapped_column, relationship, DeclarativeBase
 from project import db
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
+FINLAND_TZ = ZoneInfo("Europe/Helsinki")
 
 class Model(DeclarativeBase):
     metadata = MetaData(
@@ -205,20 +208,23 @@ class Script(Model):
 
     def to_summary_dict(self):
         """Return script data without the 'scenes' field."""
+        def human_readable(dt):
+            if not dt:
+                return None
+            dt_hel = dt.astimezone(FINLAND_TZ)
+            return dt_hel.strftime("%b %d, %Y %I:%M %p")
+
         return {
-            "id": self.id,
-            "script_id": self.script_id,
-            "filename": self.filename,
-            "user_id": self.user_id,
-            "modified_on": self.updated.isoformat() if self.updated else None,  # delete
-            "created": self.created.isoformat() if self.created else None,
-            "created_on": self.created.isoformat() if self.created else None,  # delete
-            "updated": self.updated.isoformat() if self.updated else None,
-            "opened_on": (
-                self.updated.strftime("%Y-%m-%d %H:%M:%S") if self.updated else None
-            ),  # delete
-            "deleted_at": self.deleted_at.isoformat() if self.deleted_at else None,
-        }
+        "id": self.id,
+        "script_id": self.script_id,
+        "filename": self.filename,
+        "user_id": self.user_id,
+        "modified_on": human_readable(self.updated),
+        "created": human_readable(self.created),
+        "updated": human_readable(self.updated),
+        "opened_on": human_readable(self.updated),
+        "deleted_at": human_readable(self.deleted_at),
+    }
 
     @classmethod
     def add_script(cls, script, user_id):

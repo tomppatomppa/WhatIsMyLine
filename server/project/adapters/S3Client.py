@@ -1,6 +1,8 @@
+import io
 import os
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
+
 
 class S3Handler:
     def __init__(self, bucket_name=None, region_name="auto"):
@@ -19,7 +21,8 @@ class S3Handler:
             self.s3_client.upload_fileobj(
                 file_obj, self.bucket_name, file_name, ExtraArgs={"ACL": acl}
             )
-            return f"https://{self.bucket_name}.s3.amazonaws.com/{file_name}"
+            end = os.getenv("R2_ENDPOINT")
+            return f"{end}/{self.bucket_name}/{file_name}"
         except NoCredentialsError:
             return "Credentials not available"
         except ClientError as e:
@@ -28,8 +31,8 @@ class S3Handler:
     def download_file(self, file_name, download_path):
         """Download a file from S3."""
         try:
-            self.s3_client.download_file(self.bucket_name, file_name, download_path)
-            return f"File {file_name} downloaded to {download_path}"
+            return self.s3_client.download_file(self.bucket_name, file_name, download_path)
+            #return f"File {file_name} downloaded to {download_path}"
         except ClientError as e:
             return str(e)
 
@@ -52,3 +55,12 @@ class S3Handler:
             return url
         except ClientError as e:
             return str(e)
+        
+    def get_object(self, key):
+        """Delete a file from S3."""
+        try:
+            s3_obj = self.s3_client.get_object(Bucket=self.bucket_name, Key=key)
+            return s3_obj
+        except ClientError as e:
+            return str(e)
+     

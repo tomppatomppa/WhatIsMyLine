@@ -322,3 +322,56 @@ class ScriptManager:
         # Remove multiple spaces and normalize whitespace
         text = re.sub(r'\s+', ' ', text).strip()
         return text
+
+
+    def json_to_markdown(self, json_data):
+        """
+        Convert JSON structure back to Markdown format.
+        This is the exact reverse of parse_markdown_to_json.
+        """
+        markdown_lines = []
+        
+        for scene in json_data:
+            # Add scene header (h1)
+            scene_id = scene.get("id", "")
+            markdown_lines.append(f"# {scene_id}")
+            markdown_lines.append("")  # Empty line after scene header
+            
+            for item in scene.get("data", []):
+                item_type = item.get("type", "")
+                name = item.get("name", "")
+                lines = item.get("lines", "")
+                
+                if item_type == "ACTOR":
+                    # Add actor header (h2)
+                    markdown_lines.append(f"## {name}")
+                    markdown_lines.append("")  # Empty line after actor header
+                    
+                    # Add actor's lines as paragraphs
+                    if lines:
+                        # Split by newlines and add each as a paragraph
+                        actor_lines = lines.split('\n')
+                        for actor_line in actor_lines:
+                            if actor_line.strip():
+                                markdown_lines.append(actor_line.strip())
+                                markdown_lines.append("")  # Empty line after each paragraph
+                
+                elif item_type == "EXT":
+                    # Add EXT as h3
+                    markdown_lines.append(f"### {lines}")
+                    markdown_lines.append("")  # Empty line after EXT
+                
+                elif item_type == "INT":
+                    # Add INT as h4
+                    markdown_lines.append(f"#### {lines}")
+                    markdown_lines.append("")  # Empty line after INT
+                
+                elif item_type == "INFO":
+                    # Add INFO as paragraph wrapped in asterisks
+                    markdown_lines.append(f"*{lines}*")
+                    markdown_lines.append("")  # Empty line after INFO
+        
+        # Join all lines and clean up extra empty lines at the end
+        markdown_text = '\n'.join(markdown_lines).rstrip('\n')
+        
+        return markdown_text

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createFileRoute,
+  ErrorComponent,
   Link,
   useLocation,
   useRouter,
@@ -86,6 +87,9 @@ export const Route = createFileRoute("/markdown-edit/{-$id}")({
     };
   },
   component: RouteComponent,
+  errorComponent:  ErrorComponent
+ 
+  
 });
 
 function RouteComponent() {
@@ -94,7 +98,7 @@ function RouteComponent() {
   const { search } = useLocation();
   const { id } = Route.useParams();
 
-  const { data, isLoading } = useQuery(scriptsMarkdownQueryOptions(Number(id)));
+  const { data, isLoading, isError, error } = useQuery(scriptsMarkdownQueryOptions(Number(id)));
 
   const { mutate } = useMutation({
     mutationFn: createScriptMarkdown,
@@ -132,6 +136,15 @@ function RouteComponent() {
   };
 
   const { markdown, filename } = defaults();
+  
+  if(isError)  {
+     return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-red-900 text-sm">Error {error.message}</div>
+      </div>
+    );
+  }
+  
   return (
     <Markdown
       markdown={markdown}

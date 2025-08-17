@@ -19,6 +19,7 @@ function DashboardPage() {
   const user = userQuery.data;
 
   const [isPending, startTransition] = useTransition();
+  console.log("is trans",isPending )
   const [feedback, setFeedback] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
 
@@ -149,7 +150,10 @@ function StatsGrid() {
     },
     { scripts: [], deletedScripts: [] }
   );
-
+const sortedScripts = scripts.sort((a, b) => {
+  //@ts-ignore
+  return new Date(b.created) - new Date(a.created);
+});
   return (
     <>
       {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -178,11 +182,11 @@ function StatsGrid() {
           Latest Added Scripts
         </h2>
         <ul className="mt-4 space-y-2">
-          {scripts.slice(0, 5).map((script) => (
+          {sortedScripts.slice(0, 5).map((script) => (
             <li
               key={script.id}
               onClick={() =>
-                router.navigate({ to: `/scripts/${script.script_id}` })
+                router.navigate({ to: `/scripts/${script.id}` })
               }
               className="flex justify-between items-center bg-gray-100 p-4 rounded-lg hover:bg-green-200 cursor-pointer"
             >
@@ -190,7 +194,7 @@ function StatsGrid() {
                 {script.filename}
               </span>
               <span className="text-gray-500 text-sm">
-                Added on {script.created_on.toString()}
+                Added on {script.created.toString()}
               </span>
             </li>
           ))}

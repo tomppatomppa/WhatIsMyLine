@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { getScript, getScriptMarkdown, getScripts } from "./scriptApi";
 import { getUser } from "./userApi";
+import { getFile } from "./uploadApi";
 
 export const scriptsQueryOptions = () =>
   queryOptions({
@@ -28,3 +29,11 @@ export const userQueryOptions = () =>
     queryFn: () => getUser(),
     staleTime: 1000 * 60,
   });
+
+  export const fileQueryOptions = (uuid: string) =>
+  queryOptions({
+    queryKey: ["file-" + uuid],
+    queryFn: () => getFile(uuid),
+    staleTime: 1000 * 60,
+  });
+

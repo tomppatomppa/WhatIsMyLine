@@ -9,11 +9,6 @@ def get_by_id(user_id: int) -> User | None:
         result = session.get(User, user_id)
         return result
 
-
-def get_by_user_id(user_id: str) -> User | None:
-    return User.query.filter_by(id=user_id).first()
-
-
 def get_refresh_token(user_id: int) -> str | None:
     user = get_by_id(user_id)
     return user.refresh_token if user else None

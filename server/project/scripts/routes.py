@@ -1,3 +1,5 @@
+import io
+import mimetypes
 import os
 
 
@@ -20,10 +22,11 @@ import os
 # )
 
 from project.scripts.script_manager import ScriptManager
+from project.adapters.S3Client import S3Handler
 from .dataclasses import ScriptUpdateDTO
 from . import scripts_blueprint
 from . import script_service
-from flask import request, make_response
+from flask import Response, request, make_response, send_file
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from project.models import Script
 import json
@@ -43,7 +46,6 @@ def get_all():
 @scripts_blueprint.route("/script/<script_id>", methods=["GET"])
 @jwt_required()
 def get_by_script_id(script_id):
- #   script = script_service.find_by_uuid(uuid=script_id, user_id=get_jwt_identity())
     try:
         
         script = script_service.find_by_id(script_id, get_jwt_identity())
@@ -108,8 +110,13 @@ def get_markdown_test():
 def get_markdown(id):
     try:
         script = script_service.find_by_id(id, get_jwt_identity())
-        # script_manager = ScriptManager()
-        # test = script_manager.parse_markdown_to_json(script.content)
+        if not script.content:
+            script_manager = ScriptManager()
+            test = script_manager.json_to_markdown(script.scenes)
+            data = script.to_markdown()
+            data['markdown'] = test
+            return json.dumps(data), 200
+
         return json.dumps(script.to_markdown()), 200
 
     except Exception as e:
@@ -129,6 +136,34 @@ def create_markdown():
             script = script_service.create(data, user_id)
             
         return json.dumps(script.to_markdown()), 200
+
+    except Exception as e:
+        return f"{e}", 404
+    
+
+@scripts_blueprint.route("/script/file/<id>", methods=["GET"])
+@jwt_required()
+def get_original_file(id):
+    try:
+       
+        file = script_service.find_original_file_by_uuid(uuid=id, user_id=get_jwt_identity())
+        download_path = f"/downloads/{file.filename}"
+        os.makedirs(os.path.dirname(download_path), exist_ok=True)
+        result = S3Handler().get_object(key=file.get_storage_path())
+        file_stream = io.BytesIO(result['Body'].read())
+     
+        mime_type, _ = mimetypes.guess_type(file.filename)
+        mime_type = mime_type or 'application/octet-stream'
+
+        file_stream.seek(0)
+        return Response(
+            file_stream,
+            mimetype=mime_type,
+            headers={
+                "Content-Disposition": f'inline; filename="{file.filename}"'
+            }
+        )
+
 
     except Exception as e:
         return f"{e}", 404

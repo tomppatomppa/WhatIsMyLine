@@ -1,51 +1,56 @@
 import hashlib
+import io
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from project import db
 from project.models import File, User, Script
 from project.adapters.S3Client import S3Handler
+from project.scripts import script_service, dataclasses
 from project.logger_helper import get_logger, logger_helper
+from project.scripts.script_manager import ScriptManager
 from . import upload_blueprint
-from flask import  request, current_app
+from flask import request, current_app
 from werkzeug.utils import secure_filename
 import os
 import uuid
 from PyMuReaderV3 import ReaderV3
 
-@upload_blueprint.route("/v3/upload", methods=['POST'])
+
+@upload_blueprint.route("/v3/upload", methods=["POST"])
 @jwt_required()
 def upload_file():
     if "file" not in request.files:
-       return 'No file', 406
-   
-    file = request.files['file']
-    if file.filename == '':
-        return 'Invalid filename', 403
-    
-    user: User = db.get_or_404(User,
-                         get_jwt_identity(),
-                         description=f"User doesn't exist")
+        return "No file", 406
+
+    file = request.files["file"]
+    if file.filename == "":
+        return "Invalid filename", 403
+
+    user: User = db.get_or_404(
+        User, get_jwt_identity(), description=f"User doesn't exist"
+    )
     if not file or not allowed_file(file.filename):
-        return 'Invalid filetype', 403
+        return "Invalid filetype", 403
     try:
-        folder = current_app.config.get('uploaded_files_folder')
+        folder = current_app.config.get("uploaded_files_folder")
         result = process_uploaded_file(file, folder)
         script = Script.add_script(result, user_id=user.id)
         return script.to_dict()
     except:
         return "Error uploading script", 404
 
-@upload_blueprint.route("/v4/upload", methods=['POST'])
+
+@upload_blueprint.route("/v4/upload", methods=["POST"])
 @logger_helper(log_incoming=False, log_outgoing=True, log_errors=True)
 @jwt_required()
 def upload_file_s3():
     if "file" not in request.files:
-       return 'No file', 406
+        return "No file", 406
 
     try:
-        file = request.files['file']
+        file = request.files["file"]
         user_id = get_jwt_identity()
-        
+
         hasher = hashlib.sha1()
         file_bytes = file.read()
         hasher.update(file_bytes)
@@ -55,53 +60,67 @@ def upload_file_s3():
         filename = secure_filename(file.filename)
         unique_id = str(uuid.uuid4())
 
-        new_file = File(filename=secure_filename(file.filename), user_id=user_id, hash=file_hash, uuid=unique_id, mime_type=file.mimetype)
+        new_file = File(
+            filename=secure_filename(file.filename),
+            user_id=user_id,
+            hash=file_hash,
+            uuid=unique_id,
+            mime_type=file.mimetype,
+        )
 
-        existing_file = File.query.filter_by(hash=file_hash, user_id=user_id).first()
-        if existing_file is None:
-            S3Handler().upload_file(file, new_file.get_storage_path())
-
+        file_like = io.BytesIO(file_bytes)
+        S3Handler().upload_file(file_like, new_file.get_storage_path())
         new_file.save()
 
         reader = ReaderV3(line_id=True, lines_as_string=True)
-        reader.read_file_from_memory(file_bytes, filename)  
+        reader.read_file_from_memory(file_bytes, filename)
         result = reader.to_json_new(unique_id)
-        Script.add_script(result, user_id=user_id)
 
-        return "OK", 200
+        script_manager = ScriptManager()
+        markdown = script_manager.json_to_markdown(result["scenes"])
+        script = script_service.create(
+            dataclasses.ScriptUpdateDTO(
+                id=None, markdown=markdown, filename=result["filename"], script_id=unique_id
+            ),
+            user_id,
+        )
+
+        return script.to_markdown(), 200
     except Exception as e:
         get_logger().error(e)
-        return 'Failed to upload file, try again later', 404
+        return "ERROR", 404
+
 
 def process_uploaded_file(file, uploaded_files_folder):
     try:
         filename = secure_filename(file.filename)
-        #Create unique filename to avoid duplicates
+        # Create unique filename to avoid duplicates
         uuid_filename = create_uuid_filename()
         save_path = os.path.join(uploaded_files_folder, uuid_filename)
         file.save(save_path)
-        
-        
-        reader = ReaderV3(line_id=True, lines_as_string=True)
-        reader.read_file(f'{uuid_filename}')
 
-        result = reader.to_json() 
+        reader = ReaderV3(line_id=True, lines_as_string=True)
+        reader.read_file(f"{uuid_filename}")
+
+        result = reader.to_json()
         result["filename"] = filename
         return result
-    
+
     finally:
         os.remove(save_path)
 
 
-'''
+"""
 Helper functions
-'''
+"""
+
+
 def create_uuid_filename():
     uid = uuid.uuid4()
-    uuid_filename = f'{str(uid)}.pdf'
+    uuid_filename = f"{str(uid)}.pdf"
     return uuid_filename
 
-def allowed_file(filename):   
-    ALLOWED_EXTENSIONS = {'pdf'}
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {"pdf"}
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS

@@ -221,13 +221,22 @@ export function NavbarPrivate() {
               >
                 ➕ Create New Script
               </Link>
-              <Link
-                to="/scripts-list"
-                className="block w-full px-4 py-3 text-center text-white bg-slate-800 hover:bg-slate-900 rounded-lg transition-colors duration-200 font-medium"
-                onClick={() => setSidebarOpen(false)}
-              >
-                Show All Scripts
-              </Link>
+              <div className="flex flex-col gap-4">
+                <Link
+                  to="/user/upload"
+                  className="block w-full px-4 py-3 text-center text-white bg-blue-800 hover:bg-slate-900 rounded-lg transition-colors duration-200 font-medium"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Upload
+                </Link>
+                <Link
+                  to="/scripts-list"
+                  className="block w-full px-4 py-3 text-center text-white bg-slate-800 hover:bg-slate-900 rounded-lg transition-colors duration-200 font-medium"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Show All Scripts
+                </Link>
+              </div>
             </>
           ) : (
             <>

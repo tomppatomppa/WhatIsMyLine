@@ -27,7 +27,7 @@ export type Script = {
   script_id: string
   deleted_at: string
   modified_on: string
-  created_on: string
+  created: string
   opened_on: string
   updated: string
 }
