@@ -147,8 +147,7 @@ def get_original_file(id):
     try:
        
         file = script_service.find_original_file_by_uuid(uuid=id, user_id=get_jwt_identity())
-        download_path = f"/downloads/{file.filename}"
-        os.makedirs(os.path.dirname(download_path), exist_ok=True)
+       
         result = S3Handler().get_object(key=file.get_storage_path())
         file_stream = io.BytesIO(result['Body'].read())
      
