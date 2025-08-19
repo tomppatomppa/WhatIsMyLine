@@ -184,7 +184,7 @@ function RouteComponent() {
       <div className="absolute bottom-32 right-20 w-3 h-3 bg-slate-200 rounded-full opacity-20 animate-float-reverse"></div>
       <div className="absolute top-1/2 right-10 w-1.5 h-1.5 bg-slate-400 rounded-full opacity-25 animate-float"></div>
 
-      <div className="relative z-10 p-6">
+      <div className=" z-10 p-6">
         <div className="max-w-4xl mx-auto">
           {/* Back Button */}
           <button
@@ -361,7 +361,7 @@ function RouteComponent() {
 
           {/* Action Buttons */}
           {files.length > 0 && (
-            <div className="flex justify-center space-x-4 mb-8">
+            <div className="flex relative justify-center space-x-4 mb-8">
               {!isUploading && !hasUploads && (
                 <button
                   onClick={handleUpload}

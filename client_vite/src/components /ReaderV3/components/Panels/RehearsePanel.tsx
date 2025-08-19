@@ -46,7 +46,7 @@ const RehearsePanel = () => {
           search={{
             redirect: `${encodeURIComponent(location.pathname)}`
           }}
-        className="inline-block bg-blue-600 text-white font-medium px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-center w-full sm:w-auto"
+        className="inline-block bg-gray-600 text-white font-medium px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-center w-full sm:w-auto"
       >
         Edit
       </Link>

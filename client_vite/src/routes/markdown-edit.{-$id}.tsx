@@ -169,7 +169,7 @@ export const Markdown = ({
   const ref = React.useRef<MDXEditorMethods>(null);
   const [filename, setFilename] = useState(initialFilename);
   const [width] = useState(700);
-
+  
   function handleMarkdownChange(): void {
     console.log("Function not implemented.");
   }
@@ -295,7 +295,7 @@ export const Markdown = ({
 const Test = ({ options }: { options: { auto: boolean } }) => {
   const editor = useCellValue(rootEditor$);
   const convertSelectionToNode = usePublisher(convertSelectionToNode$);
-
+  
   useEffect(() => {
     if (!editor) return;
     editor.registerNodeTransform(HeadingNode, (node) => {

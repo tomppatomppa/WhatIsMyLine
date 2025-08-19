@@ -9,6 +9,7 @@ def get_by_id(user_id: int) -> User | None:
         result = session.get(User, user_id)
         return result
 
+
 def get_refresh_token(user_id: int) -> str | None:
     user = get_by_id(user_id)
     return user.refresh_token if user else None
@@ -28,6 +29,15 @@ def find_by_email_and_provider(user_info: dict):
         User.provider_id == user_info["provider_id"],
         User.email == user_info["email"],
         User.provider == user_info["provider"],
+    )
+    with Session() as session:
+        result = session.scalars(q).one_or_none()
+        return result
+
+
+def find_by_email(user_info: dict):
+    q = select(User).where(
+        User.email == user_info["email"],
     )
     with Session() as session:
         result = session.scalars(q).one_or_none()

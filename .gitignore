@@ -1,5 +1,6 @@
 /server/project/build
 /server/logs/*
+/server/*.csv
 postgres-data
 server/logs
 .env.prod

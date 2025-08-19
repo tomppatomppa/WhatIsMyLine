@@ -204,7 +204,7 @@ export function NavbarPrivate() {
           </div>
         </div>
 
-        <div className="p-6 flex-row">
+        <div className="p-6 flex-row overflow-y">
           {!showScriptsList ? (
             <>
               {/* Initial Menu */}
@@ -430,37 +430,39 @@ const ScriptList = ({ setSidebarOpen }: { setSidebarOpen: any }) => {
       </h3>
 
       {scripts.length > 0 ? (
-        scripts.map((script) => (
-          <Link
-            key={script.id}
-            to={`/scripts/` + script.id}
-            className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 text-sm group"
-          >
-            <div className="flex items-center justify-between">
-              <span className="truncate flex-1">
-                {script.filename || `Script ${script.id}`}
-              </span>
-              <svg
-                className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </div>
-            {script && (
-              <div className="text-xs text-gray-500 mt-1">
-                {new Date(script.updated).toLocaleDateString()}
+        <div className="max-h-96 overflow-y-auto pr-1 space-y-1">
+          {scripts.map((script) => (
+            <Link
+              key={script.id}
+              to={`/scripts/` + script.id}
+              className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 text-sm group"
+            >
+              <div className="flex items-center justify-between">
+                <span className="truncate flex-1">
+                  {script.filename || `Script ${script.id}`}
+                </span>
+                <svg
+                  className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
               </div>
-            )}
-          </Link>
-        ))
+              {script && (
+                <div className="text-xs text-gray-500 mt-1">
+                  {new Date(script.updated).toLocaleDateString()}
+                </div>
+              )}
+            </Link>
+          ))}
+        </div>
       ) : (
         <div className="px-3 py-8 text-center text-gray-500 text-sm">
           <svg

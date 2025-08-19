@@ -1,6 +1,8 @@
 
 import base64
+import random
 import secrets
+import uuid
 import requests
 from urllib.parse import urlencode
 
@@ -171,3 +173,43 @@ def refresh_cookie():
     response = jsonify("OK")
     set_access_cookies(response, access_token)
     return response
+
+
+#############
+### TESTING
+@auth_blueprint.route("/test_login", methods=["POST"])
+def test_login():
+    """
+    Development-only endpoint:
+    Creates a fake user (if not exists) and sets auth cookies directly.
+    Useful for stress/load testing without going through Google OAuth.
+    """
+    if not current_app.debug:  # prevent in production
+        return abort(403, "Not available in production")
+
+    data = request.get_json(silent=True) or {}
+    email = data.get("email", f"testuser_{uuid.uuid4()}@example.com")
+    provider_id = data.get("provider_id", str(random.randint(100000, 999999)))
+    # Create/find user
+    user = user_service.find_by_email({
+        "provider_id": str(provider_id),
+        "refresh_token": '',
+        "picture": '',
+        "email": email,
+        "provider": "google"
+    })
+   
+    if not user:
+        return "ERRR", 400
+
+    # Issue tokens just like in /callback
+    access_token = create_access_token(identity=str(user.id), additional_claims={
+        "email": email,
+        "name": email.split("@")[0]
+    })
+    refresh_token = create_refresh_token(identity=str(user.id))
+
+    resp = make_response({"message": "Logged in", "user_id": user.id})
+    set_access_cookies(resp, access_token)
+    set_refresh_cookies(resp, refresh_token)
+    return resp

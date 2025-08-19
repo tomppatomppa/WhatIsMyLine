@@ -59,7 +59,7 @@ function Component() {
                   <div className="flex flex-wrap items-center gap-2 mt-3">
                     <Button
                       onClick={() =>
-                        router.navigate({ to: `/markdown-edit/${script.id}` })
+                        router.navigate({ to: `/scripts/${script.id}` })
                       }
                       className="inline-flex items-center px-4 py-2 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
                     >
